@@ -1,0 +1,102 @@
+function plot_trend_12panel(p)
+s=p.s; lon=s.lon; lat=s.lat; lm=s.lm0; 
+cmin=p.cmin; cmax=p.cmax; nn=256;
+xmin1=0; xmax1=360;  ymin1=-90; ymax1=90;
+if strcmp(p.reg,'usa')
+  xmin2=180; xmax2=360;  ymin2=0;   ymax2=90;
+else
+  xmin2=0;   xmax2=360;  ymin2=-90; ymax2=90;
+end
+[x,y]=meshgrid(lon,lat); msize=2;
+pms=[ 0, 0, 1800, 1200]*1.5; row=4; col=3;
+handle=figure('Position',pms,'visible','on');
+subplot(row,col,1);
+pcolor(lon,lat,p.t1); shading flat; colorbar; hold on;
+stipple(x,y,p.id.t1,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+a=[190 -5 50 10]; rectangle('Position',a); %latlon=[190 240 -5 5]; NINO3.4
+%[latx,lonx]=borders('United States','k'); hold on; plot((lonx+360),latx,'k');
+%[latx,lonx]=borders('Canada','k'); hold on; plot((lonx+360)',latx','k');
+%[latx,lonx]=borders('Mexico','k'); hold on; plot((lonx+360)',latx','k');
+axis([xmin1 xmax1 ymin1 ymax1]); caxis([cmin cmax]); 
+cmap=bluewhitered(nn); colormap(cmap); title(p.st);
+subplot(row,col,2);
+pcolor(lon,lat,p.t2); shading flat; colorbar; hold on;
+stipple(x,y,p.id.t2,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+a=[190 -5 50 10]; rectangle('Position',a); %latlon=[190 240 -5 5]; NINO3.4
+axis([xmin1 xmax1 ymin1 ymax1]); caxis([cmin cmax]); 
+cmap=bluewhitered(nn); colormap(cmap); title(p.st);
+
+subplot(row,col,3);
+pcolor(lon,lat,p.ax); shading flat; colorbar; hold on;
+stipple(x,y,p.id.ax,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.sx);
+
+subplot(row,col,4);
+pcolor(lon,lat,p.ay); shading flat; colorbar; hold on;
+stipple(x,y,p.id.ay,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.sy);
+
+subplot(row,col,5); 
+pcolor(lon,lat,p.av); shading flat; colorbar; hold on;
+stipple(x,y,p.id.av,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.sv);
+
+subplot(row,col,6); 
+pcolor(lon,lat,p.a1); shading flat; colorbar; hold on;
+stipple(x,y,p.id.a1,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.s1);
+
+subplot(row,col,7); 
+pcolor(lon,lat,p.a2); shading flat; colorbar; hold on;
+stipple(x,y,p.id.a2,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.s2);
+
+subplot(row,col,8);
+pcolor(lon,lat,p.a3); shading flat; colorbar; hold on;
+stipple(x,y,p.id.a3,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.s3);
+
+subplot(row,col,9);
+pcolor(lon,lat,p.a4); shading flat; colorbar; hold on;
+stipple(x,y,p.id.a4,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.s4);
+
+subplot(row,col,10);
+pcolor(lon,lat,p.a5); shading flat; colorbar; hold on;
+stipple(x,y,p.id.a5,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.s5);
+
+subplot(row,col,11);
+pcolor(lon,lat,p.a6); shading flat; colorbar; hold on;
+stipple(x,y,p.id.a6,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.s6);
+
+subplot(row,col,12);
+pcolor(lon,lat,p.a7); shading flat; colorbar; hold on;
+stipple(x,y,p.id.a7,'marker','.','markersize',msize);
+contour(lon,lat,lm,[0 0.5],'k');
+axis([xmin2 xmax2 ymin2 ymax2]); caxis([cmin cmax]);
+cmap=bluewhitered(nn); colormap(cmap); title(p.s7);
+
+visfig='off'; figpath='./fig_CA/'; expn=p.vname;
+printnew(visfig,figpath,p.expn,p.vname);

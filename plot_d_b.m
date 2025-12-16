@@ -1,0 +1,10 @@
+lw='LineWidth'; d1=1; d2=d1*3;
+plot(d.ca,b.ca,C1,lw,d2);hold on;plot(d.va,b.va,V1,lw,d2);plot(d.wa,b.wa,W1,lw,d2);
+plot(d.cb,b.cb,C2,lw,d2);hold on;plot(d.vb,b.vb,V2,lw,d2);plot(d.wb,b.wb,W2,lw,d2);
+plot(d.cc,b.cc,C3,lw,d2);hold on;plot(d.vc,b.vc,V3,lw,d2);plot(d.wc,b.wc,W3,lw,d2);
+plot(d.cd,b.cd,C4,lw,d2);hold on;plot(d.vd,b.vd,V4,lw,d2);plot(d.wd,b.wd,W4,lw,d2);
+plot(d.c1,b.c1,C1,lw,d1);hold on;plot(d.v1,b.v1,V1,lw,d1);plot(d.w1,b.w1,W1,lw,d1);
+plot(d.c2,b.c2,C2,lw,d1);hold on;plot(d.v2,b.v2,V2,lw,d1);plot(d.w2,b.w2,W2,lw,d1);
+plot(d.c3,b.c3,C3,lw,d1);hold on;plot(d.v3,b.v3,V3,lw,d1);plot(d.w3,b.w3,W3,lw,d1);
+plot(d.c4,b.c4,C4,lw,d1);hold on;plot(d.v4,b.v4,V4,lw,d1);plot(d.w4,b.w4,W4,lw,d1);
+plot(d.c5,b.c5,C5,lw,d1);hold on;plot(d.v5,b.v5,V5,lw,d1);plot(d.w5,b.w5,W5,lw,d1);

@@ -1,0 +1,4832 @@
+%below opt=1 for writing mat file to /work/miz 
+%below opt=2 for writing mat file to /archive
+[CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
+latlon=[0 360 -90 90];region='global';mod='c96';myr=5; opt=1;
+%latlon=[0 360 30 90];region='nhextr';mod='c96';myr=5; opt=2;
+%latlon=[0 360 -30 30];region='tropic';mod='c96';myr=5; opt=2;
+%latlon=[150 250 -5 5]; region='equpac'; nyr=5; myr=1; opt=0; 
+%read in or generate observation data:
+%o=readobs(latlon,region,'c96',true);
+%o=readobs(latlon,region,'c48',true);
+%fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c48.mat'); ;load(fn); o.mod='c48'
+fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c96.mat'); load(fn); o.mod='c96';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/';
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192';
+p.opt=2; p.do_3d_atm=1; p.do_all=1; p.do_scalar=0; p.myr=1;
+p.yr1='1921'; p.yr2='2100'; p.syr=58; p.nyr=42;
+p.do_trend=1; p.y1=1979; p.y2=2020;
+%p.syr=39; p.nyr=62; p.y1=1959; p.y2=2020;p.opt=0
+%p.syr=59; p.nyr=42; p.y1=1979; p.y2=2020; p.opt=0; 
+%p.syr=99; p.nyr=42; p.y1=2019; p.y2=2060; 
+%p.syr=59; p.nyr=42; p.y1=1979; p.y2=2020; 
+expn0='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_';
+for i=7:30
+  expn=sprintf('%s%02d',expn0,i); p.expn=expn; expn
+  v=tsana_hiresmip_new(o,tpath,p);
+%  v=tsana_spearle(o,tpath,p);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%NoAnthroAerosols run%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/';
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192';
+p.opt=2; p.do_3d_atm=1; p.do_all=1; p.do_scalar=0; p.myr=1;
+p.yr1='1921'; p.yr2='2020'; p.syr=58; p.nyr=42;
+p.do_trend=1; p.y1=1979; p.y2=2020;
+%p.syr=39; p.nyr=62; p.y1=1959; p.y2=2020;p.opt=0
+%p.syr=59; p.nyr=42; p.y1=1979; p.y2=2020; p.opt=0; 
+%p.syr=99; p.nyr=42; p.y1=2019; p.y2=2060; 
+%p.syr=59; p.nyr=42; p.y1=1979; p.y2=2020; 
+expn0='SPEAR_c192_o1_Hist_NoAnthroAerosols_IC1921_K50_ens_';
+for i=7:12
+  expn=sprintf('%s%02d',expn0,i); p.expn=expn; expn
+  v=tsana_hiresmip_new(o,tpath,p);
+%  v=tsana_spearle(o,tpath,p);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%flux adjusted SPEAR run%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/';
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192';
+p.opt=0; p.do_3d_atm=0; p.do_all=1; p.myr=1;
+p.yr1='1921'; p.yr2='2100'; p.syr=59; p.nyr=42;
+p.do_trend=1; p.y1=1979; p.y2=2020;
+%p.syr=39; p.nyr=62; p.y1=1959; p.y2=2020;p.opt=0
+%p.syr=59; p.nyr=42; p.y1=1979; p.y2=2020; p.opt=0; 
+%p.syr=99; p.nyr=42; p.y1=2019; p.y2=2060; 
+%p.syr=59; p.nyr=42; p.y1=1979; p.y2=2020; 
+expn0='SPEAR_FA_c192_o1_Hist_AllForc_Scen_SSP585_IC1921_K50_ens_';
+for i=2:10
+  expn=sprintf('%s%02d',expn0,i); p.expn=expn; expn
+  v=tsana_spearle(o,tpath,p);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AMIP runs%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/expn_c192L33_am4p0/amip_le_runs/'
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192';
+p.opt=0; p.do_3d_atm=0; p.do_all=1; p.myr=1;
+p.yr1='1950'; p.yr2='2020'; p.syr=1; p.nyr=71;
+p.do_trend=1; p.y1=1979; p.y2=2020; 
+p.expn='c192L33_am4p0_amip_m01';
+v=tsana_hiresmip_new(o,tpath,p);
+expn0='c192L33_am4p0_amip_m';
+for i=6:6
+  expn=sprintf('%s%02d',expn0,i); p.expn=expn; expn
+  v=tsana_hiresmip_new(o,tpath,p);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%CLIMO runs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2022.03/'
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192'; p.opt=0; 
+p.yr1='0002'; p.yr2='0101'; p.myr=1; p.do_trend=0; p.do_scalar=0;
+p.syr=1; p.nyr=100; p.y1=0002; p.y2=0101; p.opt=2; p.do_3d_atm=1;
+%p.expn='c192L33_am4p0_2010climo';
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear'; 
+%expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; ardir='AR_climlmt'
+v=tsana_spearle(o,tpath,p);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2022.03/'; 
+expn='c192L33_am4p0_2010climo'; 
+fext='_global_opt2.c48_tsana_spearle_new_';
+period1='2_101'; 
+fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+load(fn); v0=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%wind circulation plotting:
+pms=[ 0, 0, 1500, 900]*1.5; warning off all
+handle = figure('Position', pms,'visible','on'); fsize=18;
+s=v.s; x=s.lon; y=s.lat; lm=s.lm; lw=1; cfact=1; k=2;
+seas={'ANN','MAM','JJA','SON','DJF'};
+plev={'1000', '925', '850','775','700','600','500','400','300','250','200','150','100','70','50'};
+k=7; ua=v.atm.ua(k); va=v.atm.va(k); m=1;
+zu=squeeze(ua.sea(m,:,:)); 
+zv=squeeze(va.sea(m,:,:));
+zz=sqrt(zu.*zu+zv.*zv);
+%k=7; zz=v.atm.za(k); zz=squeeze(zz.sea(m,:,:));
+contourf(x,y,zz,20); hold on; shading flat; colorbar; caxis([-20 20]); 
+quiver(x,y,zu,zv,cfact,'k')
+contour(x,y,lm,1,'k','LineWidth',1); 
+nn=256;  cmap=bluewhitered_miz(nn); colormap(cmap); %colormap(jet); 
+xlabel('longitude','FontSize',fsize);
+ylabel('latitude','FontSize',fsize); 
+set(gca,'FontSize',fsize); title(strcat(plev(k),'hPa winds (',seas(m),')'));
+visfig='off'; figpath='./fig_cre/'; vname='wind500';
+printit(visfig,figpath,expn,vname);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2022.03/'; 
+expn='c192L33_am4p0_amip_HIRESMIP_HX';
+fext='_global_opt0.c48_tsana_spearle_new_';
+period1='1951_2020'; 
+fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+load(fn); va=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/'; 
+expn0='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_';
+fext='_global_opt0.c48_tsana_spearle_new_';
+period1='1921_2100';  %period2='2019_2060'; 
+expn=sprintf('%s%02d',expn0,1);
+fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+load(fn); vb=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%load an AMIP run
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2022.03/'; 
+expn='c192L33_am4p0_amip_HIRESMIP_HX';
+fext='_global_opt0.c48_tsana_spearle_new_';
+period1='1951_2020'; 
+fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+load(fn); va=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%load SPEAR LE runs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/'; 
+expn0='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_';
+expn0='SPEAR_FA_c192_o1_Hist_AllForc_Scen_SSP585_IC1921_K50_ens_';
+fext='_global_opt0.c48_tsana_spearle_new_';
+period1='1979_2020';  %period2='2019_2060'; 
+expn=sprintf('%s%02d',expn0,1);
+fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+load(fn); o=v.s; o.imk=v.sfc.ice.tavg0;
+for i=1:1%30
+  expn=sprintf('%s%02d',expn0,i); 
+  fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+  load(fn);
+  vm(i).sst=v.tr.sst; vm(i).sst.mod=v.tr.tsurf.mod;
+  vm(i).tsurf=v.sfc.tsurf.ann;
+  %tsurf(i,:,:,:)=v.sfc.tsurf.ann;
+  %fn=strcat(tpath,expn,'/',expn,fext,period2,'.mat')
+  %load(fn); w(i).sst=v.sst; w(i).pcp=v.pcp;
+end
+fn=strcat('/work/miz/mat_hiresmip/spearle_sst_trend_vm.mat'); 
+save(fn,'vm','v','o','-v7.3'); 
+
+fn=strcat('/work/miz/mat_hiresmip/spearle_FA_sst_trend_vm.mat'); 
+save(fn,'vm','v','o','-v7.3'); 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn=strcat('/work/miz/mat_hiresmip/spearle_FA_sst_trend_vm.mat'); load(fn);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn=strcat('/work/miz/mat_hiresmip/spearle_FA_sst_trend_vm.mat'); load(fn);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+o=v.s; o.imk=v.sfc.ice.tavg0; o.land_th=0.1; o.ice_th=0.1;
+p.x1=0; p. x2=360; p.y1=-90; p.y2=90; p.xsize=1100; p.ysize=1000; 
+%p.x1=140; p. x2=270; p.y1=-10; p.y2=10; p.xsize=1100; p.ysize=1000; 
+p.mod_name="spear_historical"; p.color='w'; p.color1='c';
+p.do_norm=0; p.cmin=-0.3; p.cmax=0.3; p.vname="sst_trend"; 
+%p.do_norm=1; p.cmin=-1.5; p.cmax=1.5; p.vname="sst_trend_norm"; 
+[ts,ind]=plot_spearle_all_new(vm, o, p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%load SPEAR LE runs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/'; 
+expn0='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_';
+expn0='SPEAR_FA_c192_o1_Hist_AllForc_Scen_SSP585_IC1921_K50_ens_';
+fext='_global_opt0.c48_tsana_spearle_new_';
+period1='1979_2020';  %period2='2019_2060'; 
+expn=sprintf('%s%02d',expn0,1);
+fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+load(fn); o=v.s; o.imk=v.sfc.ice.tavg0;
+for i=1:1%30
+  expn=sprintf('%s%02d',expn0,i); 
+  fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+  load(fn);
+  vm(i).sst=v.tr.sst; vm(i).sst.mod=v.tr.tsurf.mod;
+  vm(i).tsurf=v.sfc.tsurf.ann;
+  %tsurf(i,:,:,:)=v.sfc.tsurf.ann;
+  %fn=strcat(tpath,expn,'/',expn,fext,period2,'.mat')
+  %load(fn); w(i).sst=v.sst; w(i).pcp=v.pcp;
+end
+fn=strcat('/work/miz/mat_hiresmip/spearle_sst_trend_vm.mat'); 
+save(fn,'vm','v','o','-v7.3'); 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%test plot
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v=va; xa=v.tr.tsurf.mod.xt;
+ya.ts  =v.sfc.tsurf.ts.org_ann; 
+ya.tref=v.sfc.tref.ts.org_ann;
+ya.sst =v.sfc.tsurf.ann_stat.mmen.ocean;
+ya.all =v.sfc.tsurf.ann_stat.mmen.all;
+figure;
+i1=find(xa==1979); i2=find(xa==2020); x=xa(i1:i2);
+y=ya.all(i1:i2); y=y-mean(y); c1=polyfit(x,y,1); plot(x,y); hold on;
+y=ya.sst(i1:i2); y=y-mean(y); c2=polyfit(x,y,1); plot(x,y,'r');
+
+pms=[ 0, 0, 1600, 1000]; row=1; col=1; lw=2;
+handle=figure('Position',pms,'visible','on');
+subplot(row,col,1);
+i=1; v=vm(i); xe=v.tr.tsurf.mod.xt;
+ym.ts  =v.sfc.tsurf.ts.org_ann; ye.ts  =ym.ts;
+ym.tref=v.sfc.tref.ts.org_ann;  ye.tref=ym.tref;
+plot(xe,ym.ts,  '-c', 'LineWidth',lw/2); hold on;
+plot(xe,ym.tref,'-m', 'LineWidth',lw/2); hold on;
+for i=2:30
+  v=vm(i);
+  ym.ts  =v.sfc.tsurf.ts.org_ann; ye.ts  =ye.ts  +ym.ts;
+  ym.tref=v.sfc.tref.ts.org_ann;  ye.tref=ye.tref+ym.tref;
+  plot(xe,ym.ts,  '-c', 'LineWidth',lw/2); hold on;
+  plot(xe,ym.tref,'-m', 'LineWidth',lw/2); hold on;
+end
+ye.ts  =ye.ts/30; ye.tref=ye.tref/30;
+plot(xa,ya.ts,  '-k*','LineWidth',lw); hold on;
+plot(xe,ye.ts,  '-bo','LineWidth',lw);
+plot(xa,ya.tref,'-k*','LineWidth',lw); hold on;
+plot(xe,ye.tref,'-bo','LineWidth',lw);
+
+figure;
+y=ya.ts;   plot(xa,y-mean(y),'r-*'); hold on;
+y=ya.tref; plot(xa,y-mean(y),'b-s'); hold on;
+
+
+y1=-1.6; y2=1.6;
+t=1979; plot([t t],[y1 y2],'k');
+t=2020; plot([t t],[y1 y2],'k');
+axis([1921 2100 y1 y2]);
+ia=1870; ib=2020; Y=[ia:ib]';
+i1=find(Y==y1); i2=find(Y==y2);
+figure;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%test plot
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+z=vm(1).tr.sst.hadisst; xo=z.xt;     yo    =-z.ind.wme; 
+z=vm(1).tr.slp.obs;     xo_slp=z.xt; yo_slp=z.ind.soi;
+z=va.tr.tsurf.mod;      xa=z.xt;     ya    =-z.ind.wme; 
+z=va.tr.slp.mod;        xa_slp=z.xt; ya_slp=z.ind.soi;
+z=vm(1).tr.slp.obs;     y1= v.tr.slp.obs.ind.soi;
+pms=[ 0, 0, 1600, 1000]; row=1; col=1; lw=2;
+handle=figure('Position',pms,'visible','on');
+subplot(row,col,1);
+i=1; z=vm(i).tr.tsurf.mod; y=-z.ind.wme; ye=y; xe=z.xt; y=y-mean(y);
+plot(xe,y,'-c', 'LineWidth',lw/2); hold on;
+for i=2:30
+  z=vm(i).tr.tsurf.mod; y=-z.ind.wme; ye=ye+y; y=y-mean(y); 
+  plot(xe,y,'-c', 'LineWidth',lw/2); hold on;
+end
+ye=ye/30;
+yo=yo-mean(yo); ya=ya-mean(ya); ye=ye-mean(ye);
+plot(xo,yo,'-k*','LineWidth',lw); hold on;
+plot(xa,ya,'-rs','LineWidth',lw);
+plot(xe,ye,'-bo','LineWidth',lw);
+y1=-1.6; y2=1.6;
+t=1979; plot([t t],[y1 y2],'k');
+t=2020; plot([t t],[y1 y2],'k');
+axis([1921 2100 y1 y2]);
+ia=1870; ib=2020; Y=[ia:ib]';
+i1=find(Y==y1); i2=find(Y==y2);
+figure;
+plot(x0,y0,'-b*','LineWidth',lw); hold on;
+plot(x2,y2,'-rs','LineWidth',lw); hold on;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+o=v.s; o.imk=v.sfc.ice.tavg0; o.land_th=0.1; o.ice_th=0.1;
+p.x1=0; p. x2=360; p.y1=-90; p.y2=90; p.xsize=1100; p.ysize=1000; 
+%p.x1=140; p. x2=270; p.y1=-10; p.y2=10; p.xsize=1100; p.ysize=1000; 
+p.mod_name="spear_historical"; p.color='w'; p.color1='c';
+p.do_norm=0; p.cmin=-0.3; p.cmax=0.3; p.vname="sst_trend"; 
+%p.do_norm=1; p.cmin=-1.5; p.cmax=1.5; p.vname="sst_trend_norm"; 
+[ts,ind]=plot_spearle_all(vm, o, p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c96.mat'); load(fn); o.mod='c96';
+
+t1=91; t2=t1+62-1;  sst=squeeze(mean(o.sfc.sst_1870_2020.all(t1:t2,6:8,:,:),2));
+a=heat_wave_us; hw_us=a(1:end-2);
+a=heat_wave_eu; hw_eu=a(1:end-2); hw_eu(isnan(hw_eu))=hw_eu(1);
+for i=1:288
+  for j=1:180
+    a=sst(:,j,i);
+    c=corrcoef(hw_us,a); r1(j,i)=c(1,2);
+    c=corrcoef(hw_eu,a); r2(j,i)=c(1,2);
+  end
+end
+lat=o.lat; lon=o.lon; lm=o.lm0;
+pms=[ 0, 0, 1600, 1000]; row=2; col=2; fsize=24; lw=2; 
+handle=figure('Position',pms,'visible','on');
+subplot(row,col,1); x=[1959:2020];
+plot(x,hw_us,'k-s'); title('Heatwave in US'); 
+subplot(row,col,2);
+plot(x,hw_eu,'k-s');  title('Heatwave in Europe'); 
+subplot(row,col,3); 
+pcolor(lon,lat,r1); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet);
+title('correlatioin between US heatwave and HadISST');
+subplot(row,col,4); c1=-0.5; c2=0.5;
+pcolor(lon,lat,r2); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet);
+title('correlatioin between Europe heatwave and HadISST');
+visfig='off'; figpath='./fig_cre/'; expn='obs'; vname='corr_heatwave_sst';
+printnew(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+tpath='/archive/Ming.Zhao/awg/2022.03/';
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
+p.yr1='1988'; p.yr2='2020'; p.myr=1; p.syr=1; p.nyr=33; p.y1=1988; p.y2=2020; 
+p.opt=1; p.do_trend=false; p.do_scalar=false; p.do_3d_atm=false;
+p.expn='c256r25L49'; v=tsana_spearle(o,tpath,p);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig 3 SWABS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+load('/archive/Ming.Zhao/awg/2022.03/c256r25L49/c256r25L49_global_opt1.tsana_new_1988_2020.mat');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='swabs'; unit='(C)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=v.s; s.latx=v.lat; s.lonx=v.lon; s.lmx=v.lm0;
+z1=squeeze(o.toa.swnet.sea(k,:,:)); s.s1='CERES-EBAF-ed4.1';
+z2=squeeze(v.toa.swnet.sea(k,:,:)); s.s2='Model';
+z3=z2-z1;                           s.s3='Model minus CERES';
+s.c1=25;    s.c2=410;  s.vbino=[s.c1:10:s.c2]; s.unit='(W/m2)';
+s.cmin=-60; s.cmax=60; s.vbin =[s.cmin:5:s.cmax];
+fpath='./fig_cre/'; expn='c256r25L49'; f=1; icmap=1;
+plot_3panel_mapp_new(s,z1,z2,z3,varn,fpath,expn,f,k,icmap);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='olr'; unit='(C)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=v.s; s.latx=v.lat; s.lonx=v.lon; s.lmx=v.lm0;
+z1=squeeze(o.toa.lwnet.sea(k,:,:)); s.s1='CERES-EBAF-ed4.1';
+z2=squeeze(v.toa.lwnet.sea(k,:,:)); s.s2='Model';
+z3=z2-z1;                           s.s3='Model minus CERES';
+s.c1=120;    s.c2=350;  s.vbino=[s.c1:10:s.c2]; s.unit='(W/m2)';
+s.cmin=-34; s.cmax=34; s.vbin =[s.cmin:5:s.cmax];
+fpath='./fig_cre/'; expn='c256r25L49'; f=1; icmap=1;
+plot_3panel_mapp_new(s,z1,z2,z3,varn,fpath,expn,f,k,icmap);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='netrad'; unit='(C)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=v.s; s.latx=v.lat; s.lonx=v.lon; s.lmx=v.lm0;
+z1=squeeze(o.toa.netrad.sea(k,:,:)); s.s1='CERES-EBAF-ed4.1';
+z2=squeeze(v.toa.netrad.sea(k,:,:)); s.s2='Model';
+z3=z2-z1;                           s.s3='Model minus CERES';
+s.c1=-180;    s.c2=120;  s.vbino=[s.c1:10:s.c2]; s.unit='(W/m2)';
+s.cmin=-60; s.cmax=60; s.vbin =[s.cmin:5:s.cmax];
+fpath='./fig_cre/'; expn='c256r25L49'; f=1; icmap=1;
+plot_3panel_mapp_new(s,z1,z2,z3,varn,fpath,expn,f,k,icmap);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/';
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192'; p.opt=0; 
+p.yr1='1951'; p.yr2='2020'; p.myr=1; p.syr=29; p.nyr=42; p.y1=1979; p.y2=2020; 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.expn='AM4_spear_C96_O1_hist_standard_nudged_wind';        v=tsana_spearle(o,tpath,p);
+p.expn='AM4_spear_C96_O1_hist_standard_nudged_wind1';       v=tsana_spearle(o,tpath,p);
+p.expn='AM4_spear_C96_O1_hist_standard_nudged_wind2';       v=tsana_spearle(o,tpath,p);
+p.expn='AM4_spear_C96_O1_hist_standard_nudged_sst_wind_m1'; v=tsana_spearle(o,tpath,p);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2022.03/';
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192'; 
+p.yr1='1951'; p.yr2='2020'; p.myr=1; p.syr=29; p.nyr=42; p.y1=1979; p.y2=2020; 
+p.yr1='1951'; p.yr2='2020'; p.myr=1; p.syr=51; p.nyr=20; p.y1=2001; p.y2=2020; 
+p.yr1='1951'; p.yr2='2020'; p.myr=1; p.syr=1;  p.nyr=70; p.y1=1951; p.y2=2020; 
+p.opt=2; p.do_trend=false; p.do_scalar=false; p.do_3d_atm=false;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.expn='c192L33_am4p0_amip_HIRESMIP_HX';                   v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_amip_HIRESMIP_HX_p2K';               v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_1951_2020'; v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_1day';      v=tsana_spearle(o,tpath,p);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2022.03/';
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192';
+p.yr1='0002'; p.yr2='0101'; p.myr=1; p.syr=1; p.nyr=100; p.y1=1979; p.y2=2020;
+p.opt=2; p.do_trend=false; p.do_scalar=false; p.do_3d_atm=false;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_p05';     v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo';                         v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020';         v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_old';                     v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_old_p4K';                 v=tsana_spearle(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_old_4xCO2';               v=tsana_spearle(o,tpath,p);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ph='/archive/Ming.Zhao/awg/2022.03/'; f='_global_opt2.c96tsana_new_1979_2020.mat';
+e='c192L33_am4p0_2010climo';                        n=strcat(ph,e,'/',e,f); load(n);v0=v;
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear';  n=strcat(ph,e,'/',e,f); load(n);v1=v;
+e='c192L33_am4p0_2010climo_trend_1979_2020';        n=strcat(ph,e,'/',e,f); load(n);v2=v;
+e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(ph,e,'/',e,f); load(n);v3=v;
+e='c192L33_am4p0_2010climo_trend_1979_2020_p05';    n=strcat(ph,e,'/',e,f); load(n);v4=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%t_surf%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.im=v0.sfc.ice.tavg0; 
+aa=s.aa; id=(p.lm>0|p.im>0); a=aa(~id); aa0=a/mean(a);
+a=v0.sfc.tsurf.tavg0; a0=mean(mean(a(~id).*aa0)); z0=a; 
+a=v1.sfc.tsurf.tavg0; a1=mean(mean(a(~id).*aa0)); z1=a;
+a=v2.sfc.tsurf.tavg0; a2=mean(mean(a(~id).*aa0)); z2=a;
+a=v3.sfc.tsurf.tavg0; a3=mean(mean(a(~id).*aa0)); z3=a;
+a=v4.sfc.tsurf.tavg0; a4=mean(mean(a(~id).*aa0)); z4=a;
+p.vname='tsfc'; p.xy=[0 360 -90 90]; p.c='b'; p.nn=256; p.expn='WP';p.optit=0;
+p.c1=[-3 3]; p.c2=p.c1; p.c3=p.c1; p.c4=p.c1; p.c5=p.c1; p.c6=p.c1;
+p.aa=aa; p.id=id;
+p.z1=z1-z0; p.z2=z2-z0; p.z3=z3-z0; p.z4=z4-z0; p.z5=z2-z1; p.z6=z2-z3;
+p.z1_avg=a1-a0;
+p.z2_avg=a2-a0;
+p.z3_avg=a3-a0;
+p.z4_avg=a4-a0;
+p.z5_avg=a2-a1;
+p.z6_avg=a2-a3;
+p.s1='(a) WP-mod minus CTL'; 
+p.s2='(b) WP-obs0 minus CTL';
+p.s3='(c) WP-obs1 minus CTL';
+p.s4='(d) WP-obs2 minus CTL';
+p.s5='(e) WP-mod  minus WP-obs0';
+p.s6='(f) WP-mod  minus WP-obs1';
+plot_2d_6panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%t_ref%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.im=v0.sfc.ice.tavg0; 
+aa=s.aa; id=(p.lm<0|p.im<0); a=aa(~id); aa0=a/mean(a);
+a=v0.sfc.tref.tavg0; a0=mean(mean(a(~id).*aa0)); z0=a; 
+a=v1.sfc.tref.tavg0; a1=mean(mean(a(~id).*aa0)); z1=a;
+a=v2.sfc.tref.tavg0; a2=mean(mean(a(~id).*aa0)); z2=a;
+a=v3.sfc.tref.tavg0; a3=mean(mean(a(~id).*aa0)); z3=a;
+a=v4.sfc.tref.tavg0; a4=mean(mean(a(~id).*aa0)); z4=a;
+p.vname='tref'; p.xy=[0 360 -90 90]; p.opt=4; p.cm=4
+p.c='b'; p.nn=256; p.expn='WP';p.optit=0;
+p.c1=[-3 3]; p.c2=p.c1; p.c3=p.c1; p.c4=p.c1; p.c5=p.c1; p.c6=p.c1;
+p.aa=aa; p.id=id;
+p.z1=z1-z0; p.z2=z2-z0; p.z3=z3-z0; p.z4=z4-z0; p.z5=z2-z1; p.z6=z2-z3;
+p.z1_avg=a1-a0;
+p.z2_avg=a2-a0;
+p.z3_avg=a3-a0;
+p.z4_avg=a4-a0;
+p.z5_avg=a2-a1;
+p.z6_avg=a2-a3;
+p.s1='(a) WP-mod minus CTL'; 
+p.s2='(b) WP-obs0 minus CTL';
+p.s3='(c) WP-obs1 minus CTL';
+p.s4='(d) WP-obs2 minus CTL';
+p.s5='(e) WP-mod  minus WP-obs0';
+p.s6='(f) WP-mod  minus WP-obs1';
+plot_2d_6panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%pcp%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.im=v0.sfc.ice.tavg0; 
+aa=s.aa; id=(p.lm<0|p.im<0); a=aa(~id); aa0=a/mean(a);
+a=v0.sfc.pcp.tavg0; a0=mean(mean(a(~id).*aa0)); z0=a; 
+a=v1.sfc.pcp.tavg0; a1=mean(mean(a(~id).*aa0)); z1=a;
+a=v2.sfc.pcp.tavg0; a2=mean(mean(a(~id).*aa0)); z2=a;
+a=v3.sfc.pcp.tavg0; a3=mean(mean(a(~id).*aa0)); z3=a;
+a=v4.sfc.pcp.tavg0; a4=mean(mean(a(~id).*aa0)); z4=a;
+p.vname='pcp'; p.xy=[0 360 -90 90]; p.opt=5; p.cm=4
+p.c='b'; p.nn=256; p.expn='WP';p.optit=0;
+p.c1=[-4 4]; p.c2=p.c1; p.c3=p.c1; p.c4=p.c1; p.c5=p.c1; p.c6=p.c1;
+p.aa=aa; p.id=id;
+p.z1=z1-z0; p.z2=z2-z0; p.z3=z3-z0; p.z4=z4-z0; p.z5=z2-z1; p.z6=z2-z3;
+p.z1_avg=a1-a0;
+p.z2_avg=a2-a0;
+p.z3_avg=a3-a0;
+p.z4_avg=a4-a0;
+p.z5_avg=a2-a1;
+p.z6_avg=a2-a3;
+p.s1='(a) WP-mod minus CTL'; 
+p.s2='(b) WP-obs0 minus CTL';
+p.s3='(c) WP-obs1 minus CTL';
+p.s4='(d) WP-obs2 minus CTL';
+p.s5='(e) WP-mod  minus WP-obs0';
+p.s6='(f) WP-mod  minus WP-obs1'; 
+plot_2d_6panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%lwcf%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.im=v0.sfc.ice.tavg0; 
+aa=s.aa; id=(p.lm<0|p.im<0); a=aa(~id); aa0=a/mean(a);
+a=v0.toa.lwcf.tavg0; a0=mean(mean(a(~id).*aa0)); z0=a; 
+a=v1.toa.lwcf.tavg0; a1=mean(mean(a(~id).*aa0)); z1=a;
+a=v2.toa.lwcf.tavg0; a2=mean(mean(a(~id).*aa0)); z2=a;
+a=v3.toa.lwcf.tavg0; a3=mean(mean(a(~id).*aa0)); z3=a;
+a=v4.toa.lwcf.tavg0; a4=mean(mean(a(~id).*aa0)); z4=a;
+p.vname='lwcf'; p.xy=[0 360 -90 90]; p.opt=5; p.cm=4
+p.c='b'; p.nn=256; p.expn='WP';p.optit=0;
+p.c1=[-4 4]; p.c2=p.c1; p.c3=p.c1; p.c4=p.c1; p.c5=p.c1; p.c6=p.c1;
+p.aa=aa; p.id=id;
+p.z1=z1-z0; p.z2=z2-z0; p.z3=z3-z0; p.z4=z4-z0; p.z5=z2-z1; p.z6=z2-z3;
+p.z1_avg=a1-a0;
+p.z2_avg=a2-a0;
+p.z3_avg=a3-a0;
+p.z4_avg=a4-a0;
+p.z5_avg=a2-a1;
+p.z6_avg=a2-a3;
+p.s1='(a) WP-mod minus CTL'; 
+p.s2='(b) WP-obs0 minus CTL';
+p.s3='(c) WP-obs1 minus CTL';
+p.s4='(d) WP-obs2 minus CTL';
+p.s5='(e) WP-mod  minus WP-obs0';
+p.s6='(f) WP-mod  minus WP-obs1'; 
+plot_2d_6panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%swcf%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.im=v0.sfc.ice.tavg0; 
+aa=s.aa; id=(p.lm<0|p.im<0); a=aa(~id); aa0=a/mean(a);
+a=v0.toa.swcf.tavg0; a0=mean(mean(a(~id).*aa0)); z0=a; 
+a=v1.toa.swcf.tavg0; a1=mean(mean(a(~id).*aa0)); z1=a;
+a=v2.toa.swcf.tavg0; a2=mean(mean(a(~id).*aa0)); z2=a;
+a=v3.toa.swcf.tavg0; a3=mean(mean(a(~id).*aa0)); z3=a;
+a=v4.toa.swcf.tavg0; a4=mean(mean(a(~id).*aa0)); z4=a;
+p.vname='swcf'; p.xy=[0 360 -90 90]; p.opt=5; p.cm=4
+p.c='b'; p.nn=256; p.expn='WP';p.optit=0;
+p.c1=[-4 4]; p.c2=p.c1; p.c3=p.c1; p.c4=p.c1; p.c5=p.c1; p.c6=p.c1;
+p.aa=aa; p.id=id;
+p.z1=z1-z0; p.z2=z2-z0; p.z3=z3-z0; p.z4=z4-z0; p.z5=z2-z1; p.z6=z2-z3;
+p.z1_avg=a1-a0;
+p.z2_avg=a2-a0;
+p.z3_avg=a3-a0;
+p.z4_avg=a4-a0;
+p.z5_avg=a2-a1;
+p.z6_avg=a2-a3;
+p.s1='(a) WP-mod minus CTL'; 
+p.s2='(b) WP-obs0 minus CTL';
+p.s3='(c) WP-obs1 minus CTL';
+p.s4='(d) WP-obs2 minus CTL';
+p.s5='(e) WP-mod  minus WP-obs0';
+p.s6='(f) WP-mod  minus WP-obs1'; 
+plot_2d_6panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; lat=s.lat; lon=s.lon; lm=s.lm0; im=v0.sfc.ice.tavg0; aa=s.aa; c1=-2; c2=2;
+id=(lm>0|im>0); a=aa(~id); aa0=a/mean(a);
+pms=[ 0, 0, 1200, 900]*1.5; row=3; col=2; fsize=24; lw=2; 
+handle=figure('Position',pms,'visible','on');
+subplot(row,col,1); a=z1-z0; a(id)=NaN;
+pcolor(lon,lat,a); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet);
+a1=mean(mean(a(~id).*aa0)); s1=sprintf('%5.3f',a1);
+title(strcat('(a) WPobs0 minus CTL (',s1,'K)'));
+
+subplot(row,col,2); a=z2-z0; a(id)=NaN;
+pcolor(lon,lat,a); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet); 
+a2=mean(mean(a(~id).*aa0)); s2=sprintf('%5.3f',a2);
+title(strcat('(b) WPmod minus CTL (',s2,'K)'));
+
+subplot(row,col,3); a=z3-z0; a(id)=NaN;
+pcolor(lon,lat,a); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet);
+a3=mean(mean(a(~id).*aa0)); s3=sprintf('%5.3f',a3);
+title(strcat('(c) WPobs1 minus CTL (',s3,'K)'));
+%s3=sprintf('%5.3f',a2-a1);
+%title(strcat('(c) (b) minus (a) (',s3,'K)'));
+
+subplot(row,col,4); a=z4-z0; a(id)=NaN; 
+pcolor(lon,lat,a); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet);
+a4=mean(mean(a(~id).*aa0)); s4=sprintf('%5.3f',a4);
+title(strcat('(d) WPobs2 minus CTL (',s4,'K)'));
+%a4=mean(mean(a(~id).*aa0)); s4=sprintf('%5.3f',a4);
+%title(strcat('(d) (b)/avg(b) minus (a)/avg(b) (',s4,'K)'));
+
+subplot(row,col,5); a=(z2-z0)/a2-(z1-z0)/a1; a=z2-z3; a(id)=NaN;
+pcolor(lon,lat,a); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet);
+a5=mean(mean(a(~id).*aa0)); s5=sprintf('%5.3f',a5);
+title(strcat('(e) (b)/avg(b) minus (a)/avg(a) (',s5,'K)'));
+
+subplot(row,col,6); a=(z2-z0)/a2-(z3-z0)/a3; a(id)=NaN;
+pcolor(lon,lat,a); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet);
+a6=mean(mean(a(~id).*aa0)); s6=sprintf('%5.3f',a6);
+title(strcat('(f) (b)/avg(b) minus (c)/avg(c) (',s6,'K)'));
+
+cmap=bluewhitered_miz(256); colormap(cmap);
+visfig='off'; figpath='./fig_cre/'; expn='sstp';
+printnew(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ph='/archive/Ming.Zhao/awg/2022.03/'; f='_global_opt2.tsana_new_1951_2020.mat';
+e='c192L33_am4p0_amip_HIRESMIP_HX';     n=strcat(ph,e,'/',e,f); load(n);v0=v;
+e='c192L33_am4p0_amip_HIRESMIP_HX_p2K'; n=strcat(ph,e,'/',e,f); load(n);w0=v;
+mean(w0.sfc.tref.ts.org_ann-v0.sfc.tref.ts.org_ann)
+mean(w0.toa.lwcf.ts.org_ann-v0.toa.lwcf.ts.org_ann)/2.27
+mean(w0.toa.swcf.ts.org_ann-v0.toa.swcf.ts.org_ann)/2.27
+mean(w0.toa.ttcf.ts.org_ann-v0.toa.ttcf.ts.org_ann)/2.27
+-mean(w0.toa.lwnet.ts.org_ann -v0.toa.lwnet.ts.org_ann)/2.27
+mean(w0.toa.swnet.ts.org_ann -v0.toa.swnet.ts.org_ann)/2.27
+-mean(w0.toa.lwnet_clr.ts.org_ann -v0.toa.lwnet_clr.ts.org_ann)/2.27
+mean(w0.toa.swnet.ts.org_ann -v0.toa.swnet.ts.org_ann)/2.27
+mean(w0.toa.netrad.ts.org_ann-v0.toa.netrad.ts.org_ann)/2.27
+mean(w0.atm.wvp.ts.org_ann-v0.atm.wvp.ts.org_ann)/mean(v0.atm.wvp.ts.org_ann)/2.27
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+mean(v0.sfc.tref.ts.org_ann-v0.sfc.tref.ts.org_ann)
+mean(v0.toa.lwcf.ts.org_ann)-mean(o.toa.lwcf.ts.ann)
+mean(v0.toa.swcf.ts.org_ann-v0.toa.swcf.ts.org_ann)/2.27
+mean(v0.toa.ttcf.ts.org_ann-v0.toa.ttcf.ts.org_ann)/2.27
+mean(v0.toa.lwnet.ts.org_ann -v0.toa.lwnet.ts.org_ann)/2.27
+mean(v0.toa.swnet.ts.org_ann -v0.toa.swnet.ts.org_ann)/2.27
+mean(v0.toa.netrad.ts.org_ann-v0.toa.netrad.ts.org_ann)/2.27
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ph='/archive/Ming.Zhao/awg/2022.03/'; f='_global_opt2.tsana_new_2001_2020.mat';
+e='c192L33_am4p0_amip_HIRESMIP_HX';     n=strcat(ph,e,'/',e,f); load(n);v0=v;
+e='c192L33_am4p0_amip_HIRESMIP_HX_p2K'; n=strcat(ph,e,'/',e,f); load(n);w0=v;
+figure; pcolor(v2.sfc.tsurf.tavg0-v1.sfc.tsurf.tavg0); shading flat; 
+colormap(jet); colorbar; caxis([-1.5 1.5]);
+figure; pcolor(v3.sfc.tsurf.tavg0-v1.sfc.tsurf.tavg0); shading flat; 
+colormap(jet); colorbar; caxis([-1.5 1.5]);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Surface temperature
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+p.z1=v0.sfc.tsurf.tavg0; p.tsf1=mean(mean(p.z1.*p.aa));
+p.z2=v1.sfc.tsurf.tavg0; p.tsf2=mean(mean(p.z2.*p.aa)); p.dtsf2=p.tsf2-p.tsf1;
+p.z3=v2.sfc.tsurf.tavg0; p.tsf3=mean(mean(p.z3.*p.aa)); p.dtsf3=p.tsf3-p.tsf1;
+p.z2=p.z2-p.z1;
+p.z3=p.z3-p.z1;
+p.z4=p.z3-p.z2;
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[270 302]; p.c2=[-2 2]; p.c3=p.c2; p.c4=p.c2;
+p.xy=[0 360 -90 90]; %p.xy=[180 360 0 90]; 
+p.c='k'; p.opt=0; p.expn='pattern'; p.vname='tsf';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Surface air temperature
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+p.z1=v0.sfc.tref.tavg0; p.tas1=mean(mean(p.z1.*p.aa));
+p.z2=v1.sfc.tref.tavg0; p.tas2=mean(mean(p.z2.*p.aa)); p.dtas2=p.tas2-p.tas1;
+p.z3=v2.sfc.tref.tavg0; p.tas3=mean(mean(p.z3.*p.aa)); p.dtas3=p.tas3-p.tas1;
+p.z2=p.z2-p.z1;
+p.z3=p.z3-p.z1;
+p.z4=p.z3-p.z2;        
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[270 302]; p.c2=[-2 2]; p.c3=p.c2; p.c4=p.c2;
+p.xy=[0 360 -90 90]; %p.xy=[180 360 0 90]; 
+p.c='k'; p.opt=0; p.expn='pattern'; p.vname='tref';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TOA NETRAD
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+p.z1=v0.toa.netrad.tavg0;  
+p.z2=(v1.toa.netrad.tavg0-p.z1)/p.dtas2; 
+p.z3=(v2.toa.netrad.tavg0-p.z1)/p.dtas3; 
+p.z4=p.z3-p.z2;           
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[-80 80]; p.c2=[-10 10]; p.c3=p.c2; p.c4=p.c2; p.optit=3;
+p.xy=[0 360 -90 90]; %p.xy=[180 360 0 90]; 
+p.c='k'; p.opt=0; p.expn='pattern'; p.vname='netrad';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TOA TTCF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+p.z1=v0.toa.ttcf.tavg0;  
+p.z2=(v1.toa.ttcf.tavg0-p.z1)/p.dtas2; 
+p.z3=(v2.toa.ttcf.tavg0-p.z1)/p.dtas3; 
+p.z4=p.z3-p.z2;           
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[-80 80]; p.c2=[-10 10]; p.c3=p.c2; p.c4=p.c2; p.optit=3;
+p.xy=[0 360 -90 90]; %p.xy=[180 360 0 90]; 
+p.c='k'; p.opt=0; p.expn='pattern'; p.vname='ttcf';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TOA SWCF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+p.z1=v0.toa.swcf.tavg0;  
+p.z2=(v1.toa.swcf.tavg0-p.z1)/p.dtas2; 
+p.z3=(v2.toa.swcf.tavg0-p.z1)/p.dtas3; 
+p.z4=p.z3-p.z2;           
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[-80 80]; p.c2=[-10 10]; p.c3=p.c2; p.c4=p.c2; p.optit=3;
+p.xy=[0 360 -90 90]; %p.xy=[180 360 0 90]; 
+p.c='k'; p.opt=0; p.expn='pattern'; p.vname='swcf';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TOA LWCF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+p.z1=v0.toa.lwcf.tavg0;  
+p.z2=(v1.toa.lwcf.tavg0-p.z1)/p.dtas2; 
+p.z3=(v2.toa.lwcf.tavg0-p.z1)/p.dtas3; 
+p.z4=p.z3-p.z2;           
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[-80 80]; p.c2=[-10 10]; p.c3=p.c2; p.c4=p.c2; p.optit=3;
+p.xy=[0 360 -90 90]; %p.xy=[180 360 0 90]; 
+p.c='k'; p.opt=0; p.expn='pattern'; p.vname='lwcf';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TOA clear-sky radiation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+p.z1=v0.toa.netrad_clr.tavg0;  
+p.z2=(v1.toa.netrad_clr.tavg0-p.z1)/p.dtas2; 
+p.z3=(v2.toa.netrad_clr.tavg0-p.z1)/p.dtas3; 
+p.z4=p.z3-p.z2;           
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[-80 80]; p.c2=[-10 10]; p.c3=p.c2; p.c4=p.c2; p.optit=3;
+p.xy=[0 360 -90 90]; %p.xy=[180 360 0 90]; 
+p.c='k'; p.opt=0; p.expn='pattern'; p.vname='netrad-clr';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Surface precipitation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+p.z1=v0.sfc.pcp.tavg0;    
+p.z2=(v1.sfc.pcp.tavg0-p.z1)/p.dtas2; 
+p.z3=(v2.sfc.pcp.tavg0-p.z1)/p.dtas3; 
+p.z4=p.z3-p.z2;           
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[0 12]; p.c2=[-0.5 0.5]; p.c3=p.c2; p.c4=p.c2; p.optit=0;
+p.xy=[0 360 -90 90]; p.xy=[200 300 20 60]; 
+p.c='k'; p.opt=0; p.expn='pattern'; p.vname='precip';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Surface precipitation DJF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s=v0.s; p.y=s.lat; p.x=s.lon; p.lm=s.lm0; p.aa=s.aa; p.id=~isnan(p.aa);
+i=1; p.vname='precip-ann';
+i=2; p.vname='precip-djf';
+i=3; p.vname='precip-mam';
+i=4; p.vname='precip-jja';
+i=5; p.vname='precip-son';
+p.z1=squeeze(v0.sfc.pcp.sea(i,:,:));
+p.z2=squeeze(v1.sfc.pcp.sea(i,:,:));
+p.z3=squeeze(v2.sfc.pcp.sea(i,:,:));
+p.z2=(p.z2-p.z1)/p.dtas2;
+p.z3=(p.z3-p.z1)/p.dtas3; p.z4=p.z3-p.z2;
+p.s1='CNTL'; p.s2='P1 minus CNTL'; p.s3='P2 minus CNTL'; p.s4='P2 minus P1';
+p.c1=[0 12]; p.c2=[-0.5 0.5]; p.c3=p.c2; p.c4=p.c2; p.optit=0;
+p.xy=[0 360 -90 90]; p.xy=[200 300 20 60]; 
+p.c='k'; p.opt=0; p.expn='pattern';
+plot_2d_4panel_new(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+z1=v.skt_mod_1979_2020.trend; c1=-0.5; c2=0.5; vname='tsurf';
+z2=v.skt_obs_1979_2020.trend;
+pms=[ 0, 0, 500, 1000]*1; row=3; col=1; fsize=24; lw=2; 
+handle=figure('Position',pms,'visible','on');
+lat=o.lat; lon=o.lon; lm=s.lm0;
+subplot(row,col,1); 
+pcolor(lon,lat,z1); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet); 
+title(strcat('Model (',vname,' unit:K/dec)'));
+subplot(row,col,2);
+pcolor(lon,lat,z2); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet); 
+title(strcat('ERA5 (',vname,')'));
+subplot(row,col,3);
+pcolor(lon,lat,z1-z2); shading flat; caxis([c1 c2]); hold on;
+contour(lon,lat,lm,1,'k'); colorbar; colormap(jet);
+title(strcat('Model minus ERA5 (',vname,')'));
+visfig='off'; figpath='./fig_cre/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%do CM4 runs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/'; 
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192'; p.opt=0; 
+p.yr1='1850'; p.yr2='2099'; p.myr=1;
+p.syr=130; p.nyr=42; p.y1=1979; p.y2=2020; 
+p.expn='CM4_historical_ssp585'; v0=tsana_spearle(o,tpath,p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/'; 
+expn0='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_';
+fext='_global_opt0.tsana_new_';
+period1='1979_2020';  period2='2019_2060'; 
+for i=1:30
+  expn=sprintf('%s%02d',expn0,i); 
+  fn=strcat(tpath,expn,'/',expn,fext,period1,'.mat')
+  load(fn); c(i).sst=v.sst; c(i).pcp=v.pcp;
+  fn=strcat(tpath,expn,'/',expn,fext,period2,'.mat')
+  load(fn); w(i).sst=v.sst; w(i).pcp=v.pcp;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%load cm4 results%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath1='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/CM4_historical_ssp585/';
+expn1='CM4_historical_ssp585_global_opt0.tsana_new_1979_2020.mat';
+fn=strcat(tpath1,expn1); load(fn); cm4=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%load spear nudged runs%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p='/archive/Ming.Zhao/am4_spear/'; f='_global_opt0.tsana_new_1979_2020.mat';
+e='AM4_spear_C96_O1_hist_standard_nudged_wind'; n=strcat(p,e,'/',e,f);load(n);ng1=v;
+e='AM4_spear_C96_O1_hist_standard_nudged_wind1';n=strcat(p,e,'/',e,f);load(n);ng2=v;
+e='AM4_spear_C96_O1_hist_standard_nudged_wind2';n=strcat(p,e,'/',e,f);load(n);ng3=v;
+e='AM4_spear_C96_O1_hist_standard_nudged_sst_wind_m1';n=strcat(p,e,'/',e,f);load(n);ng4=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for t=1:42
+  for i=1:30;
+    ts=c(i).sst.mod.ts; z1(i,t,:,:)=ts.ssta_ann(t,:,:)+ts.ts_sst_omean_ann(t);
+    ts=w(i).sst.mod.ts; z2(i,t,:,:)=ts.ssta_ann(t,:,:)+ts.ts_sst_omean_ann(t);
+    ts=c(i).sst.obs.ts; z3(i,t,:,:)=ts.ssta_ann(t,:,:)+ts.ts_sst_omean_ann(t);
+  end
+end
+z1a=squeeze(mean(z1,1)); 
+z2a=squeeze(mean(z2,1)); 
+z3a=squeeze(mean(z3,1));
+xt=[1979:2020]'; alpha=0.8; clear v;
+a=z1a; v.sst_mod_1979_2020=get_trend_TSR(o,a,xt,alpha);
+a=z2a; v.sst_mod_2019_2060=get_trend_TSR(o,a,xt,alpha);
+a=z3a; v.sst_obs_1979_2020=get_trend_TSR(o,a,xt,alpha);
+%fn=strcat('/work/miz/mat_hiresmip/spearle_sst_trend.mat'); 
+%fn='./spearle_sst_trend.mat'; save(fn,'v');
+
+figure; y0=sst_obs_1979_2020.trend; pcolor(y0); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+figure; y1=cm4.sst.mod.trend;       pcolor(y1); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+figure; y2=sst_mod_1979_2020.trend; pcolor(y2); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+figure; y3=ng1.sst.mod.trend;       pcolor(y3); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+figure; y4=ng2.sst.mod.trend;       pcolor(y4); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+figure; y5=ng3.sst.mod.trend;       pcolor(y5); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+
+figure; y3=sst_mod_2019_2060.trend; pcolor(y3); shading flat; colorbar; colormap(jet); caxis([-0.6 0.6]); 
+
+figure; yx=y1-y0; pcolor(yx); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+figure; yx=y2-y0; pcolor(yx); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+
+figure; pcolor(sst_mod_1979_2020.trend); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+figure; pcolor(sst_mod_2019_2060.trend); shading flat; colorbar; colormap(jet); caxis([-0.6 0.6]); 
+figure; pcolor(sst_obs_1979_2020.trend); shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+figure; 
+pcolor(sst_mod_1979_2020.trend-sst_obs_1979_2020.trend); 
+shading flat; colorbar; colormap(jet); caxis([-0.3 0.3]); 
+
+
+for i=1:30;
+  y1(i,:)=c(i).sst.mod.ts.ts_sst_omean_ann; 
+  y2(i,:)=w(i).sst.mod.ts.ts_sst_omean_ann;
+  y3(i,:)=c(i).sst.obs.ts.ts_sst_omean_ann;
+end
+x=[1979:2020];
+y1a=mean(y1,1); y1a=y1a-mean(y1a); 
+y2a=mean(y2,1); y2a=y2a-mean(y2a); 
+y3a=mean(y3,1); y3a=y3a-mean(y3a); 
+figure; 
+plot(x,y1a,'b'); hold on; plot(x,y2a,'r'); plot(x,y3a,'k');
+
+ figure; plot(y1-mean(y1),'b'); hold on; plot(y2-mean(y2),'r'); ...
+      plot(y3-mean(y3),'k');
+  end
+
+
+fn=strcat(tpath,expn,'/',expn,fext); load(fn);v0=v;
+expn='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_01';fn=strcat(tpath,expn,'/',expn,fext); load(fn);v3=v;
+expn='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_02';fn=strcat(tpath,expn,'/',expn,fext); load(fn);v4=v;
+expn='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_03';fn=strcat(tpath,expn,'/',expn,fext); load(fn);v5=v;
+
+tpath='/archive/Ming.Zhao/am4_spear/';
+yr1='1921'; yr2='2100'; myr=1; opt=0; syr=1; nyr=180; mod='c192';
+expn='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_01';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=1870; t2=2020; alpha=0.8; Y=[t1:t2]'; m1=1; m2=12;
+y1=1979; y2=2020; t1=find(Y==y1); t2=find(Y==y2); xt=Y(t1:t2);
+a=mean(o.sfc.sst_1870_2020.all(t1:t2,m1:m2,:,:),2); a=squeeze(a);
+o.sst_1979_2020=get_trend_TSR(o,a,xt,alpha);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%s.lat=o.lat; s.lon=o.lon; s.lm0=o.lm0; s.aa=o.aa; o.s=s;
+%o.time=[1979:2020]; o.nyr=length(o.time); o.expn='pcp_mswep_1979_2020'
+%i1=110; o.sfc.ts_all  =o.sfc.sst_1870_2020.all (i1:i1+41,:,:,:);
+%i1=110; o.sfc.ice_all =o.sfc.sst_1870_2020.all (i1:i1+41,:,:,:);
+%i1=1;   o.sfc.pcp_all =o.sfc.pcp_mswep.all     (i1:i1+41,:,:,:) ;
+%i1=21;  o.sfc.slp_all =o.sfc.slp_1959_2021.all (i1:i1+41,:,:,:);
+%i1=21;  o.sfc.z500_all=o.sfc.z500_1959_2021.all(i1:i1+41,:,:,:);
+%vo.mswep_1979_2020=do_trend(o,1979,2020,'obs');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%fn=strcat('/work/miz/mat_cm4/obs_',region,'_to_c48.mat');load(fn);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/'; myr=1; opt=0;
+expn='AM4_spear_C96_O1_hist_standard_nudged_wind';yr1='1951';yr2='2019';syr=1;nyr=69;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+expn='AM4_spear_C96_O1_hist_standard_nudged_wind1';yr1='1951';yr2='2019';syr=1;nyr=69;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+expn='AM4_spear_C96_O1_hist_standard_nudged_wind2';yr1='1951';yr2='2019';syr=1;nyr=69;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+
+%test...
+tpath='/archive/Ming.Zhao/am4_spear/'; myr=1; opt=0; fext='_global_opt0.tsana_new.mat';
+expn='AM4_spear_C96_O1_hist_standard_nudged_wind';  fn=strcat(tpath,expn,'/',expn,fext); load(fn);v0=v;
+expn='AM4_spear_C96_O1_hist_standard_nudged_wind1'; fn=strcat(tpath,expn,'/',expn,fext); load(fn);v1=v;
+expn='AM4_spear_C96_O1_hist_standard_nudged_wind2'; fn=strcat(tpath,expn,'/',expn,fext); load(fn);v2=v;
+expn='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_01';fn=strcat(tpath,expn,'/',expn,fext); load(fn);v3=v;
+expn='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_02';fn=strcat(tpath,expn,'/',expn,fext); load(fn);v4=v;
+expn='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_03';fn=strcat(tpath,expn,'/',expn,fext); load(fn);v5=v;
+
+figure; 
+t1=1951-1870+1; t2=t1+69; zo=o.sfc.tref.ts.org_ann (t1:t2); plot(zo); hold on;
+t1=1951-1951+1; t2=t1+68; z1=v0.sfc.tref.ts.org_ann(t1:t2); plot(z0-mean(z0),'r'); hold on;
+t1=1951-1921+1; t2=t1+68; z3=v3.sfc.tref.ts.org_ann(t1:t2); plot(z3-mean(z3),'b');
+
+
+zo=o.sst_1979_2020.trend;
+z0=v0.sst_1979_2020.trend;
+z3=v3.sst_1979_2020.trend;
+figure; pcolor(zo); colorbar; shading flat; caxis([-0.5 0.5]); colormap(jet);
+figure; pcolor(z0); colorbar; shading flat; caxis([-0.5 0.5]); colormap(jet);
+figure; pcolor(z0-zo); colorbar; shading flat; caxis([-0.5 0.5]); colormap(jet);
+
+figure; pcolor(v3.s.lon,v3.s.lat,v0.sst_1979_2020.trend); colorbar; shading flat; caxis([-0.5 0.5]); colormap(jet);
+rectangle('Position',[270 -10 10 10]);
+
+t1=142;t2=151; a=squeeze(o.sfc.sst_1870_2020.all(t1:t2,:,:,:)); z0=squeeze(mean(mean(a,1),2));
+t1=60; t2=69;  a=squeeze(v0.sfc.tsurf.all       (t1:t2,:,:,:)); z1=squeeze(mean(mean(a,1),2));
+t1=90; t2=99;  a=squeeze(v3.sfc.tsurf.all       (t1:t2,:,:,:)); z3=squeeze(mean(mean(a,1),2));
+
+figure; pcolor(z0); colorbar; shading flat; caxis([285 305]); colormap(jet);
+figure; pcolor(z1); colorbar; shading flat; caxis([285 305]); colormap(jet);
+figure; pcolor(z1-z0); colorbar; shading flat; caxis([-3 3]); colormap(jet);
+figure; pcolor(z3-z0); colorbar; shading flat; caxis([-3 3]); colormap(jet);
+
+figure; pcolor(z1-z3); colorbar; shading flat; caxis([-3 3]); colormap(jet);
+
+figure; 
+t1=1951-1870+1; t2=t1+69; zo=o.sfc.tref.ts.org_ann (t1:t2); plot(zo); hold on;
+
+figure;
+t1=1951-1951+1; t2=t1+68; z1=v0.sfc.tref.ts.org_ann(t1:t2); plot(z0-mean(z0),'r'); hold on;
+t1=1951-1921+1; t2=t1+68; z3=v3.sfc.tref.ts.org_ann(t1:t2); plot(z3-mean(z3),'b');
+
+figure;
+figure; 
+plot(o.sst_1979_2020.nino34.sst); hold on;
+plot(v0.sst_1979_2020.nino34.sst,'r');
+
+%end of test...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2022.03/'; myr=1; opt=3;
+expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_skip_bot_v6'; yr1='1951';yr2='2020';syr=1;nyr=70;mod='c192';%1951-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_HX'; yr1='1951';yr2='2020';syr=1;nyr=70;mod='c192';%1951-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_HX_p2K'; yr1='1951';yr2='2020';syr=1;nyr=70;mod='c192';%1951-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_HX_p2K'; yr1='1951';yr2='2020';syr=1;nyr=70;mod='c192';%1951-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_1day'; yr1='1951';yr2='2020';syr=1;nyr=70;mod='c192';%1951-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_1day_p2K'; yr1='1951';yr2='2020';syr=1;nyr=70;mod='c192';%1951-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_1day_4xCO2'; yr1='1951';yr2='2020';syr=1;nyr=70;mod='c192';%1951-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/warsaw_201803/'; myr=1; opt=0;
+expn='c192L33_am4p0_EXT_resolution1_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_EXT_resolution2_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_EXT_resolution3_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_EXT_resolution4_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_EXT_resolution5_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_EXT_resolution6_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+
+expn='c192L33_am4p0_amip_HIRESMIP_H3_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_H2_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_H1_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+tpath='/archive/Ming.Zhao/awg/warsaw_201803/'; myr=1; opt=0;
+expn='c192L33_am4p0_amip_HIRESMIP_H5_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_H7_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_H8_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_H9_newpp'; yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_H10_newpp';yr1='1949';yr2='2020';syr=1;nyr=72;mod='c192';%1949-2020
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_01';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_02';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_03';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_04';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_05';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_06';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_07';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_08';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_09';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_10';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_11';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_12';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_13';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_14';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_15';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_16';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_17';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_18';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_19';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='SPEAR_c192_o1_Scen_SSP585_IC2011_K50_ens_20';yr1='2011';yr2='2100';syr=1;nyr=90;mod='c192';%1920-2010period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+
+
+tpath='/archive/Ming.Zhao/awg/warsaw_201710/'; myr=1; opt=0;
+expn='c192L33_am4p0_amip_HIRESMIP_H8';yr1='1949';yr2='2020';syr=2;nyr=71;mod='c192';%1950-2014period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+tpath='/archive/Ming.Zhao/awg/warsaw_201803/'; myr=1; opt=0;
+expn='c192L33_am4p0_amip_HIRESMIP_H8_newpp';yr1='1950';yr2='2020';syr=1;nyr=71;mod='c192';%1950-2014period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+expn='CM4_c192L33_am4p0_1950Control_new';yr1='0001';yr2='0155';syr=1;nyr=155;mod='c192';
+v2=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+expn='CM4_c192L33_am4p0_1950Control_new_hist0';yr1='1950';yr2='2014';syr=1;nyr=65;mod='c192';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+expn='c192L33_am4p0_amip_HIRESMIP_future_ssp585';yr1='2015';yr2='2050';syr=1;nyr=36;mod='c192';%2015-2050period
+v6=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+expn='CM4_c192L33_am4p0_1950Control_new';yr1='0001';yr2='0155';syr=1;nyr=155;mod='c192';%1950-2014period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/'; myr=5; opt=10;
+expn='CM4_Scenario_ssp585';yr1='2015';yr2='2099';syr=1;nyr=36;mod='c96';%1870-2014period
+v5=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/'; myr=5; opt=10;
+expn='CM4_amip';yr1='1870';yr2='2014';syr=1;nyr=145;mod='c96';%1870-2014period
+v2=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+expn='CM4_historical';yr1='1850';yr2='2014';syr=101;nyr=65;mod='c96';
+v3=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_c192L33_am4p0_1950Control_new_hist0';yr1='1950';yr2='2014';syr=1;nyr=65;mod='c192';
+v1=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+figure; 
+v=v0; plot(v.time,v.atm.scalar.solarc,'r*-'); hold on; 
+v=v1; plot(v.time,v.atm.scalar.solarc,'bs-'); hold on; 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/'; myr=5; opt=1;
+expn='AM4_spear_C96_O1_1850cntl_standard';yr1='0001';yr2='0200';syr=1;nyr=200;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='AM4_spear_C96_O1_1850cntl_standard_4xCO2';yr1='0001';yr2='0200';syr=1;nyr=200;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/'; myr=5; opt=1;
+expn='SPEAR_c96_o1_Control_1850_E50';yr1='0001';yr2='0200';syr=1;nyr=200;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_Scenario_ssp585';yr1='2015';yr2='2099';syr=1;nyr=85;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+expn='ESM4_piControl_D';yr1='0001';yr2='0890';syr=1;nyr=300;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='ESM4_abrupt-4xCO2_D1';yr1='0001';yr2='0395';syr=1;nyr=300;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='ESM4_historical_D1';yr1='1850';yr2='2014';syr=1;nyr=165;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/am4_spear/'; myr=5; opt=1;
+expn='SPEAR_c96_o1_Control_1850_E50';yr1='0001';yr2='0200';syr=1;nyr=200;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='AM4_spear_C96_O1_1850cntl_4xCO2';yr1='0001';yr2='0200';syr=1;nyr=200;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='AM4_spear_C96_O1_1850cntl';yr1='0001';yr2='0200';syr=1;nyr=200;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/'; myr=5; opt=2;
+expn='CM4_c192L33_am4p0_1950Control_new_hist02';yr1='1950';yr2='2014';syr=1;nyr=65;mod='c192';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_future_ssp585';yr1='2015';yr2='2050';syr=1;nyr=35;mod='c192';%1950-2014period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='c192L33_am4p0_amip_HIRESMIP_H5';yr1='1950';yr2='2014';syr=1;nyr=65;mod='c192';%1950-2014period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_c192L33_am4p0_1950Control_new';yr1='0001';yr2='0155';syr=1;nyr=155;mod='c192';%1950-2014period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_c192L33_am4p0_1950Control_new_4xCO2';yr1='0001';yr2='0170';syr=1;nyr=170;mod='c192';%1950-2014period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/'; myr=5; opt=2;
+expn='ESM4_amip_D1';yr1='1980';yr2='2014';syr=11;nyr=20;mod='c96';%1990-2009period
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='ESM4_amip-p4K';yr1='1990';yr2='2009';syr=1;nyr=20;mod='c96';%1990-2009period
+v1=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+
+tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/'; myr=5; opt=1;
+expn='CM4_amip';yr1='1870';yr2='2014';syr=1;nyr=145;mod='c96';%1870-2014period
+v1=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_historical';yr1='1850';yr2='2014';syr=1;nyr=165;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_historical2';yr1='1850';yr2='2014';syr=1;nyr=165;mod='c96';opt=1;
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_historical3';yr1='1850';yr2='2014';syr=1;nyr=165;mod='c96';opt=1;
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_piControl_C';yr1='0001';yr2='0650';syr=1;nyr=500;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_abrupt4xCO2_C';yr1='0001';yr2='0150';syr=1;nyr=150;mod='c96';
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+expn='CM4_1pctCO2_C';yr1='0001';yr2='0150';syr=1;nyr=150;mod='c96';opt=1;
+v0=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Load previous anlaysis matfiles%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%fn=strcat('/work/miz/mat_cm4/obs_global_to_c48.mat'); load(fn);
+fn=strcat('/work/miz/mat_hiresmip/obs_global_to_c48.mat'); load(fn);
+pp='/'; region='global'; dr=strcat('_',region,'_opt0.tsana_new.mat'); 
+tpath='/archive/Ming.Zhao/awg/2022.03/';
+expn='c192L33_am4p0_amip_HIRESMIP_HX'; fn=strcat(tpath,expn,'/',expn,dr);load(fn);am4.v0=v;
+expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_1day'; fn=strcat(tpath,expn,'/',expn,dr);load(fn);am4.v1=v;
+expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_skip_bot_v6'; fn=strcat(tpath,expn,'/',expn,dr);load(fn);am4.v2=v;
+
+
+fn=strcat('/work/miz/mat_hiresmip/obs_global_to_c48.mat'); load(fn);
+pp='/'; region='global'; dr=strcat('_',region,'_tsana.mat'); 
+tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/';
+tpath='/work/miz/mat_hiresmip/';
+expn='c192L33_am4p0_amip_HIRESMIP_H5';            fn=strcat(tpath,expn,dr);load(fn);AM4h.h0=v;
+expn='c192L33_am4p0_amip_HIRESMIP_future_ssp585'; fn=strcat(tpath,expn,dr);load(fn);AM4h.w0=v;
+expn='CM4_c192L33_am4p0_1950Control_new';         fn=strcat(tpath,expn,dr);load(fn);CM4h.c0=v;
+expn='CM4_c192L33_am4p0_1950Control_new_4xCO2';   fn=strcat(tpath,expn,dr);load(fn);CM4h.w0=v;
+expn='CM4_c192L33_am4p0_1950Control_new_hist0';   fn=strcat(tpath,expn,dr);load(fn);CM4h.h1=v;
+expn='CM4_c192L33_am4p0_1950Control_new_hist02';  fn=strcat(tpath,expn,dr);load(fn);CM4h.h2=v;
+
+expn='CM4_amip';           fn=strcat(tpath,expn,dr);load(fn);AM4.h0=v;
+expn='CM4_historical';     fn=strcat(tpath,expn,dr);load(fn);CM4.h1=v;
+expn='CM4_historical2';    fn=strcat(tpath,expn,dr);load(fn);CM4.h2=v;
+expn='CM4_historical3';    fn=strcat(tpath,expn,dr);load(fn);CM4.h3=v;
+expn='CM4_piControl_C';    fn=strcat(tpath,expn,dr);load(fn);CM4.c0=v;
+expn='CM4_abrupt4xCO2_C';  fn=strcat(tpath,expn,dr);load(fn);CM4.w0=v;
+expn='CM4_1pctCO2_C';      fn=strcat(tpath,expn,dr);load(fn);CM4.p0=v;
+expn='CM4_Scenario_ssp585';fn=strcat(tpath,expn,dr);load(fn);CM4.w1=v;
+
+expn='AM4_spear_C96_O1_1850cntl';       fn=strcat(tpath,expn,dr);load(fn);SP4.c0=v;
+expn='AM4_spear_C96_O1_1850cntl_4xCO2'; fn=strcat(tpath,expn,dr);load(fn);SP4.w0=v;
+
+expn='ESM4_historical_D1';   fn=strcat(tpath,expn,dr);load(fn);ESM4.h0=v;
+expn='ESM4_piControl_D';     fn=strcat(tpath,expn,dr);load(fn);ESM4.c0=v;
+expn='ESM4_abrupt-4xCO2_D1'; fn=strcat(tpath,expn,dr);load(fn);ESM4.w0=v;
+
+expn='AM2.1';                fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.v0=v;
+expn='AM3';                  fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.v0=v;
+expn='c96L33_am4p0';         fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.v0=v;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%climsen analysis%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn=strcat('/work/miz/mat_hiresmip/obs_global_to_c48.mat'); load(fn);
+pp='/'; region='global'; dr=strcat('_',region,'_tsana.mat'); 
+tpath='/work/miz/mat_hiresmip/';
+expn='CM4_piControl_C';                 fn=strcat(tpath,expn,dr);load(fn);CM4.c0=v;
+expn='CM4_abrupt4xCO2_C';               fn=strcat(tpath,expn,dr);load(fn);CM4.w0=v;
+expn='ESM4_piControl_D';                fn=strcat(tpath,expn,dr);load(fn);ESM4.c0=v;
+expn='ESM4_abrupt-4xCO2_D1';            fn=strcat(tpath,expn,dr);load(fn);ESM4.w0=v;
+expn='AM4_spear_C96_O1_1850cntl';       fn=strcat(tpath,expn,dr);load(fn);SP4.c0=v;
+expn='AM4_spear_C96_O1_1850cntl_4xCO2'; fn=strcat(tpath,expn,dr);load(fn);SP4.w0=v;
+dr=strcat('_',region,'_opt1.tsana.mat'); 
+expn='AM4_spear_C96_O1_1850cntl_standard';       fn=strcat(tpath,expn,dr);load(fn);SP1.c0=v;
+expn='AM4_spear_C96_O1_1850cntl_standard_4xCO2'; fn=strcat(tpath,expn,dr);load(fn);SP1.w0=v;
+
+%expn='CM4_c192L33_am4p0_1950Control_new';      fn=strcat(tpath,expn,dr);load(fn);CM4h.c0=v;
+%expn='CM4_c192L33_am4p0_1950Control_new_4xCO2';fn=strcat(tpath,expn,dr);load(fn);CM4h.w0=v;
+dr=strcat('_',region,'_opt1.tsana.mat'); 
+expn='ESM4_amip_D1';                    fn=strcat(tpath,expn,dr);load(fn);a41.c0=v;
+expn='ESM4_amip-p4K';                   fn=strcat(tpath,expn,dr);load(fn);a41.w0=v;
+tpath='/archive/Ming.Zhao/awg/warsaw/'; dr=strcat('_',region,'_tsana.mat'); 
+expn='c96L33_am4p0_2010climo';          fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.c0=v;
+expn='c96L33_am4p0_2010climo_p2K';      fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.w0=v;
+expn='c96L33_am4p0_2010climo_2xCO2';    fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.g0=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 1: global mean surface air temperature %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='tref_ann_ts'; s=CM4.c0.s; xy=[1700 2200 285 292];
+c1=CM4.c0.sfc.tref.ts.org_ann;  t1=[1700:1700+500-1];
+w1=CM4.w0.sfc.tref.ts.org_ann;  x1=[1851:2000];
+c2=SP4.c0.sfc.tref.ts.org_ann;  t2=[1800:1800+200-1];
+w2=SP4.w0.sfc.tref.ts.org_ann;  x2=[1851:1851+200-1];
+c3=ESM4.c0.sfc.tref.ts.org_ann; t3=[1850:1850+300-1];
+w3=ESM4.w0.sfc.tref.ts.org_ann; x3=[1850:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1; fsize=24; lw=2; ;
+handle=figure('Position',pms,'visible','on');
+plot(t1,c1, 'b-',  'LineWidth',lw); hold on; 
+plot(x1,w1, 'r-',  'LineWidth',lw); hold on; 
+plot(t2,c2, 'c-',  'LineWidth',lw); hold on; 
+plot(x2,w2, 'm-',  'LineWidth',lw); hold on; 
+plot(t3,c3, 'k-',  'LineWidth',lw); hold on; 
+plot(x3,w3, 'g-',  'LineWidth',lw); hold on; 
+legend('CM4-CNTL','CM4-4xCO2','SPEAR-CNTL','SPEAR-4xCO2','ESM4-CNTL','ESM4-4xCO2',2);
+xlabel('year','FontSize',fsize); grid on;
+ylabel('global mean surface air temperature (K)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis(xy);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 2: global mean TOA net radiative flux %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='netradtoa_ann_ts'; s=CM4.c0.s; xy=[1700 2200 -2 8];
+c1=CM4.c0.toa.netrad.ts.org_ann;  t1=[1700:1700+500-1];
+w1=CM4.w0.toa.netrad.ts.org_ann;  x1=[1851:2000];
+c2=SP4.c0.toa.netrad.ts.org_ann;  t2=[1800:1800+200-1];
+w2=SP4.w0.toa.netrad.ts.org_ann;  x2=[1851:1851+200-1];
+c3=ESM4.c0.toa.netrad.ts.org_ann; t3=[1850:1850+300-1];
+w3=ESM4.w0.toa.netrad.ts.org_ann; x3=[1850:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1; fsize=24; lw=2; ;
+handle=figure('Position',pms,'visible','on');
+plot(t1,c1, 'b-',  'LineWidth',lw); hold on; 
+plot(x1,w1, 'r-',  'LineWidth',lw); hold on; 
+plot(t2,c2, 'c-',  'LineWidth',lw); hold on; 
+plot(x2,w2, 'm-',  'LineWidth',lw); hold on; 
+plot(t3,c3, 'k-',  'LineWidth',lw); hold on; 
+plot(x3,w3, 'g-',  'LineWidth',lw); hold on; 
+legend('CM4-CNTL','CM4-4xCO2','SPEAR-CNTL','SPEAR-4xCO2','ESM4-CNTL','ESM4-4xCO2',2);
+xlabel('year','FontSize',fsize); grid on;
+ylabel('global mean TOA net radiative flux (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis(xy);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 3: dTs and dN 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_dnetradtoa_ts';%ann_stat contain 5-year annual mean
+c1=CM4.c0.sfc.tref.ann_stat.mmen.all;    c1_avg=mean(c1(30:50));%CM4-CNTL:150-250yr
+w1=CM4.w0.sfc.tref.ann_stat.mmen.all;    dT1=w1(1:30)-c1_avg;   %CM4-4xCO2:1-150yr
+c2=SP4.c0.sfc.tref.ann_stat.mmen.all;    c2_avg=mean(c2(10:30));%SP4-CNTL:50-150yr
+w2=SP4.w0.sfc.tref.ann_stat.mmen.all;    dT2=w2(1:40)-c2_avg;   %SP4-4xCO2:1-150yr
+c3=ESM4.c0.sfc.tref.ann_stat.mmen.all;   c3_avg=mean(c3(1:20)); %ESM4-CNTL:1-100yr
+w3=ESM4.w0.sfc.tref.ann_stat.mmen.all;   dT3=w3(1:60)-c3_avg;   %ESM4-4xCO2:1-150
+C1=CM4.c0.toa.netrad.ann_stat.mmen.all;  C1_avg=mean(C1(30:50));
+W1=CM4.w0.toa.netrad.ann_stat.mmen.all;  dN1=W1(1:30)-C1_avg;
+C2=SP4.c0.toa.netrad.ann_stat.mmen.all;  C2_avg=mean(C2(10:30));
+W2=SP4.w0.toa.netrad.ann_stat.mmen.all;  dN2=W2(1:40)-C2_avg;
+C3=ESM4.c0.toa.netrad.ann_stat.mmen.all; C3_avg=mean(C3(1:20));
+W3=ESM4.w0.toa.netrad.ann_stat.mmen.all; dN3=W3(1:60)-C3_avg;
+C1s=CM4.c0.sfc.netflx.ann_stat.mmen.all;  C1s_avg=mean(C1s(30:50));
+W1s=CM4.w0.sfc.netflx.ann_stat.mmen.all;  dN1s=W1s(1:30)-C1s_avg;
+C2s=SP4.c0.sfc.netflx.ann_stat.mmen.all;  C2s_avg=mean(C2s(10:30));
+W2s=SP4.w0.sfc.netflx.ann_stat.mmen.all;  dN2s=W2s(1:40)-C2s_avg;
+C3s=ESM4.c0.sfc.netflx.ann_stat.mmen.all; C3s_avg=mean(C3s(1:20));
+W3s=ESM4.w0.sfc.netflx.ann_stat.mmen.all; dN3s=W3s(1:60)-C3s_avg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1; fsize=24; msize=16; lw=3;
+handle=figure('Position',pms,'visible','on');
+ax1=gca;
+x=[2.5:5:150]; line(x,dT1,'Color','r','LineWidth',lw); hold on;
+x=[2.5:5:200]; line(x,dT2,'Color','b','LineWidth',lw); hold on;
+x=[2.5:5:300]; line(x,dT3,'Color','k','LineWidth',lw); hold on;
+legend('CM4 (150yr)','SPEAR (200yr)','ESM4 (300yr)',1);grid on;
+axis([0 300 1.5 6]); set(gca,'FontSize',fsize);
+xl='year';          xlabel(xl,'FontSize',fsize); 
+yl='\Delta Ts (K)'; ylabel(yl,'FontSize',fsize);
+ax2 = axes('Position',get(ax1,'Position'),...
+	   'XAxisLocation','bottom','YAxisLocation','right',...
+	   'Color','none','XColor','k','YColor','r');
+x=[2.5:5:150]; line(x,dN1,'Color','r','LineWidth',lw); hold on;
+x=[2.5:5:200]; line(x,dN2,'Color','b','LineWidth',lw); hold on;
+x=[2.5:5:300]; line(x,dN3,'Color','k','LineWidth',lw); hold on;
+x=[2.5:5:150]; line(x,dN1s,'Color','r','LineWidth',lw/3); hold on;
+x=[2.5:5:200]; line(x,dN2s,'Color','b','LineWidth',lw/3); hold on;
+x=[2.5:5:300]; line(x,dN3s,'Color','k','LineWidth',lw/3); hold on;
+%legend('CM4 (1-50-150yr)','SPEAR (1-50-200yr)','ESM4 (1-50-300yr)',1);
+yl='\Delta NETRADTOA (W/m2)'; ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize); axis([0 300 0.5 5.5]);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 4: Gregory plot dN vs dTs for ECS using annual mean
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='greg_netradtoa_ts_ann';%ann_stat contain 5-year annual mean
+c1=CM4.c0.sfc.tref.ts.org_ann;    c1_avg=mean(c1(150:250));%CM4-CNTL:150-250yr
+w1=CM4.w0.sfc.tref.ts.org_ann;    dT1=w1(1:150)-c1_avg;   %CM4-4xCO2:1-150yr
+c2=SP4.c0.sfc.tref.ts.org_ann;    c2_avg=mean(c2(50:150));%SP4-CNTL:50-150yr
+w2=SP4.w0.sfc.tref.ts.org_ann;    dT2=w2(1:150)-c2_avg;   %SP4-4xCO2:1-150yr
+c3=ESM4.c0.sfc.tref.ts.org_ann;   c3_avg=mean(c3(1:100)); %ESM4-CNTL:1-100yr
+w3=ESM4.w0.sfc.tref.ts.org_ann;   dT3=w3(1:150)-c3_avg;   %ESM4-4xCO2:1-150
+C1=CM4.c0.toa.netrad.ts.org_ann;  C1_avg=mean(C1(150:250));
+W1=CM4.w0.toa.netrad.ts.org_ann;  dN1=W1(1:150)-C1_avg;
+C2=SP4.c0.toa.netrad.ts.org_ann;  C2_avg=mean(C2(50:150));
+W2=SP4.w0.toa.netrad.ts.org_ann;  dN2=W2(1:150)-C2_avg;
+C3=ESM4.c0.toa.netrad.ts.org_ann; C3_avg=mean(C3(1:100));
+W3=ESM4.w0.toa.netrad.ts.org_ann; dN3=W3(1:150)-C3_avg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=1;  t2=150; CM4.g =getcorrslop(dT1(t1:t2),dN1(t1:t2));
+t1=1;  t2=150; SP4.g =getcorrslop(dT2(t1:t2),dN2(t1:t2));
+t1=1;  t2=150; ESM4.g=getcorrslop(dT3(t1:t2),dN3(t1:t2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 900, 700]*1; fsize=24; msize=16; lw=2;
+handle=figure('Position',pms,'visible','on');
+plot(dT1,dN1, 'r.','MarkerSize',msize); hold on; 
+plot(dT2,dN2, 'b.','MarkerSize',msize); hold on; 
+plot(dT3,dN3, 'k.','MarkerSize',msize); hold on; 
+v=CM4.g;  plot(v.xb,v.yb,'r-', 'LineWidth',lw);
+v=SP4.g;  plot(v.xb,v.yb,'b-', 'LineWidth',lw);
+v=ESM4.g; plot(v.xb,v.yb,'k-', 'LineWidth',lw);
+plot([0 20],[0 0],'k-');
+legend('CM4 (1-150yr)','SPEAR (1-150yr)','ESM4 (1-150yr)',1);
+xlabel('global surface air temperature anomaly (K)','FontSize',fsize); 
+ylabel('TOA net radiative flux anomaly (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([0 10 0 8.5]);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 4: Gregory plot dN vs dTs for ECS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='greg_netradtoa_ts';%ann_stat contain 5-year annual mean
+c1=CM4.c0.sfc.tref.ann_stat.mmen.all;    c1_avg=mean(c1(30:50));%CM4-CNTL:150-250yr
+w1=CM4.w0.sfc.tref.ann_stat.mmen.all;    dT1=w1(1:30)-c1_avg;   %CM4-4xCO2:1-150yr
+c2=SP4.c0.sfc.tref.ann_stat.mmen.all;    c2_avg=mean(c2(10:30));%SP4-CNTL:50-150yr
+w2=SP4.w0.sfc.tref.ann_stat.mmen.all;    dT2=w2(1:40)-c2_avg;   %SP4-4xCO2:1-150yr
+c3=ESM4.c0.sfc.tref.ann_stat.mmen.all;   c3_avg=mean(c3(1:20)); %ESM4-CNTL:1-100yr
+w3=ESM4.w0.sfc.tref.ann_stat.mmen.all;   dT3=w3(1:60)-c3_avg;   %ESM4-4xCO2:1-150
+C1=CM4.c0.toa.netrad.ann_stat.mmen.all;  C1_avg=mean(C1(30:50));
+W1=CM4.w0.toa.netrad.ann_stat.mmen.all;  dN1=W1(1:30)-C1_avg;
+C2=SP4.c0.toa.netrad.ann_stat.mmen.all;  C2_avg=mean(C2(10:30));
+W2=SP4.w0.toa.netrad.ann_stat.mmen.all;  dN2=W2(1:40)-C2_avg;
+C3=ESM4.c0.toa.netrad.ann_stat.mmen.all; C3_avg=mean(C3(1:20));
+W3=ESM4.w0.toa.netrad.ann_stat.mmen.all; dN3=W3(1:60)-C3_avg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=1;  t2=10; x1 =getcorrslop(dT1(t1:t2),dN1(t1:t2));
+t1=11; t2=30; xx1=getcorrslop(dT1(t1:t2),dN1(t1:t2));
+t1=1;  t2=10; x2 =getcorrslop(dT2(t1:t2),dN2(t1:t2));
+t1=11; t2=40; xx2=getcorrslop(dT2(t1:t2),dN2(t1:t2));
+t1=1;  t2=10; x3 =getcorrslop(dT3(t1:t2),dN3(t1:t2));
+t1=11; t2=60; xx3=getcorrslop(dT3(t1:t2),dN3(t1:t2));
+t1=1;  t2=30;xxx1=getcorrslop(dT1(t1:t2),dN1(t1:t2));
+t1=1;  t2=30;xxx2=getcorrslop(dT2(t1:t2),dN2(t1:t2));
+t1=1;  t2=30;xxx3=getcorrslop(dT3(t1:t2),dN3(t1:t2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 900, 700]*1; fsize=24; msize=16; lw=2;
+handle=figure('Position',pms,'visible','on');
+plot(dT1,dN1, 'r.','MarkerSize',msize); hold on; 
+plot(dT2,dN2, 'b.','MarkerSize',msize); hold on; 
+plot(dT3,dN3, 'k.','MarkerSize',msize); hold on; 
+v=x1;  plot(v.xa,v.ya,'r:','LineWidth',lw);
+v=xx1; plot(v.xb,v.yb,'r-', 'LineWidth',lw);
+v=x2;  plot(v.xa,v.ya,'b:','LineWidth',lw);
+v=xx2; plot(v.xb,v.yb,'b-', 'LineWidth',lw);
+v=x3;  plot(v.xa,v.ya,'k:','LineWidth',lw);
+v=xx3; plot(v.xb,v.yb,'k-', 'LineWidth',lw);
+plot([0 20],[0 0],'k-');
+legend('CM4 (1-50-150yr)','SPEAR (1-50-200yr)','ESM4 (1-50-300yr)',1);
+xlabel('global surface air temperature anomaly (K)','FontSize',fsize); 
+ylabel('TOA net radiative flux anomaly (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([0 10 0 8.5]);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 4.5: dTs and dN 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_dnetradtoa_ts';%ann_stat contain 5-year annual mean
+c1=CM4.c0.sfc.tref.ts.org_ann;    c1_avg=mean(c1(150:250));%CM4-CNTL:150-250yr
+w1=CM4.w0.sfc.tref.ts.org_ann;    dT1=w1(1:150)-c1_avg;   %CM4-4xCO2:1-150yr
+c2=SP4.c0.sfc.tref.ts.org_ann;    c2_avg=mean(c2(50:150));%SP4-CNTL:50-150yr
+w2=SP4.w0.sfc.tref.ts.org_ann;    dT2=w2(1:150)-c2_avg;   %SP4-4xCO2:1-150yr
+c3=ESM4.c0.sfc.tref.ts.org_ann;   c3_avg=mean(c3(1:100)); %ESM4-CNTL:1-100yr
+w3=ESM4.w0.sfc.tref.ts.org_ann;   dT3=w3(1:150)-c3_avg;   %ESM4-4xCO2:1-150
+C1=CM4.c0.toa.netrad.ts.org_ann;  C1_avg=mean(C1(150:250));
+W1=CM4.w0.toa.netrad.ts.org_ann;  dN1=W1(1:150)-C1_avg;
+C2=SP4.c0.toa.netrad.ts.org_ann;  C2_avg=mean(C2(50:150));
+W2=SP4.w0.toa.netrad.ts.org_ann;  dN2=W2(1:150)-C2_avg;
+C3=ESM4.c0.toa.netrad.ts.org_ann; C3_avg=mean(C3(1:100));
+W3=ESM4.w0.toa.netrad.ts.org_ann; dN3=W3(1:150)-C3_avg;
+C1s=CM4.c0.sfc.netflx.ts.org_ann;  C1s_avg=mean(C1s(150:250));
+W1s=CM4.w0.sfc.netflx.ts.org_ann;  dN1s=W1s(1:150)-C1s_avg;
+C2s=SP4.c0.sfc.netflx.ts.org_ann;  C2s_avg=mean(C2s(50:150));
+W2s=SP4.w0.sfc.netflx.ts.org_ann;  dN2s=W2s(1:150)-C2s_avg;
+C3s=ESM4.c0.sfc.netflx.ts.org_ann; C3s_avg=mean(C3s(1:100));
+W3s=ESM4.w0.sfc.netflx.ts.org_ann; dN3s=W3s(1:150)-C3s_avg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure; plot(dN1s-dN1,'r'); hold on; plot(dN2s-dN2,'b'); plot(dN3s-dN3,'k');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=1;  t2=150; CM4.g =getcorrslop(dT1(t1:t2),dN1(t1:t2));
+t1=1;  t2=150; SP4.g =getcorrslop(dT2(t1:t2),dN2(t1:t2));
+t1=1;  t2=150; ESM4.g=getcorrslop(dT3(t1:t2),dN3(t1:t2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1; fsize=24; msize=16; lw=3;
+handle=figure('Position',pms,'visible','on');
+ax1=gca;
+x=[1:1:150]; line(x,(dN1-CM4.g.F) ./dT1,'Color','r','LineWidth',lw); hold on;
+x=[1:1:150]; line(x,(dN2-SP4.g.F) ./dT2,'Color','b','LineWidth',lw); hold on;
+x=[1:1:150]; line(x,(dN3-ESM4.g.F)./dT3,'Color','k','LineWidth',lw); hold on;
+legend('CM4','SPEAR','ESM4',1);grid on;
+axis([0 150 1.5 6]); set(gca,'FontSize',fsize);
+xl='year';          xlabel(xl,'FontSize',fsize); 
+yl='\Delta Ts (K)'; ylabel(yl,'FontSize',fsize);
+ax2 = axes('Position',get(ax1,'Position'),...
+	   'XAxisLocation','bottom','YAxisLocation','right',...
+	   'Color','none','XColor','k','YColor','r');
+x=[2.5:5:150]; line(x,dN1,'Color','r','LineWidth',lw); hold on;
+x=[2.5:5:200]; line(x,dN2,'Color','b','LineWidth',lw); hold on;
+x=[2.5:5:300]; line(x,dN3,'Color','k','LineWidth',lw); hold on;
+x=[2.5:5:150]; line(x,dN1s,'Color','r','LineWidth',lw/3); hold on;
+x=[2.5:5:200]; line(x,dN2s,'Color','b','LineWidth',lw/3); hold on;
+x=[2.5:5:300]; line(x,dN3s,'Color','k','LineWidth',lw/3); hold on;
+%legend('CM4 (1-50-150yr)','SPEAR (1-50-200yr)','ESM4 (1-50-300yr)',1);
+yl='\Delta NETRADTOA (W/m2)'; ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize); axis([0 300 0.5 5.5]);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: surface air temperature map%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_map_org_150'; t1=130; t2=150; s=CM4.c0.s; lat=s.lat; lon=s.lon; lm=s.lm0; aa=s.aa;
+[d c1 w1 g1 c2 w2 c3 w3 c4 w4 c5 w5]=get_tref(am4,CM4,SP4,ESM4,a41,aa,t1,t2);
+cmin=0; cmax=15; vbin=[cmin:0.2:cmax]; d1=-6;d2=6; vbin1=[d1:0.1:d2];
+pms=[ 0, 0, 750, 1200]*1; fsize=16; row=3; col=1;
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=w2-c2;
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+s=sprintf('(a) CM4 TAS; 4xCO2 - CNTL = %5.2f K',d.T2); title(s,'FontSize',fsize);
+subplot(row,col,2); a=w3-c3;
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+s=sprintf('(b) SPEAR TAS; 4xCO2 - CNTL = %5.2f K',d.T3); title(s,'FontSize',fsize);
+subplot(row,col,3); a=w4-c4;
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+s=sprintf('(c) ESM4 TAS; 4xCO2 - CNTL = %5.2f K',d.T4); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: surface air temperature map%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_map_dif_150'; t1=130; t2=150; s=CM4.c0.s; lat=s.lat; lon=s.lon; lm=s.lm0; aa=s.aa;
+[d c1 w1 g1 c2 w2 c3 w3 c4 w4 c5 w5]=get_tref(am4,CM4,SP4,ESM4,a41,aa,t1,t2);
+cmin=0; cmax=15; vbin=[cmin:0.2:cmax]; d1=-6;d2=6; vbin1=[d1:0.1:d2];
+pms=[ 0, 0, 750, 800]*1; fsize=16; row=2; col=1;
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=(w3-c3)-(w2-c2); b=(wav3-cav3)-(wav2-cav2);
+contourf(lon,lat,a,vbin1); hold on; shading flat; colorbar; caxis([d1 d2]/2);
+contour(lon,lat,lm,1,'r'); %rectangle('Position',[260 -30 20 30]); %rectangle('Position',[150 -15 20 30]); 
+s=sprintf('SPEAR minus CM4; global mean = %5.2f K',d.T3-d.T2); title(s,'FontSize',fsize);
+subplot(row,col,2); a=(w4-c4)-(w2-c2); b=(wav4-cav4)-(wav2-cav2);
+contourf(lon,lat,a,vbin1); hold on; shading flat; colorbar; caxis([d1 d2]/2);
+contour(lon,lat,lm,1,'r'); %rectangle('Position',[260 -30 20 30]); %rectangle('Position',[150 -15 20 30]); 
+s=sprintf('ESM4 minus CM4; global mean = %5.2f K',d.T4-d.T2); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: surface air temperature map%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_map_rel_dif_150'; t1=130; t2=150; s=CM4.c0.s; lat=s.lat; lon=s.lon; lm=s.lm0; aa=s.aa;
+[d c1 w1 g1 c2 w2 c3 w3 c4 w4 c5 w5]=get_tref(am4,CM4,SP4,ESM4,a41,aa,t1,t2);
+d1=-0.5;d2=0.5; vbin=[d1:0.01:d2];
+pms=[ 0, 0, 750, 800]*1; fsize=16; row=2; col=1;
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=(w3-c3)/d.T3-(w2-c2)/d.T2; b=mean(mean(a.*aa));
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([d1 d2]/2);
+contour(lon,lat,lm,1,'r'); %rectangle('Position',[260 -30 20 30]); %rectangle('Position',[150 -15 20 30]); 
+[C,h]=contour(lon,lat,c3,[298:1:300]); clabel(C,h);
+s=sprintf('SPEAR minus CM4 (relative); global mean = %5.2f K',b); title(s,'FontSize',fsize);
+subplot(row,col,2); a=(w4-c4)/d.T4-(w2-c2)/d.T2; b=mean(mean(a.*aa));
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([d1 d2]/2);
+contour(lon,lat,lm,1,'r'); %rectangle('Position',[260 -30 20 30]); %rectangle('Position',[150 -15 20 30]);
+[C,h]=contour(lon,lat,c3,[298:1:300]); clabel(C,h);
+s=sprintf('ESM4 minus CM4 (relative); global mean = %5.2f K',b); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: PDF of warming pattern %%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_pdf_dif_150'; s=CM4.c0.s; lat=s.lat; lon=s.lon; r.lm=s.lm0;r.aa=s.aa;
+r.latlon=[0 360 -30 30];
+lat1=r.latlon(3); lat2=r.latlon(4); lon1=r.latlon(1); lon2=r.latlon(2);
+r.ys=min(find(lat(:)>=lat1)); r.ye=max(find(lat(:)<= lat2));
+r.xs=min(find(lon(:)>=lon1)); r.xe=max(find(lon(:)<= lon2));
+a=am4.c0.sfc.tref.all (:      ,:,:,:); c1=squeeze(mean(a,1));
+a=am4.w0.sfc.tref.all (:      ,:,:,:); w1=squeeze(mean(a,1));dT1=get_trop_stat(c1,w1,r);
+a=am4.g0.sfc.tref.all (:      ,:,:,:); g1=squeeze(mean(a,1));
+a=CM4.c0.sfc.tref.all (151:250 ,:,:,:);c2=squeeze(mean(a,1));
+a=CM4.w0.sfc.tref.all (130:150,:,:,:); w2=squeeze(mean(a,1));dT2=get_trop_stat(c2,w2,r);
+a=SP4.c0.sfc.tref.all (51:150 ,:,:,:); c3=squeeze(mean(a,1));
+a=SP4.w0.sfc.tref.all (130:150,:,:,:); w3=squeeze(mean(a,1));dT3=get_trop_stat(c3,w3,r);
+a=ESM4.c0.sfc.tref.all(1:100  ,:,:,:); c4=squeeze(mean(a,1));
+a=ESM4.w0.sfc.tref.all(130:150,:,:,:); w4=squeeze(mean(a,1));dT4=get_trop_stat(c4,w4,r);
+d.T0=(gav1-cav1); d.T1=(wav1-cav1); d.T2=(wav2-cav2); d.T3=(wav3-cav3); d.T4=(wav4-cav4);
+lat=o.lat; lon=o.lon; cmin=0; cmax=15; vbin=[cmin:0.2:cmax]; d1=-6;d2=6; vbin1=[d1:0.1:d2];
+pms=[ 0, 0, 750, 800]*1; fsize=16; row=2; col=1;
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=(w3-c3)-(w2-c2); b=(wav3-cav3)-(wav2-cav2);
+contourf(lon,lat,a,vbin1); hold on; shading flat; colorbar; caxis([d1 d2]/2);
+s=sprintf('SPEAR minus CM4; global mean = %5.2f K',d.T3-d.T2); title(s,'FontSize',fsize);
+subplot(row,col,2); a=(w4-c4)-(w2-c2); b=(wav4-cav4)-(wav2-cav2);
+contourf(lon,lat,a,vbin1); hold on; shading flat; colorbar; caxis([d1 d2]/2);
+s=sprintf('ESM4 minus CM4; global mean = %5.2f K',d.T4-d.T2); title(s,'FontSize',fsize);
+%subplot(row,col,1); a=w1-c1;
+%contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);%caxis([1 4]);
+%s=sprintf('(a) AM4 TAS; P2K - CNTL = %5.2f K',d.T1); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: TOA net radiation map%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dnetradtoa_dTs_map_150'; t1=130; t2=150; s=CM4.c0.s; lat=s.lat; lon=s.lon; lm=s.lm0; aa=s.aa;
+a=am4.c0.toa.netrad.all (:      ,:,:,:); c1=squeeze(mean(mean(a,1),2));cav1=mean(mean(c1.*aa,1));
+a=am4.w0.toa.netrad.all (:      ,:,:,:); w1=squeeze(mean(mean(a,1),2));wav1=mean(mean(w1.*aa,1));
+a=am4.g0.toa.netrad.all (:      ,:,:,:); g1=squeeze(mean(mean(a,1),2));gav1=mean(mean(g1.*aa,1));
+a=CM4.c0.toa.netrad.all (151:250,:,:,:); c2=squeeze(mean(mean(a,1),2));cav2=mean(mean(c2.*aa,1));
+a=CM4.w0.toa.netrad.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(a,1),2));wav2=mean(mean(w2.*aa,1));
+a=SP4.c0.toa.netrad.all (51:150 ,:,:,:); c3=squeeze(mean(mean(a,1),2));cav3=mean(mean(c3.*aa,1));
+a=SP4.w0.toa.netrad.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(a,1),2));wav3=mean(mean(w3.*aa,1));
+a=ESM4.c0.toa.netrad.all(1:100  ,:,:,:); c4=squeeze(mean(mean(a,1),2));cav4=mean(mean(c4.*aa,1));
+a=ESM4.w0.toa.netrad.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(a,1),2));wav4=mean(mean(w4.*aa,1));
+a=a41.c0.toa.netrad.all (:      ,:,:,:); c5=squeeze(mean(mean(a,1),2));cav5=mean(mean(c1.*aa,1));
+a=a41.w0.toa.netrad.all (:      ,:,:,:); w5=squeeze(mean(mean(a,1),2));wav5=mean(mean(w1.*aa,1));
+d.X0=(gav1-cav1); d.X1=(wav1-cav1); d.X2=(wav2-cav2); d.X3=(wav3-cav3); d.X4=(wav4-cav4); d.X5=(wav5-cav5);
+cmin=-3; cmax=3; vbin=[cmin:0.03:cmax];
+pms=[ 0, 0, 750, 1200]*1; fsize=16; row=3; col=1;
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=(w2-c2-dg)/d.T2; av=mean(mean(a.*aa));
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contour(lon,lat,lm,1,'r'); 
+s=sprintf('(a) CM4 dNETRAD/dTs = %5.2f W/m2/K',av); title(s,'FontSize',fsize);
+subplot(row,col,2); a=(w3-c3-dg)/d.T3; av=mean(mean(a.*aa));
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contour(lon,lat,lm,1,'r'); 
+s=sprintf('(b) SPEAR dNETRAD/dTs = %5.2f W/m2/K',av); title(s,'FontSize',fsize);
+subplot(row,col,3); a=(w4-c4-dg)/d.T4; av=mean(mean(a.*aa));
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contour(lon,lat,lm,1,'r'); 
+s=sprintf('(c) ESM4  dNETRAD/dTs = %5.2f W/m2/K',av); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 750, 800]*1; fsize=16; row=2; col=1; vname='dnetradtoa_dTs_map_AM'
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=(w1-c1)/d.T1; av=mean(mean(a.*aa));
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contour(lon,lat,lm,1,'r'); 
+s=sprintf('(a) AM4.0 dNETRAD/dTs = %5.2f W/m2/K',av); title(s,'FontSize',fsize);
+subplot(row,col,2); a=(w5-c5)/d.T5; av=mean(mean(a.*aa));
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contour(lon,lat,lm,1,'r'); 
+s=sprintf('(b) AM4.1 dNETRAD/dTs = %5.2f W/m2/K',av); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: surface air temperature map%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dnetradtoa_map_dif_150'; v0=CM4.c0; latx=v0.lat; lonx=v0.lon; lm=v0.lm0; aa=v0.s.aa;
+k=1; ss={'ANN','MAM','JJA','SON','DJF'};
+a=am4.c0.toa.netrad.all (:      ,:,:,:); c1=squeeze(mean(mean(a,1),2));cav1=mean(mean(c1.*aa,1));
+a=am4.w0.toa.netrad.all (:      ,:,:,:); w1=squeeze(mean(mean(a,1),2));wav1=mean(mean(w1.*aa,1));
+a=am4.g0.toa.netrad.all (:      ,:,:,:); g1=squeeze(mean(mean(a,1),2));gav1=mean(mean(g1.*aa,1));
+a=CM4.c0.toa.netrad.all (151:250 ,:,:,:);c2=squeeze(mean(mean(a,1),2));cav2=mean(mean(c2.*aa,1));
+a=CM4.w0.toa.netrad.all (130:150,:,:,:); w2=squeeze(mean(mean(a,1),2));wav2=mean(mean(w2.*aa,1));
+a=SP4.c0.toa.netrad.all (51:150 ,:,:,:); c3=squeeze(mean(mean(a,1),2));cav3=mean(mean(c3.*aa,1));
+a=SP4.w0.toa.netrad.all (130:150,:,:,:); w3=squeeze(mean(mean(a,1),2));wav3=mean(mean(w3.*aa,1));
+a=ESM4.c0.toa.netrad.all(1:100  ,:,:,:); c4=squeeze(mean(mean(a,1),2));cav4=mean(mean(c4.*aa,1));
+a=ESM4.w0.toa.netrad.all(130:150,:,:,:); w4=squeeze(mean(mean(a,1),2));wav4=mean(mean(w4.*aa,1));
+d.X0=(gav1-cav1); d.X1=(wav1-cav1); d.X2=(wav2-cav2); d.X3=(wav3-cav3); d.X4=(wav4-cav4);
+lat=o.lat; lon=o.lon; cmin=0; cmax=15; vbin=[cmin:0.2:cmax]; d1=-6;d2=6; vbin1=[d1:0.1:d2];
+pms=[ 0, 0, 750, 800]*1; fsize=16; row=2; col=1;
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=(w3-c3)-(w2-c2); b=(wav3-cav3)-(wav2-cav2);
+contourf(lon,lat,a,vbin1); hold on; shading flat; colorbar; caxis([d1 d2]);
+s=sprintf('SPEAR minus CM4; global mean = %5.2f K',d.X3-d.X2); title(s,'FontSize',fsize);
+subplot(row,col,2); a=(w4-c4)-(w2-c2); b=(wav4-cav4)-(wav2-cav2);
+contourf(lon,lat,a,vbin1); hold on; shading flat; colorbar; caxis([d1 d2]);
+s=sprintf('ESM4 minus CM4; global mean = %5.2f K',d.X4-d.X2); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: surface air temperature map%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_map_org_50'; v0=CM4.c0; latx=v0.lat; lonx=v0.lon; lm=v0.lm0; aa=v0.s.aa;
+k=1; ss={'ANN','MAM','JJA','SON','DJF'};
+a=am4.c0.sfc.tref.all (:      ,:,:,:); c1=squeeze(mean(mean(a,1),2));cav1=mean(mean(c1.*aa,1));
+a=am4.w0.sfc.tref.all (:      ,:,:,:); w1=squeeze(mean(mean(a,1),2));wav1=mean(mean(w1.*aa,1));
+a=am4.g0.sfc.tref.all (:      ,:,:,:); g1=squeeze(mean(mean(a,1),2));gav1=mean(mean(g1.*aa,1));
+a=CM4.c0.sfc.tref.all (151:250,:,:,:); c2=squeeze(mean(mean(a,1),2));cav2=mean(mean(c2.*aa,1));
+a=CM4.w0.sfc.tref.all ( 30:50, :,:,:); w2=squeeze(mean(mean(a,1),2));wav2=mean(mean(w2.*aa,1));
+a=SP4.c0.sfc.tref.all (51:150, :,:,:); c3=squeeze(mean(mean(a,1),2));cav3=mean(mean(c3.*aa,1));
+a=SP4.w0.sfc.tref.all ( 30:50, :,:,:); w3=squeeze(mean(mean(a,1),2));wav3=mean(mean(w3.*aa,1));
+a=ESM4.c0.sfc.tref.all( 1:100, :,:,:); c4=squeeze(mean(mean(a,1),2));cav4=mean(mean(c4.*aa,1));
+a=ESM4.w0.sfc.tref.all( 30:50, :,:,:); w4=squeeze(mean(mean(a,1),2));wav4=mean(mean(w4.*aa,1));
+d.T0=(gav1-cav1); d.T1=(wav1-cav1); d.T2=(wav2-cav2); d.T3=(wav3-cav3); d.T4=(wav4-cav4);
+lat=o.lat; lon=o.lon; cmin=0; cmax=15; vbin=[cmin:0.2:cmax]; d1=-6;d2=6; vbin1=[d1:0.1:d2];
+pms=[ 0, 0, 750, 1200]*1; fsize=16; row=3; col=1;
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=w2-c2;
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+s=sprintf('(a) CM4 TAS; 4xCO2 - CNTL = %5.2f K',d.T2); title(s,'FontSize',fsize);
+subplot(row,col,2); a=w3-c3;
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+s=sprintf('(b) SPEAR TAS; 4xCO2 - CNTL = %5.2f K',d.T3); title(s,'FontSize',fsize);
+subplot(row,col,3); a=w4-c4;
+contourf(lon,lat,a,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+s=sprintf('(c) ESM4 TAS; 4xCO2 - CNTL = %5.2f K',d.T4); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: surface air temperature map%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_map_dif_50'; v0=CM4.c0; latx=v0.lat; lonx=v0.lon; lm=v0.lm0; aa=v0.s.aa;
+k=1; ss={'ANN','MAM','JJA','SON','DJF'};
+a=am4.c0.sfc.tref.all (:      ,:,:,:); c1=squeeze(mean(mean(a,1),2));cav1=mean(mean(c1.*aa,1));
+a=am4.w0.sfc.tref.all (:      ,:,:,:); w1=squeeze(mean(mean(a,1),2));wav1=mean(mean(w1.*aa,1));
+a=am4.g0.sfc.tref.all (:      ,:,:,:); g1=squeeze(mean(mean(a,1),2));gav1=mean(mean(g1.*aa,1));
+a=CM4.c0.sfc.tref.all (151:250,:,:,:); c2=squeeze(mean(mean(a,1),2));cav2=mean(mean(c2.*aa,1));
+a=CM4.w0.sfc.tref.all ( 30:50, :,:,:); w2=squeeze(mean(mean(a,1),2));wav2=mean(mean(w2.*aa,1));
+a=SP4.c0.sfc.tref.all (51:150, :,:,:); c3=squeeze(mean(mean(a,1),2));cav3=mean(mean(c3.*aa,1));
+a=SP4.w0.sfc.tref.all ( 30:50, :,:,:); w3=squeeze(mean(mean(a,1),2));wav3=mean(mean(w3.*aa,1));
+a=ESM4.c0.sfc.tref.all( 1:100, :,:,:); c4=squeeze(mean(mean(a,1),2));cav4=mean(mean(c4.*aa,1));
+a=ESM4.w0.sfc.tref.all( 30:50, :,:,:); w4=squeeze(mean(mean(a,1),2));wav4=mean(mean(w4.*aa,1));
+a=a41.c0.sfc.tref.all (:,      :,:,:); c5=squeeze(mean(mean(a,1),2));cav5=mean(mean(c5.*aa,1));
+a=a41.w0.sfc.tref.all (:,      :,:,:); w5=squeeze(mean(mean(a,1),2));wav5=mean(mean(w5.*aa,1));
+d.T0=(gav1-cav1); d.T1=(wav1-cav1); d.T2=(wav2-cav2); d.T3=(wav3-cav3); d.T4=(wav4-cav4);d.T5=(wav5-cav5);
+lat=o.lat; lon=o.lon; cmin=0; cmax=15; vbin=[cmin:0.2:cmax]; d1=-4;d2=4; vbin1=[d1:0.03:d2];
+pms=[ 0, 0, 750, 800]*1; fsize=16; row=2; col=1;
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); a=(w3-c3)-(w2-c2); b=(wav3-cav3)-(wav2-cav2);
+contourf(lon,lat,a,vbin1); hold on; shading flat; colorbar; caxis([d1/2 d2/2]);
+s=sprintf('SPEAR minus CM4; global mean = %5.2f K',d.T3-d.T2); title(s,'FontSize',fsize);
+subplot(row,col,2); a=(w4-c4)-(w2-c2); b=(wav4-cav4)-(wav2-cav2);
+contourf(lon,lat,a,vbin1); hold on; shading flat; colorbar; caxis([d1/2 d2/2]);
+s=sprintf('ESM4 minus CM4; global mean = %5.2f K',d.T4-d.T2); title(s,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: latitudional distribution of absolute TAS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_abs_zm'; v0=CM4.c0; lat=o.lat; xy=[-90 90 0 17]; 
+a=am4.c0.sfc.tref.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.sfc.tref.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.sfc.tref.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.c0.sfc.tref.all (151:250 ,:,:,:);c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.sfc.tref.all (130:150,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.sfc.tref.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.sfc.tref.all (130:150,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.sfc.tref.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.sfc.tref.all(130:150,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.sfc.tref.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.sfc.tref.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=20; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2); plot(lat,a,'r','LineWidth',lw); hold on;
+a=(w3-c3); plot(lat,a,'b','LineWidth',lw); hold on;
+a=(w4-c4); plot(lat,a,'k','LineWidth',lw); hold on;
+a=(w1-c1); plot(lat,a,'m','LineWidth',lw); hold on;
+a=(w5-c5); plot(lat,a,'c','LineWidth',lw); hold on;
+a=(g1-c1); plot(lat,a,'g','LineWidth',lw); hold on;
+s2=sprintf('CM4 (%4.2fK)',    d.T2);
+s3=sprintf('SPEAR (%4.2fK)',  d.T3);
+s4=sprintf('ESM4 (%4.2fK)',   d.T4);
+s1=sprintf('AM4.0-P2K (%4.2fK)',d.T1);
+s5=sprintf('AM4.1-P4K (%4.2fK)',d.T5);
+s0=sprintf('AM4-2xCO2 (%4.2fK)',d.T0);
+legend(s2,s3,s4,s1,s5,s0,0); grid on; axis(xy);
+yl='\Delta Ts (K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';      xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: latitudional distribution of TAS normalized by global mean
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_rel_zm'; xy=[-90 90 0.7 2.9]; 
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; lon=s.lon; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.sfc.tref.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.sfc.tref.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.sfc.tref.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.c0.sfc.tref.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.sfc.tref.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.sfc.tref.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.sfc.tref.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.sfc.tref.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.sfc.tref.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.sfc.tref.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.sfc.tref.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=20; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)/d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)/d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+s2=sprintf('CM4 (%4.2fK)',      d.X2);
+s3=sprintf('SPEAR (%4.2fK)',    d.X3);
+s4=sprintf('ESM4 (%4.2fK)',     d.X4);
+s1=sprintf('AM4.0-P2K (%4.2fK)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2fK)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='\DeltaTs normalized by global mean warming (K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';      xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 5: latitudional distribution of TAS normalized by global mean
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='dtref_rel_zm_yr10'; t1=10; t2=30; v0=CM4.c0; lat=o.lat; xy=[-90 90 0.7 2.9]; 
+a=am4.c0.sfc.tref.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.sfc.tref.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.sfc.tref.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.c0.sfc.tref.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.sfc.tref.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.sfc.tref.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.sfc.tref.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.sfc.tref.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.sfc.tref.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.sfc.tref.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.sfc.tref.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=20; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2); av=mean(a.*a0); plot(lat,a/av,'r','LineWidth',lw); d.T2=av;hold on;
+a=(w3-c3); av=mean(a.*a0); plot(lat,a/av,'b','LineWidth',lw); d.T3=av;
+a=(w4-c4); av=mean(a.*a0); plot(lat,a/av,'k','LineWidth',lw); d.T4=av;
+a=(w1-c1); av=mean(a.*a0); plot(lat,a/av,'m','LineWidth',lw); d.T1=av;
+a=(w5-c5); av=mean(a.*a0); plot(lat,a/av,'c','LineWidth',lw); d.T5=av;
+s2=sprintf('CM4 (%4.2fK)',      d.T2);
+s3=sprintf('SPEAR (%4.2fK)',    d.T3);
+s4=sprintf('ESM4 (%4.2fK)',     d.T4);
+s1=sprintf('AM4.0-P2K (%4.2fK)',d.T1);
+s5=sprintf('AM4.1-P4K (%4.2fK)',d.T5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='\DeltaTs normalized by global mean warming (K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';      xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: NETRADTOA%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='netrad_zm'; xy=[-90 90 -3 1]; 
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.toa.netrad.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.toa.netrad.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.toa.netrad.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.toa.netrad.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.toa.netrad.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.toa.netrad.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.toa.netrad.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.toa.netrad.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.toa.netrad.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.toa.netrad.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.toa.netrad.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g:','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f W/m2/K)',      d.X2);
+s3=sprintf('SPEAR (%4.2f W/m2/K)',    d.X3);
+s4=sprintf('ESM4 (%4.2f W/m2/K)',     d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f W/m2/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f W/m2/K)',d.X5);
+%s0=sprintf('AM4-2xCO2 (%4.2f W/m2)',  d.X0);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='TOA net radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';             xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: NETRADTOA_supp1%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='netrad_zm_supp1'; xy=[-90 90 -2 1]; 
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+y1=(w2-c2-dg)/d.T2; 
+y2=(w3-c3-dg)/d.T3; 
+y3=(w4-c4-dg)/d.T4; 
+y4=(w1-c1)   /d.T1; 
+y5=(w5-c5)   /d.T5; 
+a=y2-y1; plot(lat,a,'b','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=y3-y1; plot(lat,a,'k','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=y5-y4; plot(lat,a,'c','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+s1=sprintf('SPEAR minus CM4 (%4.2f W/m2/K)',   d.X2);
+s2=sprintf('ESM4  minus CM4 (%4.2f W/m2/K)',   d.X3);
+s3=sprintf('AM4.1 minus AM4.0 (%4.2f W/m2/K)', d.X4);
+legend(s1,s2,s3,0); grid on; axis(xy);
+yl='TOA net radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';             xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: prediction%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='predict_ecs';
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=20; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+x=[4.9 3.7 3.2]; alpha=[d.X2 d.X3 d.X4]; y=4./-alpha
+plot(x(1),y(1),'r^','MarkerSize',msize,'LineWidth',2); hold on; 
+plot(x(2),y(2),'bs','MarkerSize',msize,'LineWidth',2); hold on; 
+plot(x(3),y(3),'kv','MarkerSize',msize,'LineWidth',2); hold on; 
+plot([2 6],[2 6],'k--','LineWidth',2); grid on; axis([2 6 2 6]);
+legend('CM4','SPEAR','ESM4',2);
+xl='actual ECS (K)';    xlabel(xl,'FontSize',fsize);
+yl='predicted ECS (K)'; ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: NETRADTOA%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='netrad_zm_yr10'; xy=[-90 90 -3 1]; 
+t1=1; t2=20; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+[d c1 w1 g1 c2 w2 c3 w3 c4 w4 c5 w5]=get_tref(am4,CM4,SP4,ESM4,a41,aa,t1,t2);
+a=am4.c0.toa.netrad.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.toa.netrad.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.toa.netrad.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.toa.netrad.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.toa.netrad.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.toa.netrad.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.toa.netrad.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.toa.netrad.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.toa.netrad.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.toa.netrad.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.toa.netrad.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g:','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f W/m2/K)',      d.X2);
+s3=sprintf('SPEAR (%4.2f W/m2/K)',    d.X3);
+s4=sprintf('ESM4 (%4.2f W/m2/K)',     d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f W/m2/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f W/m2/K)',d.X5);
+%s0=sprintf('AM4-2xCO2 (%4.2f W/m2)',  d.X0);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='TOA net radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';             xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: NETRADTOA%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='netrad_zm_150_20'; xy=[-90 90 -1 2]; 
+t1=1; t2=20; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+[d c1 w1 g1 c2 w2 c3 w3 c4 w4 c5 w5]=get_tref(am4,CM4,SP4,ESM4,a41,aa,t1,t2);
+a=am4.c0.toa.netrad.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.toa.netrad.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.toa.netrad.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.toa.netrad.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.toa.netrad.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.toa.netrad.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.toa.netrad.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.toa.netrad.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.toa.netrad.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.toa.netrad.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.toa.netrad.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+a=(w2-c2-dg)/d.T2; d.X2=mean(a.*a0); y2=a;
+a=(w3-c3-dg)/d.T3; d.X3=mean(a.*a0); y3=a;
+a=(w4-c4-dg)/d.T4; d.X4=mean(a.*a0); y4=a;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+[d c1 w1 g1 c2 w2 c3 w3 c4 w4 c5 w5]=get_tref(am4,CM4,SP4,ESM4,a41,aa,t1,t2);
+a=am4.c0.toa.netrad.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.toa.netrad.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.toa.netrad.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.toa.netrad.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.toa.netrad.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.toa.netrad.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.toa.netrad.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.toa.netrad.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.toa.netrad.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.toa.netrad.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.toa.netrad.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+a=(w2-c2-dg)/d.T2; d.X2=mean(a.*a0); Y2=a;
+a=(w3-c3-dg)/d.T3; d.X3=mean(a.*a0); Y3=a;
+a=(w4-c4-dg)/d.T4; d.X4=mean(a.*a0); Y4=a;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=Y2-y2; plot(lat,a,'r',  'LineWidth',lw); hold on; d.X2=mean(a.*a0);
+%a=Y2; plot(lat,a,'r--','LineWidth',lw); hold on; %d.X3=mean(a.*a0);
+a=Y3-y3; plot(lat,a,'b',  'LineWidth',lw); hold on; d.X3=mean(a.*a0);
+%a=Y3; plot(lat,a,'b--','LineWidth',lw); hold on; %d.X4=mean(a.*a0);
+a=Y4-y4; plot(lat,a,'k',  'LineWidth',lw); hold on; d.X4=mean(a.*a0);
+%a=Y4; plot(lat,a,'k--','LineWidth',lw); hold on; %d.X4=mean(a.*a0);
+s2=sprintf('CM4   (year140 minus year10 = %4.2f W/m2/K)',d.X2);
+s3=sprintf('SPEAR (year140 minus year10 = %4.2f W/m2/K)',d.X3);
+s4=sprintf('ESM4  (year140 minus year10 = %4.2f W/m2/K)',d.X4);
+%s1=sprintf('AM4.0-P2K (%4.2f W/m2/K)',d.X1);
+%s5=sprintf('AM4.1-P4K (%4.2f W/m2/K)',d.X5);
+%s0=sprintf('AM4-2xCO2 (%4.2f W/m2)',  d.X0);
+legend(s2,s3,s4,0); grid on; axis(xy);
+yl='TOA net radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';             xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 6: SWCF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='swcf_zm'; xy=[-90 90 -4 1.2];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.toa.swcf.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.toa.swcf.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.toa.swcf.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.toa.swcf.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.toa.swcf.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.toa.swcf.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.toa.swcf.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.toa.swcf.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.toa.swcf.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.toa.swcf.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.toa.swcf.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f W/m2/K)',      d.X2);
+s3=sprintf('SPEAR (%4.2f W/m2/K)',    d.X3);
+s4=sprintf('ESM4 (%4.2f W/m2/K)',     d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f W/m2/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f W/m2/K)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='TOA SW cloud feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 7: LWCF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwcf_zm'; xy=[-90 90 -0.5 1.5];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.toa.lwcf.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.toa.lwcf.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.toa.lwcf.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.toa.lwcf.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.toa.lwcf.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.toa.lwcf.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.toa.lwcf.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.toa.lwcf.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.toa.lwcf.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.toa.lwcf.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.toa.lwcf.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2   ;         plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f W/m2/K)',    d.X2);
+s3=sprintf('SPEAR (%4.2f W/m2/K)',  d.X3);
+s4=sprintf('ESM4 (%4.2f W/m2/K)',   d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f W/m2/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f W/m2/K)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='TOA LW cloud feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 7: TTCF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='ttcf_zm'; xy=[-90 90 -4 1]; 
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.toa.ttcf.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.toa.ttcf.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.toa.ttcf.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.toa.ttcf.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.toa.ttcf.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.toa.ttcf.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.toa.ttcf.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.toa.ttcf.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.toa.ttcf.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.toa.ttcf.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.toa.ttcf.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2   ;         plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f W/m2/K)',    d.X2);
+s3=sprintf('SPEAR (%4.2f W/m2/K)',  d.X3);
+s4=sprintf('ESM4 (%4.2f W/m2/K)',   d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f W/m2/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f W/m2/K)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='total cloud radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: NETRADTOA_supp1%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='ttcf_zm_supp1'; xy=[-90 90 -2 1]; 
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+y1=(w2-c2-dg)/d.T2; 
+y2=(w3-c3-dg)/d.T3; 
+y3=(w4-c4-dg)/d.T4; 
+y4=(w1-c1)   /d.T1; 
+y5=(w5-c5)   /d.T5; 
+a=y2-y1; plot(lat,a,'b','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=y3-y1; plot(lat,a,'k','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=y5-y4; plot(lat,a,'c','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+s1=sprintf('SPEAR minus CM4 (%4.2f W/m2/K)',   d.X2);
+s2=sprintf('ESM4  minus CM4 (%4.2f W/m2/K)',   d.X3);
+s3=sprintf('AM4.1 minus AM4.0 (%4.2f W/m2/K)', d.X4);
+legend(s1,s2,s3,0); grid on; axis(xy);
+yl='total cloud feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';             xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 7: SWNET_CLR%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='swnet_clr_zm'; xy=[-90 90 -0.5 6];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.toa.swnet_clr.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.toa.swnet_clr.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.toa.swnet_clr.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.toa.swnet_clr.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.toa.swnet_clr.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.toa.swnet_clr.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.toa.swnet_clr.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.toa.swnet_clr.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.toa.swnet_clr.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.toa.swnet_clr.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.toa.swnet_clr.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2   ;         plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f W/m2/K)',    d.X2);
+s3=sprintf('SPEAR (%4.2f W/m2/K)',  d.X3);
+s4=sprintf('ESM4 (%4.2f W/m2/K)',   d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f W/m2/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f W/m2/K)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='TOA clear-sky SW radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: TOA SW Radiative feedback supp1%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='swnet_clr_zm_supp1'; xy=[-90 90 -2.8 0.8]; 
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+y1=(w2-c2-dg)/d.T2; 
+y2=(w3-c3-dg)/d.T3; 
+y3=(w4-c4-dg)/d.T4; 
+y4=(w1-c1)   /d.T1; 
+y5=(w5-c5)   /d.T5; 
+a=y2-y1; plot(lat,a,'b','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=y3-y1; plot(lat,a,'k','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=y5-y4; plot(lat,a,'c','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+s1=sprintf('SPEAR minus CM4 (%4.2f W/m2/K)',   d.X2);
+s2=sprintf('ESM4  minus CM4 (%4.2f W/m2/K)',   d.X3);
+s3=sprintf('AM4.1 minus AM4.0 (%4.2f W/m2/K)', d.X4);
+legend(s1,s2,s3,0); grid on; axis(xy);
+yl='TOA clear-sky SW radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';             xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: TOA clear-sky LW Radiative feedback %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwnet_clr_zm'; xy=[-90 90 -5 -0.8];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=-am4.c0.toa.lwnet_clr.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=-am4.w0.toa.lwnet_clr.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=-am4.g0.toa.lwnet_clr.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=-CM4.c0.toa.lwnet_clr.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=-CM4.w0.toa.lwnet_clr.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=-SP4.c0.toa.lwnet_clr.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=-SP4.w0.toa.lwnet_clr.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=-ESM4.c0.toa.lwnet_clr.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=-ESM4.w0.toa.lwnet_clr.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=-a41.c0.toa.lwnet_clr.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=-a41.w0.toa.lwnet_clr.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f W/m2/K)',    d.X2);
+s3=sprintf('SPEAR (%4.2f W/m2/K)',  d.X3);
+s4=sprintf('ESM4 (%4.2f W/m2/K)',   d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f W/m2/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f W/m2/K)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='TOA clear-sky LW radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: TOA clear-sky LW Radiative feedback supp1%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwnet_clr_zm_supp1'; xy=[-90 90 -2.8 0.8]; 
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+y1=(w2-c2-dg)/d.T2; 
+y2=(w3-c3-dg)/d.T3; 
+y3=(w4-c4-dg)/d.T4; 
+y4=(w1-c1)   /d.T1; 
+y5=(w5-c5)   /d.T5; 
+a=y2-y1; plot(lat,a,'b','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=y3-y1; plot(lat,a,'k','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=y5-y4; plot(lat,a,'c','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+s1=sprintf('SPEAR minus CM4 (%4.2f W/m2/K)',   d.X2);
+s2=sprintf('ESM4  minus CM4 (%4.2f W/m2/K)',   d.X3);
+s3=sprintf('AM4.1 minus AM4.0 (%4.2f W/m2/K)', d.X4);
+legend(s1,s2,s3,0); grid on; axis(xy);
+yl='TOA clear-sky LW radiative feedback (W/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';             xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: LWP_ZM%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwp_zm'; xy=[-90 90 -0.002 0.008];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.atm.lwp.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.atm.lwp.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.atm.lwp.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.atm.lwp.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.atm.lwp.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.atm.lwp.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.atm.lwp.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.atm.lwp.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.atm.lwp.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.atm.lwp.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.atm.lwp.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f g/m2/K)',      d.X2*1000);
+s3=sprintf('SPEAR (%4.2f g/m2/K)',    d.X3*1000);
+s4=sprintf('ESM4 (%4.2f g/m2/K)',     d.X4*1000);
+s1=sprintf('AM4.0-P2K (%4.2f g/m2/K)',d.X1*1000);
+s5=sprintf('AM4.1-P4K (%4.2f g/m2/K)',d.X5*1000);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='liquid water path feedback (kg/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: IWP_ZM%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='iwp_zm'; xy=[-90 90 -0.003 0.007];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.atm.iwp.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.atm.iwp.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.atm.iwp.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.atm.iwp.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.atm.iwp.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.atm.iwp.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.atm.iwp.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.atm.iwp.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.atm.iwp.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.atm.iwp.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.atm.iwp.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f g/m2/K)',      d.X2*1000);
+s3=sprintf('SPEAR (%4.2f g/m2/K)',    d.X3*1000);
+s4=sprintf('ESM4 (%4.2f g/m2/K)',     d.X4*1000);
+s1=sprintf('AM4.0-P2K (%4.2f g/m2/K)',d.X1*1000);
+s5=sprintf('AM4.1-P4K (%4.2f g/m2/K)',d.X5*1000);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='ice water path feedback (kg/m2/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: QAL_ZM%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='qal_zm'; xy=[-90 90 -2.5 1];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.atm.qal.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.atm.qal.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.atm.qal.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.atm.qal.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.atm.qal.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.atm.qal.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.atm.qal.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.atm.qal.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.atm.qal.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.c0.atm.qal.all (:      ,:,:,:); c5=squeeze(mean(mean(mean(a,1),2),4));
+a=a41.w0.atm.qal.all (:      ,:,:,:); w5=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f %%/K)',      d.X2);
+s3=sprintf('SPEAR (%4.2f %%/K)',    d.X3);
+s4=sprintf('ESM4 (%4.2f %%/K)',     d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f %%/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f %%/K)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='low cloud amount feedback (%/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: QAH_ZM%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='qah_zm'; xy=[-90 90 -1.5 1.5];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.atm.qah.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.atm.qah.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.atm.qah.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.atm.qah.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.atm.qah.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.atm.qah.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.atm.qah.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.atm.qah.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.atm.qah.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f %%/K)',      d.X2);
+s3=sprintf('SPEAR (%4.2f %%/K)',    d.X3);
+s4=sprintf('ESM4 (%4.2f %%/K)',     d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f %%/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f %%/K)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='high cloud amount feedback (%/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot 8: QAM_ZM%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='qam_zm'; xy=[-90 90 -2.5 1];
+t1=130; t2=150; s=CM4.c0.s; lat=s.lat; aa=s.aa; a0=mean(aa,2);
+a=am4.c0.atm.qam.all (:      ,:,:,:); c1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.w0.atm.qam.all (:      ,:,:,:); w1=squeeze(mean(mean(mean(a,1),2),4));
+a=am4.g0.atm.qam.all (:      ,:,:,:); g1=squeeze(mean(mean(mean(a,1),2),4));dg=(g1-c1)*2;
+a=CM4.c0.atm.qam.all (151:250,:,:,:); c2=squeeze(mean(mean(mean(a,1),2),4));
+a=CM4.w0.atm.qam.all (t1:t2  ,:,:,:); w2=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.c0.atm.qam.all (51:150 ,:,:,:); c3=squeeze(mean(mean(mean(a,1),2),4));
+a=SP4.w0.atm.qam.all (t1:t2  ,:,:,:); w3=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.c0.atm.qam.all(1:100  ,:,:,:); c4=squeeze(mean(mean(mean(a,1),2),4));
+a=ESM4.w0.atm.qam.all(t1:t2  ,:,:,:); w4=squeeze(mean(mean(mean(a,1),2),4));
+pms=[ 0, 0, 1500, 1200]*0.6; fsize=16; lw=2;
+handle = figure('Position', pms,'visible','on'); 
+a=(w2-c2-dg)/d.T2; plot(lat,a,'r','LineWidth',lw); hold on; d.X2=mean(a.*a0);
+a=(w3-c3-dg)/d.T3; plot(lat,a,'b','LineWidth',lw); hold on; d.X3=mean(a.*a0);
+a=(w4-c4-dg)/d.T4; plot(lat,a,'k','LineWidth',lw); hold on; d.X4=mean(a.*a0);
+a=(w1-c1)   /d.T1; plot(lat,a,'m','LineWidth',lw); hold on; d.X1=mean(a.*a0);
+a=(w5-c5)   /d.T5; plot(lat,a,'c','LineWidth',lw); hold on; d.X5=mean(a.*a0);
+%a=dg/2;           plot(lat,a,'g','LineWidth',lw); hold on; d.X0=mean(a.*a0);
+s2=sprintf('CM4 (%4.2f %%/K)',      d.X2);
+s3=sprintf('SPEAR (%4.2f %%/K)',    d.X3);
+s4=sprintf('ESM4 (%4.2f %%/K)',     d.X4);
+s1=sprintf('AM4.0-P2K (%4.2f %%/K)',d.X1);
+s5=sprintf('AM4.1-P4K (%4.2f %%/K)',d.X5);
+legend(s2,s3,s4,s1,s5,0); grid on; axis(xy);
+yl='middle cloud amount feedback (%/K)'; ylabel(yl,'FontSize',fsize);
+xl='latitude';              xlabel(xl,'FontSize',fsize);
+set(gca,'FontSize',fsize); %title(vname,'FontSize',fsize);
+expn='climsen'; visfig='off'; figpath='./fig_gclimsen/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%test%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v0=CM4.c0; latx=v0.lat; lonx=v0.lon; lm=v0.lm0; aa=v0.s.aa;
+k=1; ss={'ANN','MAM','JJA','SON','DJF'};
+a=CM4.c0.sfc.tref.all (151:250,:,:,:); c1=squeeze(mean(mean(a,1),2));cavg1=mean(mean(c1.*aa,1));
+a=CM4.w0.sfc.tref.all (130:150,:,:,:); w1=squeeze(mean(mean(a,1),2));wavg1=mean(mean(w1.*aa,1));
+a=SP4.c0.sfc.tref.all (51:150, :,:,:); c2=squeeze(mean(mean(a,1),2));cavg2=mean(mean(c2.*aa,1));
+a=SP4.w0.sfc.tref.all (130:150,:,:,:); w2=squeeze(mean(mean(a,1),2));wavg2=mean(mean(w2.*aa,1));
+a=ESM4.c0.sfc.tref.all(1:100,  :,:,:); c3=squeeze(mean(mean(a,1),2));cavg3=mean(mean(c3.*aa,1));
+a=ESM4.w0.sfc.tref.all(130:150,:,:,:); w3=squeeze(mean(mean(a,1),2));wavg3=mean(mean(w3.*aa,1));
+lat=o.lat; lon=o.lon; cmin=0; cmax=15; vbin=[cmin:0.1:cmax];
+pms=[ 0, 0, 600, 1000]*1.5; fsize=16; row=3; col=1; 
+handle = figure('Position', pms,'visible','on'); 
+subplot(row,col,1); 
+contourf(lon,lat,w1-c1,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+title(strcat('(a) CM4 surface air temperature; 4xCO2 - CNTL=',num2str(wavg1-cavg1)),'FontSize',fsize);
+subplot(row,col,2); 
+contourf(lon,lat,w2-c2,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+title(strcat('(b) SPEAR-LO surface air temperature;  4xCO2 - CNTL=',num2str(wavg2-cavg2)),'FontSize',fsize);
+%subplot(row,col,3); 
+%contourf(lon,lat,w3-c3,vbin); hold on; shading flat; colorbar; caxis([cmin cmax]);
+%title(strcat('(c) ESM4 surface air temperature;  4xCO2 - CNTL=',num2str(wavg3-cavg3)),'FontSize',fsize);
+subplot(row,col,3); 
+contourf(lon,lat,(w2-c2)-(w1-c1),[-3.5:0.1:3.5]); hold on; shading flat; colorbar; caxis([-1 1]);
+title('(b) minus (a)','FontSize',fsize);
+%subplot(row,col,6); 
+%contourf(lon,lat,(w3-c3)-(w1-c1),[-3.5:0.1:3.5]); hold on; shading flat; colorbar; caxis([-3 3]);
+%title('(c) minus (a)','FontSize',fsize);
+expn='cm4_spear'; vname='tref'; visfig='off'; figpath='./fig_hiresmip/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Load previous coupled anlaysis matfiles%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pp='/'; region='global'; dr=strcat('_',region,'_tsana.mat'); 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/mdt/20170118/';
+expn='CM2.1U_Control-1860_D4';               fn=strcat(tpath,expn,pp,expn,dr);load(fn);cm21.v0=v;
+expn='CM2.1U-D4_1PctTo2X_I1';                fn=strcat(tpath,expn,pp,expn,dr);load(fn);cm21.w0=v;
+expn='CM2.1U-D4_1860-2000-AllForc_H1';       fn=strcat(tpath,expn,pp,expn,dr);load(fn);cm21.h0=v;
+expn='CM3Z_Control-1860_D1';                 fn=strcat(tpath,expn,pp,expn,dr);load(fn);cm3.v0=v;
+expn='CM3Z_D1_1PctTo4X_I1';                  fn=strcat(tpath,expn,pp,expn,dr);load(fn);cm3.w0=v;
+expn='CM3Z_D1_1860-2005_AllForc_H1';         fn=strcat(tpath,expn,pp,expn,dr);load(fn);cm3.h0=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section I: Analysis of time series
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1 ='AM4C192-AMIP';
+s2 ='CM4C192-H1';
+s3 ='CM4C192-H2';
+s4 ='CM4C192-CTL';
+s5 ='CM4C192-4xCO2';
+s6 ='AM4C192-futureSST';
+s7 ='AM4-DECKAMIP';
+s8 ='CM4-H1';
+s9 ='CM4-H2';
+s10='CM4-H3';
+s11='CM4-CTL';
+s12='CM4-4xCO2';
+s13='CM4-SSP585';
+s14='SPEAR-CTL';
+s15='SPEAR-4xCO2';
+s16='ESM4-H1';
+s17='ESM4-CTL';
+s18='ESM4-4xCO2';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%annual surface air temperature%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='tsurf_ann'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.sfc.tref.ts.org_ann; x1=[1950:2014];
+y2=CM4h.h1.sfc.tref.ts.org_ann; x2=[1950:2014];
+y3=CM4h.h2.sfc.tref.ts.org_ann; x3=[1950:2014];
+y4=CM4h.c0.sfc.tref.ts.org_ann; x4=[1900:1900+155-1];
+y5=CM4h.w0.sfc.tref.ts.org_ann; x5=[1900:1900+170-1];
+y6=AM4h.w0.sfc.tref.ts.org_ann; x6=[2015:2049];
+z1=AM4.h0.sfc.tref.ts.org_ann;  t1=[1950:2014];
+z2=CM4.h1.sfc.tref.ts.org_ann;  t2=[1850:2014];
+z3=CM4.h2.sfc.tref.ts.org_ann;  t3=[1850:2014];
+z4=CM4.h3.sfc.tref.ts.org_ann;  t4=[1850:2014];
+z5=CM4.c0.sfc.tref.ts.org_ann;  t5=[1700:1700+500-1];
+z6=CM4.w0.sfc.tref.ts.org_ann;  t6=[1851:2000];
+z7=CM4.w1.sfc.tref.ts.org_ann;  t7=[2015:2099];
+Y1=ESM4.h0.sfc.tref.ts.org_ann; X1=[1850:2014];
+Y2=ESM4.c0.sfc.tref.ts.org_ann; X2=[1850:1850+300-1];
+Y3=ESM4.w0.sfc.tref.ts.org_ann; X3=[1850:1850+300-1];
+Z1=SP4.c0.sfc.tref.ts.org_ann;  T1=[1800:1800+200-1];
+Z2=SP4.w0.sfc.tref.ts.org_ann;  T2=[1851:1851+200-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=1; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(t7,z7,    'r',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'c-',  'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'm-',  'LineWidth',lw3); hold on; 
+plot(X1,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(X2,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(X3,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,2);
+xlabel('year','FontSize',fsize); 
+ylabel('global mean surface air temperature (K)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 285 293.5]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%surface air temperature at pentad frequency%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='tsurf'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.sfc.pcp.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.sfc.pcp.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.sfc.pcp.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.sfc.pcp.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.sfc.pcp.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.sfc.pcp.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.sfc.pcp.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.sfc.pcp.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.sfc.pcp.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.sfc.pcp.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.sfc.pcp.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.sfc.pcp.ann_stat.mmen.all;  t6=[1851:5:2000];
+z7=CM4.w1.sfc.pcp.ann_stat.mmen.all;  t7=[2015:5:2099];
+Y1=ESM4.h0.sfc.pcp.ann_stat.mmen.all; X1=[1850:5:2014];
+Y2=ESM4.c0.sfc.pcp.ann_stat.mmen.all; X2=[1850:5:1850+300-1];
+Y3=ESM4.w0.sfc.pcp.ann_stat.mmen.all; X3=[1850:5:1850+300-1];
+Z1=SP4.c0.sfc.pcp.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.sfc.pcp.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=1; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(t7,z7,    'r',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'c-',  'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'm-',  'LineWidth',lw3); hold on; 
+plot(X1,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(X2,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(X3,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,2);
+xlabel('year','FontSize',fsize); 
+ylabel('global mean surface air temperature (K)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 285 293.5]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%surface precipitation%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='pcp_ann'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.sfc.pcp.ts.org_ann; x1=[1950:2014];
+y2=CM4h.h1.sfc.pcp.ts.org_ann; x2=[1950:2014];
+y3=CM4h.h2.sfc.pcp.ts.org_ann; x3=[1950:2014];
+y4=CM4h.c0.sfc.pcp.ts.org_ann; x4=[1900:1900+155-1];
+y5=CM4h.w0.sfc.pcp.ts.org_ann; x5=[1900:1900+170-1];
+y6=AM4h.w0.sfc.pcp.ts.org_ann; x6=[2015:2049];
+z1=AM4.h0.sfc.pcp.ts.org_ann;  t1=[1950:2014];
+z2=CM4.h1.sfc.pcp.ts.org_ann;  t2=[1850:2014];
+z3=CM4.h2.sfc.pcp.ts.org_ann;  t3=[1850:2014];
+z4=CM4.h3.sfc.pcp.ts.org_ann;  t4=[1850:2014];
+z5=CM4.c0.sfc.pcp.ts.org_ann;  t5=[1700:1700+500-1];
+z6=CM4.w0.sfc.pcp.ts.org_ann;  t6=[1851:2000];
+Z1=SP4.c0.sfc.pcp.ts.org_ann;  T1=[1800:1800+200-1];
+Z2=SP4.w0.sfc.pcp.ts.org_ann;  T2=[1851:1851+200-1];
+Y1=ESM4.h0.sfc.pcp.ts.org_ann; t7=[1850:2014];
+Y2=ESM4.c0.sfc.pcp.ts.org_ann; t8=[1850:1850+300-1];
+Y3=ESM4.w0.sfc.pcp.ts.org_ann; t9=[1850:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,2);
+xlabel('year','FontSize',fsize); 
+ylabel('global mean surface precipitation (mm/day)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 2.85 3.2]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%surface precipitation at 5 year avg%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='pcp'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.sfc.pcp.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.sfc.pcp.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.sfc.pcp.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.sfc.pcp.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.sfc.pcp.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.sfc.pcp.ann_stat.mmen.all; x6=[2015:5:2045];
+z1=AM4.h0.sfc.pcp.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.sfc.pcp.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.sfc.pcp.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.sfc.pcp.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.sfc.pcp.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.sfc.pcp.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.sfc.pcp.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.sfc.pcp.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,2);
+xlabel('year','FontSize',fsize); 
+ylabel('global mean surface precipitation (mm/day)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 2.85 3.2]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%TOA net radiative flux%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='netradtoa'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.toa.netrad.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.toa.netrad.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.toa.netrad.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.toa.netrad.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.toa.netrad.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.toa.netrad.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.toa.netrad.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.toa.netrad.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.toa.netrad.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.toa.netrad.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.toa.netrad.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.toa.netrad.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.toa.netrad.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.toa.netrad.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.toa.netrad.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.toa.netrad.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.toa.netrad.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,3);
+xlabel('year','FontSize',fsize); 
+ylabel('TOA net radiative flux (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 -1.5 6]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%TOA net LW radiative flux%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwnet'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.toa.lwnet.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.toa.lwnet.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.toa.lwnet.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.toa.lwnet.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.toa.lwnet.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.toa.lwnet.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.toa.lwnet.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.toa.lwnet.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.toa.lwnet.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.toa.lwnet.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.toa.lwnet.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.toa.lwnet.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.toa.lwnet.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.toa.lwnet.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.toa.lwnet.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.toa.lwnet.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.toa.lwnet.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,2);
+xlabel('year','FontSize',fsize); 
+ylabel('TOA net LW radiative flux (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 236 244]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%TOA net SW radiative flux%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='swnet'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.toa.swnet.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.toa.swnet.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.toa.swnet.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.toa.swnet.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.toa.swnet.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.toa.swnet.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.toa.swnet.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.toa.swnet.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.toa.swnet.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.toa.swnet.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.toa.swnet.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.toa.swnet.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.toa.swnet.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.toa.swnet.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.toa.swnet.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.toa.swnet.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.toa.swnet.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,2);
+xlabel('year','FontSize',fsize); 
+ylabel('TOA net SW radiative flux (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 237 246]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%TOA LW CRE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwcf'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.toa.lwcf.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.toa.lwcf.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.toa.lwcf.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.toa.lwcf.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.toa.lwcf.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.toa.lwcf.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.toa.lwcf.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.toa.lwcf.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.toa.lwcf.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.toa.lwcf.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.toa.lwcf.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.toa.lwcf.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.toa.lwcf.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.toa.lwcf.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.toa.lwcf.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.toa.lwcf.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.toa.lwcf.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,3);
+xlabel('year','FontSize',fsize); 
+ylabel('TOA LW cloud radiative effect (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 22.5 25.5]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%TOA SW CRE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='swcf'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.toa.swcf.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.toa.swcf.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.toa.swcf.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.toa.swcf.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.toa.swcf.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.toa.swcf.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.toa.swcf.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.toa.swcf.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.toa.swcf.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.toa.swcf.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.toa.swcf.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.toa.swcf.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.toa.swcf.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.toa.swcf.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.toa.swcf.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.toa.swcf.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.toa.swcf.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,3);
+xlabel('year','FontSize',fsize); 
+ylabel('TOA SW cloud radiative effect (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 -49.5 -46.5]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%TOA net LW clear-sky radiative flux%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwnet_clr'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.toa.lwnet_clr.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.toa.lwnet_clr.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.toa.lwnet_clr.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.toa.lwnet_clr.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.toa.lwnet_clr.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.toa.lwnet_clr.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.toa.lwnet_clr.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.toa.lwnet_clr.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.toa.lwnet_clr.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.toa.lwnet_clr.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.toa.lwnet_clr.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.toa.lwnet_clr.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.toa.lwnet_clr.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.toa.lwnet_clr.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.toa.lwnet_clr.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.toa.lwnet_clr.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.toa.lwnet_clr.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,2);
+xlabel('year','FontSize',fsize); 
+ylabel('TOA net LW clear-sky radiative flux (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 259 268]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%TOA net SW clear-sky radiative flux%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='swnet_clr'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.toa.swnet_clr.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.toa.swnet_clr.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.toa.swnet_clr.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.toa.swnet_clr.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.toa.swnet_clr.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.toa.swnet_clr.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.toa.swnet_clr.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.toa.swnet_clr.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.toa.swnet_clr.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.toa.swnet_clr.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.toa.swnet_clr.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.toa.swnet_clr.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.toa.swnet_clr.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.toa.swnet_clr.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.toa.swnet_clr.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.toa.swnet_clr.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.toa.swnet_clr.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,2);
+xlabel('year','FontSize',fsize); 
+ylabel('TOA net SW clear-sky radiative flux (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 286 293]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='ice'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.sfc.ice.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.sfc.ice.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.sfc.ice.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.sfc.ice.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.sfc.ice.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.sfc.ice.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=y1;%AM4.h0.sfc.ice.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.sfc.ice.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.sfc.ice.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.sfc.ice.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.sfc.ice.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.sfc.ice.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.sfc.ice.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.sfc.ice.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.sfc.ice.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.sfc.ice.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.sfc.ice.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,3);
+xlabel('year','FontSize',fsize); 
+ylabel('global sea-ice concentration','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 0 0.06]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%high cloud amount%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='qah'; s=AM4h.h0.s; lat=s.lat; lon=s.lon;
+y1=AM4h.h0.atm.qah.ann_stat.mmen.all; x1=[1950:5:2014];
+y2=CM4h.h1.atm.qah.ann_stat.mmen.all; x2=[1950:5:2014];
+y3=CM4h.h2.atm.qah.ann_stat.mmen.all; x3=[1950:5:2014];
+y4=CM4h.c0.atm.qah.ann_stat.mmen.all; x4=[1900:5:1900+155-1];
+y5=CM4h.w0.atm.qah.ann_stat.mmen.all; x5=[1900:5:1900+170-1];
+y6=AM4h.w0.atm.qah.ann_stat.mmen.all; x6=[2015:5:2049];
+z1=AM4.h0.atm.qah.ann_stat.mmen.all;  t1=[1950:5:2014];
+z2=CM4.h1.atm.qah.ann_stat.mmen.all;  t2=[1850:5:2014];
+z3=CM4.h2.atm.qah.ann_stat.mmen.all;  t3=[1850:5:2014];
+z4=CM4.h3.atm.qah.ann_stat.mmen.all;  t4=[1850:5:2014];
+z5=CM4.c0.atm.qah.ann_stat.mmen.all;  t5=[1700:5:1700+500-1];
+z6=CM4.w0.atm.qah.ann_stat.mmen.all;  t6=[1851:5:2000];
+Z1=SP4.c0.atm.qah.ann_stat.mmen.all;  T1=[1800:5:1800+200-1];
+Z2=SP4.w0.atm.qah.ann_stat.mmen.all;  T2=[1851:5:1851+200-1];
+Y1=ESM4.h0.atm.qah.ann_stat.mmen.all; t7=[1850:5:2014];
+Y2=ESM4.c0.atm.qah.ann_stat.mmen.all; t8=[1850:5:1850+300-1];
+Y3=ESM4.w0.atm.qah.ann_stat.mmen.all; t9=[1850:5:1850+300-1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.5; fsize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(x1,y1,    'k',   'LineWidth',lw1); hold on; 
+plot(x2,y2,    'g',   'LineWidth',lw1); hold on; 
+plot(x3,y3,    'c',   'LineWidth',lw1); hold on; 
+plot(x4,y4,    'b',   'LineWidth',lw1); hold on; 
+plot(x5,y5,    'r',   'LineWidth',lw1); hold on; 
+plot(x6,y6,    'm',   'LineWidth',lw1); hold on; 
+plot(t1,z1,    'k',   'LineWidth',lw2); hold on; 
+plot(t2,z2,    'g',   'LineWidth',lw2); hold on; 
+plot(t3,z3,    'c',   'LineWidth',lw2); hold on; 
+plot(t4,z4,    'y',   'LineWidth',lw2); hold on; 
+plot(t5,z5,    'b',   'LineWidth',lw2); hold on; 
+plot(t6,z6,    'm',   'LineWidth',lw2); hold on; 
+plot(T1,Z1,    'b--', 'LineWidth',lw3); hold on; 
+plot(T2,Z2,    'r--', 'LineWidth',lw3); hold on; 
+plot(t7,Y1,    'k-',  'LineWidth',lw3); hold on; 
+plot(t8,Y2,    'b-',  'LineWidth',lw3); hold on; 
+plot(t9,Y3,    'r-',  'LineWidth',lw3); hold on; 
+legend(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,3);
+xlabel('year','FontSize',fsize); 
+ylabel('high cloud amount (%)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1700 2200 36 39.5]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Gregory plot for netradtoa
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='greg_netradtoa';
+y1=CM4h.c0.sfc.tref.ann_stat.mmen.all;   y1_avg=mean(y1(4:end));
+y2=CM4h.w0.sfc.tref.ann_stat.mmen.all;   y2=y2-y1_avg;
+y3=CM4.c0.sfc.tref.ann_stat.mmen.all;    y3_avg=mean(y3(30:80));
+y4=CM4.w0.sfc.tref.ann_stat.mmen.all;    y4=y4-y3_avg;
+y5=SP4.c0.sfc.tref.ann_stat.mmen.all;    y5_avg=mean(y5(10:30));
+y6=SP4.w0.sfc.tref.ann_stat.mmen.all;    y6=y6-y5_avg;
+y7=ESM4.c0.sfc.tref.ann_stat.mmen.all;   y7_avg=mean(y7(10:30));
+y8=ESM4.w0.sfc.tref.ann_stat.mmen.all;   y8=y8-y7_avg;
+z1=CM4h.c0.toa.netrad.ann_stat.mmen.all; z1_avg=mean(z1(4:end));
+z2=CM4h.w0.toa.netrad.ann_stat.mmen.all; z2=z2-z1_avg;
+z3=CM4.c0.toa.netrad.ann_stat.mmen.all;  z3_avg=mean(z3(30:80));
+z4=CM4.w0.toa.netrad.ann_stat.mmen.all;  z4=z4-z3_avg;
+z5=SP4.c0.toa.netrad.ann_stat.mmen.all;  z5_avg=mean(z5(10:30));
+z6=SP4.w0.toa.netrad.ann_stat.mmen.all;  z6=z6-z5_avg;
+z7=ESM4.c0.toa.netrad.ann_stat.mmen.all; z7_avg=mean(z7(10:30));
+z8=ESM4.w0.toa.netrad.ann_stat.mmen.all; z8=z8-z7_avg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=1;  t2=10; x2 =getcorrslop(y2(t1:t2),z2(t1:t2));
+t1=11; t2=34; xx2=getcorrslop(y2(t1:t2),z2(t1:t2));
+t1=1;  t2=10; x4 =getcorrslop(y4(t1:t2),z4(t1:t2));
+t1=11; t2=30; xx4=getcorrslop(y4(t1:t2),z4(t1:t2));
+t1=1;  t2=10; x6 =getcorrslop(y6(t1:t2),z6(t1:t2));
+t1=11; t2=40; xx6=getcorrslop(y6(t1:t2),z6(t1:t2));
+t1=1;  t2=10; x8 =getcorrslop(y8(t1:t2),z8(t1:t2));
+t1=11; t2=40; xx8=getcorrslop(y8(t1:t2),z8(t1:t2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 800, 700]*1.5; fsize=16; msize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(y2,z2, 'r.','MarkerSize',msize); hold on; 
+plot(y4,z4, 'g.','MarkerSize',msize); hold on; 
+plot(y6,z6, 'b.','MarkerSize',msize); hold on; 
+plot(y8,z8, 'k.','MarkerSize',msize); hold on; 
+v=x2;  plot(v.xa,v.ya,'r:', 'LineWidth',lw1);
+v=xx2; plot(v.xb,v.yb,'r--','LineWidth',lw1);
+v=x4;  plot(v.xa,v.ya,'g:', 'LineWidth',lw1);
+v=xx4; plot(v.xb,v.yb,'g--','LineWidth',lw1);
+v=x6;  plot(v.xa,v.ya,'b:', 'LineWidth',lw1);
+v=xx6; plot(v.xb,v.yb,'b--','LineWidth',lw1);
+v=x8;  plot(v.xa,v.ya,'k:', 'LineWidth',lw1);
+v=xx8; plot(v.xb,v.yb,'k--','LineWidth',lw1);
+legend('C192CM4','CM4','SPEAR','ESM4',1);
+xlabel('global surface air temperature anomaly (K)','FontSize',fsize); 
+ylabel('TOA net radiative flux anomaly (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([0 10 0 8.5]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Gregory plot for CRE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='greg_ttcf';
+y1=CM4h.c0.sfc.tref.ann_stat.mmen.all;   y1_avg=mean(y1(4:end));
+y2=CM4h.w0.sfc.tref.ann_stat.mmen.all;   y2=y2-y1_avg;
+y3=CM4.c0.sfc.tref.ann_stat.mmen.all;    y3_avg=mean(y3(30:80));
+y4=CM4.w0.sfc.tref.ann_stat.mmen.all;    y4=y4-y3_avg;
+y5=SP4.c0.sfc.tref.ann_stat.mmen.all;    y5_avg=mean(y5(10:30));
+y6=SP4.w0.sfc.tref.ann_stat.mmen.all;    y6=y6-y5_avg;
+y7=ESM4.c0.sfc.tref.ann_stat.mmen.all;   y7_avg=mean(y7(10:30));
+y8=ESM4.w0.sfc.tref.ann_stat.mmen.all;   y8=y8-y7_avg;
+z1=CM4h.c0.toa.ttcf.ann_stat.mmen.all;   z1_avg=mean(z1(4:end));
+z2=CM4h.w0.toa.ttcf.ann_stat.mmen.all;   z2=z2-z1_avg;
+z3=CM4.c0.toa.ttcf.ann_stat.mmen.all;    z3_avg=mean(z3(30:80));
+z4=CM4.w0.toa.ttcf.ann_stat.mmen.all;    z4=z4-z3_avg;
+z5=SP4.c0.toa.ttcf.ann_stat.mmen.all;    z5_avg=mean(z5(10:30));
+z6=SP4.w0.toa.ttcf.ann_stat.mmen.all;    z6=z6-z5_avg;
+z7=ESM4.c0.toa.ttcf.ann_stat.mmen.all;   z7_avg=mean(z7(10:30));
+z8=ESM4.w0.toa.ttcf.ann_stat.mmen.all;   z8=z8-z7_avg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=1;  t2=10; x2 =getcorrslop(y2(t1:t2),z2(t1:t2));
+t1=11; t2=34; xx2=getcorrslop(y2(t1:t2),z2(t1:t2));
+t1=1;  t2=10; x4 =getcorrslop(y4(t1:t2),z4(t1:t2));
+t1=11; t2=30; xx4=getcorrslop(y4(t1:t2),z4(t1:t2));
+t1=1;  t2=10; x6 =getcorrslop(y6(t1:t2),z6(t1:t2));
+t1=11; t2=40; xx6=getcorrslop(y6(t1:t2),z6(t1:t2));
+t1=1;  t2=10; x8 =getcorrslop(y8(t1:t2),z8(t1:t2));
+t1=11; t2=40; xx8=getcorrslop(y8(t1:t2),z8(t1:t2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 800, 700]*1; fsize=16; msize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(y2,z2, 'r.','MarkerSize',msize); hold on; 
+plot(y4,z4, 'g.','MarkerSize',msize); hold on; 
+plot(y6,z6, 'b.','MarkerSize',msize); hold on; 
+plot(y8,z8, 'k.','MarkerSize',msize); hold on; 
+v=x2;  plot(v.xa,v.ya,'r:', 'LineWidth',lw1);
+v=xx2; plot(v.xb,v.yb,'r--','LineWidth',lw1);
+v=x4;  plot(v.xa,v.ya,'g:', 'LineWidth',lw1);
+v=xx4; plot(v.xb,v.yb,'g--','LineWidth',lw1);
+v=x6;  plot(v.xa,v.ya,'b:', 'LineWidth',lw1);
+v=xx6; plot(v.xb,v.yb,'b--','LineWidth',lw1);
+v=x8;  plot(v.xa,v.ya,'k:', 'LineWidth',lw1);
+v=xx8; plot(v.xb,v.yb,'k--','LineWidth',lw1);
+legend('C192CM4','CM4','SPEAR','ESM4',2);
+xlabel('global surface air temperature anomaly (K)','FontSize',fsize); 
+ylabel('TOA cloud radiative effect anomaly (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([0 10 -3 3]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Gregory plot for SWCF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='greg_swcf';
+y1=CM4h.c0.sfc.tref.ann_stat.mmen.all;   y1_avg=mean(y1(4:end));
+y2=CM4h.w0.sfc.tref.ann_stat.mmen.all;   y2=y2-y1_avg;
+y3=CM4.c0.sfc.tref.ann_stat.mmen.all;    y3_avg=mean(y3(30:80));
+y4=CM4.w0.sfc.tref.ann_stat.mmen.all;    y4=y4-y3_avg;
+y5=SP4.c0.sfc.tref.ann_stat.mmen.all;    y5_avg=mean(y5(10:30));
+y6=SP4.w0.sfc.tref.ann_stat.mmen.all;    y6=y6-y5_avg;
+y7=ESM4.c0.sfc.tref.ann_stat.mmen.all;   y7_avg=mean(y7(10:30));
+y8=ESM4.w0.sfc.tref.ann_stat.mmen.all;   y8=y8-y7_avg;
+z1=CM4h.c0.toa.swcf.ann_stat.mmen.all;   z1_avg=mean(z1(4:end));
+z2=CM4h.w0.toa.swcf.ann_stat.mmen.all;   z2=z2-z1_avg;
+z3=CM4.c0.toa.swcf.ann_stat.mmen.all;    z3_avg=mean(z3(30:80));
+z4=CM4.w0.toa.swcf.ann_stat.mmen.all;    z4=z4-z3_avg;
+z5=SP4.c0.toa.swcf.ann_stat.mmen.all;    z5_avg=mean(z5(10:30));
+z6=SP4.w0.toa.swcf.ann_stat.mmen.all;    z6=z6-z5_avg;
+z7=ESM4.c0.toa.swcf.ann_stat.mmen.all;   z7_avg=mean(z7(10:30));
+z8=ESM4.w0.toa.swcf.ann_stat.mmen.all;   z8=z8-z7_avg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=1;  t2=10; x2 =getcorrslop(y2(t1:t2),z2(t1:t2));
+t1=11; t2=34; xx2=getcorrslop(y2(t1:t2),z2(t1:t2));
+t1=1;  t2=10; x4 =getcorrslop(y4(t1:t2),z4(t1:t2));
+t1=11; t2=30; xx4=getcorrslop(y4(t1:t2),z4(t1:t2));
+t1=1;  t2=10; x6 =getcorrslop(y6(t1:t2),z6(t1:t2));
+t1=11; t2=40; xx6=getcorrslop(y6(t1:t2),z6(t1:t2));
+t1=1;  t2=10; x8 =getcorrslop(y8(t1:t2),z8(t1:t2));
+t1=11; t2=40; xx8=getcorrslop(y8(t1:t2),z8(t1:t2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 800, 700]*1; fsize=16; msize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(y2,z2, 'r.','MarkerSize',msize); hold on; 
+plot(y4,z4, 'g.','MarkerSize',msize); hold on; 
+plot(y6,z6, 'b.','MarkerSize',msize); hold on; 
+plot(y8,z8, 'k.','MarkerSize',msize); hold on; 
+v=x2;  plot(v.xa,v.ya,'r:', 'LineWidth',lw1);
+v=xx2; plot(v.xb,v.yb,'r--','LineWidth',lw1);
+v=x4;  plot(v.xa,v.ya,'g:', 'LineWidth',lw1);
+v=xx4; plot(v.xb,v.yb,'g--','LineWidth',lw1);
+v=x6;  plot(v.xa,v.ya,'b:', 'LineWidth',lw1);
+v=xx6; plot(v.xb,v.yb,'b--','LineWidth',lw1);
+v=x8;  plot(v.xa,v.ya,'k:', 'LineWidth',lw1);
+v=xx8; plot(v.xb,v.yb,'k--','LineWidth',lw1);
+legend('C192CM4','CM4','SPEAR','ESM4',3);
+xlabel('global surface air temperature anomaly (K)','FontSize',fsize); 
+ylabel('TOA SW cloud radiative effect anomaly (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([0 7 -1 2]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Gregory plot for LWCF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='greg_lwcf';
+y1=CM4h.c0.sfc.tref.ann_stat.mmen.all;   y1_avg=mean(y1(4:end));
+y2=CM4h.w0.sfc.tref.ann_stat.mmen.all;   y2=y2-y1_avg;
+y3=CM4.c0.sfc.tref.ann_stat.mmen.all;    y3_avg=mean(y3(30:80));
+y4=CM4.w0.sfc.tref.ann_stat.mmen.all;    y4=y4-y3_avg;
+y5=SP4.c0.sfc.tref.ann_stat.mmen.all;    y5_avg=mean(y5(10:30));
+y6=SP4.w0.sfc.tref.ann_stat.mmen.all;    y6=y6-y5_avg;
+y7=ESM4.c0.sfc.tref.ann_stat.mmen.all;   y7_avg=mean(y7(10:30));
+y8=ESM4.w0.sfc.tref.ann_stat.mmen.all;   y8=y8-y7_avg;
+z1=CM4h.c0.toa.lwcf.ann_stat.mmen.all;   z1_avg=mean(z1(4:end));
+z2=CM4h.w0.toa.lwcf.ann_stat.mmen.all;   z2=z2-z1_avg;
+z3=CM4.c0.toa.lwcf.ann_stat.mmen.all;    z3_avg=mean(z3(30:80));
+z4=CM4.w0.toa.lwcf.ann_stat.mmen.all;    z4=z4-z3_avg;
+z5=SP4.c0.toa.lwcf.ann_stat.mmen.all;    z5_avg=mean(z5(10:30));
+z6=SP4.w0.toa.lwcf.ann_stat.mmen.all;    z6=z6-z5_avg;
+z7=ESM4.c0.toa.lwcf.ann_stat.mmen.all;   z7_avg=mean(z7(10:30));
+z8=ESM4.w0.toa.lwcf.ann_stat.mmen.all;   z8=z8-z7_avg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t1=1;  t2=10; x2 =getcorrslop(y2(t1:t2),z2(t1:t2));
+t1=11; t2=34; xx2=getcorrslop(y2(t1:t2),z2(t1:t2));
+t1=1;  t2=10; x4 =getcorrslop(y4(t1:t2),z4(t1:t2));
+t1=11; t2=30; xx4=getcorrslop(y4(t1:t2),z4(t1:t2));
+t1=1;  t2=10; x6 =getcorrslop(y6(t1:t2),z6(t1:t2));
+t1=11; t2=40; xx6=getcorrslop(y6(t1:t2),z6(t1:t2));
+t1=1;  t2=10; x8 =getcorrslop(y8(t1:t2),z8(t1:t2));
+t1=11; t2=40; xx8=getcorrslop(y8(t1:t2),z8(t1:t2));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 800, 700]*1; fsize=16; msize=16; lw1=2; lw2=1; lw3=3;
+handle=figure('Position',pms,'visible','on');
+plot(y2,z2, 'r.','MarkerSize',msize); hold on; 
+plot(y4,z4, 'g.','MarkerSize',msize); hold on; 
+plot(y6,z6, 'b.','MarkerSize',msize); hold on; 
+plot(y8,z8, 'k.','MarkerSize',msize); hold on; 
+v=x2;  plot(v.xa,v.ya,'r:', 'LineWidth',lw1);
+v=xx2; plot(v.xb,v.yb,'r--','LineWidth',lw1);
+v=x4;  plot(v.xa,v.ya,'g:', 'LineWidth',lw1);
+v=xx4; plot(v.xb,v.yb,'g--','LineWidth',lw1);
+v=x6;  plot(v.xa,v.ya,'b:', 'LineWidth',lw1);
+v=xx6; plot(v.xb,v.yb,'b--','LineWidth',lw1);
+v=x8;  plot(v.xa,v.ya,'k:', 'LineWidth',lw1);
+v=xx8; plot(v.xb,v.yb,'k--','LineWidth',lw1);
+legend('C192CM4','CM4','SPEAR','ESM4',2);
+xlabel('global surface air temperature anomaly (K)','FontSize',fsize); 
+ylabel('TOA LW cloud radiative effect anomaly (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([0 7 -2 1]);
+visfig='off'; figpath='./fig_hiresmip/'; expn='hiresmip';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+lon=s.lon; lat=s.lat;
+t1=31; t2=65; t=[t1:t2]; 
+A=squeeze(AM4.h0.sfc.tsurf.all(t1:t2,:,:,:));
+AM4.h0.tsurf_trend = get_mytrend(A,t);
+
+A=squeeze(CM4h.h1.sfc.tsurf.all(t1:t2,:,:,:));
+CM4h.h1.tsurf_trend = get_mytrend(A,t);
+
+t1=131; t2=165; t=[t1:t2]; 
+A=squeeze(CM4.h1.sfc.tsurf.all(t1:t2,:,:,:));
+CM4.h1.tsurf_trend = get_mytrend(A,t);
+
+t1=1; t2=2; t=[t1:t2]; 
+A=squeeze(CM4.w0.sfc.tsurf.all(t1:t2,:,:,:));  CM4.w0.tsurf_trend = get_mytrend(A,t);
+A=squeeze(ESM4.w0.sfc.tsurf.all(t1:t2,:,:,:)); ESM4.w0.tsurf_trend= get_mytrend(A,t);
+
+y0=ESM4.w0.tsurf_trend.ann;  cmin=-2; cmax=2;
+figure; pcolor(lon,lat,y0); caxis([cmin cmax]); shading flat; colorbar; 
+y1=CM4.w0.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y1); caxis([cmin cmax]); shading flat; colorbar; 
+
+
+figure; pcolor(lon,lat,y0-y1); caxis([cmin cmax]); shading flat; colorbar; 
+
+
+y0=CM4.h1.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y0); caxis([-0.2 0.2]); shading flat; colorbar; 
+y0=CM4h.h1.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y0); caxis([-0.2 0.2]); shading flat; colorbar; 
+
+
+
+y0=AM4.h0.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y0); caxis([-0.2 0.2]); shading flat; colorbar; 
+y0=CM4.h1.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y0); caxis([-0.2 0.2]); shading flat; colorbar; 
+y0=CM4h.h1.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y0); caxis([-0.2 0.2]); shading flat; colorbar; 
+
+t1=1; t2=10; t=[t1:t2]; 
+A=squeeze(CM4.w0.sfc.tsurf.all(t1:t2,:,:,:));
+CM4.w0.tsurf_trend = get_mytrend(A,t);
+
+t1=1; t2=10; t=[t1:t2]; 
+A=squeeze(SP4.w0.sfc.tsurf.all(t1:t2,:,:,:));
+SP4.w0.tsurf_trend = get_mytrend(A,t);
+
+y0=CM4.w0.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y0); caxis([-0.5 0.5]); shading flat; colorbar; 
+y0=SP4.w0.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y0); caxis([-0.5 0.5]); shading flat; colorbar; 
+
+y0=SP4.w0.tsurf_trend.ann-CM4.w0.tsurf_trend.ann; 
+figure; pcolor(lon,lat,y0); caxis([-0.5 0.5]); shading flat; colorbar; 
+
+y=AM4.h0.tsurf_trend.mon; 
+for m=1:12;
+  figure;
+  pcolor(lon,lat,squeeze(y(m,:,:))); caxis([-0.2 0.2]); 
+  shading flat; colorbar; 
+end
+
+t1=31; t2=65; t=[t1:t2]; lon=s.lon; lat=s.lat;
+A=squeeze(CM4h.h1.sfc.tsurf.all(t1:t2,:,:,:)); A0=squeeze(mean(A,2));
+y=trend(A,t,1); y0=trend(A0,t,1); y_mod=y0;
+figure; pcolor(lon,lat,y_mod-y_obs); caxis([-0.2 0.2]); shading flat; colorbar; 
+
+figure; pcolor(lon,lat,y0); caxis([-0.2 0.2]); shading flat; colorbar; 
+for m=1:12;
+  figure;
+  pcolor(lon,lat,squeeze(y(m,:,:))); caxis([-0.2 0.2]); 
+  shading flat; colorbar; 
+end
+
+t1=131; t2=165; t=[t1:t2]; lon=s.lon; lat=s.lat;
+A=squeeze(CM4.h1.sfc.tsurf.all(t1:t2,:,:,:)); A0=squeeze(mean(A,2));
+y=trend(A,t,1); y0=trend(A0,t,1); y_mod=y0;
+figure; pcolor(lon,lat,y_mod-y_obs); caxis([-0.2 0.2]); shading flat; colorbar; 
+figure; pcolor(lon,lat,y0); caxis([-0.2 0.2]); shading flat; colorbar; 
+for m=1:12;
+  figure;
+  pcolor(lon,lat,squeeze(y(m,:,:))); caxis([-0.2 0.2]); 
+  shading flat; colorbar; 
+end
+
+t1=131; t2=165; t=[t1:t2]; lon=s.lon; lat=s.lat;
+A=squeeze(SP.h1.sfc.tsurf.all(t1:t2,:,:,:)); A0=squeeze(mean(A,2));
+y=trend(A,t,1); y0=trend(A0,t,1); y_mod=y0;
+figure; pcolor(lon,lat,y_mod-y_obs); caxis([-0.2 0.2]); shading flat; colorbar; 
+figure; pcolor(lon,lat,y0); caxis([-0.2 0.2]); shading flat; colorbar; 
+for m=1:12;
+  figure;
+  pcolor(lon,lat,squeeze(y(m,:,:))); caxis([-0.2 0.2]); 
+  shading flat; colorbar; 
+end
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section I: Analysis of historical runs%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+g.gb=readsat_giss_gb(); g.nh=readsat_giss_nh(); g.sh=readsat_giss_sh(); 
+yr1=1951; yr2=1980; vname='SAT_1951_1980';
+%yr1=1881; yr2=1920; vname='SAT_1881_1920';
+%yr1=1920; yr2=1960; vname='SAT_1920_1959';
+id=(g.gb.year>=yr1)&(g.gb.year<=yr2); 
+g.gb.all=g.gb.all-mean(g.gb.all(id));
+g.nh.all=g.nh.all-mean(g.nh.all(id));
+g.sh.all=g.sh.all-mean(g.sh.all(id)); tf=273.15; lw=2;
+%AMIP
+y0=am4.h0.sfc.tref.ts.org_ann; t0=[1870:2014];
+Y0=AM4.h0.sfc.tref.ts.org_ann; T0=[1950:2014];
+Ya=AM4.ha.sfc.tref.ts.org_ann; Ta=[1950:2014];
+Yb=AM4.hb.sfc.tref.ts.org_ann; Tb=[1950:2014];
+y1=AM4.h1.sfc.tref.ts.org_ann; t1=[1950:2014];
+y2=AM4.h2.sfc.tref.ts.org_ann; t2=[1950:2014];
+%z=AM4.ha.sfc.sst.tavg0-am4.h0.sfc.sst.tavg0;
+%CMs
+tt0=[1:65]; tt1=[1950:2014]; yy0=get_tref_hist(CM4,tt0,tt1,yr1,yr2);
+zz0=CM4.c0.sfc.tref.ts.org_ann(1:65); zz1=CM4.h0.sfc.tref.ts.org_ann;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.; fsize=16; x=[5:5:20]-2.5; 
+x1=[5:5:140]-2.5; x2=[65:5:140]-2.5; lw=2;
+handle=figure('Position',pms,'visible','on'); lw=3;
+plot(t0,y0-tf,    'b',   'LineWidth',lw); hold on; 
+plot(T0,Y0-tf,    'b--', 'LineWidth',lw); hold on; 
+plot(Ta,Ya-tf,    'k',   'LineWidth',lw); hold on; 
+plot(Tb,Yb-tf,    'k--', 'LineWidth',lw); hold on; 
+%plot(t1,y1-tf,    'g',   'LineWidth',lw); hold on; 
+%plot(t2,y2-tf,    'g--',   'LineWidth',lw); hold on; 
+plot(t1,yy0.gb-tf,'r',  'LineWidth',lw*2); %plot(t1,zz1-tf,'g'); 
+plot(t1,zz0-tf,   'c',  'LineWidth',lw*2);
+plot([1850:1979],cm4.h0.sfc.tref.ts.org_ann-tf,       'r--','LineWidth', lw*2);
+plot([1850:1979],cm4.c0.sfc.tref.ts.org_ann(1:130)-tf,'c--','LineWidth', lw*2);
+legend('c96AM4-AMIP-PCMDI-SST','c192AM4-AMIP-PCMDI-SST',...
+       'C192AM4-AMIP-HIRESMIP-SST-monthly','C192AM4-AMIP-HIRESMIP-SST-daily',...
+       'C192AM4+1/4MOM6-historical','C192AM4+1/4MOM6-1850control',...
+       'CM4-historical','CM4-PI-Control-C',2);
+xlabel('year','FontSize',fsize); 
+ylabel('Surface air temperature anomalies (K)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1850 2017 12.4 14.5]);
+visfig='off'; figpath='./fig_am4/'; expn='hiresmip'; vname='tas';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+y0=am4.h0.toa.netrad.ann_stat.mmen.all; t0=[1870:5:2014];
+Y0=AM4.h0.toa.netrad.ann_stat.mmen.all; T0=[1950:5:2014];
+Ya=AM4.ha.toa.netrad.ann_stat.mmen.all; Ta=[1950:5:2014];
+Yb=AM4.hb.toa.netrad.ann_stat.mmen.all; Tb=[1950:5:2014];
+y1=AM4.h1.toa.netrad.ann_stat.mmen.all; t1=[1950:5:2014];
+y2=AM4.h2.toa.netrad.ann_stat.mmen.all; t2=[1950:5:2014];
+%z=AM4.ha.toa.sst.tavg0-am4.h0.toa.sst.tavg0;
+%CMs
+zz1=CM4.c0.toa.netrad.ann_stat.mmen.all(1:13);       tt1=[1950:5:2014];
+zz2=CM4.h0.toa.netrad.ann_stat.mmen.all;       tt2=[1950:5:2014];
+zz3=cm4.c0.toa.netrad.ann_stat.mmen.all;       tt3=[1850:5:1850+129];
+zz4=cm4.h0.toa.netrad.ann_stat.mmen.all;       tt4=[1850:5:1964];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.; fsize=16; x=[5:5:20]-2.5; 
+x1=[5:5:140]-2.5; x2=[65:5:140]-2.5; lw=2;
+handle=figure('Position',pms,'visible','on'); lw=3;
+plot(t0,y0,    'b',   'LineWidth',lw); hold on; 
+plot(T0,Y0,    'b--', 'LineWidth',lw); hold on; 
+plot(Ta,Ya,    'k',   'LineWidth',lw); hold on; 
+plot(Tb,Yb,    'k--', 'LineWidth',lw); hold on; 
+%plot(t1,y1,    'g',   'LineWidth',lw); hold on; 
+%plot(t2,y2,    'g--',   'LineWidth',lw); hold on; 
+plot(tt1,zz1,   'c',  'LineWidth',lw*2);
+plot(tt2,zz2,   'r',  'LineWidth',lw*2);
+plot(tt3,zz3,   'c--',  'LineWidth',lw*2);
+plot(tt4,zz4,   'r--',  'LineWidth',lw*2);
+legend('c96AM4-AMIP-PCMDI-SST','c192AM4-AMIP-PCMDI-SST',...
+       'C192AM4-AMIP-HIRESMIP-SST-monthly','C192AM4-AMIP-HIRESMIP-SST-daily',...
+       'C192AM4+1/4MOM6-historical','C192AM4+1/4MOM6-1850control',...
+       'CM4-historical','CM4-PI-Control-C',2);
+xlabel('year','FontSize',fsize); 
+ylabel('Surface air temperature anomalies (K)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1850 2017 -1 1.5]);
+visfig='off'; figpath='./fig_am4/'; expn='hiresmip'; vname='netradtoa';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%--------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.; fsize=28; x=[5:5:20]-2.5; 
+x1=[5:5:140]-2.5; x2=[65:5:140]-2.5; 
+handle=figure('Position',pms,'visible','on'); lw=3;
+plot(g.gb.year,g.gb.all,'k',  'LineWidth',lw); hold on; s0='OBS (GISS)';
+%plot(tx,   yx.gb,  'g-', 'LineWidth',lw); sx='AM4-longamip';
+plot(t2,    y2.gb,  'g-', 'LineWidth',lw); s2='CM2.1';
+plot(t3,    y3.gb,  'b-', 'LineWidth',lw); s3='CM3';
+plot(t4,    y4.gb,  'r-', 'LineWidth',lw); s4='CM4';
+plot([yr1 yr1],[-2 2],'k:'); plot([yr2 yr2],[-2 2],'k:');
+plot([1840 2017],[0 0], 'k:');
+legend(s0,s2,s3,s4,2); %legend(s0,sx,s1,s4,2);
+xlabel('year','FontSize',fsize); 
+ylabel('Surface air temperature anomalies (K)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1860 2017 -0.7 1.7]);
+visfig='off'; figpath='./fig_am4/'; expn='cm4_hist'; vname='tas_gb';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+pms=[ 0, 0, 1200, 800]*1.5;
+handle=figure('Position',pms,'visible','on'); lw=2;
+plot([1870:2014],am4.h0.sfc.tref.ts.org_ann, 'g-', 'LineWidth',lw); hold on;
+plot([1850:2014],cm4.h0.sfc.tref.ts.org_ann, 'r-', 'LineWidth',lw); hold on;
+plot([1861:2000],cm21.h0.sfc.tref.ts.org_ann,'k-', 'LineWidth',lw); hold on;
+plot([1861:2005],cm3.h0.sfc.tref.ts.org_ann, 'b-', 'LineWidth',lw); hold on;
+plot([1850:2014],cm4.v0.sfc.tref.ts.org_ann, 'r--','LineWidth',lw); hold on;
+plot([1861:1960],cm21.v0.sfc.tref.ts.org_ann,'k--','LineWidth',lw'); hold on;
+plot([1861:1940],cm3.v0.sfc.tref.ts.org_ann, 'b--','LineWidth',lw'); hold on;
+legend('AM4','CM4','CM2.1','CM3','CM2.1-CTL','CM3-CTL',2);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 800]*1.5;
+handle=figure('Position',pms,'visible','on'); lw=2;
+plot([1870:2014],am4.h0.sfc.tref.ts.org_ann, 'g-', 'LineWidth',lw); hold on;
+plot([1850:2014],cm4.h0.sfc.tref.ts.org_ann, 'r-', 'LineWidth',lw); hold on;
+plot([1861:2000],cm21.h0.sfc.tref.ts.org_ann,'k-', 'LineWidth',lw); hold on;
+plot([1861:2005],cm3.h0.sfc.tref.ts.org_ann, 'b-', 'LineWidth',lw); hold on;
+plot([1850:2014],cm4.v0.sfc.tref.ts.org_ann, 'r--','LineWidth',lw); hold on;
+plot([1861:1960],cm21.v0.sfc.tref.ts.org_ann,'k--','LineWidth',lw'); hold on;
+plot([1861:1940],cm3.v0.sfc.tref.ts.org_ann, 'b--','LineWidth',lw'); hold on;
+legend('AM4','CM4','CM2.1','CM3','CM2.1-CTL','CM3-CTL',2);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section I: Analysis of historical runs%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+g.gb=readsat_giss_gb(); g.nh=readsat_giss_nh(); g.sh=readsat_giss_sh(); 
+%yr1=1951; yr2=1980; vname='SAT_1951_1980';
+yr1=1881; yr2=1920; vname='SAT_1881_1920';
+%yr1=1920; yr2=1960; vname='SAT_1920_1959';
+id=(g.gb.year>=yr1)&(g.gb.year<=yr2); 
+g.gb.all=g.gb.all-mean(g.gb.all(id));
+g.nh.all=g.nh.all-mean(g.nh.all(id));
+g.sh.all=g.sh.all-mean(g.sh.all(id));
+%for longamip--------------------
+tx=[1871:2015]; id=(tx>=yr1)&(tx<=yr2);
+a=am4.h0.sfc.tref.ts.org_ann;    yx.gb=a-mean(a(id));
+a=am4.h0.sfc.tref.ts.org_ann_nh; yx.nh=a-mean(a(id));
+a=am4.h0.sfc.tref.ts.org_ann_sh; yx.sh=a-mean(a(id));
+%for cm2.1-------------------------
+t=[1861:1940]; t2=[1861:2000]; y2=get_tref_hist(cm21,t,t2,yr1,yr2);
+%for cm3-------------------------
+t=[1861:1940]; t3=[1861:2005]; y3=get_tref_hist(cm3, t,t3,yr1,yr2);
+%for CM4-----------------------
+t=[1850:2014]; t4=[1850:2014]; y4=get_tref_hist(cm4, t,t4,yr1,yr2);
+%--------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 700]*1.; fsize=28; x=[5:5:20]-2.5; 
+x1=[5:5:140]-2.5; x2=[65:5:140]-2.5; 
+handle=figure('Position',pms,'visible','on'); lw=3;
+plot(g.gb.year,g.gb.all,'k',  'LineWidth',lw); hold on; s0='OBS (GISS)';
+%plot(tx,   yx.gb,  'g-', 'LineWidth',lw); sx='AM4-longamip';
+plot(t2,    y2.gb,  'g-', 'LineWidth',lw); s2='CM2.1';
+plot(t3,    y3.gb,  'b-', 'LineWidth',lw); s3='CM3';
+plot(t4,    y4.gb,  'r-', 'LineWidth',lw); s4='CM4';
+plot([yr1 yr1],[-2 2],'k:'); plot([yr2 yr2],[-2 2],'k:');
+plot([1840 2017],[0 0], 'k:');
+legend(s0,s2,s3,s4,2); %legend(s0,sx,s1,s4,2);
+xlabel('year','FontSize',fsize); 
+ylabel('Surface air temperature anomalies (K)','FontSize',fsize);
+set(gca,'FontSize',fsize); axis([1860 2017 -0.7 1.7]);
+visfig='off'; figpath='./fig_am4/'; expn='cm4_hist'; vname='tas_gb';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig 3 SWABS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='swabs'; unit='(W/m2)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=am4.v1.s; %lat=s.lat; lon=s.lon; xy=[0 360 -90 90]; mv=-999;
+v=o;      zo=squeeze(v.toa.swnet.sea(k,:,:)); s.so='CERES';
+v=am4.v0; z1=squeeze(v.toa.swnet.sea(k,:,:)); s.s1='AM4p0';
+v=am2.v0; z2=squeeze(v.toa.swnet.sea(k,:,:)); s.s2='AM2.1';
+v=am3.v0; z3=squeeze(v.toa.swnet.sea(k,:,:)); s.s3='AM3';
+b1=z1-zo; b2=z2-zo; b3=z3-zo; 
+a=o.aa; v=am4.v0; v.ss=ss; v.varn=varn; v.expn='AM4p0'; 
+e=b1; v.rms1=sqrt(mean(mean(e.*e.*a))); v.bias1=mean(mean(e.*a)); v.corr1=corrcoef(z1,zo);
+e=b2; v.rms2=sqrt(mean(mean(e.*e.*a))); v.bias2=mean(mean(e.*a)); v.corr2=corrcoef(z2,zo);
+e=b3; v.rms3=sqrt(mean(mean(e.*e.*a))); v.bias3=mean(mean(e.*a)); v.corr3=corrcoef(z3,zo);
+form='(BIAS=%5.2f; RMSE=%5.2f)'; fm='MEAN=%5.2f';
+v.s1=sprintf(fm,mean(mean(z1.*a))); v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},'; ',v.s1,')'];
+v.s2=sprintf(fm,mean(mean(zo.*a))); v.s2=['(b) CERES-EBAF-ed2.8 (2001-2015; ',v.ss{k},'; ',v.s2,')'];
+v.s3=sprintf(form,v.bias1,v.rms1); v.s3=['(c) AM4.0 minus CERES ',v.s3];
+v.s4=sprintf(form,v.bias2,v.rms2); v.s4=['(d) AM2.1 minus CERES ',v.s4];
+v.s5=sprintf(form,v.bias3,v.rms3); v.s5=['(e) AM3 minus CERES ',v.s5];
+v.c1=25;    v.c2=410;  v.vbino=[v.c1:10:v.c2]; v.unit=unit;
+v.cmin=-60; v.cmax=60; v.vbin =[v.cmin:5:v.cmax]; 
+plot_5panel_mapp(k,v,s,z1,zo,b1,b2,b3,0)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig 5 OLR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=5; varn='olr'; unit='(W/m2)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=am4.v1.s; 
+v=o;      zo=squeeze(v.toa.lwnet.sea(k,:,:)); s.so='CERES';
+v=am4.v0; z1=squeeze(v.toa.lwnet.sea(k,:,:)); s.s1='AM4p0';
+v=am2.v0; z2=squeeze(v.toa.lwnet.sea(k,:,:)); s.s2='AM2.1';
+v=am3.v0; z3=squeeze(v.toa.lwnet.sea(k,:,:)); s.s3='AM3';
+b1=z1-zo; b2=z2-zo; b3=z3-zo; 
+a=o.aa; v=am4.v0; v.ss=ss; v.varn=varn; v.expn='AM4p0'; 
+e=b1; v.rms1=sqrt(mean(mean(e.*e.*a))); v.bias1=mean(mean(e.*a)); v.corr1=corrcoef(z1,zo);
+e=b2; v.rms2=sqrt(mean(mean(e.*e.*a))); v.bias2=mean(mean(e.*a)); v.corr2=corrcoef(z2,zo);
+e=b3; v.rms3=sqrt(mean(mean(e.*e.*a))); v.bias3=mean(mean(e.*a)); v.corr3=corrcoef(z3,zo);
+form='(BIAS=%5.2f; RMSE=%5.2f)'; fm='MEAN=%5.2f';
+v.s1=sprintf(fm,mean(mean(z1.*a))); v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},'; ',v.s1,')'];
+v.s2=sprintf(fm,mean(mean(zo.*a))); v.s2=['(b) CERES-EBAF-ed2.8 (2001-2015; ',v.ss{k},'; ',v.s2,')'];
+v.s3=sprintf(form,v.bias1,v.rms1); v.s3=['(c) AM4.0 minus CERES ',v.s3];
+v.s4=sprintf(form,v.bias2,v.rms2); v.s4=['(d) AM2.1 minus CERES ',v.s4];
+v.s5=sprintf(form,v.bias3,v.rms3); v.s5=['(e) AM3 minus CERES ',v.s5];
+v.c1=120;   v.c2=350;  v.vbino=[v.c1:10:v.c2]; v.unit=unit;
+v.cmin=-34; v.cmax=34; v.vbin =[v.cmin:5:v.cmax]; 
+plot_5panel_mapp(k,v,s,z1,zo,b1,b2,b3,0)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig 6 NETRAD
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=5; varn='netrad'; unit='(W/m2)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=am4.v1.s; 
+v=o;      zo=squeeze(v.toa.netrad.sea(k,:,:)); s.so='CERES';
+v=am4.v0; z1=squeeze(v.toa.netrad.sea(k,:,:)); s.s1='AM4p0';
+v=am2.v0; z2=squeeze(v.toa.netrad.sea(k,:,:)); s.s2='AM2.1';
+v=am3.v0; z3=squeeze(v.toa.netrad.sea(k,:,:)); s.s3='AM3';
+b1=z1-zo; b2=z2-zo; b3=z3-zo; 
+a=o.aa; v=am4.v0; v.ss=ss; v.varn=varn; v.expn='AM4p0'; 
+e=b1; v.rms1=sqrt(mean(mean(e.*e.*a))); v.bias1=mean(mean(e.*a)); v.corr1=corrcoef(z1,zo);
+e=b2; v.rms2=sqrt(mean(mean(e.*e.*a))); v.bias2=mean(mean(e.*a)); v.corr2=corrcoef(z2,zo);
+e=b3; v.rms3=sqrt(mean(mean(e.*e.*a))); v.bias3=mean(mean(e.*a)); v.corr3=corrcoef(z3,zo);
+form='(BIAS=%5.2f; RMSE=%5.2f)'; fm='MEAN=%5.2f';
+v.s1=sprintf(fm,mean(mean(z1.*a))); v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},'; ',v.s1,')'];
+v.s2=sprintf(fm,mean(mean(zo.*a))); v.s2=['(b) CERES-EBAF-ed2.8 (2001-2015; ',v.ss{k},'; ',v.s2,')'];
+v.s3=sprintf(form,v.bias1,v.rms1); v.s3=['(c) AM4.0 minus CERES ',v.s3];
+v.s4=sprintf(form,v.bias2,v.rms2); v.s4=['(d) AM2.1 minus CERES ',v.s4];
+v.s5=sprintf(form,v.bias3,v.rms3); v.s5=['(e) AM3 minus CERES ',v.s5];
+v.c1=-180;  v.c2=120;  v.vbino=[v.c1:10:v.c2]; v.unit=unit;
+v.cmin=-60; v.cmax=60; v.vbin =[v.cmin:5:v.cmax]; 
+plot_5panel_mapp(k,v,s,z1,zo,b1,b2,b3,0)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig 10 Precip
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure; contourf(b1,v.vbin); shading flat; colorbar; caxis([-3 3]);
+nn=32; cmap=cbrewer('div', 'BrBG', nn); 
+cmap1=[cmap(1:nn/2-2,:); cmap(nn/2+2:end,:)];
+colormap(cmap1);
+
+k=5; varn='pcp_green'; unit='(mm/day)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=am4.v0.s; lat=s.lat; lon=s.lon; xy=[0 360 -90 90]; mv=-999;
+v=o;      zo=squeeze(v.sfc.pcp.sea(k,:,:)); s.so='CERES';
+v=am4.v0; z1=squeeze(v.sfc.pcp.sea(k,:,:)); s.s1='AM4p0';
+v=am2.v0; z2=squeeze(v.sfc.pcp.sea(k,:,:)); s.s2='AM2.1';
+v=am3.v0; z3=squeeze(v.sfc.pcp.sea(k,:,:)); s.s3='AM3';
+b1=z1-zo; b2=z2-zo; b3=z3-zo; 
+a=o.aa; v=am4.v0; v.ss=ss; v.varn=varn; v.expn='AM4p0'; 
+e=b1; v.rms1=sqrt(mean(mean(e.*e.*a))); v.bias1=mean(mean(e.*a)); v.corr1=corrcoef(z1,zo);
+e=b2; v.rms2=sqrt(mean(mean(e.*e.*a))); v.bias2=mean(mean(e.*a)); v.corr2=corrcoef(z2,zo);
+e=b3; v.rms3=sqrt(mean(mean(e.*e.*a))); v.bias3=mean(mean(e.*a)); v.corr3=corrcoef(z3,zo);
+form='(BIAS=%5.2f; RMSE=%5.2f)'; fm='MEAN=%5.2f';
+v.s1=sprintf(fm,mean(mean(z1.*a))); v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},'; ',v.s1,')'];
+v.s2=sprintf(fm,mean(mean(zo.*a))); v.s2=['(b) GPCP-v2.3 (1980-2014; ',v.ss{k},'; ',v.s2,')'];
+v.s3=sprintf(form,v.bias1,v.rms1); v.s3=['(c) AM4.0 minus GPCP ',v.s3];
+v.s4=sprintf(form,v.bias2,v.rms2); v.s4=['(d) AM2.1 minus GPCP ',v.s4];
+v.s5=sprintf(form,v.bias3,v.rms3); v.s5=['(e) AM3 minus GPCP ',v.s5];
+v.c1=0;  v.c2=12;    v.vbino=[v.c1:0.5:v.c2]; v.unit=unit;
+v.cmin=-4; v.cmax=4; v.vbin =[v.cmin:0.5:v.cmax]; 
+plot_5panel_mapp(k,v,s,z1,zo,b1,b2,b3,4)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig 13 TAS over land
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='tas_land'; unit='(C)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=am4.v1.s;
+v=o;      zo=squeeze(v.sfc.tas.sea(k,:,:)) -273.15; s.so='CRU';
+v=am4.v0; z1=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s1='AM4p0';
+v=am2.v0; z2=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s2='AM2.1';
+v=am3.v0; z3=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s3='AM3';
+id=(zo>10000); zo(id)=NaN; z1(id)=NaN; z2(id)=NaN; z3(id)=NaN;
+b1=z1-zo; b2=z2-zo; b3=z3-zo; 
+a=o.aa; v=am4.v0; v.ss=ss; v.varn=varn; v.expn='AM4p0'; 
+id=~isnan(b1); a(id)=a(id)/mean(a(id)); a=a(id);
+e=b1(id); v.rms1=sqrt(mean(e.*e.*a)); v.bias1=mean(mean(e.*a)); v.corr1=corrcoef(z1(id),zo(id));
+e=b2(id); v.rms2=sqrt(mean(e.*e.*a)); v.bias2=mean(mean(e.*a)); v.corr2=corrcoef(z2(id),zo(id));
+e=b3(id); v.rms3=sqrt(mean(e.*e.*a)); v.bias3=mean(mean(e.*a)); v.corr3=corrcoef(z3(id),zo(id));
+form='(BIAS=%5.2f; RMSE=%5.2f)'; fm='MEAN=%5.2f';
+v.s1=sprintf(fm,mean(mean(z1(id).*a))); v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},'; ',v.s1,')'];
+v.s2=sprintf(fm,mean(mean(zo(id).*a))); v.s2=['(b) CRU-TS-3.22 (1980-2013; ',v.ss{k},'; ',v.s2,')'];
+v.s3=sprintf(form,v.bias1,v.rms1); v.s3=['(c) AM4.0 minus CRU ',v.s3];
+v.s4=sprintf(form,v.bias2,v.rms2); v.s4=['(d) AM2.1 minus CRU ',v.s4];
+v.s5=sprintf(form,v.bias3,v.rms3); v.s5=['(e) AM3 minus CRU ',v.s5];
+%id=(s.lm0>0.25); a=NaN; z1(~id)=a; 
+v.c1=-30;   v.c2=30;   v.vbino=[v.c1:1:v.c2]; v.unit=unit;
+v.cmin=-12; v.cmax=12; v.vbin =[v.cmin:1:v.cmax];
+plot_5panel_mapp(k,v,s,z1,zo,b1,b2,b3,2)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig 13 TAS over ocean
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='tas_ocean'; unit='(C)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=am4.v1.s;
+v=o;      zo=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.so='ERA-Interim';
+v=am4.v0; z1=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s1='AM4p0';
+v=am2.v0; z2=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s2='AM2.1';
+v=am3.v0; z3=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s3='AM3';
+id=(s.lm0>0.25); a=NaN; zo(id)=NaN; z1(id)=NaN; z2(id)=NaN; z3(id)=NaN;
+b1=z1-zo; b2=z2-zo; b3=z3-zo;
+a=o.aa; v=am4.v0; v.ss=ss; v.varn=varn; v.expn='AM4p0'; 
+id=~isnan(b1); a(id)=a(id)/mean(a(id)); a=a(id);
+e=b1(id); v.rms1=sqrt(mean(e.*e.*a)); v.bias1=mean(mean(e.*a)); v.corr1=corrcoef(z1(id),zo(id));
+e=b2(id); v.rms2=sqrt(mean(e.*e.*a)); v.bias2=mean(mean(e.*a)); v.corr2=corrcoef(z2(id),zo(id));
+e=b3(id); v.rms3=sqrt(mean(e.*e.*a)); v.bias3=mean(mean(e.*a)); v.corr3=corrcoef(z3(id),zo(id));
+form='(BIAS=%5.2f; RMSE=%5.2f)'; fm='MEAN=%5.2f';
+v.s1=sprintf(fm,mean(mean(z1(id).*a))); v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},'; ',v.s1,')'];
+v.s2=sprintf(fm,mean(mean(zo(id).*a))); v.s2=['(b) ERA-Interim (1980-2014; ',v.ss{k},'; ',v.s2,')'];
+v.s3=sprintf(form,v.bias1,v.rms1); v.s3=['(c) AM4.0 minus ERA ',v.s3];
+v.s4=sprintf(form,v.bias2,v.rms2); v.s4=['(d) AM2.1 minus ERA ',v.s4];
+v.s5=sprintf(form,v.bias3,v.rms3); v.s5=['(e) AM3 minus ERA ',v.s5];
+v.c1=-30;  v.c2=30;  v.vbino=[v.c1:1:v.c2]; v.unit=unit;
+v.cmin=-6; v.cmax=6; v.vbin =[v.cmin:0.5:v.cmax];
+plot_5panel_mapp(k,v,s,z1,zo,b1,b2,b3,2)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I S12: surface air temperature
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='tas_all'; unit='(C)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=am4.v1.s;
+v=o;      zo=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.so='ERA-Interim';
+v=am4.v0; z1=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s1='AM4p0';
+v=am2.v0; z2=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s2='AM2.1';
+v=am3.v0; z3=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s3='AM3';
+id=(s.lm0>0.25); %a=NaN; zo(id)=NaN; z1(id)=NaN; z2(id)=NaN; z3(id)=NaN;
+b1=z1-zo; b2=z2-zo; b3=z3-zo;
+a=o.aa; v=am4.v0; v.ss=ss; v.varn=varn; v.expn='AM4p0'; 
+id=~isnan(b1); a(id)=a(id)/mean(a(id)); a=a(id);
+e=b1(id); v.rms1=sqrt(mean(e.*e.*a)); v.bias1=mean(mean(e.*a)); v.corr1=corrcoef(z1(id),zo(id));
+e=b2(id); v.rms2=sqrt(mean(e.*e.*a)); v.bias2=mean(mean(e.*a)); v.corr2=corrcoef(z2(id),zo(id));
+e=b3(id); v.rms3=sqrt(mean(e.*e.*a)); v.bias3=mean(mean(e.*a)); v.corr3=corrcoef(z3(id),zo(id));
+form='(BIAS=%5.2f; RMSE=%5.2f)'; fm='MEAN=%5.2f';
+v.s1=sprintf(fm,mean(mean(z1(id).*a))); v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},'; ',v.s1,')'];
+v.s2=sprintf(fm,mean(mean(zo(id).*a))); v.s2=['(b) ERA-Interim (1980-2014; ',v.ss{k},'; ',v.s2,')'];
+v.s3=sprintf(form,v.bias1,v.rms1); v.s3=['(c) AM4.0 minus ERA ',v.s3];
+v.s4=sprintf(form,v.bias2,v.rms2); v.s4=['(d) AM2.1 minus ERA ',v.s4];
+v.s5=sprintf(form,v.bias3,v.rms3); v.s5=['(e) AM3 minus ERA ',v.s5];
+v.c1=-30;  v.c2=30;  v.vbino=[v.c1:1:v.c2]; v.unit=unit;
+v.cmin=-6; v.cmax=6; v.vbin =[v.cmin:0.5:v.cmax];
+plot_5panel_mapp(k,v,s,z1,zo,b1,b2,b3,2)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig20: NH sea level pressure
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='slp_nh'; unit='(C)'; ss={'ANN','MAM','JJA','SON','DJF'};
+s=am4.v1.s; load coast; latc=lat; lonc=long; 
+v=o;      zo=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.so='ERA-Interim';
+v=am4.v0; z1=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s1='AM4p0';
+v=am2.v0; z2=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s2='AM2.1';
+v=am3.v0; z3=squeeze(v.sfc.tref.sea(k,:,:))-273.15; s.s3='AM3';
+id=(s.lm0>0.25); %a=NaN; zo(id)=NaN; z1(id)=NaN; z2(id)=NaN; z3(id)=NaN;
+b1=z1-zo; b2=z2-zo; b3=z3-zo;
+a=o.aa; v=am4.v0; v.ss=ss; v.varn=varn; v.expn='AM4p0'; 
+id=~isnan(b1); a(id)=a(id)/mean(a(id)); a=a(id);
+e=b1(id); v.rms1=sqrt(mean(e.*e.*a)); v.bias1=mean(mean(e.*a)); v.corr1=corrcoef(z1(id),zo(id));
+e=b2(id); v.rms2=sqrt(mean(e.*e.*a)); v.bias2=mean(mean(e.*a)); v.corr2=corrcoef(z2(id),zo(id));
+e=b3(id); v.rms3=sqrt(mean(e.*e.*a)); v.bias3=mean(mean(e.*a)); v.corr3=corrcoef(z3(id),zo(id));
+form='(BIAS=%5.2f; RMSE=%5.2f)'; fm='MEAN=%5.2f';
+v.s1=sprintf(fm,mean(mean(z1(id).*a))); v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},'; ',v.s1,')'];
+v.s2=sprintf(fm,mean(mean(zo(id).*a))); v.s2=['(b) ERA-Interim (1980-2014; ',v.ss{k},'; ',v.s2,')'];
+v.s3=sprintf(form,v.bias1,v.rms1); v.s3=['(c) AM4.0 minus ERA ',v.s3];
+v.s4=sprintf(form,v.bias2,v.rms2); v.s4=['(d) AM2.1 minus ERA ',v.s4];
+v.s5=sprintf(form,v.bias3,v.rms3); v.s5=['(e) AM3 minus ERA ',v.s5];
+v.c1=-30;  v.c2=30;  v.vbino=[v.c1:1:v.c2]; v.unit=unit;
+v.cmin=-6; v.cmax=6; v.vbin =[v.cmin:0.5:v.cmax];
+
+k=5;
+z1=squeeze(am4.v0.sfc.slp.sea(k,:,:));
+zo=squeeze(o.sfc.slp.sea(k,:,:));
+id=(z1<950); zo(id)=NaN; zo=zo-1013.25; z1=z1-1013.25;
+lon(1)=0; lon(end)=360; lonx(1)=0; lonx(end)=360;
+figure; vbino=[-10:1:10];
+axesm('stereo','Origin',[90 -90],'MapLatLimit',[20 90])
+contourfm(lat,lon,z1,vbino); hold on;  gridm on; colorbar;
+contourm(latx,lonx,lm,'k','LineWidth',1); 
+
+mlabel on; %plabel on;
+setm(gca,'MLabelParallel',-20)
+
+figure; pcolor(lon,lat,z1); shading flat; colorbar;
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v0=am4.v0; latx=v0.lat; lonx=v0.lon; lm=am4.v0.lm0;
+k=3; ss={'ANN','MAM','JJA','SON','DJF'};
+lat=o.lat; lon=o.lon; cmin=-3; cmax=3; row=3; col=2;
+pms=[ 0, 0, 1000, 800]*1; fsize=16; lw=2; msize=8; t=[1:1:12];
+handle = figure('Position', pms,'visible','on'); 
+y1=am4.v0.sfc.sst.ts.org_ann;
+y2=an4.v0.sfc.sst.ts.org_ann;
+plot(y1,'b'); hold on; plot(y2,'r');
+
+%test%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v0=am4.v0; latx=v0.lat; lonx=v0.lon; lm=am4.v0.lm0;
+k=1; ss={'ANN','MAM','JJA','SON','DJF'};
+lat=o.lat; lon=o.lon; cmin=-0.5; cmax=0.5; row=2; col=2;
+pms=[ 0, 0, 1000, 800]*1.5; fsize=16; lw=2; msize=8; t=[1:1:12];
+handle = figure('Position', pms,'visible','on'); 
+zo=squeeze(o.sfc.sst.sea(k,:,:))  -273.15;
+z0=squeeze(o.sfc.tsurf.sea(k,:,:))-273.15;
+z1=squeeze(am4.v0.sfc.tsurf.sea(k,:,:))-273.15;
+z2=squeeze(an4.v0.sfc.tsurf.sea(k,:,:))-273.15;
+z3=squeeze(bn4.v0.sfc.tsurf.sea(k,:,:))-273.15;
+subplot(row,col,1); 
+pcolor(lon,lat,z0-zo); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title(strcat('INTERIM minus HadiSST (',ss{k},')'));
+subplot(row,col,2); 
+pcolor(lon,lat,z1-zo); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title('AM4 minus HadiSST');
+subplot(row,col,3); 
+pcolor(lon,lat,z2-zo); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title('c192AM4H minus HadiSST');
+subplot(row,col,4); 
+pcolor(lon,lat,z3-zo); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title('c192AM4 minus c96AM4');
+
+
+subplot(row,col,5); 
+pcolor(lon,lat,z2-zo); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title('AM2 minus GPCP');
+subplot(row,col,6);
+pcolor(lon,lat,z3-zo); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title('AM3 minus GPCP');
+expn='pcp'; vname=ss{k};
+visfig='off'; figpath='./fig_am4/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%test%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v0=am4.v0; latx=v0.lat; lonx=v0.lon; lm=am4.v0.lm0;
+k=3; ss={'ANN','MAM','JJA','SON','DJF'};
+lat=o.lat; lon=o.lon; cmin=0; cmax=1; row=2; col=2;
+pms=[ 0, 0, 1000, 500]*1.5; fsize=16; lw=2; msize=8; t=[1:1:12];
+handle = figure('Position', pms,'visible','on'); 
+zo=squeeze(o.sfc.pcp.sea(k,:,:));
+ze=squeeze(o.sfc.pcp_era.sea(k,:,:));
+z0=squeeze(cm4.v0.sfc.pcp.sea(k,:,:));
+z1=squeeze(am4.v0.sfc.pcp.sea(k,:,:));
+z2=squeeze(am2.v0.sfc.pcp.sea(k,:,:));
+z3=squeeze(am3.v0.sfc.pcp.sea(k,:,:));
+y0=squeeze(cm4.v0.sfc.prec_ls.sea(k,:,:));
+y1=squeeze(am4.v0.sfc.prec_ls.sea(k,:,:));
+y2=squeeze(am2.v0.sfc.prec_ls.sea(k,:,:));
+y3=squeeze(am3.v0.sfc.prec_ls.sea(k,:,:));
+subplot(row,col,1); 
+pcolor(lon,lat,y0./z0); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); 
+title(strcat('CM4 (fraction of largescale P, ',ss{k},')'));
+subplot(row,col,2); 
+pcolor(lon,lat,y1./z1); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title('AM4 (fraction of largescale P)');
+subplot(row,col,3); 
+pcolor(lon,lat,y2./z2); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title('AM2 (fraction of largescale P)');
+subplot(row,col,4);
+pcolor(lon,lat,y3./z3); hold on; shading flat; colorbar; caxis([cmin cmax]);
+contourf(lonx,latx,lm,[0 1],'k'); title('AM3 (fraction of largescale P)');
+expn='fl'; vname=ss{k};
+visfig='off'; figpath='./fig_am4/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.7: seaonal cycle of TOA radiation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.7a seaonal cycle of TOA Raditive flux%%%%
+pms=[ 0, 0, 600, 1800]*0.8; fsize=12; lw=1; msize=8; t=[1:1:12];
+handle = figure('Position', pms,'visible','on');
+row=3; col=1;
+subplot(row,col,1);
+toa=am4.v0.toa; xy=[1 12 -13.5 13.5]; 
+xo=toa.netrad.clm_stat.omen.all; xo=xo-mean(xo);
+yo=toa.lwnet.clm_stat.omen.all;  yo=yo-mean(yo);
+zo=toa.swnet.clm_stat.omen.all;  zo=zo-mean(zo);
+x1=toa.netrad.clm_stat.mmen.all; x1=x1-mean(x1);
+y1=toa.lwnet.clm_stat.mmen.all;  y1=y1-mean(y1);
+z1=toa.swnet.clm_stat.mmen.all;  z1=z1-mean(z1);
+plot(t,x1,'k',  'LineWidth',lw); hold on; corrcoef(x1,xo)
+plot(t,y1,'r',  'LineWidth',lw); hold on; corrcoef(y1,yo)
+plot(t,z1,'b',  'LineWidth',lw); hold on; corrcoef(z1,zo)
+plot(t,xo,'k--','LineWidth',lw); hold on;
+plot(t,yo,'r--','LineWidth',lw); hold on;
+plot(t,zo,'b--','LineWidth',lw); hold on;
+vname='netradtoa_scyc'; expn='AM4p0';
+yl='TOA radiative flux anomalies (W/m^2)';
+legend('net','LW','SW',0); mylabel(xy,1,'(a)',fsize);
+xlabel('month','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+subplot(row,col,2);
+toa=am4.v0.toa; xy=[1 12 -13.5 13.5]; 
+xo=toa.netrad_clr.clm_stat.omen.all; xo=xo-mean(xo);
+yo=toa.lwnet_clr.clm_stat.omen.all;  yo=yo-mean(yo);
+zo=toa.swnet_clr.clm_stat.omen.all;  zo=zo-mean(zo);
+x1=toa.netrad_clr.clm_stat.mmen.all; x1=x1-mean(x1);
+y1=toa.lwnet_clr.clm_stat.mmen.all;  y1=y1-mean(y1);
+z1=toa.swnet_clr.clm_stat.mmen.all;  z1=z1-mean(z1);
+plot(t,x1,'k',  'LineWidth',lw); hold on;
+plot(t,y1,'r',  'LineWidth',lw); hold on;
+plot(t,z1,'b',  'LineWidth',lw); hold on;
+plot(t,xo,'k--','LineWidth',lw); hold on;
+plot(t,yo,'r--','LineWidth',lw); hold on;
+plot(t,zo,'b--','LineWidth',lw); hold on;
+vname='radtoa_clr_scyc'; expn='AM4p0';
+yl='TOA clear-sky radiative flux anomalies (W/m^2)';
+%legend('net','LW','SW',0); 
+mylabel(xy,1,'(b)',fsize);
+xlabel('month','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+subplot(row,col,3);
+toa=am4.v0.toa; xy=[1 12 -13.5 13.5]; 
+xo=toa.ttcf.clm_stat.omen.all;  xo=xo-mean(xo);%xo=repmat(xo,1,2);
+yo=toa.lwcf.clm_stat.omen.all;  yo=yo-mean(yo);%yo=repmat(yo,1,2);
+zo=toa.swcf.clm_stat.omen.all;  zo=zo-mean(zo);%zo=repmat(zo,1,2);
+x1=toa.ttcf.clm_stat.mmen.all;  x1=x1-mean(x1);%x1=repmat(x1,1,2);
+y1=toa.lwcf.clm_stat.mmen.all;  y1=y1-mean(y1);%y1=repmat(y1,1,2);
+z1=toa.swcf.clm_stat.mmen.all;  z1=z1-mean(z1);%z1=repmat(z1,1,2);
+plot(t,x1,'k',  'LineWidth',lw); hold on;corrcoef(x1,xo)
+plot(t,y1,'r',  'LineWidth',lw); hold on;corrcoef(y1,yo)
+plot(t,z1,'b',  'LineWidth',lw); hold on;corrcoef(z1,zo)
+plot(t,xo,'k--','LineWidth',lw); hold on;
+plot(t,yo,'r--','LineWidth',lw); hold on;
+plot(t,zo,'b--','LineWidth',lw); hold on;
+vname='cre_scyc'; expn='AM4p0'; 
+yl='TOA cloud radiative effect anomalies (W/m^2)';
+%legend('net','LW','SW',0); 
+mylabel(xy,1,'(c)',fsize); 
+xlabel('month','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize); vname='toa_flux';
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.7: seaonal cycle of TOA radiation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.7a seaonal cycle of TOA Raditive flux%%%%
+vname='netradtoa_scyc'; expn='AM4p0';
+yl='TOA radiative flux anomalies (W/m2)';
+pms=[ 0, 0, 800, 600]*0.8; fsize=16; lw=2; msize=8; t=[1:1:12];
+handle = figure('Position', pms,'visible','on');
+toa=am4.v0.toa; xy=[1 12 -13.5 13.5]; 
+xo=toa.netrad.clm_stat.omen.all; xo=xo-mean(xo);
+yo=toa.lwnet.clm_stat.omen.all;  yo=yo-mean(yo);
+zo=toa.swnet.clm_stat.omen.all;  zo=zo-mean(zo);
+x1=toa.netrad.clm_stat.mmen.all; x1=x1-mean(x1);
+y1=toa.lwnet.clm_stat.mmen.all;  y1=y1-mean(y1);
+z1=toa.swnet.clm_stat.mmen.all;  z1=z1-mean(z1);
+plot(t,x1,'k',  'LineWidth',lw); hold on; corrcoef(x1,xo)
+plot(t,y1,'r',  'LineWidth',lw); hold on; corrcoef(y1,yo)
+plot(t,z1,'b',  'LineWidth',lw); hold on; corrcoef(z1,zo)
+plot(t,xo,'k--','LineWidth',lw); hold on;
+plot(t,yo,'r--','LineWidth',lw); hold on;
+plot(t,zo,'b--','LineWidth',lw); hold on;
+legend('net','LW','SW',0); mylabel(xy,1,'(a)',fsize);
+xlabel('month','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.7b seasonal cycle of TOA clear-sky Raditive flux
+vname='radtoa_clr_scyc'; expn='AM4p0';
+yl='TOA clear-sky radiative flux anomalies (W/m^2)';
+pms=[ 0, 0, 800, 600]*0.8; fsize=16; lw=2; msize=8; t=[1:1:12];
+handle = figure('Position', pms,'visible','on');
+toa=am4.v0.toa; xy=[1 12 -13.5 13.5]; 
+xo=toa.netrad_clr.clm_stat.omen.all; xo=xo-mean(xo);
+yo=toa.lwnet_clr.clm_stat.omen.all;  yo=yo-mean(yo);
+zo=toa.swnet_clr.clm_stat.omen.all;  zo=zo-mean(zo);
+x1=toa.netrad_clr.clm_stat.mmen.all; x1=x1-mean(x1);
+y1=toa.lwnet_clr.clm_stat.mmen.all;  y1=y1-mean(y1);
+z1=toa.swnet_clr.clm_stat.mmen.all;  z1=z1-mean(z1);
+plot(t,x1,'k',  'LineWidth',lw); hold on;
+plot(t,y1,'r',  'LineWidth',lw); hold on;
+plot(t,z1,'b',  'LineWidth',lw); hold on;
+plot(t,xo,'k--','LineWidth',lw); hold on;
+plot(t,yo,'r--','LineWidth',lw); hold on;
+plot(t,zo,'b--','LineWidth',lw); hold on;
+legend('net','LW','SW',0); mylabel(xy,1,'(b)',fsize);
+xlabel('month','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.7c seasonal cycle of TOA CRE%%%%%%%%%%%%%
+vname='cre_scyc'; expn='AM4p0'; 
+yl='TOA cloud radiative effect anomalies (W/m2)';
+pms=[ 0, 0, 800, 600]*0.8; fsize=16; lw=2; msize=8; t=[1:1:12];
+handle = figure('Position', pms,'visible','on');
+toa=am4.v0.toa; xy=[1 12 -13.5 13.5]; 
+xo=toa.ttcf.clm_stat.omen.all;  xo=xo-mean(xo);%xo=repmat(xo,1,2);
+yo=toa.lwcf.clm_stat.omen.all;  yo=yo-mean(yo);%yo=repmat(yo,1,2);
+zo=toa.swcf.clm_stat.omen.all;  zo=zo-mean(zo);%zo=repmat(zo,1,2);
+x1=toa.ttcf.clm_stat.mmen.all;  x1=x1-mean(x1);%x1=repmat(x1,1,2);
+y1=toa.lwcf.clm_stat.mmen.all;  y1=y1-mean(y1);%y1=repmat(y1,1,2);
+z1=toa.swcf.clm_stat.mmen.all;  z1=z1-mean(z1);%z1=repmat(z1,1,2);
+plot(t,x1,'k',  'LineWidth',lw); hold on;corrcoef(x1,xo)
+plot(t,y1,'r',  'LineWidth',lw); hold on;corrcoef(y1,yo)
+plot(t,z1,'b',  'LineWidth',lw); hold on;corrcoef(z1,zo)
+plot(t,xo,'k--','LineWidth',lw); hold on;
+plot(t,yo,'r--','LineWidth',lw); hold on;
+plot(t,zo,'b--','LineWidth',lw); hold on;
+legend('net','LW','SW',0); mylabel(xy,1,'(c)',fsize); 
+xlabel('month','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.8: time series of TOA radiation anomalies
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.8: time series of TOA net radation%%%%%%
+pms=[ 0, 0, 1400, 1000]*0.8; fsize=11; lw=2; msize=6; 
+handle = figure('Position', pms,'visible','on');
+row=2; col=2;
+subplot(row,col,1); vname='netradtoa_ts'; expn='AM4p0'; 
+yl='TOA net radiation (W/m^2)'; xy=[2000 2015 -0.8 0.8];
+g=o.ceres_ts_global.toa.netrad.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4.v0.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.mean,yo.anom); 
+s1=sprintf('AM4.0 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-ed2.8',2); mylabel(xy,1,'(a)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize); 
+subplot(row,col,2); vname='lwnet_ts'; expn='AM4p0'; 
+yl='OLR (W/m^2)'; xy=[2000 2015 -0.8 0.8];
+g=o.ceres_ts_global.toa.lwnet.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4.v0.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.mean,yo.anom); 
+s1=sprintf('AM4.0 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-ed2.8',3); mylabel(xy,1,'(b)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+subplot(row,col,3); vname='swnet_ts'; expn='AM4p0'; 
+yl='TOA SW radiation (W/m^2)'; xy=[2000 2015 -0.8 0.8];
+g=o.ceres_ts_global.toa.swnet.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4.v0.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.mean,yo.anom); 
+s1=sprintf('AM4.0 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-ed2.8',3); mylabel(xy,1,'(c)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+subplot(row,col,4); vname='swcf_ts'; expn='AM4p0'; 
+yl='SW CRE (W/m^2)'; xy=[2000 2015 -0.8 0.8];
+g=o.ceres_ts_global.toa.swcf.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4.v0.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.mean,yo.anom); 
+s1=sprintf('AM4.0 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-ed2.8',3); mylabel(xy,1,'(d)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/'; vname='toa_flux_ts';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.8: time series of TOA radiation anomalies
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.8a: time series of TOA net radation%%%%%%
+vname='netradtoa_ts'; expn='AM4p0'; 
+yl='TOA net radiation (W/m2)'; xy=[2000 2015 -0.8 0.8];
+g=o.ceres_ts_global.toa.netrad.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4.v0.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.netrad.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.mean,yo.anom); 
+s1=sprintf('AM4.0 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-ed2.8',2); mylabel(xy,1,'(a)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize); 
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.8b: time series of OLR %%%%%%%%%%%%%%%%%%%%%%
+vname='lwnet_ts'; expn='AM4p0'; 
+yl='OLR (W/m2)'; xy=[2000 2015 -0.8 0.8];
+g=o.ceres_ts_global.toa.lwnet.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4.v0.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.lwnet.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.mean,yo.anom); 
+s1=sprintf('AM4.0 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-ed2.8',3); mylabel(xy,1,'(b)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.8c: time series of TOA SW net radiation%%%%%%
+vname='swnet_ts'; expn='AM4p0'; 
+yl='TOA SW radiation (W/m2)'; xy=[2000 2015 -0.8 0.8];
+g=o.ceres_ts_global.toa.swnet.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4.v0.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.swnet.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.mean,yo.anom); 
+s1=sprintf('AM4.0 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-ed2.8',3); mylabel(xy,1,'(c)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Fig.8d: time series of TOA SW CRE%%%%%%%%%%%%%%%%
+vname='swcf_ts'; expn='AM4p0'; 
+yl='SW CRE (W/m2)'; xy=[2000 2015 -0.8 0.8];
+g=o.ceres_ts_global.toa.swcf.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4.v0.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.swcf.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.mean,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.mean,yo.anom); 
+s1=sprintf('AM4.0 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-ed2.8',3); mylabel(xy,1,'(d)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwcf_ts'; expn='AM4p0'; 
+yl='LW CRE (W/m2)'; xy=[2000 2015 -0.8 0.8];
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+g=o.ceres_ts_global.toa.lwcf.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                  %03/2000-12/2014; 178 months
+ya=am4.v0.toa.lwcf.al0(end-14:end,:); %01/2000-12/2014
+yb=am4.v1.toa.lwcf.al0(end-14:end,:); %01/2000-12/2014
+yc=am4.v2.toa.lwcf.al0(end-14:end,:); %01/2000-12/2014
+yd=am4.v3.toa.lwcf.al0(end-14:end,:); %01/2000-12/2014
+ye=am4.v4.toa.lwcf.al0(end-14:end,:); %01/2000-12/2014
+yf=am4.v5.toa.lwcf.al0(end-14:end,:); %01/2000-12/2014
+yg=am4.v6.toa.lwcf.al0(end-14:end,:); %01/2000-12/2014
+yh=am4.v7.toa.lwcf.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.anom,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.anom,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.anom,yo.anom); 
+s1=sprintf('AM4.1 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-v2.8',3); mylabel(xy,1,'(c)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='lwnet_clr_ts'; expn='AM4p0'; 
+yl='clear-sky OLR (W/m2)'; xy=[2000 2015 -0.8 0.8];
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+g=o.ceres_ts_global.toa.lwnet_clr.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4a.v0.toa.lwnet_clr.al0(end-14:end,:); %01/2000-12/2014
+yb=am4b.v0.toa.lwnet_clr.al0(end-14:end,:); %01/2000-12/2014
+yc=am4c.v0.toa.lwnet_clr.al0(end-14:end,:); %01/2000-12/2014
+yd=am4d.v0.toa.lwnet_clr.al0(end-14:end,:); %01/2000-12/2014
+ye=am4e.v0.toa.lwnet_clr.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.anom,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.anom,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.anom,yo.anom); 
+s1=sprintf('AM4.1 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-v2.8',3); mylabel(xy,1,'(c)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vname='swnet_clr_ts'; expn='AM4p0'; 
+yl='clear-sky SW absorption (W/m2)'; xy=[2000 2015 -0.8 0.8];
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+g=o.ceres_ts_global.toa.swnet_clr.ts;%03/2000-02/2016; 192 months
+g=g(1:end-14);                    %03/2000-12/2014; 178 months
+ya=am4a.v0.toa.swnet_clr.al0(end-14:end,:); %01/2000-12/2014
+yb=am4b.v0.toa.swnet_clr.al0(end-14:end,:); %01/2000-12/2014
+yc=am4c.v0.toa.swnet_clr.al0(end-14:end,:); %01/2000-12/2014
+yd=am4d.v0.toa.swnet_clr.al0(end-14:end,:); %01/2000-12/2014
+ye=am4e.v0.toa.swnet_clr.al0(end-14:end,:); %01/2000-12/2014
+nyr=length(ya(:,1)); wsize=12;
+x=ya; x=reshape(x',12*nyr,1); x=x(3:end); ya=deseason(x,wsize);
+x=yb; x=reshape(x',12*nyr,1); x=x(3:end); yb=deseason(x,wsize);
+x=yc; x=reshape(x',12*nyr,1); x=x(3:end); yc=deseason(x,wsize);
+x=yd; x=reshape(x',12*nyr,1); x=x(3:end); yd=deseason(x,wsize);
+x=ye; x=reshape(x',12*nyr,1); x=x(3:end); ye=deseason(x,wsize);
+x=yf; x=reshape(x',12*nyr,1); x=x(3:end); yf=deseason(x,wsize);
+x=yg; x=reshape(x',12*nyr,1); x=x(3:end); yg=deseason(x,wsize);
+x=yh; x=reshape(x',12*nyr,1); x=x(3:end); yh=deseason(x,wsize);
+%var=[ya.anom yb.anom yc.anom yg.anom yh.anom];
+var=[ya.anom yb.anom yc.anom yd.anom ye.anom yf.anom yg.anom yh.anom];
+ym=get_meanmaxmin(var,ya.time);
+pms=[ 0, 0, 1000, 600]*0.8; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+wsize=12; yo=deseason(g,wsize);
+plot(ym.time,ym.anom,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+shadedplot(ym.time,ym.min, ym.max,[0.7 0.7 0.7],'k');  hold on;
+plot(ym.time,ym.anom,'-k','LineWidth',lw); hold on;
+plot(yo.time,yo.anom,'-r','LineWidth',lw); hold on; 
+c=corrcoef(ym.anom,yo.anom); 
+s1=sprintf('AM4.1 (corr=%5.2f)',c(1,2));
+legend(s1,'CERES-EBAF-v2.8',3); mylabel(xy,1,'(c)',fsize);
+xlabel('year','FontSize',fsize); ylabel(yl,'FontSize',fsize);
+set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.15-16 and S13: zonal mean temperature
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='zmt'; unit='(C)';  ss={'ANN','MAM','JJA','SON','DJF'};
+pf=[1000 925 850 700 600 500 400 300 250 200 150 100 70 50];
+pf=[1000 925 850 700 600 500 400 300 250 200 150 100];
+s=am4.v1.s; lat=s.lat; xy=[-90 90 100 1000]; mv=-999;
+v=o;      [zo bo rmso]=vslice(v,s,k,varn,'obs',mv);
+v=am4.v0; [z1 b1 rms1]=vslice(v,s,k,varn,'mod',mv);
+v=am2.v0; [z2 b2 rms2]=vslice(v,s,k,varn,'mod',mv);
+v=am3.v0; [z3 b3 rms3]=vslice(v,s,k,varn,'mod',mv);
+v=am4.v0; v.ss=ss; v.pf=pf; v.xy=xy; v.varn=varn; v.expn='AM4p0'; 
+v.rms1=rms1; v.rms2=rms2; v.rms3=rms3;
+z1(1,80:end)=NaN; id=isnan(z1); zo(id)=NaN; b1(id)=NaN; b2(id)=NaN; b3(id)=NaN;
+form='(RMSE=%5.2f)'; a=273.15; z1=z1-a; zo=zo-a;
+v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},')'];
+v.s2=['(b) ERA-interim (1980-2014; ',v.ss{k},')'];
+v.s3=sprintf(form,v.rms1); v.s3=['(c) AM4.0 minus ERA ',v.s3];
+v.s4=sprintf(form,v.rms2); v.s4=['(d) AM2.1 minus ERA ',v.s4];
+v.s5=sprintf(form,v.rms3); v.s5=['(e) AM3 minus ERA ',v.s5];
+v.c1=-90;  v.c2=20;  v.vbino=[v.c1:10:v.c2]; v.unit=unit;
+v.cmin=-6; v.cmax=6; v.vbin =[v.cmin:0.5:v.cmax]; 
+v.vlab0=[-70:10:20]; pt=7; v.vlab=[-5 -4 -3 -2 -1 0 1 2 3 4 5];
+plot_5panel_zmean(k,v,s,z1,zo,b1,b2,b3,3)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.17-18 and S14: zonal mean zonal wind
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='zmu'; unit='(m/s)'; ss={'ANN','MAM','JJA','SON','DJF'};
+pf=[1000 925 850 700 600 500 400 300 250 200 150 100];
+s=am4.v5.s; lat=s.lat; xy=[-90 90 100 1000]; mv=-999;
+v=o;      [zo bo rmso]=vslice(v,s,k,varn,'obs',mv);
+v=am4.v0; [z1 b1 rms1]=vslice(v,s,k,varn,'mod',mv);
+v=am2.v0; [z2 b2 rms2]=vslice(v,s,k,varn,'mod',mv);
+v=am3.v0; [z3 b3 rms3]=vslice(v,s,k,varn,'mod',mv);
+v=am4.v0; v.ss=ss; v.pf=pf; v.xy=xy; v.varn=varn; v.expn='AM4p0'; 
+v.rms1=rms1; v.rms2=rms2; v.rms3=rms3;
+z1(1,80:end)=NaN; id=isnan(z1); zo(id)=NaN; b1(id)=NaN; b2(id)=NaN; b3(id)=NaN;
+form='(RMSE=%5.2f)';
+v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},')'];
+v.s2=['(b) ERA-interim (1980-2014; ',v.ss{k},')'];
+v.s3=sprintf(form,v.rms1); v.s3=['(c) AM4.0 minus ERA ',v.s3];
+v.s4=sprintf(form,v.rms2); v.s4=['(d) AM2.1 minus ERA ',v.s4];
+v.s5=sprintf(form,v.rms3); v.s5=['(e) AM3 minus ERA ',v.s5];
+v.c1=-30;  v.c2=30;  v.vbino=[v.c1:4:v.c2]; v.unit=unit;
+v.cmin=-10; v.cmax=10; v.vbin =[v.cmin:1:v.cmax]; 
+v.vlab0=[-30:4:30]; v.vlab=[-10:1:10];
+plot_5panel_zmean(k,v,s,z1,zo,b1,b2,b3,3)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I S15-S18: stratospheric winds(DJF-JJA-MAM-SON)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; varn='zmu_strat'; unit='(m/s)'; ss={'ANN','MAM','JJA','SON','DJF'};
+pf=[1000 925 850 700 600 500 400 300 250 200 150 100 70 50 30 20 10];
+s=am4.v1.s; lat=s.lat; mv=-1e10; xy=[-90 90 10 1000]; 
+lpf=log10(pf); xy=[-90 90 min(lpf) max(lpf)];
+pftic=log10([10 20 30 50 70 100 200 300 500 700 925]);
+pflis={'10','20','30','50','70','100','200','300','500','700','925'}
+v=o;      [zo bo rmso]=vslice_s(v,s,k,varn,'obs',mv);
+v=am4.v0; [z1 b1 rms1]=vslice_s(v,s,k,varn,'mod',mv);
+v=am2.v0; [z2 b2 rms2]=vslice_s(v,s,k,varn,'mod',mv);
+v=am3.v0; [z3 b3 rms3]=vslice_s(v,s,k,varn,'mod',mv);
+v=am4.v0; v.ss=ss; v.pf=pf; v.xy=xy; v.varn=varn; v.expn='AM4p0'; 
+v.rms1=rms1; v.rms2=rms2; v.rms3=rms3; v.pftic=pftic; v.pflis=pflis;
+z1(1,80:end)=NaN; id=isnan(z1); zo(id)=NaN; b1(id)=NaN; b2(id)=NaN; b3(id)=NaN;
+form='(RMSE=%5.2f)';
+v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},')'];
+v.s2=['(b) ERA-interim (1980-2014; ',v.ss{k},')'];
+v.s3=sprintf(form,v.rms1); v.s3=['(c) AM4.0 minus ERA ',v.s3];
+v.s4=sprintf(form,v.rms2); v.s4=['(d) AM2.1 minus ERA ',v.s4];
+v.s5=sprintf(form,v.rms3); v.s5=['(e) AM3 minus ERA ',v.s5];
+v.c1=-30;  v.c2=30;  v.vbino=[v.c1:5:v.c2]; v.unit=unit;
+v.cmin=-12; v.cmax=12; v.vbin =[v.cmin:2:v.cmax]; 
+v.vlab0=[-30:5:30]; v.vlab=[-10:5:10];
+plot_5panel_zmean(k,v,s,z1,zo,b1,b2,b3,3)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I S19-S22: stratospheric zonal mean temperature(DJF-JJA-MAM-SON)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=4; varn='zmt_strat'; unit='(C)'; ss={'ANN','MAM','JJA','SON','DJF'};
+pf=[1000 925 850 700 600 500 400 300 250 200 150 100 70 50 30 20 10];
+s=am4.v1.s; lat=s.lat; mv=-1e10; xy=[-90 90 10 1000]; 
+lpf=log10(pf); xy=[-90 90 min(lpf) max(lpf)];
+pftic=log10([10 20 30 50 70 100 200 300 500 700 925]);
+pflis={'10','20','30','50','70','100','200','300','500','700','925'}
+v=o;      [zo bo rmso]=vslice_s(v,s,k,varn,'obs',mv);
+v=am4.v0; [z1 b1 rms1]=vslice_s(v,s,k,varn,'mod',mv);
+v=am2.v0; [z2 b2 rms2]=vslice_s(v,s,k,varn,'mod',mv);
+v=am3.v0; [z3 b3 rms3]=vslice_s(v,s,k,varn,'mod',mv);
+v=am4.v0; v.ss=ss; v.pf=pf; v.xy=xy; v.varn=varn; v.expn='AM4p0'; 
+v.rms1=rms1; v.rms2=rms2; v.rms3=rms3; v.pftic=pftic; v.pflis=pflis;
+z1(1,80:end)=NaN; id=isnan(z1); zo(id)=NaN; b1(id)=NaN; b2(id)=NaN; b3(id)=NaN;
+form='(RMSE=%5.2f)'; a=273.15; z1=z1-a; zo=zo-a;
+v.s1=['(a) AM4.0 (1980-2014; ',v.ss{k},')'];
+v.s2=['(b) ERA-interim (1980-2014; ',v.ss{k},')'];
+v.s3=sprintf(form,v.rms1); v.s3=['(c) AM4.0 minus ERA ',v.s3];
+v.s4=sprintf(form,v.rms2); v.s4=['(d) AM2.1 minus ERA ',v.s4];
+v.s5=sprintf(form,v.rms3); v.s5=['(e) AM3 minus ERA ',v.s5];
+v.c1=-90;  v.c2=20;  v.vbino=[v.c1:10:v.c2]; v.unit=unit;
+v.cmin=-10; v.cmax=10; v.vbin =[v.cmin:1:v.cmax]; 
+v.vlab0=[-30:5:30]; v.vlab=[-10:5:10];
+plot_5panel_zmean(k,v,s,z1,zo,b1,b2,b3,3)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+z1(1,80:end)=NaN; %figure; contourf(z1);
+id=isnan(z1); zo(id)=NaN; b1(id)=NaN; b2(id)=NaN; b3(id)=NaN;
+pms=[ 0, 0, 1300, 1100]*0.8; fsize=12; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+cmin=-10; cmax=10; vbin=[cmin:1:cmax];
+x0=0.08; y0=0.7; wx=0.38; wy=0.25; dx=0.1; dy=0.05;
+p1= [x0,          y0,           wx, wy];%position of first subplot
+p2= [x0+wx+dx,    y0,           wx, wy];%position of first subplot
+p3= [x0+(wx+dx)/2,y0-wy-dy,     wx, wy];%position of first subplot
+p4= [x0,          y0-2*(wy+dy), wx, wy];%position of first subplot
+p5= [x0+wx+dx,    y0-2*(wy+dy), wx, wy];%position of first subplot
+nn=32; cmap=jet(nn); %cmap(nn/2:nn/2+1,:)=1;
+subplot('Position',p1); c1=-90; c2=20; vbino=[c1:10:c2]; vlab0=[-90:10:20]
+[C,h]=contourf(lat,lpf,z1-273.15,vbino); shading flat; 
+colorbar; caxis([c1 c2]); clabel(C,h,vlab0,'Rotation',0); colormap(cmap);
+set(gca,'ytick',pftic); set(gca,'yticklabel',pflis); 
+mt=['(a) AM4.0 (1980-2014; ',ss{k},')'];
+title(mt,'FontSize',fsize); set(gca,'FontSize',fsize); 
+axis(xy); set(gca,'yDir','reverse'); 
+subplot('Position',p2);
+[C,h]=contourf(lat,lpf,zo-273.15,vbino); shading flat; 
+colorbar; caxis([c1 c2]); clabel(C,h,vlab0,'Rotation',0); colormap(cmap);
+set(gca,'ytick',pftic); set(gca,'yticklabel',pflis); 
+mt=['(b) ERA-I (1980-2014; ',ss{k},')'];
+title(mt,'FontSize',fsize); set(gca,'FontSize',fsize); 
+axis(xy); set(gca,'yDir','reverse'); 
+subplot('Position',p3); vlab1=[-10:2:10]
+[C,h]=contourf(lat,lpf,b1,vbin); shading flat;
+colorbar; caxis([cmin cmax]); clabel(C,h,vlab1,'Rotation',0);  colormap(bluewhitered(nn));
+set(gca,'ytick',pftic); set(gca,'yticklabel',pflis); 
+axis(xy); set(gca,'yDir','reverse');
+s=sprintf('(c) AM4.0 minus ERA-I (RMSE=%5.2f)',rms1);
+title(s,'FontSize',fsize); set(gca,'FontSize',fsize);
+subplot('Position',p4);
+[C,h]=contourf(lat,lpf,b2,vbin); shading flat; 
+colorbar; caxis([cmin cmax]); clabel(C,h,vlab1,'Rotation',0); 
+set(gca,'ytick',pftic); set(gca,'yticklabel',pflis); 
+axis(xy); set(gca,'yDir','reverse');
+s=sprintf('(d) AM2.1 minus ERA-I (RMSE=%5.2f)',rms2);
+title(s,'FontSize',fsize); set(gca,'FontSize',fsize);
+subplot('Position',p5); 
+[C,h]=contourf(lat,lpf,b3,vbin); shading flat; 
+colorbar; caxis([cmin cmax]); clabel(C,h,vlab1,'Rotation',0); 
+set(gca,'ytick',pftic); set(gca,'yticklabel',pflis); 
+axis(xy); set(gca,'yDir','reverse');
+s=sprintf('(e) AM3 minus ERA-I (RMSE=%5.2f)',rms3);
+title(s,'FontSize',fsize); set(gca,'FontSize',fsize);
+visfig='off'; figpath='./fig_am4/';
+vname=strcat(varn,(ss{k}),'_strato');
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.38 long amip aerosol effect
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn=strcat('/work/miz/mat_am4p0/obs_global_to_c48.mat'); load(fn);
+pp='/'; region='global'; dr=strcat('_',region,'_tsana.mat'); 
+tpath='/archive/Ming.Zhao/awg/warsaw/';
+expn='c96L33_am4p0_longamip';                 fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.v1=getfields(v);
+%expn='c96L33_am4p0_longamip_m1';              fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.v2=getfields(v);
+%expn='c96L33_am4p0_longamip_m2';              fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.v3=getfields(v);
+expn='c96L33_am4p0_longamip_m1_aero';         fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.a1=getfields(v);
+expn='c96L33_am4p0_longamip_m2_aero';         fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.a2=getfields(v);
+expn='c96L33_am4p0_longamip_m3_aero';         fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.a3=getfields(v);
+expn='c96L33_am4p0_longamip_m1_GHG';          fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.g1=getfields(v);
+expn='c96L33_am4p0_longamip_m2_GHG';          fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.g2=getfields(v);
+expn='c96L33_am4p0_longamip_m3_GHG';          fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.g3=getfields(v);
+expn='c96L33_am4p0_longamip_1850rad_novol_m1';fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.c1=getfields(v);
+%expn='c96L33_am4p0_longamip_1850rad';        fn=strcat(tpath,expn,pp,expn,dr);load(fn);am4.c1=getfields(v);
+%expn='c96L33_am4p0_longAMIP_1850forcing_cmip5_1860aero';fn=strcat(tpath,expn,pp,expn,dr);load(fn);amx.c1=getfields(v);
+%expn='c96L33_am4p0_longAMIP_1850forcing_cmip5_TSaero';  fn=strcat(tpath,expn,pp,expn,dr);load(fn);amx.a1=getfields(v);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/AM3/';
+expn='c48L48_am3p11_allforcr_A1'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.v1=getfields(v);
+expn='c48L48_am3p11_allforcr_A2'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.v2=getfields(v);
+expn='c48L48_am3p11_allforcr_A3'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.v3=getfields(v);
+expn='c48L48_am3p11_allforcr_A4'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.v4=getfields(v);
+expn='c48L48_am3p11_allforcr_A5'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.v5=getfields(v);
+expn='c48L48_am3p11_aeroOnly_A1'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.a1=getfields(v);
+expn='c48L48_am3p11_aeroOnly_A2'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.a2=getfields(v);
+expn='c48L48_am3p11_aeroOnly_A3'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.a3=getfields(v);
+expn='c48L48_am3p11_aeroOnly_A4'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.a4=getfields(v);
+expn='c48L48_am3p11_aeroOnly_A5'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.a5=getfields(v);
+expn='c48L48_am3p11_WMGGOnly_A1'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.g1=getfields(v);
+expn='c48L48_am3p11_WMGGOnly_A2'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.g2=getfields(v);
+expn='c48L48_am3p11_WMGGOnly_A3'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.g3=getfields(v);
+expn='c48L48_am3p11_WMGGOnly_A4'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.g4=getfields(v);
+expn='c48L48_am3p11_WMGGOnly_A5'; fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.g5=getfields(v);
+expn='c48L48_am3p11_1860_A1';     fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.c1=getfields(v);
+expn='c48L48_am3p11_1860_A2';     fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.c2=getfields(v);
+expn='c48L48_am3p11_1860_A3';     fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.c3=getfields(v);
+expn='c48L48_am3p11_1860_A4';     fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.c4=getfields(v);
+expn='c48L48_am3p11_1860_A5';     fn=strcat(tpath,expn,pp,expn,dr);load(fn);am3.c5=getfields(v);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/AM2.1/';
+expn='AM2.1RC3_allforc_A1';    fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.v1=getfields(v);
+expn='AM2.1RC3_allforc_A2';    fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.v2=getfields(v);
+expn='AM2.1RC3_allforc_A3';    fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.v3=getfields(v);
+expn='AM2.1RC3_aeroOnly_A1';   fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.a1=getfields(v); 
+expn='AM2.1RC3_aeroOnly_A2';   fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.a2=getfields(v);
+expn='AM2.1RC3_aeroOnly_A3';   fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.a3=getfields(v);
+expn='AM2.1RC3_WMGGOnly_A1';   fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.g1=getfields(v);
+expn='AM2.1RC3_WMGGOnly_A2';   fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.g2=getfields(v);
+expn='AM2.1RC3_WMGGOnly_A3';   fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.g3=getfields(v);
+expn='AM2.1RC3_1860_A1';       fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.c1=getfields(v);
+expn='AM2.1RC3_1860_A2';       fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.c2=getfields(v);
+expn='AM2.1RC3_1860_A3';       fn=strcat(tpath,expn,pp,expn,dr);load(fn);am2.c3=getfields(v);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+am2=compute_rfp_lamip(am2,'am2');
+am3=compute_rfp_lamip(am3,'am3');
+am4=compute_rfp_lamip(am4,'am4');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.38 long amip aerosol effect
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 800]*0.8; fsize=14; lw=3; 
+handle=figure('Position',pms,'visible','on'); 
+t=[1870:5:2014]+2.5; xy=[1870 2015 -2.0 0.5];
+lw=2; a=3; k1=1; k2=22;
+x=am3.toa.rfp.aer; y=am4.toa.rfp.aer; 
+r=corrcoef(x(k1:k2),y(k1:k2)); c=polyfit(x(k1:k2),y(k1:k2),1);
+y1=c(1)*x+c(2); hold on; 
+plot(t,x, 'b','LineWidth',lw); hold on;
+plot(t,y, 'r','LineWidth',lw); hold on;
+plot(t,y1,'k','LineWidth',lw); hold on;
+%plot(t,amx.toa.rfp.aer,'c','LineWidth',lw); hold on;
+plot([1870 2015],[0 0],'k-'); box on;
+xlabel('year','FontSize',fsize); axis(xy);
+ylabel('Aerosol RFP at TOA (W/m^2)','FontSize',fsize);
+set(gca,'FontSize',fsize); box on;
+legend('AM3','AM4','AM4 (predicted from regression)',3);
+visfig='off'; figpath='./fig_am4/'; expn='longamip'; vname='aero_rfp_cmip5';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AM4 paper part I Fig.38x include everything (all RFP+allmodels)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 900]*0.8; fsize=14; lw=3; 
+handle=figure('Position',pms,'visible','on'); 
+t=[1870:5:2014]+2.5; xy=[1870 2015 -1.8 3.2];
+lw=2; a=3; k1=1; k2=22;
+tot4=am4.toa.rfp.tot; aer4=am4.toa.rfp.aer; ghg4=am4.toa.rfp.ghg;
+tot3=am3.toa.rfp.tot; aer3=am3.toa.rfp.aer; ghg3=am3.toa.rfp.ghg;
+tot2=am2.toa.rfp.tot; aer2=am2.toa.rfp.aer; ghg2=am2.toa.rfp.ghg;
+plot(t,ghg4, 'r--','LineWidth',lw+2); hold on;
+plot(t,ghg3, 'b--','LineWidth',lw); hold on;
+plot(t,ghg2, 'g--','LineWidth',lw); hold on;
+plot(t,aer4, 'r-.', 'LineWidth',lw+2); hold on;
+plot(t,aer3, 'b-.', 'LineWidth',lw); hold on;
+plot(t,aer2, 'g-.', 'LineWidth',lw); hold on;
+plot(t,ghg4+aer4,'r-','LineWidth',lw+2); hold on;
+plot(t,ghg3+aer3,'b-','LineWidth',lw); hold on;
+plot(t,ghg2+aer2,'g-','LineWidth',lw); hold on;
+plot(t,tot4,     'r:','LineWidth',lw*2); hold on;
+plot(t,tot3,     'b:','LineWidth',lw*2); hold on;
+plot(t,tot2,     'g:','LineWidth',lw*2); hold on;
+plot([1870 2015],[0 0],'k-'); box on; grid on;
+xlabel('year','FontSize',fsize); axis(xy);
+ylabel('RFP at TOA (W/m2)','FontSize',fsize);
+set(gca,'FontSize',fsize); box on;
+legend('AM4(WMGG+O3)',     'AM3(WMGG)',     'AM2(WMGG)',...
+       'AM4(AERO)',        'AM3(AERO)',     'AM2(AERO)',...
+       'AM4(WMGG+O3+AERO)','AM3(WMGG+AERO)','AM2(WMGG+AERO)',...
+       'AM4(Total)',       'AM3(Total)',    'AM2(Total)',  2);
+visfig='off'; figpath='./fig_am4/'; expn='longamip'; vname='rfp';
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

@@ -1,0 +1,20 @@
+function plot_latdis_am4amip(x,y,expn,vname);
+pms=[ 0, 0, 1000, 600]*1; fsize=16; lw=2; msize=8; 
+handle = figure('Position', pms,'visible','on');
+plot(x, y.var1, y.c1,  'LineWidth',lw*2); hold on; 
+plot(x, y.var2, y.c2,  'LineWidth',lw); 
+plot(x, y.var3, y.c3,  'LineWidth',lw);
+plot(x, y.var4, y.c4,  'LineWidth',lw);
+plot(x, y.var5, y.c5,  'LineWidth',lw);
+plot(x, y.var6, y.c6,  'LineWidth',lw*2);
+plot(x, y.var7, y.c7,  'LineWidth',lw*2);
+plot(x, y.var8, y.c8,  'LineWidth',lw*2);
+%plot(x, y.varo, y.co,  'LineWidth',lw);
+legend(y.s1,y.s2,y.s3,y.s4,y.s5,y.s6,y.s7,y.s8,y.opt);
+set(gca,'FontSize',fsize); 
+xlabel(y.xl,'FontSize',fsize); 
+ylabel(y.yl,'FontSize',fsize); 
+axis(y.xy); 
+visfig='off'; figpath='./fig_am4/'; 
+printit(visfig,figpath,expn,vname);
+return

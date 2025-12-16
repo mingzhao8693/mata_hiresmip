@@ -1,0 +1,170 @@
+function g=recon_GF_mvar(s,c,w,t1,t2,im0,lm0,p_thresh,opt)
+%c=AM4.c1; w=AM4.w1; t1=1; t2=150; im0=0.01; lm0=0.01; opt=2; p_thresh=0.01;
+d.rad_ts=w.toa.netrad.ts.org_ann-mean(c.toa.netrad.ts.org_ann);
+lat=s.lat; lon=s.lon; aa=s.aa; lm=s.lm0>lm0;
+imk=w.sfc.ice.clm; imk(imk>=im0)=1; imk(imk<im0)=0;
+g.nlon=s.nlon; g.nlat=s.nlat; g.lon=s.lon; g.lat=s.lat;
+%compute SST anomalies
+if (opt==0)
+  a=c.sfc.tsurf.all(t1:t2,:,:,:);
+  sst_clm=squeeze(mean(a,1)); nt=t2-t1+1;
+  a=repmat(sst_clm,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  ssta=w.sfc.tsurf.all(t1:t2,:,:,:)-a;
+elseif (opt==1)
+  a=c.sfc.tsurf.all(:,:,:,:);
+  sst_clm=squeeze(mean(a,1)); nt=t2-t1+1;
+  a=repmat(sst_clm,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  ssta=w.sfc.tsurf.all(t1:t2,:,:,:)-a;
+else
+  a=c.sfc.tsurf.all(:,:,:,:);
+  sst_clm=squeeze(mean(a,1)); nt=t2-t1+1;
+  a=repmat(sst_clm,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  ssta=w.sfc.tsurf.all(t1:t2,:,:,:)-a; %SST warming anomalies
+  a=c.sfc.ice.all; a=squeeze(mean(a,1)); a=repmat(a,[1 1 1 nt]);
+  im=permute(a,[4,1,2,3]);
+  v=compute_gocean_sst_mon(ssta,im,lm,aa);
+  ssta=v.ssta; %SST warming anomlies with global ocean mean warming removed
+  ssta_omean_mon=v.ts_sst_omean_mon; %global oceanic mean SST warming anomlies
+  %b=ssta_omean_mon; b=repmat(b,[1 1 s.nlat,s.nlon]); a=ssta-b; 
+  g.ssta_mon=ssta; g.ssta_ann=squeeze(mean(ssta,2));
+  g.ssta_omean_mon=ssta_omean_mon;
+  g.ssta_omean_ann=squeeze(mean(ssta_omean_mon,1));
+   
+  %separately account for model tref response to uniform SST warming
+  a=s.d_tref.clm0_sst; a=repmat(a,[nt 1]); b=ssta_omean_mon;
+  a=a.*b; g.dT_gmsst_ts_mon=a; g.dT_gmsst_ts_ann=mean(a,2);
+  a=s.d_tref.clm_sst; a=repmat(a,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  b=ssta_omean_mon; b=repmat(b,[1 1 s.nlat,s.nlon]);
+  a=a.*b; g.dT_gmsst_map_mon=a; g.dT_gmsst_map_ann=squeeze(mean(a,2));
+
+  %separately account for model netradtoa response to uniform SST warming
+  a=s.d_netrad.clm0_sst; a=repmat(a,[nt 1]); b=ssta_omean_mon;
+  a=a.*b; g.dR_gmsst_ts_mon=a; g.dR_gmsst_ts_ann=mean(a,2);
+  a=s.d_netrad.clm_sst; a=repmat(a,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  b=ssta_omean_mon; b=repmat(b,[1 1 s.nlat,s.nlon]); 
+  a=a.*b; g.dR_gmsst_map_mon=a; g.dR_gmsst_map_ann=squeeze(mean(a,2));
+
+  %separately account for model netradtoa response to uniform SST warming
+  a=s.d_netradclr.clm0_sst; a=repmat(a,[nt 1]); b=ssta_omean_mon;
+  a=a.*b; g.dnetradclr_gmsst_ts_mon=a; g.dnetradclr_gmsst_ts_ann=mean(a,2);
+  a=s.d_netradclr.clm_sst; a=repmat(a,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  b=ssta_omean_mon; b=repmat(b,[1 1 s.nlat,s.nlon]); 
+  a=a.*b; g.dnetradclr_gmsst_map_mon=a; g.dnetradclr_gmsst_map_ann=squeeze(mean(a,2));
+
+  %separately account for model ttcf response to uniform SST warming
+  a=s.d_ttcf.clm0_sst; a=repmat(a,[nt 1]); b=ssta_omean_mon;
+  a=a.*b; g.dttcf_gmsst_ts_mon=a; g.dttcf_gmsst_ts_ann=mean(a,2);
+  a=s.d_ttcf.clm_sst; a=repmat(a,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  b=ssta_omean_mon; b=repmat(b,[1 1 s.nlat,s.nlon]);
+  a=a.*b; g.dttcf_gmsst_map_mon=a; g.dttcf_gmsst_map_ann=squeeze(mean(a,2));
+
+  %separately account for model lwcf response to uniform SST warming
+  a=s.d_lwcf.clm0_sst; a=repmat(a,[nt 1]); b=ssta_omean_mon;
+  a=a.*b; g.dlwcf_gmsst_ts_mon=a; g.dlwcf_gmsst_ts_ann=mean(a,2);
+  a=s.d_lwcf.clm_sst; a=repmat(a,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  b=ssta_omean_mon; b=repmat(b,[1 1 s.nlat,s.nlon]);
+  a=a.*b; g.dlwcf_gmsst_map_mon=a; g.dlwcf_gmsst_map_ann=squeeze(mean(a,2));
+
+  %separately account for model swcf response to uniform SST warming
+  a=s.d_swcf.clm0_sst; a=repmat(a,[nt 1]); b=ssta_omean_mon;
+  a=a.*b; g.dswcf_gmsst_ts_mon=a; g.dswcf_gmsst_ts_ann=mean(a,2);
+  a=s.d_swcf.clm_sst; a=repmat(a,[1 1 1 nt]); a=permute(a,[4,1,2,3]);
+  b=ssta_omean_mon; b=repmat(b,[1 1 s.nlat,s.nlon]);
+  a=a.*b; g.dswcf_gmsst_map_mon=a; g.dswcf_gmsst_map_ann=squeeze(mean(a,2));
+end
+
+%projection of SSTA to patches: g.sstp
+wei=s.wei; g.wei=wei; g.aa=aa;
+for m=1:12
+  id=lm | squeeze(imk(m,:,:));
+  for t=1:nt;
+    a =squeeze(ssta(t,m,:,:)); a(id)=0; a=a'; g.sstp_map_mon(t,m,:,:)=a';
+    Tp=reshape(a,90*144,1); g.Tp(t,m,:)=Tp;
+    g.sstp(:,m,t)=(wei'*Tp);
+  end
+end
+g.sstp_map_ann=squeeze(mean(g.sstp_map_mon,2));
+
+%patch reconstruction for tref
+optx=1;
+var=s.T; varp=s.p_T; x=gfsstp_recon(var,varp,p_thresh,g,0);
+if (opt==2)
+  x.map_tot_mon=x.map_gf_mon+g.dT_gmsst_map_mon;
+  x.map_tot_ann=squeeze(mean(x.map_tot_mon,2));
+  x.ts_ann_gsst=x.ts_ann    +g.dT_gmsst_ts_ann;
+end
+g.T=x;
+
+%patch reconstruction for netradtoa
+var=s.R; varp=s.p_R; x=gfsstp_recon(var,varp,p_thresh,g,1);
+if (opt==2)
+  x.map_tot_mon=x.map_gf_mon+g.dR_gmsst_map_mon;
+  x.map_tot_ann=squeeze(mean(x.map_tot_mon,2));
+  x.ts_ann_gsst=x.ts_ann    +g.dR_gmsst_ts_ann;
+end
+g.R=x;
+
+%patch reconstruction for clear-sky
+var=s.clr; varp=s.p_clr; x=gfsstp_recon(var,varp,p_thresh,g,0);
+if (opt==2)
+  x.map_tot_mon=x.map_gf_mon+g.dnetradclr_gmsst_map_mon;
+  x.map_tot_ann=squeeze(mean(x.map_tot_mon,2));
+  x.ts_ann_gsst=x.ts_ann    +g.dnetradclr_gmsst_ts_ann;
+end
+g.netradclr=x;
+
+%patch reconstruction for ttcf
+var=s.cre; varp=s.p_cre; x=gfsstp_recon(var,varp,p_thresh,g,0);
+if (opt==2)
+  x.map_tot_mon=x.map_gf_mon+g.dttcf_gmsst_map_mon;
+  x.map_tot_ann=squeeze(mean(x.map_tot_mon,2));
+  x.ts_ann_gsst=x.ts_ann    +g.dttcf_gmsst_ts_ann;
+end
+g.ttcf=x;
+
+%patch reconstruction for lwcf
+var=s.lwcre; varp=s.p_lwcre; x=gfsstp_recon(var,varp,p_thresh,g,0);
+if (opt==2)
+  x.map_tot_mon=x.map_gf_mon+g.dlwcf_gmsst_map_mon;
+  x.map_tot_ann=squeeze(mean(x.map_tot_mon,2));
+  x.ts_ann_gsst=x.ts_ann    +g.dlwcf_gmsst_ts_ann;
+end
+g.lwcf=x;
+
+%patch reconstruction for swcf
+var=s.swcre; varp=s.p_swcre; x=gfsstp_recon(var,varp,p_thresh,g,0);
+if (opt==2)
+  x.map_tot_mon=x.map_gf_mon+g.dswcf_gmsst_map_mon;
+  x.map_tot_ann=squeeze(mean(x.map_tot_mon,2));
+  x.ts_ann_gsst=x.ts_ann    +g.dswcf_gmsst_ts_ann;
+end
+g.swcf=x;
+
+return
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot time series
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 500]*1; fsize=9.5; lw=1; s0='(%4.2f)';
+handle = figure('Position', pms,'visible','on'); row=1; col=1;
+x=[t1:t2]-1; 
+plot(x,g.netrad_ts+8,'r'); hold on; 
+plot(x,d.netrad_ts,'k');
+axis([1 150 -6 6]);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 500]*1; fsize=9.5; lw=1; s0='(%4.2f)';
+handle = figure('Position', pms,'visible','on'); row=1; col=1;
+x=[t1:t2]-1; 
+plot(x,g.tas_ts,'r'); hold on; 
+plot(x,d.tas_ts,'k'); %axis([1 150 -6 6]);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1200, 500]*1; fsize=9.5; lw=1; s0='(%4.2f)';
+handle = figure('Position', pms,'visible','on'); row=1; col=1;
+x=[t1:t2]-1; 
+plot(x,g.pcp_ts*86400,'r'); hold on; 
+plot(x,d.pcp_ts,'k'); %axis([1 150 -6 6]);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

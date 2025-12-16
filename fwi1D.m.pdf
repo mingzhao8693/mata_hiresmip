@@ -1,0 +1,1754 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: Ming Zhao
+%%Creator: GNU Enscript 1.6.6
+%%CreationDate: Fri Nov 28 14:54:33 2025
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 6
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 6
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 6
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 744 def
+/d_page_h 536 def
+/d_header_x 0 def
+/d_header_y 492 def
+/d_header_w 744 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 744 def
+/d_footer_h 0 def
+/d_output_w 744 def
+/d_output_h 492 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(function out = fwi1D\(months, Tm, H, r, W, lat, what, init_pars, spin_up\)) s
+5 468 M
+(%FWI1D Canadian Fire Weather Index for 1-D Time Series) s
+5 457 M
+(%) s
+5 446 M
+(%   out = FWI1D\(months, Tm, H, r, W\)) s
+5 435 M
+(%   computes the Fire Weather Index \(FWI\) system using daily meteorological) s
+5 424 M
+(%   inputs. By default, only the FWI component is returned.) s
+5 413 M
+(%) s
+5 402 M
+(%   out = FWI1D\(months, Tm, H, r, W, lat, what, init_pars, spin_up\)) s
+5 391 M
+(%) s
+5 380 M
+(%   INPUTS) s
+5 369 M
+(%       months      : Nx1 integer vector \(1\342\\200\\22312\), month of each record) s
+5 358 M
+(%       Tm          : Nx1 vector, temperature \(\302\260C\)) s
+5 347 M
+(%       H           : Nx1 vector, relative humidity \(%\)) s
+5 336 M
+(%       r           : Nx1 vector, 24-hr precipitation \(mm\)) s
+5 325 M
+(%       W           : Nx1 vector, wind speed \(km/h\)) s
+5 314 M
+(%) s
+5 303 M
+(%   OPTIONAL INPUTS) s
+5 292 M
+(%       lat         : Latitude in degrees \(default = 46\)) s
+5 281 M
+(%       what        : Components to return. Any subset of:) s
+5 270 M
+(%                       {"FFMC","DMC","DC","ISI","BUI","FWI","DSR"}) s
+5 259 M
+(%                     default = "FWI") s
+5 248 M
+(%       init_pars   : 1x3 vector of initial [FFMC DMC DC] values) s
+5 237 M
+(%                     default = [85 6 15]) s
+5 226 M
+(%       spin_up     : Integer number of leading days set to NaN) s
+5 215 M
+(%                     default = 0) s
+5 204 M
+(%) s
+5 193 M
+(%   OUTPUT) s
+5 182 M
+(%       out         : NxK numeric matrix) s
+5 171 M
+(%                     rows   = time \(days\)) s
+5 160 M
+(%                     cols   = requested components \(in order of "what"\)) s
+5 149 M
+(%) s
+5 138 M
+(%   REFERENCES) s
+5 127 M
+(%       Van Wagner \(1987\), Lawson & Armitage \(2008\),) s
+5 116 M
+(%       Van Wagner & Pickett \(1985\)) s
+5 105 M
+(%) s
+5 94 M
+(%   AUTHOR) s
+5 83 M
+(%       MATLAB translation based on J. Bedia's R implementation) s
+5 72 M
+(%) s
+5 61 M
+(%references) s
+5 50 M
+(%Lawson, B.D. & Armitage, O.B., 2008.) s
+5 39 M
+(%Weather guide for the Canadian Forest Fire Danger Rating System. Northern Forestry Centre, Edmonton \(Canada\).) s
+5 28 M
+(%van Wagner, C.E., 1987.) s
+5 17 M
+(%Development and structure of the Canadian Forest Fire Weather Index \(Forestry Tech. Rep. No. 35\). Canadian Forestry Servi) s
+5 6 M
+(ce, Ottawa, Canada.) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 2 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(%van Wagner, C.E., Pickett, T.L., 1985.) s
+5 468 M
+(%Equations and FORTRAN program for the Canadian forest fire weather index system \(Forestry Tech. Rep. No. 33\). Canadian Fo) s
+5 457 M
+(restry Service, Ottawa, Canada.) s
+5 446 M
+(%author J. Bedia, partially based on the original FORTRAN code by van Wagner and Pickett \(1985\)) s
+5 435 M
+(% ---------------------- INPUT VALIDATION -------------------------------) s
+5 413 M
+(% Check required inputs) s
+5 402 M
+(if nargin < 5) s
+5 391 M
+(    error\('At least five inputs \(months, Tm, H, r, W\) are required.'\);) s
+5 380 M
+(end) s
+5 358 M
+(% Validate vector shapes) s
+5 347 M
+(inputs = {months, Tm, H, r, W};) s
+5 336 M
+(names  = {'months','Tm','H','r','W'};) s
+5 325 M
+(n = length\(months\);) s
+5 303 M
+(for k = 1:5) s
+5 292 M
+(    if ~isvector\(inputs{k}\)) s
+5 281 M
+(        error\('Input "%s" must be a vector.', names{k}\);) s
+5 270 M
+(    end) s
+5 259 M
+(    if length\(inputs{k}\) ~= n) s
+5 248 M
+(        error\('All input vectors must have the same length.'\);) s
+5 237 M
+(    end) s
+5 226 M
+(end) s
+5 204 M
+(% Set defaults) s
+5 193 M
+(if nargin < 6 || isempty\(lat\),       lat = 46;      end) s
+5 182 M
+(if nargin < 7 || isempty\(what\),      what = "FWI";  end) s
+5 171 M
+(if nargin < 8 || isempty\(init_pars\), init_pars = [85 6 15]; end) s
+5 160 M
+(if nargin < 9 || isempty\(spin_up\),   spin_up = 0;   end) s
+5 138 M
+(% Validate latitude) s
+5 127 M
+(if ~isscalar\(lat\) || ~isnumeric\(lat\) || lat < -90 || lat > 90) s
+5 116 M
+(    error\('Latitude must be a numeric scalar in [-90, 90].'\);) s
+5 105 M
+(end) s
+5 83 M
+(% Validate init_pars) s
+5 72 M
+(if ~isnumeric\(init_pars\) || length\(init_pars\) ~= 3) s
+5 61 M
+(    error\('"init_pars" must be a numeric vector of length 3.'\);) s
+5 50 M
+(end) s
+5 28 M
+(% Validate spin_up) s
+5 17 M
+(if ~isscalar\(spin_up\) || spin_up < 0 || mod\(spin_up,1\) ~= 0) s
+5 6 M
+(    error\('"spin_up" must be a non-negative integer.'\);) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 3 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(end) s
+5 457 M
+(% Validate "what") s
+5 446 M
+(validChoices = ["FFMC","DMC","DC","ISI","BUI","FWI","DSR"];) s
+5 435 M
+(what = string\(what\);) s
+5 424 M
+(if ~all\(ismember\(what, validChoices\)\)) s
+5 413 M
+(    error\('"what" contains invalid component names.'\);) s
+5 402 M
+(end) s
+5 380 M
+(%% ---------------------- MISSING DATA HANDLING --------------------------) s
+5 358 M
+(isGood = isfinite\(Tm\) & isfinite\(H\) & isfinite\(r\) & isfinite\(W\);) s
+5 347 M
+(if ~all\(isGood\)) s
+5 336 M
+(    warning\('Missing values detected. These records will be removed.'\);) s
+5 325 M
+(    months = months\(isGood\);) s
+5 314 M
+(    Tm     = Tm\(isGood\);) s
+5 303 M
+(    H      = H\(isGood\);) s
+5 292 M
+(    r      = r\(isGood\);) s
+5 281 M
+(    W      = W\(isGood\);) s
+5 270 M
+(end) s
+5 248 M
+(n2  = length\(months\);) s
+5 237 M
+(out = NaN\(n, length\(what\)\); % final output \(full length\)) s
+5 215 M
+(%% ---------------------- PHYSICAL CORRECTION ----------------------------) s
+5 193 M
+(H\(H > 100\) = 100;) s
+5 182 M
+(H\(H <   0\) = 0;) s
+5 171 M
+(r\(r <   0\) = 0;) s
+5 160 M
+(W\(W <   0\) = 0;) s
+5 138 M
+(%% ---------------------- LATITUDE FACTORS -------------------------------) s
+5 116 M
+(% Both factors are essential for accurately modeling the seasonal variation in drying intensity across) s
+5 105 M
+(% different latitudes in Canada, ensuring that the codes reflect the reality that summer days have a much) s
+5 94 M
+(% greater drying power than winter days, even if the noon temperature is the same.) s
+5 83 M
+(% Feature          Le \(DMC Daylength Factor\)                    Lf \(DC Daylength Factor\)) s
+5 72 M
+(% Component        Duff Moisture Code \(DMC\)                     Drought Code \(DC\)) s
+5 61 M
+(% Layer Time Lag   Medium \(\342\\211\\21012 days\)                            Long \(\342\\211\\21052 days\)) s
+5 50 M
+(% Formula Use      Multiplies the drying constant \(K\).          Adds to the drying factor \(V\).) s
+5 39 M
+(% Input Dependence Scales drying driven by Temperature and RH   Scales drying driven primarily by Temperature) s
+5 17 M
+(ref_lats = [-90 -30 -10 10 30 90];) s
+5 6 M
+(loc = findInterval\(lat, ref_lats\);) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 4 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 468 M
+(switch loc) s
+5 457 M
+(    case 1) s
+5 446 M
+(        Le  = [11.5 10.5 9.2 7.9 6.8 6.2 6.5 7.4 8.7 10.0 11.2 11.8];%day length factor for DMC) s
+5 435 M
+(        dlf = [6.4 5.0 2.4 0.4 -1.6 -1.6 -1.6 -1.6 -1.6 0.9 3.8 5.8];%day length factor for DC) s
+5 424 M
+(    case 2) s
+5 413 M
+(        Le  = [10.1 9.6 9.1 8.5 8.1 7.8 7.9 8.3 8.9 9.4 9.9 10.2];) s
+5 402 M
+(        dlf = [6.4 5.0 2.4 0.4 -1.6 -1.6 -1.6 -1.6 -1.6 0.9 3.8 5.8];) s
+5 391 M
+(    case 3) s
+5 380 M
+(        Le  = repmat\(9,1,12\);) s
+5 369 M
+(        dlf = repmat\(1.4,1,12\);) s
+5 358 M
+(    case 4) s
+5 347 M
+(        Le  = [7.9 8.4 8.9 9.5 9.9 10.2 10.1 9.7 9.1 8.6 8.1 7.8];) s
+5 336 M
+(        dlf = [-1.6 -1.6 -1.6 0.9 3.8 5.8 6.4 5.0 2.4 0.4 -1.6 -1.6];) s
+5 325 M
+(    case 5) s
+5 314 M
+(        Le  = [6.5 7.5 9.0 12.8 13.9 13.9 12.4 10.9 9.4 8.0 7.0 6.0];) s
+5 303 M
+(        dlf = [-1.6 -1.6 -1.6 0.9 3.8 5.8 6.4 5.0 2.4 0.4 -1.6 -1.6];) s
+5 292 M
+(    otherwise) s
+5 281 M
+(        error\('Latitude out of bounds.'\);) s
+5 270 M
+(end) s
+5 248 M
+(    % Defaults) s
+5 237 M
+(    if nargin < 6 || isempty\(lat\), lat = 46; end) s
+5 226 M
+(    if nargin < 7 || isempty\(what\), what = "FWI"; end) s
+5 215 M
+(    if nargin < 8 || isempty\(init_pars\), init_pars = [85, 6, 15]; end) s
+5 204 M
+(    if nargin < 9 || isempty\(spin_up\), spin_up = 0; end) s
+5 182 M
+(    % Check vector lengths) s
+5 171 M
+(    n = length\(months\);) s
+5 160 M
+(    if any\([length\(Tm\), length\(H\), length\(r\), length\(W\)] ~= n\)) s
+5 149 M
+(        error\('Input vector lengths differ'\);) s
+5 138 M
+(    end) s
+5 116 M
+(    % Allowed components) s
+5 105 M
+(    choices = ["FFMC","DMC","DC","ISI","BUI","FWI","DSR"];) s
+5 94 M
+(    if ischar\(what\) || isstring\(what\)) s
+5 83 M
+(        what = string\(what\);) s
+5 72 M
+(    end) s
+5 61 M
+(    if ~all\(ismember\(what,choices\)\)) s
+5 50 M
+(        error\('Invalid entry in "what" argument'\);) s
+5 39 M
+(    end) s
+5 17 M
+(    % Initialize output) s
+5 6 M
+(    out = NaN\(n, length\(what\)\);) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 5 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(    colnames = what;) s
+5 468 M
+(    ) s
+5 457 M
+(    % Remove missing values) s
+5 446 M
+(    rm_ind = find\(~\(isfinite\(Tm\) & isfinite\(H\) & isfinite\(r\) & isfinite\(W\)\)\);) s
+5 435 M
+(    non_na_ind = setdiff\(1:n, rm_ind\);) s
+5 413 M
+(    if ~isempty\(rm_ind\)) s
+5 402 M
+(        warning\('Missing values were removed from the time series before computation'\);) s
+5 391 M
+(        months\(rm_ind\) = [];) s
+5 380 M
+(        Tm\(rm_ind\) = [];) s
+5 369 M
+(        H\(rm_ind\) = [];) s
+5 358 M
+(        r\(rm_ind\) = [];) s
+5 347 M
+(        W\(rm_ind\) = [];) s
+5 336 M
+(    end) s
+5 314 M
+(    mes = months;) s
+5 303 M
+(    n2 = length\(mes\);) s
+5 281 M
+(    % Latitude tables \(Lawson & Armitage\)) s
+5 270 M
+(    ref_lats = [-90 -30 -10 10 30 90];) s
+5 259 M
+(    loc = findInterval\(lat, ref_lats\);) s
+5 237 M
+(    switch loc) s
+5 226 M
+(        case 1) s
+5 215 M
+(            Le  = [11.5 10.5 9.2 7.9 6.8 6.2 6.5 7.4 8.7 10.0 11.2 11.8];) s
+5 204 M
+(            dlf = [6.4 5.0 2.4 0.4 -1.6 -1.6 -1.6 -1.6 -1.6 0.9 3.8 5.8];) s
+5 193 M
+(        case 2) s
+5 182 M
+(            Le  = [10.1 9.6 9.1 8.5 8.1 7.8 7.9 8.3 8.9 9.4 9.9 10.2];) s
+5 171 M
+(            dlf = [6.4 5.0 2.4 0.4 -1.6 -1.6 -1.6 -1.6 -1.6 0.9 3.8 5.8];) s
+5 160 M
+(        case 3) s
+5 149 M
+(            Le  = repmat\(9,1,12\);) s
+5 138 M
+(            dlf = repmat\(1.4,1,12\);) s
+5 127 M
+(        case 4) s
+5 116 M
+(            Le  = [7.9 8.4 8.9 9.5 9.9 10.2 10.1 9.7 9.1 8.6 8.1 7.8];) s
+5 105 M
+(            dlf = [-1.6 -1.6 -1.6 0.9 3.8 5.8 6.4 5.0 2.4 0.4 -1.6 -1.6];) s
+5 94 M
+(        case 5) s
+5 83 M
+(            Le  = [6.5 7.5 9.0 12.8 13.9 13.9 12.4 10.9 9.4 8.0 7.0 6.0];) s
+5 72 M
+(            dlf = [-1.6 -1.6 -1.6 0.9 3.8 5.8 6.4 5.0 2.4 0.4 -1.6 -1.6];) s
+5 61 M
+(        otherwise) s
+5 50 M
+(            error\('Latitude out of bounds'\);) s
+5 39 M
+(    end) s
+5 17 M
+(    % Corrections) s
+5 6 M
+(    H\(H > 100\) = 100;) s
+_R
+S
+%%Page: (6) 6
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 6 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (6) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(    H\(H < 0\) = 0;) s
+5 468 M
+(    r\(r < 0\) = 0;) s
+5 457 M
+(    W\(W < 0\) = 0;) s
+5 435 M
+(    % Initialization) s
+5 424 M
+(    f0  = [init_pars\(1\) NaN\(1,n2\)];) s
+5 413 M
+(    p0  = [init_pars\(2\) NaN\(1,n2\)];) s
+5 402 M
+(    d0  = [init_pars\(3\) NaN\(1,n2\)];) s
+5 380 M
+(    ISI = NaN\(1,n2\);) s
+5 369 M
+(    BUI = NaN\(1,n2\);) s
+5 358 M
+(    FWI = NaN\(1,n2\);) s
+5 336 M
+(    % MAIN LOOP) s
+5 325 M
+(    for i = 1:n2) s
+5 303 M
+(% ----- FFMC \(Fine Fuel Moisture Code\) Moisture Model -----) s
+5 292 M
+(%f0 is FFMC, m0 is fuel moisture content;) s
+5 281 M
+(%High FFMC \(e.g., 90-100\): Corresponds to very low moisture content \(M\342\\211\\2102\342\\210\\2227%\).) s
+5 270 M
+(%Physically, this means the fuels are nearly "oven dry.") s
+5 259 M
+(%Low FFMC \(e.g., below 80\): Corresponds to high moisture content \(M>10%\).) s
+5 248 M
+(%Physically, the fuels are damp and resist combustion.) s
+5 237 M
+(%The FFMC has a short time lag \(memory\) of about one day because fine fuels) s
+5 226 M
+(%quickly respond to changes in temperature, relative humidity, and wind.) s
+5 215 M
+(%Physical Process: Unlike the Drought Code \(DC\), which tracks deep soil moisture) s
+5 204 M
+(%over weeks, the FFMC tracks surface fuels that can dry out rapidly in just a few) s
+5 193 M
+(%hours of sunshine and low humidity, or become damp again overnight.) s
+5 182 M
+(%Daily Interpretation: The FFMC value calculated for today reflects the cumulative) s
+5 171 M
+(%effect of the last 24 hours of weather on the top layer of fuel.     ) s
+5 160 M
+(        m0 = \(147.2 * \(101 - f0\(i\)\)\) / \(59.5 + f0\(i\)\); %m0:moisture content) s
+5 138 M
+(        if r\(i\) > 0.5) s
+5 127 M
+(            rA = r\(i\) - 0.5;) s
+5 116 M
+(            if m0 <= 150) s
+5 105 M
+(                mr = m0 + 42.5 * rA * exp\(-100/\(251 - m0\)\) * \(1 - exp\(-6.93/rA\)\);) s
+5 94 M
+(            else) s
+5 83 M
+(                mr = m0 + 42.5 * rA * exp\(-100/\(251 - m0\)\) * \(1 - exp\(-6.93/rA\)\) + \(0.0015 * \(m0 - 150\)^2 * sqrt\(rA\)\);) s
+5 72 M
+(            end) s
+5 61 M
+(            mr = min\(mr,250\);) s
+5 50 M
+(            m0 = mr;) s
+5 39 M
+(        end) s
+5 17 M
+(% The Role of Equilibrium Moisture Content \(E\) and FFMC calculation) s
+5 6 M
+(% In the FFMC calculation, there are actually two separate calculated values for E Ewet and E_dry) s
+_R
+S
+%%Page: (7) 7
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 7 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (7) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(% E_wet \(Wetting Equilibrium\): This is the higher moisture content limit the fuel will reach under wetting conditions \(hig) s
+5 468 M
+(h H\)) s
+5 457 M
+(% E_dry \(Drying  Equilibrium\): This is the lower  moisture content limit the fuel will reach under drying conditions  \(low) s
+5 446 M
+( H\)) s
+5 435 M
+(% This distinction is based on the phenomenon of hysteresis, which means that fuels do not absorb and release moisture at) s
+5 424 M
+(% exactly the same rate or equilibrium point.) s
+5 413 M
+(% Determining the Condition:The FFMC calculation determines the condition by comparing the current fuel moisture \(m0\)) s
+5 402 M
+(% against these two calculated equilibrium points: E_dry > E_wet) s
+5 391 M
+(% Drying  m0 > E_dry FFMC decrease towards this larger value \(E_dry\)) s
+5 380 M
+(% Wetting m0 < E_wet FFMC increase towards this smaller value \(E_wet\)) s
+5 369 M
+(% Neutral E_dry <= m0 <= E_wet FFMC remains mostly unchanged \(very slow change\)) s
+5 347 M
+(        Ed = 0.942*H\(i\)^0.679 + 11*exp\(\(H\(i\)-100\)/10\) + 0.18*\(21.1-Tm\(i\)\)*\(1 - exp\(-0.115*H\(i\)\)\);) s
+5 336 M
+(        Ew = 0.618*H\(i\)^0.753 + 10*exp\(\(H\(i\)-100\)/10\) + 0.18*\(21.1-Tm\(i\)\)*\(1 - exp\(-0.115*H\(i\)\)\);) s
+5 314 M
+(        if m0 > Ed) s
+5 303 M
+(            k0 = 0.424*\(1 - \(H\(i\)/100\)^1.7\) + 0.0694*sqrt\(W\(i\)\)*\(1 - \(H\(i\)/100\)^8\);) s
+5 292 M
+(            kd = k0 * 0.581 * exp\(0.0365*Tm\(i\)\);) s
+5 281 M
+(            m  = Ed + \(m0 - Ed\) * 10^\(-kd\);) s
+5 270 M
+(        elseif m0 < Ew) s
+5 259 M
+(            k1 = 0.424*\(1 - \(\(100-H\(i\)\)/100\)^1.7\) + 0.0694*sqrt\(W\(i\)\)*\(1 - \(\(100-H\(i\)\)/100\)^8\);) s
+5 248 M
+(            kw = k1 * 0.581 * exp\(0.0365*Tm\(i\)\);) s
+5 237 M
+(            m  = Ew - \(Ew - m0\) * 10^\(-kw\);) s
+5 226 M
+(        else) s
+5 215 M
+(            m = m0;) s
+5 204 M
+(        end) s
+5 182 M
+(        m = max\(m,0\);) s
+5 171 M
+(        f0\(i+1\) = 59.5*\(250 - m\) / \(147.2 + m\); %change from moisture content to FFMC) s
+5 149 M
+(% ----- DMC & DC -----) s
+5 138 M
+(% The Duff Moisture Code \(DMC\) is the second of the three moisture codes in the Canadian Forest Fire Weather) s
+5 127 M
+(% Index \(FWI\) System. It is a numeric rating of the average moisture content of loosely compacted organic) s
+5 116 M
+(% layers of moderate depth \(the duff layer, typically 5-10 cm deep\).) s
+5 105 M
+(% The computation for the DMC is a two-stage, daily bookkeeping process that involves complex non-linear) s
+5 94 M
+(% equations for both a wetting phase \(when it rains\) and a drying phase \(when it doesn't\). It requires the) s
+5 83 M
+(% following daily inputs taken at Noon local standard time \(LST\), plus the DMC value from the previous day) s
+5 72 M
+(% \(DMC\(t\342\\210\\2221\), Temperature \(T in C\), Relative Humidity \(RH in %\), and 24-hour Accumulated Precipitation \(P in mm\).) s
+5 61 M
+(% Daylength Factor \(Le\), which varies by month and latitude.) s
+5 50 M
+(% The DMC has a time lag of about 12 days, meaning it responds more slowly to weather changes than the) s
+5 39 M
+(% Fine Fuel Moisture Code \(FFMC\), but much faster than the long-term Drought Code \(DC\).) s
+5 28 M
+(% Below K is drying Constant \(Note: If T<\342\\210\\2221.1C, T is set to \342\\210\\2221.1C to prevent a negative drying constant,) s
+5 17 M
+(% as drying is minimal at very cold temperatures.) s
+5 6 M
+(% The DMC is a unitless index, but its calculation requires converting the previous day's index DMC\(t\342\\210\\2221\) back) s
+_R
+S
+%%Page: (8) 8
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 8 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (8) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(% into an equivalent gravimetric Duff Moisture Content M\(t\342\\210\\2221\) in %, i.e., M\(t\342\\210\\2221\)=20+e^\(5.6348\342\\210\\222DMC\() s
+5 468 M
+(t-1\)\)/43.43) s
+5 457 M
+(% The new moisture content after rainfall \(M\(t\) is determined by adding the effective rainfall to the previous) s
+5 446 M
+(% moisture content, adjusting for the Duff's saturation properties using an intermediate variable, b \(a slope) s
+5 435 M
+(% factor that accounts for non-linear absorption\), formulation of b depend of DMC value) s
+5 424 M
+(% Below p0\(1\) is the inital DMC and M0 is the inital equivalent gravimetric Duff Moisture Content) s
+5 413 M
+(% Mr is the current equivalent gravimetric Duff Moisture Content: M\(t\)=M\(t-1\)+1000*Re/\(48.77+b*re\)) s
+5 402 M
+(% the calculaiton is only performed if r>1.5mm, the effective rainfall re=0.92*r-1.27) s
+5 391 M
+(% If rain occurred, the new moisture content is converted back into an index value DMC\(t\)=244.72\342\\210\\22243.43*ln\(M\(t\)\342) s
+5 380 M
+(\\210\\22220\)) s
+5 369 M
+(% If no rain occurred, the value from previous time-step is used i.e., DMC\(t\)=DMC\(t\342\\210\\2221\)) s
+5 358 M
+(% The final step for computing DMC is to apply Drying Effect, The drying effect, which represents moisture loss) s
+5 347 M
+(% due to temperature and relative humidity, is applied to the index value. The change in the DMC due to drying \(\316\\224DMC\)) s
+5 336 M
+(% is calculated using the noon observations and the daylength factor \(Le\), which adjusts the drying rate for seasonal) s
+5 325 M
+(% variations in solar radiation.) s
+5 314 M
+(% the Final DMC for the Day DMC\(t\) is calculated by adding the drying effect \(converted back to an index change\) to) s
+5 303 M
+(% the value from the wetting phase) s
+5 281 M
+(        Ti = max\(Tm\(i\), -1.1\);) s
+5 270 M
+(        K = 1.894 * \(Ti + 1.1\) * \(100 - H\(i\)\) * Le\(mes\(i\)\) * 1e-06;) s
+5 248 M
+(        if r\(i\) > 1.5) s
+5 237 M
+(            re = 0.92*r\(i\) - 1.27;) s
+5 226 M
+(            M0 = 20 + exp\(5.6348 - p0\(i\)/43.43\);) s
+5 204 M
+(            if p0\(i\) <= 33) s
+5 193 M
+(                b = 100 / \(0.5 + 0.3*p0\(i\)\);) s
+5 182 M
+(            elseif p0\(i\) > 65) s
+5 171 M
+(                b = 6.2*log\(p0\(i\)\) - 17.2;) s
+5 160 M
+(            else) s
+5 149 M
+(                b = 14 - 1.3*log\(p0\(i\)\);) s
+5 138 M
+(            end) s
+5 116 M
+(            Mr = M0 + \(1000*re\)/\(48.77 + b*re\);) s
+5 105 M
+(            pr = 244.72 - 43.43*log\(Mr - 20\);) s
+5 94 M
+(            pr = max\(pr,0\);) s
+5 83 M
+(            p0\(i+1\) = pr + 100*K;) s
+5 72 M
+(        else) s
+5 61 M
+(            p0\(i+1\) = p0\(i\) + 100*K;) s
+5 50 M
+(        end) s
+5 28 M
+(% Calculation of Drought Code: %he Drought Code \(DC\) is the third and final fuel moisture code in the Canadian Forest) s
+5 17 M
+(% Fire Weather Index \(FWI\) System. It is a numeric rating of the average moisture content of deep, compact organic) s
+5 6 M
+(% layers \(like peat or thick duff, 10-20 cm deep\).\357\277\274) s
+_R
+S
+%%Page: (9) 9
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 9 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (9) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(% The DC has a long time lag \(approximately 52 days\), making it an indicator of seasonal drought effects and the) s
+5 468 M
+(% potential for deep smoldering in heavy fuels and large logs. Unlike the other codes, its calculation is based on a) s
+5 457 M
+(% simplified water balance model, where a conceptual soil layer of 200 mm water capacity dries at a rate proportional) s
+5 446 M
+(% to its current moisture content and the atmospheric demand.) s
+5 435 M
+(% Below d0 is DC code) s
+5 424 M
+(% Daily Calculation of the Drought Code: The DC is a daily bookkeeping system that tracks water loss due to evaporation) s
+5 413 M
+(% and water gain due to effective rainfall. It uses daily observations of noon temperature \(T in C\) and 24-hour accumulate) s
+5 402 M
+(d) s
+5 391 M
+(% precipitation \(P in mm\), along with the previous day's DC value DC\(t\342\\210\\2221\).) s
+5 380 M
+(%The calculation proceeds in two main phases:\357\277\274) s
+5 369 M
+(% Phase 1: The first step is to calculate the potential moisture loss \(evaporation\) from the conceptual soil column.    ) s
+5 358 M
+(% Calculate the Temperature-Dependent Drying Factor: The drying rate is proportional to the noon temperature, adjusted) s
+5 347 M
+(% by a daylength factor \(Lf\) that varies by month and latitude to account for the seasonal influence of solar radiation.) s
+5 336 M
+(% V=0.36\(T+2.8\)+Lf and \316\\224DCdry= =0.5\342\\213\\205V) s
+5 325 M
+(% Phase 2: Wetting Calculation \(Rainfall\), This phase determines the net effect of any precipitation.) s
+5 314 M
+(% Check for Effective Rainfall \(Pd\): Rainfall less than 2.8 mm is considered ineffective, as it is assumed to be) s
+5 303 M
+(% intercepted or absorbed by the layers above the deep duff.\357\277\274If the total 24-hour precipitation \(P\) is greater than 2.8 ) s
+5 292 M
+(mm,) s
+5 281 M
+(% the effective rainfall \(Pd\) is calculated: Pd =0.83\342\\213\\205P\342\\210\\2221.27 for P>2.8 mm If P\342\\211\2442.8 mm, then Pd=0.) s
+5 270 M
+(% Convert Previous DC to Moisture Equivalent Q\(t\342\\210\\2221\):) s
+5 259 M
+(% The DC index is first converted into its equivalent Moisture Content \(Q\), which represents the remaining water storage) s
+5 248 M
+(% depth in the conceptual 200 mm soil column \(expressed in units of 0.01 inches for the original formula, or 0.254 mm\):) s
+5 237 M
+(% Q\(t\342\\210\\2221\)=800\342\\213\\205exp\(\342\\210\\222\(DC\(t\342\\210\\2221\)/400\)\)) s
+5 226 M
+(% Calculate New Moisture Equivalent After Rain, the effective rainfall is added to the previous moisture equivalent.) s
+5 215 M
+(% The factor 3.937 converts the effective rainfall from mm to the Q units:\357\277\274Q\(t\)=Q\(t\342\\210\\2221\)+3.937\342\\213\\205Pd) s
+5 204 M
+(% Convert Moisture Equivalent Back to DC Index DC\(t\)=400*ln\(800/Q\(t\)\)) s
+5 193 M
+(% The final daily DC value DC\(t\) is obtained by applying the drying factor to the value resulting from the wetting) s
+5 182 M
+(% calculation \(if rain occurred\) or the previous day's value \(if no rain occurred\):) s
+5 171 M
+(% DC\(t\)=DC\(t-1\)+\316\\224DC_dry or, combining all terms:) s
+5 160 M
+(% DC\(t\)=DC\(t\)  +0.5V if P> 2.8mm) s
+5 149 M
+(% DC\(t\)=DC\(t-1\)+0.5V if P<=2.8mm ) s
+5 138 M
+(% The DC starts its seasonal calculation when snow cover has left the area, typically with a default initial value of 15.) s
+5 116 M
+(        Ti2 = max\(Tm\(i\), -2.8\);) s
+5 105 M
+(        v = 0.36*\(Ti2 + 2.8\) + dlf\(mes\(i\)\);) s
+5 94 M
+(        v = max\(v,0\);) s
+5 72 M
+(        if r\(i\) > 2.8) s
+5 61 M
+(            rd = 0.83*r\(i\) - 1.27;) s
+5 50 M
+(            q0 = 800*exp\(-d0\(i\)/400\);) s
+5 39 M
+(            qr = q0 + 3.937*rd;) s
+5 28 M
+(            dr = 400*log\(800/qr\);) s
+5 17 M
+(            dr = max\(dr,0\);) s
+5 6 M
+(            d0\(i+1\) = dr + 0.5*v;) s
+_R
+S
+%%Page: (10) 10
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 10 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (10) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(        else) s
+5 468 M
+(            d0\(i+1\) = d0\(i\) + 0.5*v;) s
+5 457 M
+(        end) s
+5 435 M
+(% ----- ISI -----) s
+5 424 M
+(% The Initial Spread Index \(ISI\) is the first of the three fire behavior indices in the Canadian Forest Fire Weather Index) s
+5 413 M
+( \(FWI\)) s
+5 402 M
+(% System. It is a numeric rating of the expected rate of fire spread without the influence of the amount of fuel available) s
+5 391 M
+(.\357\277\274) s
+5 380 M
+(% The calculation of the ISI is a multiplication of two distinct functions that account for the two primary drivers of ini) s
+5 369 M
+(tial) s
+5 358 M
+(% fire spread: fine fuel flammability and wind speed.\357\277\274ISI=0.208\342\\213\\205f\(W\)\342\\213\\205f\(F\) Where f\(W\) is the Wind Functio) s
+5 347 M
+(n. f\(F\) is the Fine Fuel) s
+5 336 M
+(% Moisture Function.\357\277\274The value 0.208 is a scaling constant used to calibrate the ISI with actual fire spread rates in a) s
+5 325 M
+(% standardized pine fuel type.) s
+5 314 M
+(% The Fine Fuel Moisture Function f\(m\), is then calculated using the moisture content \(m\), not FFMC:\357\277\274) s
+5 303 M
+(% f\(F\)=91.9\342\\213\\205exp \(\342\\210\\2220.1386*m\)*\(1 + m^5.31/\(4.93*10^7\)\)) s
+5 292 M
+(% This function is a non-linear expression that drops rapidly as the moisture content \(m\) increases \(i.e., as FFMC decreas) s
+5 281 M
+(es\).) s
+5 270 M
+(% This captures the fact that a small increase in moisture in already dry fine fuels significantly reduces the rate of spr) s
+5 259 M
+(ead.) s
+5 248 M
+(% Calculate the Wind Function f\(W\). This function relates the 10-meter wind speed W to the rate of spread f\(W\) = e^{\(0.050) s
+5 237 M
+(39 W\)) s
+5 226 M
+(% This is an exponential function, reflecting that the rate of fire spread increases very rapidly, or exponentially, as wi) s
+5 215 M
+(nd) s
+5 204 M
+(% speed increases. Even small increases in wind speed can dramatically boost the ISI.) s
+5 193 M
+(% ISI Values and Fire Danger Classes) s
+5 182 M
+(% The ISI values rise as the potential for rapid fire spread increases. While the ISI itself is unitless, it is a key comp) s
+5 171 M
+(onent) s
+5 160 M
+(% in determining the final Fire Weather Index \(FWI\) and the overall danger rating.) s
+5 138 M
+(% Fire Danger Class     ISI Range       Interpretation) s
+5 127 M
+(% Low                   0 to 1.9        Very slow spread, fires unlikely to ignite and sustain.) s
+5 116 M
+(% Moderate              2.0 to 4.9      Moderate spread possible, particularly in open, dry fuels on windy days.) s
+5 105 M
+(% High                  5.0 to 8.9      Fires spread easily and rapidly; control may be difficult unless fires are attacke) s
+5 94 M
+(d while small.) s
+5 83 M
+(% Very High             9.0 to 17.9     Fires start easily, spread very rapidly, and quickly increase in intensity. 10 is ) s
+5 72 M
+(a critical threshold.) s
+5 61 M
+(% Extreme               \342\\211\24518.0              Fires spread furiously and burn intensely. Direct attack is rarely possibl) s
+5 50 M
+(e.) s
+5 39 M
+(% Wind speed Details used:) s
+5 28 M
+(% Height: 10 meters \(10 m\)) s
+5 17 M
+(% Measurement: 10-minute average) s
+5 6 M
+(% Time of Day: Noon LST) s
+_R
+S
+%%Page: (11) 11
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 11 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (11) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(% Units: Typically input in kilometers per hour \(km/h\) for the FWI calculation \(though sometimes converted to m/s for othe) s
+5 468 M
+(r fire models\).) s
+5 446 M
+(        fW = exp\(0.05039*W\(i\)\);) s
+5 435 M
+(        fF = 91.9*exp\(-0.1386*m\)*\(1 + \(m^5.31\)/\(4.93e7\)\);) s
+5 424 M
+(        ISI\(i\) = 0.208 * fW * fF;) s
+5 413 M
+(        ) s
+5 402 M
+(% ----- BUI -----) s
+5 391 M
+(% The Buildup Index \(BUI\) is the second of the three fire behavior indices in the Canadian Forest Fire Weather Index \(FWI\)) s
+5 380 M
+( System.) s
+5 369 M
+(% It is a numeric rating that estimates the total amount of fuel available for combustion \(the potential fuel consumption\)) s
+5 358 M
+(.) s
+5 347 M
+(% The BUI is a combination of the two deep moisture codes: the Duff Moisture Code \(DMC\) and the Drought Code \(DC\). It acts) s
+5 336 M
+( as a) s
+5 325 M
+(% transitional index, linking the moisture status of the deep fuels \(DMC and DC\) to the final estimate of fire intensity \() s
+5 314 M
+(FWI\).) s
+5 303 M
+(% Input Components The BUI calculation is straightforward and requires no direct weather inputs; it is entirely derived fr) s
+5 292 M
+(om the) s
+5 281 M
+(% two preceding moisture codes: Duff Moisture Code \(DMC\) and Drought Code \(DC\)) s
+5 270 M
+(% The BUI is calculated using a single, non-linear formula that combines the DMC and the DC. The calculation is sensitive ) s
+5 259 M
+(to the) s
+5 248 M
+(% relative values of the two codes, ensuring that the BUI rises rapidly when both are high, but it is limited by the DC wh) s
+5 237 M
+(en the DMC) s
+5 226 M
+(% is low, and vice versa.) s
+5 215 M
+(% Standard Formula The formula for the Buildup Index \(BUI\) is BUI=\(MC+0.6\342\\213\\205DC\)/1.6              if DMC <=0.4*DC) s
+5 204 M
+(% Standard Formula The formula for the Buildup Index \(BUI\) is BUI=DMC-1.0+exp\(0.36*DMC-0.01DC\) if DMC>0.4*DC) s
+5 193 M
+(% Interpretation of the Formula's Two Cases) s
+5 182 M
+(% The formula transitions between two functions based on the relationship between DMC and DC. This accounts for the fact t) s
+5 171 M
+(hat the) s
+5 160 M
+(% total fuel available is limited by the drier of the two layers:) s
+5 149 M
+(% Case 1: Shallow Fuels are Drier \(DMC\342\\211\2440.4\342\\213\\205DC\)) s
+5 138 M
+(% This occurs when the DMC \(medium-depth duff\) is relatively low compared to the DC \(deep duff/drought\).) s
+5 127 M
+(% In this situation, the overall fuel available is constrained by the DMC, meaning the fire will not burn deeply into the ) s
+5 116 M
+(soil) s
+5 105 M
+(% despite the long-term drought conditions \(DC\).) s
+5 94 M
+(% The formula averages the two codes, giving slightly more weight to the DC.) s
+5 83 M
+(% Case 2: Deep Fuels are Drier \(DMC>0.4\342\\213\\205DC\)) s
+5 72 M
+(% This is the more common scenario during active fire seasons, especially after a period of prolonged drying.) s
+5 61 M
+(% Here, the BUI rises exponentially as both DMC and DC values increase. This rapid rise reflects the availability of a sig) s
+5 50 M
+(nificantly) s
+5 39 M
+(% greater total fuel volume as the fire can consume both the mid-depth duff and the deep organic layers.) s
+5 28 M
+(% Physical Interpretation) s
+5 17 M
+(% The BUI is conceptually related to the total fuel loading available for consumption.) s
+5 6 M
+(% A low BUI means only surface fuels and light duff are available to burn, leading to relatively low total heat output.) s
+_R
+S
+%%Page: (12) 12
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 12 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (12) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(% A high BUI means both the surface, mid-depth, and deep organic layers are dry and available, leading to the potential fo) s
+5 468 M
+(r high fuel) s
+5 457 M
+(% consumption and persistent, high-intensity fires that are difficult to extinguish, especially due to smoldering deep in ) s
+5 446 M
+(the ground) s
+5 435 M
+(        ) s
+5 424 M
+(        if p0\(i+1\) <= 0.4 * d0\(i+1\)) s
+5 413 M
+(            BUI\(i\) = \(0.8*p0\(i+1\)*d0\(i+1\)\) / \(p0\(i+1\) + 0.4*d0\(i+1\)\);) s
+5 402 M
+(        else) s
+5 391 M
+(            BUI\(i\) = p0\(i+1\) - \(1 - \(0.8*d0\(i+1\)\)/\(p0\(i+1\) + 0.4*d0\(i+1\)\)\) * ...) s
+5 380 M
+(                     \(0.92 + \(0.0114*p0\(i+1\)\)^1.7\);) s
+5 369 M
+(        end) s
+5 347 M
+(        if ~isfinite\(BUI\(i\)\) || BUI\(i\) < 0) s
+5 336 M
+(            BUI\(i\) = 0;) s
+5 325 M
+(        end) s
+5 303 M
+(% ----- FWI -----) s
+5 292 M
+(% The Fire Weather Index \(FWI\) is the final and most comprehensive component of the Canadian FWI System.) s
+5 281 M
+(% It is a single, unitless numeric rating of the potential frontal fire intensity \(or rate of energy output per unit lengt) s
+5 270 M
+(h of fire front\).) s
+5 259 M
+(% The FWI computation combines the two main fire behavior indices that were calculated previously: the Initial Spread Inde) s
+5 248 M
+(x \(ISI\) and the) s
+5 237 M
+(% Buildup Index \(BUI\).) s
+5 226 M
+(% FWI Computation Steps The calculation proceeds in two sequential steps:) s
+5 215 M
+(% Step 1: Calculate the Intermediate Fire Intensity Term \(ISC\)) s
+5 204 M
+(% This step combines the BUI \(the amount of fuel available\) with the ISI \(the rate of spread\). The result is an intermedia) s
+5 193 M
+(te term, often) s
+5 182 M
+(% referred to as the Initial Spread Component \(ISC\) or Intermediate FWI, which is proportional to the overall intensity of) s
+5 171 M
+( the fire.) s
+5 160 M
+(% The formula is: ISC=BUI^0.8*\( 1000/\(325+BUI\)*0.25*ISI) s
+5 149 M
+(% Physical Interpretation of the ISC Term:) s
+5 138 M
+(% 1\) Fuel Consumption Factor \(R\): The term BUI^0.8*1000/\(325+BUI\) represents the expected rate of fuel consumption. It ens) s
+5 127 M
+(ures that the) s
+5 116 M
+(% consumption rate increases with the BUI, but the increase is limited by the physical constraints of the fuel bed.) s
+5 105 M
+(% 2\) Combination: The ISC is essentially a product of the rate of spread \(ISI\) and the rate of fuel consumption \(R\), which) s
+5 94 M
+( mathematically) s
+5 83 M
+(% relates to fire intensity.) s
+5 72 M
+(% Step 2: Convert ISC to the Final Fire Weather Index \(FWI\)) s
+5 61 M
+(% The final step converts the ISC into the final FWI index using a power function. This step is a scaling operation design) s
+5 50 M
+(ed to map the ISC) s
+5 39 M
+(% value onto a convenient numerical scale that ranges from 0 to over 100, aligning it with the operational fire danger cla) s
+5 28 M
+(sses.) s
+5 17 M
+(% The formula is: FWI=0.244\342\\213\\205ISC^0.969 if ISC>1.0) s
+5 6 M
+(%                 FWI=0.244\342\\213\\205ISC       if ISC<=1.0\342\\200\\213) s
+_R
+S
+%%Page: (13) 13
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 13 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (13) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(% For practical purposes, when ISC is large, FWI\342\\211\\2100.244\342\\213\\205ISC.) s
+5 468 M
+(% Final Interpretationz: The Fire Weather Index \(FWI\) is an overall indicator of fire danger. It increases as conditions b) s
+5 457 M
+(ecome more favorable) s
+5 446 M
+(% for high-intensity, fast-spreading fires.) s
+5 435 M
+(% A Low FWI      \(e.g., 1-5\) suggests low-intensity surface fires that are easy to control.) s
+5 424 M
+(% A High FWI     \(e.g., 15-25\) suggests a significant fire threat with high intensity and challenging control efforts.) s
+5 413 M
+(% An Extreme FWI \(e.g., >30\) suggests explosive growth and behavior, where fires are highly resistant to control.) s
+5 391 M
+(        if BUI\(i\) > 80) s
+5 380 M
+(            fD = 1000/\(25 + 108.64*exp\(-0.023*BUI\(i\)\)\);) s
+5 369 M
+(        else) s
+5 358 M
+(            fD = 0.626*BUI\(i\)^0.809 + 2;) s
+5 347 M
+(        end) s
+5 325 M
+(        B = 0.1 * ISI\(i\) * fD;) s
+5 303 M
+(        if B > 1) s
+5 292 M
+(            Slog = 2.72*\(0.434*log\(B\)\)^0.647;) s
+5 281 M
+(            FWI\(i\) = exp\(Slog\);) s
+5 270 M
+(        else) s
+5 259 M
+(            FWI\(i\) = B;) s
+5 248 M
+(        end) s
+5 237 M
+(    end) s
+5 215 M
+(    % Final components) s
+5 204 M
+(    FFMC = f0\(2:end\);) s
+5 193 M
+(    DMC  = p0\(2:end\);) s
+5 182 M
+(    DC   = d0\(2:end\);) s
+5 171 M
+(    DSR  = 0.0272 * FWI.^1.77;) s
+5 138 M
+(% Assemble output from selected components) s
+5 127 M
+(vars = struct\('FFMC',FFMC,'DMC',DMC,'DC',DC,'ISI',ISI,'BUI',BUI,'FWI',FWI,'DSR',DSR\);) s
+5 116 M
+(temp = zeros\(n2, length\(what\)\);) s
+5 105 M
+(for k = 1:length\(what\)) s
+5 94 M
+(    temp\(:,k\) = vars.\(what\(k\)\);) s
+5 83 M
+(end) s
+5 61 M
+(% Place back into full-length matrix) s
+5 50 M
+(out\(isGood, :\) = temp;) s
+5 28 M
+(% Apply spin-up) s
+5 17 M
+(if spin_up > 0) s
+5 6 M
+(    out\(1:spin_up,:\) = NaN;) s
+_R
+S
+%%Page: (14) 14
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 14 def
+/fname (fwi1D.m) def
+/fdir (.) def
+/ftail (fwi1D.m) def
+% User defined strings:
+/fmodstr (Fri Nov 28 14:50:08 2025) def
+/pagenumstr (14) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 479 M
+(end) s
+5 457 M
+(end) s
+_R
+S
+%%Trailer
+%%Pages: 14
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF

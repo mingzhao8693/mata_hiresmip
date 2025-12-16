@@ -1,0 +1,101 @@
+function v=read_era5_2d(fname,latlon,t1,t2,s,varn);
+%tpath='/archive/Ming.Zhao/obs_for_am4p0_paper/';
+%fname=strcat(tpath,'ERA5/ERA5_195901-202112_msl.nc')
+%latlon=[0 360 -90 90]; varn='msl';
+[CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
+lat1=latlon(3); lat2=latlon(4); lon1=latlon(1); lon2=latlon(2);
+f=netcdf(fname,'nowrite'); strcat('FILE OPENED:',fname)
+latname='latitude'; lonname='longitude';
+v.lat =f{latname}(:); v.lon=f{lonname}(:); 
+v.ys  =min(find(v.lat(:)>=lat1)); v.ye  =max(find(v.lat(:)<= lat2));
+v.xs  =min(find(v.lon(:)>=lon1)); v.xe  =max(find(v.lon(:)<= lon2));
+v.lat=f{latname}(v.ys:v.ye); v.lon=f{lonname}(v.xs:v.xe);
+v.nlat=length(v.lat); v.nlon=length(v.lon); v.ngrid=v.nlat*v.nlon;
+lonx=s.lon; latx =s.lat;
+
+if strcmp(varn,'msl')
+  a=f{varn}(t1:t2,v.ys:v.ye,v.xs:v.xe); %1959JAN-2021DEC;63yr
+  v.time=[1:length(a(:,1,1))]; v.nt=length(v.time); v.ts=1; v.te=v.nt;
+  tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
+  tmp=(tmp*0.107295179527871+100597.32135241)*0.01;
+  v.slp_clm=squeeze(mean(tmp,2));
+  v.slp_ann=squeeze(mean(v.slp_clm,1));
+  v.slp.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.slp.al0=getts(v.slp.all,s)
+  close(f)
+  lonx=s.lon; latx =s.lat;
+  v.slp.clm=interp_grid(v.slp_clm,lonx,latx,v.lon,v.lat,1);
+  v.slp.ann=interp_grid(v.slp_ann,lonx,latx,v.lon,v.lat,1); size(v.slp.clm)
+  v.slp.sea=get4season(v.slp.clm); 
+  v.slp.fn =fname;
+elseif strcmp(varn,'t2m')
+  a=f{varn}(t1:t2,v.ys:v.ye,v.xs:v.xe); %1959JAN-2021DEC;63yr
+  v.time=[1:length(a(:,1,1))]; v.nt=length(v.time); v.ts=1; v.te=v.nt;
+  tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
+  tmp=tmp*0.00166003112108415+258.629197755436-273.15;
+  v.t2m_clm=squeeze(mean(tmp,2));
+  v.t2m_ann=squeeze(mean(v.t2m_clm,1));
+  v.t2m.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.t2m.al0=getts(v.t2m.all,s)
+  close(f)
+  lonx=s.lon; latx =s.lat;
+  v.t2m.clm=interp_grid(v.t2m_clm,lonx,latx,v.lon,v.lat,1);
+  v.t2m.ann=interp_grid(v.t2m_ann,lonx,latx,v.lon,v.lat,1); size(v.t2m.clm)
+  v.t2m.sea=get4season(v.t2m.clm); 
+  v.t2m.fn =fname;
+elseif strcmp(varn,'d2m')
+  a=f{varn}(t1:t2,v.ys:v.ye,v.xs:v.xe); %1959JAN-2021DEC;63yr
+  v.time=[1:length(a(:,1,1))]; v.nt=length(v.time); v.ts=1; v.te=v.nt;
+  tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
+  tmp=tmp*0.00153835757016324+251.015092332445-273.15;
+  v.d2m_clm=squeeze(mean(tmp,2));
+  v.d2m_ann=squeeze(mean(v.d2m_clm,1));
+  v.d2m.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.d2m.al0=getts(v.d2m.all,s)
+  close(f)
+  lonx=s.lon; latx =s.lat;
+  v.d2m.clm=interp_grid(v.d2m_clm,lonx,latx,v.lon,v.lat,1);
+  v.d2m.ann=interp_grid(v.d2m_ann,lonx,latx,v.lon,v.lat,1); size(v.d2m.clm)
+  v.d2m.sea=get4season(v.d2m.clm); 
+  v.d2m.fn =fname;
+elseif strcmp(varn,'z500')
+  a=f{'z'}(t1:t2,1,v.ys:v.ye,v.xs:v.xe); %1959JAN-2021DEC;63yr
+  a=squeeze(a);
+  v.time=[1:length(a(:,1,1))]; v.nt=length(v.time); v.ts=1; v.te=v.nt;
+  tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
+  tmp=(tmp*7.59809341792732+246670.460474775)/G;
+  v.z500_clm=squeeze(mean(tmp,2));
+  v.z500_ann=squeeze(mean(v.z500_clm,1));
+  v.z500.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.z500.al0=getts(v.z500.all,s)
+  close(f)
+  lonx=s.lon; latx =s.lat;
+  v.z500.clm=interp_grid(v.z500_clm,lonx,latx,v.lon,v.lat,1);
+  v.z500.ann=interp_grid(v.z500_ann,lonx,latx,v.lon,v.lat,1); size(v.z500.clm)
+  v.z500.sea=get4season(v.z500.clm); 
+  v.z500.fn =fname;
+elseif strcmp(varn,'z200')
+  a=f{'z'}(t1:t2,1,v.ys:v.ye,v.xs:v.xe); %1959JAN-2021DEC;63yr
+  a=squeeze(a);
+  v.time=[1:length(a(:,1,1))]; v.nt=length(v.time); v.ts=1; v.te=v.nt;
+  tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
+  tmp=(tmp*7.59809341792732+246670.460474775)/G;
+  v.z200_clm=squeeze(mean(tmp,2));
+  v.z200_ann=squeeze(mean(v.z200_clm,1));
+  v.z200.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.z200.al0=getts(v.z200.all,s)
+  close(f)
+  lonx=s.lon; latx =s.lat;
+  v.z200.clm=interp_grid(v.z200_clm,lonx,latx,v.lon,v.lat,1);
+  v.z200.ann=interp_grid(v.z200_ann,lonx,latx,v.lon,v.lat,1); size(v.z200.clm)
+  v.z200.sea=get4season(v.z200.clm); 
+  v.z200.fn =fname;
+end
+
+return
+
+mean(mean(v.slp_ann(v.slp_ann~=-1e10)))
+mean(mean(v.slp.ann(v.slp.ann~=-1e10)))
+
+return
+

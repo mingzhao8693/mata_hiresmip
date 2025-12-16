@@ -1,0 +1,1597 @@
+function v=tsana_hiresmip(o,tpath,expn,yr1,yr2,latlon,region,syr,nyr,myr,mod,opt)
+[CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
+%tpath='/archive/Ming.Zhao/CM4/warsaw_201710_om4_v1.0.1/';
+%latlon=[0 360 -90 90]; region='global'; opt=10;
+%expn='CM4_historical';yr1='1850';yr2='2014';syr=101;nyr=65;mod='c96';
+%expn='CM4_c192L33_am4p0_1950Control_new_hist0';mod='c192';yr1='1950';yr2='2014';syr=1;nyr=65;myr=5;
+%tpath='/archive/Ming.Zhao/am4_spear/';
+%latlon=[0 360 -90 90]; region='global'; opt='1'; 
+%expn='c192L33_am4p0_amip_HIRESMIP_future_ssp585';mod='c192';yr1='2015';yr2='2050';syr=1;nyr=35;myr=5;
+%expn='CM4_c192L33_am4p0_1950Control_new_hist0';mod='c192';yr1='1950';yr2='2014';syr=1;nyr=65;myr=5;
+%expn='CM4_c192L33_am4p0_1950Control_new_4xCO2';mod='c192';yr1='0001';yr2='0170';syr=1;nyr=65;myr=5;
+%expn='AM4_spear_C96_O1_1850cntl_standard';mod='c96';yr1='0001';yr2='0200';syr=1;nyr=190;myr=5;
+%fn=strcat('/work/miz/mat_hiresmip/obs_global_to_c96.mat'); load(fn);
+%tpath='/archive/Ming.Zhao/am4_spear/'; yr1='1921'; yr2='2100'; syr=1;nyr=180;myr=1;
+%expn ='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_01';
+%latlon=[0 360 -90 90]; region='global'; opt=0; mod='c192';
+
+fn=strcat('/work/miz/mat_hiresmip/obs_global_to_c96.mat'); load(fn); 
+%tpath='/archive/Ming.Zhao/am4_spear/'; myr=1; opt=0;
+%expn='SPEAR_c192_o1_Hist_AllForc_IC1921_K50_ens_01';
+%yr1='1921'; yr2='2100'; myr=1; opt=0; syr=30; nyr=70; mod='c96';
+%expn='AM4_spear_C96_O1_hist_standard_nudged_wind';
+%yr1='1951';yr2='2020';syr=1;nyr=70;mod='c96';
+
+tpath='/archive/Ming.Zhao/awg/2022.03/'; yr1='1951'; yr2='2020'; syr=1;nyr=70;myr=1;
+%%expn ='c192L33_am4p0_amip_HIRESMIP_nudge_wind_1951_2020';
+expn ='c192L33_am4p0_amip_HIRESMIP_HX';
+latlon=[0 360 -90 90]; region='global'; opt=0; mod='c96';
+
+mext='tsana_new.mat'; mpath='/work/miz/mat_hiresmip/';
+mpath=strcat(tpath,expn,'/');
+lonx=o.lon; latx =o.lat;
+
+pp='/ts_all/'; fext =strcat('atmos.',yr1,'01-',yr2,'12.');
+varn='t_surf'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+latlon_nino3=[210 270 -5 5]; %NINO3
+v=getninosst(tpath,expn,fname,varn,latlon_nino3,syr,nyr)
+sst_nino3=v.sst_nino3;
+
+pp='/ts_all/'; fext =strcat('atmos.',yr1,'01-',yr2,'12.');
+varn='t_surf'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+v=readts_grid_2d(tpath,expn,fname, latlon); 
+v.ts=(syr-1)*12+1; v.te=v.ts+nyr*12-1; v.expn=expn;
+v.nt=v.te-v.ts+1; t1=str2num(yr1)+syr-1; t2=t1+nyr; v.time=[t1+1/24:1/12:t2]; v
+xx=repmat(v.aa,[1 1 v.nt]); v.aa0=v.aa; v.aa=shiftdim(xx,2); v.mod=mod;
+v.sfc.sst_nino3=sst_nino3; v.missing_value=-1.e+10; v.t1=t1; v.t2=t2;
+
+s.aa=o.aa; s.lm0=o.lm0; %s.im0=o.im0;
+s.lat=o.lat; s.lon=o.lon; s.latlon=latlon;   
+s.nlat=length(s.lat); s.nlon=length(s.lon); s.lm=s.lm0;
+
+v.s=s; o.dummy=o.sfc.pcp; 
+o.dummy.clm(:,:,:)=0; o.dummy.sea(:,:,:)=0; o.dummy.ann(:,:)=0;
+
+pp='/ts_all/'; fext =strcat('atmos.','static');
+varn='land_mask'; fname=strcat(tpath,expn,pp,fext,'.nc')
+a=ncread(fname,varn,[1 1],[Inf Inf]); a=permute(a,[2 1]);
+v.lm0=a(v.ys:v.ye,v.xs:v.xe); 
+
+fext =strcat('atmos.',yr1,'01-',yr2,'12.');
+varn='ice_mask'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); 
+  v.sfc.ice=extracts(tmp,v,o.sfc.ice,myr,1); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.ice.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.ice.al0=getts(v.sfc.ice.all,o);
+end
+
+%for model trend analysis period
+i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute individual variable's climo and trend 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='t_surf'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); 
+v.sfc.tsurf  =extracts(tmp,v,o.sfc.tsurf,myr,0);
+v.sfc.sst_woa=extracts(tmp,v,o.sfc.sst_woa,myr,1);
+v.sfc.sst    =extracts(tmp,v,o.sfc.sst,myr,1);
+tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+v.sfc.tsurf.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+v.sfc.tsurf.al0=getts(v.sfc.tsurf.all,o);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute trend tsurf trend
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+do_sst_trend = true;
+if do_sst_trend
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for SST trend analysis & comparison with obs
+  y1=1979; y2=2019; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.tsurf.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all  (i1:i2,m1:m2,:,:);
+  ts=compute_gocean_sst_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.skt_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.skt_mod_1979_2020.ts=ts;
+  
+  i1=1959; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.skt_era5.all(i1:i2,m1:m2,:,:);
+  ts=compute_gocean_sst_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2)); 
+  v.skt_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.skt_obs_1979_2020.ts=ts;
+% $$$   i1=1870; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+% $$$   vobs=o.sfc.sst_1870_2020.all(i1:i2,m1:m2,:,:);
+% $$$   imsk=o.sfc.ice_1870_2020.all(i1:i2,m1:m2,:,:);
+% $$$   ts=compute_gocean_sst_mon(vobs,imsk,s.lm,s.aa);
+% $$$   a=squeeze(mean(vobs,2)); 
+% $$$   v.sst_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+% $$$   v.sst_obs_1979_2020.ts=ts;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%end of computing tsurf trend
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='precip'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+  v.sfc.pcp=extracts(tmp,v,o.sfc.pcp,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.pcp.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.pcp.al0=getts(v.sfc.pcp.all,o);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute trend of precip
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+do_pcp_trend = true;
+if do_pcp_trend
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for PCP trend analysis & comparison with obs
+  y1=1979; y2=2020; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.pcp.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all(i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.pcp_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.pcp_mod_1979_2020.ts=ts;
+  
+  i1=1979; i2=2020; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.pcp_mswep.all(i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2));
+  v.pcp_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.pcp_obs_1979_2020.ts=ts;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%end of computing trend of precip
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%sea level pressure
+varn='slp'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+  v.sfc.slp=extracts(tmp,v,o.sfc.slp,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.slp.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.slp.al0=getts(v.sfc.slp.all,o);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute trend of slp
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+do_slp_trend = true;
+if do_slp_trend
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for PCP trend analysis & comparison with obs
+  y1=1979; y2=2020; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.slp.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all(i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.slp_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.slp_mod_1979_2020.ts=ts;
+  
+  i1=1959; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.slp_era5.all(i1:i2,m1:m2,:,:)*0.01;
+  ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2));
+  v.slp_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.slp_obs_1979_2020.ts=ts;
+end
+
+%surface air temperature
+varn='t_ref'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+  v.sfc.tref=extracts(tmp,v,o.sfc.tref,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.tref.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.tref.al0=getts(v.sfc.tref.all,o);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute trend of tas
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+do_tas_trend = true;
+if do_tas_trend
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for trend analysis & comparison with obs
+  y1=1979; y2=2020; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.tref.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.tas_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.tas_mod_1979_2020.ts=ts;
+  
+  i1=1959; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.t2m_era5.all(i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2));
+  v.tas_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.tas_obs_1979_2020.ts=ts;
+end
+
+%surface air relative humidity
+varn='rh_ref'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+  v.sfc.rhref=extracts(tmp,v,o.sfc.rhref,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.rhref.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.rhref.al0=getts(v.sfc.rhref.all,o);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute trend of RH at 2m
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+do_rhref_trend = true;
+if do_rhref_trend
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for trend analysis & comparison with obs
+  y1=1979; y2=2020; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.rhref.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.rhref_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.rhref_mod_1979_2020.ts=ts;
+  i1=1959; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.rh2m_era5.all(i1:i2,m1:m2,:,:)*100;
+  ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2));
+  v.rhref_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.rhref_obs_1979_2020.ts=ts;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%end of computing trend
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%surface pressure
+varn='ps'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*0.01; ps=tmp;
+  v.sfc.ps=extracts(tmp,v,o.sfc.ps,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.ps.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.ps.al0=getts(v.sfc.ps.all,o);
+end
+%surface air specific humidity
+varn='q_ref'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); qref=tmp;
+  v.sfc.qref=extracts(tmp,v,o.sfc.qref_era5,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.qref.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.qref.al0=getts(v.sfc.qref.all,o);
+  
+  %vapor pressure trend%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  a=qref./(1.-qref);  %convert specific humidity to mixing rate
+  tmp=a.*ps./(EPS+a); %compute vapor pressure (hPa) from mixing ratio and surface pressure(hPa)
+  v.sfc.vpref=extracts(tmp,v,o.sfc.vpref_era5,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.vpref.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.vpref.al0=getts(v.sfc.vpref.all,o);
+  
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for trend analysis & comparison with obs
+  y1=1979; y2=2020; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.vpref.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.vpref_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.vpref_mod_1979_2020.ts=ts;
+  
+  i1=1959; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.vpref_era5.all(i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2));
+  v.vpref_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.vpref_obs_1979_2020.ts=ts;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute trend of qref at 2m
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+do_qref_trend = true;
+if do_qref_trend
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for trend analysis & comparison with obs
+  y1=1979; y2=2020; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.qref.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.qref_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.qref_mod_1979_2020.ts=ts;
+  
+  i1=1959; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.qref_era5.all(i1:i2,m1:m2,:,:)*100;
+  ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2));
+  v.qref_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.qref_obs_1979_2020.ts=ts;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%end of computing trend
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+varn='evap'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*LV0;  evap=tmp;
+  v.sfc.evap=extracts(tmp,v,o.sfc.evap,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.evap.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.evap.al0=getts(v.sfc.evap.all,o);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute evap trend
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+do_evap_trend = true;
+if do_evap_trend
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for trend analysis & comparison with obs
+  y1=1979; y2=2020; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.evap.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.evap_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.evap_mod_1979_2020.ts=ts;
+  
+  i1=1959; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.mslhf_era5.all(i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2));
+  v.evap_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.evap_obs_1979_2020.ts=ts;
+end
+
+varn='shflx'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  shflx=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); shflx=tmp;
+  v.sfc.shflx=extracts(tmp,v,o.sfc.shflx,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.shflx.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.shflx.al0=getts(v.sfc.shflx.all,o);
+end
+do_shflx_trend = true;
+if do_shflx_trend
+  i1=t1; i2=t2-1; Y=[i1:i2]'; m1=1; m2=12; alpha=0.8;
+  %define the period for trend analysis & comparison with obs
+  y1=1979; y2=2020; i1=find(Y==y1); i2=find(Y==y2); xt_mod=Y(i1:i2);
+  vmod=v.sfc.shflx.all(i1:i2,m1:m2,:,:);
+  imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa);
+  a=squeeze(mean(vmod,2));
+  v.shflx_mod_1979_2020=get_trend_TSR(s,a,xt_mod,alpha);
+  v.shflx_mod_1979_2020.ts=ts;
+  
+  i1=1959; i2=2021; Y=[i1:i2]'; i1=find(Y==y1); i2=find(Y==y2); xt_obs=Y(i1:i2);
+  vobs=o.sfc.mslhf_era5.all(i1:i2,m1:m2,:,:);
+  ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
+  a=squeeze(mean(vobs,2));
+  v.evap_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
+  v.evap_obs_1979_2020.ts=ts;
+end
+
+if (opt==0); save_matfile(v,mpath,expn,region,mext,opt); return; end
+
+varn='tos'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite');
+%  a=f{varn}(v.ts:v.te,:,:); x.lon=f{'lon'}(:); x.lat=f{'lat'}(:);
+  id=(a<-1e33); a(id)=NaN; a=a+273.15;
+  tmp=interp_grid(a,v.lon,v.lat,x.lon,x.lat,1); close(f);
+  v.sfc.tos_era=extracts(tmp,v,o.sfc.tsurf,  myr,1);
+  v.sfc.tos_woa=extracts(tmp,v,o.sfc.sst_woa,myr,1);
+  v.sfc.tos_had=extracts(tmp,v,o.sfc.sst,    myr,1);
+end
+
+
+%atmospheric scalars
+v.atm.scalar=get_scalar(v,tpath,expn,pp,fext,yr1,yr2)
+
+
+varn='prec_ls'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+  v.sfc.prec_ls=extracts(tmp,v,o.sfc.pcp,myr,0); 
+end
+
+varn='prec_conv'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+  v.sfc.prec_cv=extracts(tmp,v,o.sfc.pcp,myr,0); 
+end
+
+fext_land =strcat('land.',yr1,'01-',yr2,'12.');
+varn='LAI'; fname=strcat(tpath,expn,pp,fext_land,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.lai=extracts(tmp,v,o.dummy,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.lai.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.lai.al0=getts(v.sfc.lai.all,o);
+end
+
+varn='snow'; fname=strcat(tpath,expn,pp,fext_land,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.snow_water=extracts(tmp,v,o.dummy,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.snow_water.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.snow_water.al0=getts(v.sfc.snow_water.all,o);
+end
+
+varn='snow_soil'; fname=strcat(tpath,expn,pp,fext_land,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.snow_soil=extracts(tmp,v,o.dummy,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.snow_soil.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.snow_soil.al0=getts(v.sfc.snow_soil.all,o);
+end
+
+varn='species'; fname=strcat(tpath,expn,pp,fext_land,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.species=extracts(tmp,v,o.dummy,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.species.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.species.al0=getts(v.sfc.species.all,o);
+end
+
+varn='fsw'; fname=strcat(tpath,expn,pp,fext_land,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.fsw=extracts(tmp,v,o.dummy,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.fsw.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.fsw.al0=getts(v.sfc.fsw.all,o);
+end
+
+varn='flw'; fname=strcat(tpath,expn,pp,fext_land,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.flw=extracts(tmp,v,o.dummy,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.flw.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.flw.al0=getts(v.sfc.flw.all,o);
+end
+
+if (opt==10); save_matfile(v,mpath,expn,region,mext,opt); return; end
+
+%v.time=[str2num(yr1):1:str2num(yr2)];
+%n=length(v.time); n=floor(n/5);
+%yr=str2num(yr1)-1; v.tpen=[2.5:5:n*5-2.5]+yr;
+
+varn='snow_conv'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;  snow_cv=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); snow_cv=tmp;
+  v.sfc.snow_cv=extracts(tmp,v,o.sfc.pcp,myr,0);
+end
+
+varn='snow_ls'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;  snow_ls=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); snow_ls=tmp;
+  v.sfc.snow_ls=extracts(tmp,v,o.sfc.pcp,myr,0);
+  snow=snow_cv+snow_ls;
+end
+
+varn='tau_x'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;  snow_cv=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.taux=extracts(-tmp,v,o.sfc.taux,myr,0);
+end
+
+varn='tau_y'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;  snow_cv=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.tauy=extracts(-tmp,v,o.sfc.tauy,myr,0);
+end
+
+varn='u_ref'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;  snow_cv=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.uref=extracts(tmp,v,o.sfc.uref,myr,0); 
+end
+
+varn='wind_ref'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;  snow_cv=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.sfc.wref=extracts(tmp,v,o.sfc.wref,myr,0);
+end
+
+
+varn='olr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  olr=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); olr=tmp;
+  v.toa.lwnet=extracts(tmp,v,o.toa.lwnet,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.lwnet.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.lwnet.al0=getts(v.toa.lwnet.all,o);
+end
+
+varn='olr_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  olr_clr=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); olr_clr=tmp;
+  v.toa.lwnet_clr=extracts(tmp,v,o.toa.lwnet_clr,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.lwnet_clr.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.lwnet_clr.al0=getts(v.toa.lwnet_clr.all,o);
+
+  tmp=olr_clr-olr; lwcftoa=tmp;size(lwcftoa)
+  v.toa.lwcf=extracts(tmp,v,o.toa.lwcf,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.lwcf.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.lwcf.al0=getts(v.toa.lwcf.all,o);
+end
+
+varn='lwup_sfc_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  lwupsfc_clr=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); lwupsfc_clr=tmp;
+end
+
+varn='lwdn_sfc_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  lwdnsfc_clr=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); lwdnsfc_clr=tmp;
+
+  tmp=-(olr_clr-lwupsfc_clr+lwdnsfc_clr);
+  v.atm.lwnet_clr=extracts(tmp,v,o.atm.lwnet_clr,myr,0); 
+  clear lwdnsfc_clr lwupsfc_clr;
+end
+
+varn='swup_toa'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  swup_toa=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); swup_toa=tmp;
+end
+
+varn='swup_toa_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  swup_toa_clr=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); swup_toa_clr=tmp;
+
+  tmp=swup_toa_clr-swup_toa; swcftoa=tmp;
+  v.toa.swcf=extracts(tmp,v,o.toa.swcf,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.swcf.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.swcf.al0=getts(v.toa.swcf.all,o);
+
+  tmp=(olr_clr-olr)+(swup_toa_clr-swup_toa); ttcftoa=tmp;
+  v.toa.ttcf=extracts(tmp,v,o.toa.ttcf,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.ttcf.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.ttcf.al0=getts(v.toa.ttcf.all,o);
+end
+
+varn='swdn_toa'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  swdn_toa=tmp;
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); swdn_toa=tmp;
+  tmp=swdn_toa-swup_toa; swabs=tmp; clear swup_toa swdn_toa;
+  v.toa.swnet=extracts(tmp,v,o.toa.swnet,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.swnet.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.swnet.al0=getts(v.toa.swnet.all,o);
+
+  tmp=swabs-olr; v.toa.netrad=extracts(tmp,v,o.toa.netrad,myr,0);
+  netradtoa=tmp; 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.netrad.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.netrad.al0=getts(v.toa.netrad.all,o);
+end
+
+varn='swdn_toa_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); 
+  swdn_toa_clr=tmp;
+  tmp=swdn_toa_clr-swup_toa_clr; 
+  v.toa.swnet_clr=extracts(tmp,v,o.toa.swnet_clr,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.swnet_clr.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.swnet_clr.al0=getts(v.toa.swnet_clr.all,o);
+
+  tmp=swdn_toa_clr-swup_toa_clr-olr_clr;
+  v.toa.netrad_clr=extracts(tmp,v,o.toa.netrad_clr,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.toa.netrad_clr.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.toa.netrad_clr.al0=getts(v.toa.netrad_clr.all,o);
+end
+
+varn='lwdn_sfc'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  lwdnsfc=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  lwdnsfc=tmp;
+  varn='lwup_sfc'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  lwupsfc=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  lwupsfc=tmp;
+  tmp=lwdnsfc-lwupsfc; lwnetsfc=tmp;
+  v.sfc.lwnet=extracts(tmp,v,o.sfc.lwnet,myr,0);
+  lwflxsfc=tmp; clear lwdnsfc lwupsfc;
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.lwnet.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.lwnet.al0=getts(v.sfc.lwnet.all,o);
+
+  tmp=-(olr+lwflxsfc); 
+  v.atm.lwnet=extracts(tmp,v,o.atm.lwnet,myr,0);
+end
+
+varn='swdn_sfc'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); 
+  swdnsfc=tmp;
+  v.sfc.swdn=extracts(tmp,v,o.sfc.swdn,myr,0); 
+end
+
+varn='swup_sfc'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); 
+  swupsfc=tmp;
+  v.sfc.swup=extracts(tmp,v,o.sfc.swup,myr,0); 
+
+  tmp=swupsfc./swdnsfc; tmp(swdnsfc<0.5)=0; tmp(tmp>1)=1;
+  v.sfc.albedo=extracts(tmp,v,o.sfc.albedo,myr,0); 
+
+  tmp=swdnsfc-swupsfc; swnetsfc=tmp;
+  v.sfc.swnet=extracts(tmp,v,o.sfc.swnet,myr,0); 
+  swflxsfc=tmp; clear swdnsfc swupsfc;
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.swnet.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.swnet.al0=getts(v.sfc.swnet.all,o);
+
+  tmp=swabs-swflxsfc; 
+  v.atm.swnet=extracts(tmp,v,o.atm.swnet,myr,0);
+
+  tmp=lwflxsfc+swflxsfc; 
+  v.sfc.netrad=extracts(tmp,v,o.sfc.netrad,myr,0); 
+  netradsfc=tmp; clear lwflxsfc swflxsfc olr swabs;
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.netrad.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.netrad.al0=getts(v.sfc.netrad.all,o);
+  
+  tmp=netradtoa-netradsfc; 
+  v.atm.netrad=extracts(tmp,v,o.atm.netrad,myr,0);
+  clear netradtoa-netradsfc;
+
+  tmp=netradsfc-evap-shflx-snow*HLF; 
+  v.sfc.netflx=extracts(tmp,v,o.sfc.netflx,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.netflx.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.netflx.al0=getts(v.sfc.netflx.all,o);
+end
+
+varn='swdn_sfc_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  swdnsfc_clr=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+end
+
+varn='swup_sfc_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  swupsfc_clr=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  swupsfc_clr=tmp;
+  tmp=swdnsfc_clr-swupsfc_clr; swnetsfc_clr=tmp;
+  v.sfc.swnet_clr=extracts(tmp,v,o.sfc.swnet_clr,myr,0); 
+  swnetsfc_clr=tmp; 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.swnet_clr.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.swnet_clr.al0=getts(v.sfc.swnet_clr.all,o);
+end
+
+varn='lwdn_sfc_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  lwdnsfc_clr=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  lwdnsfc_clr=tmp;
+  varn='lwup_sfc_clr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  lwupsfc_clr=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  lwupsfc_clr=tmp;
+  tmp=lwdnsfc_clr-lwupsfc_clr; lwnetsfc_clr=tmp;
+  v.sfc.lwnet_clr=extracts(tmp,v,o.sfc.lwnet_clr,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.sfc.lwnet_clr.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.sfc.lwnet_clr.al0=getts(v.sfc.swnet_clr.all,o);
+
+  tmp=swnetsfc_clr+lwnetsfc_clr; 
+  v.sfc.netrad_clr=extracts(tmp,v,o.sfc.netrad_clr,myr,0); 
+
+  tmp=-lwnetsfc_clr+lwnetsfc; lwcfsfc=tmp;
+  v.sfc.lwcf=extracts(tmp,v,o.sfc.lwcf,myr,0); 
+
+  tmp=-swnetsfc_clr+swnetsfc; swcfsfc=tmp;
+  v.sfc.swcf=extracts(tmp,v,o.sfc.swcf,myr,0); 
+
+  tmp=lwcfsfc+swcfsfc; ttcfsfc=tmp;
+  v.sfc.ttcf=extracts(tmp,v,o.sfc.ttcf,myr,0); 
+
+  tmp=lwcftoa-lwcfsfc;
+  v.atm.lwcf=extracts(tmp,v,o.atm.lwcf,myr,0); 
+
+  tmp=swcftoa-swcfsfc;
+  v.atm.swcf=extracts(tmp,v,o.atm.swcf,myr,0); 
+
+  tmp=ttcftoa-ttcfsfc;
+  v.atm.ttcf=extracts(tmp,v,o.atm.ttcf,myr,0); 
+end
+
+%below the observation data may be wrong
+varn='WVP'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); 
+  wvp=tmp;
+  v.atm.wvp=extracts(tmp,v,o.dummy,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon);
+  v.atm.wvp.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.wvp.al0=getts(v.atm.wvp.all,o);
+end
+
+varn='LWP'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); 
+  lwp=tmp;
+  v.atm.lwp=extracts(tmp,v,o.dummy,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.atm.lwp.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.lwp.al0=getts(v.atm.lwp.all,o);
+end
+
+varn='IWP'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); 
+  lwp=tmp;
+  v.atm.iwp=extracts(tmp,v,o.dummy,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.atm.iwp.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.iwp.al0=getts(v.atm.iwp.all,o);
+end
+
+varn='low_cld_amt'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f); 
+  v.atm.qal=extracts(tmp,v,o.dummy,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.atm.qal.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.qal.al0=getts(v.atm.qal.all,o);
+end
+
+varn='mid_cld_amt'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.atm.qam=extracts(tmp,v,o.dummy,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.atm.qam.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.qam.al0=getts(v.atm.qam.all,o);
+end
+
+varn='high_cld_amt'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.atm.qah=extracts(tmp,v,o.dummy,myr,0);
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.atm.qah.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.qah.al0=getts(v.atm.qah.all,o);
+end
+
+varn='crh_uwc'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.atm.crh=extracts(tmp,v,o.dummy,myr,0);
+end
+
+if (opt==1); save_matfile(v,mpath,expn,region,mext,opt); return; end
+
+%3D variables
+%ATM OMEGA 
+%(k=1,   2,   3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14,15 for 
+%  1000, 925, 850,775,700,600,500,400,300,250,200,150,100,70,50 hPa)
+varn='omega'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w1000=extracts(tmp,v,o.atm.w1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w925=extracts(tmp,v,o.atm.w925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w850=extracts(tmp,v,o.atm.w850,myr,0); 
+tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+v.atm.w850.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+v.atm.w850.al0=getts(v.atm.w850.all,o);
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w775=extracts(tmp,v,o.atm.w775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w700=extracts(tmp,v,o.atm.w700,myr,0); 
+tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+v.atm.w700.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+v.atm.w700.al0=getts(v.atm.w700.all,o);
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w600=extracts(tmp,v,o.atm.w600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w500=extracts(tmp,v,o.atm.w500,myr,0); 
+tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+v.atm.w500.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+v.atm.w500.al0=getts(v.atm.w500.all,o);
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w400=extracts(tmp,v,o.atm.w400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w300=extracts(tmp,v,o.atm.w300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w250=extracts(tmp,v,o.atm.w250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w200=extracts(tmp,v,o.atm.w200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w150=extracts(tmp,v,o.atm.w150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w100=extracts(tmp,v,o.atm.w100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w70=extracts(tmp,v,o.atm.w70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp)*864;
+v.atm.w50=extracts(tmp,v,o.atm.w50,myr,0); 
+close(f)
+
+%ATM MC_FULL
+varn='mc_full'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  f=netcdf(fname,'nowrite');
+  k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc1000=extracts(tmp,v,o.dummy,myr,0); 
+  k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc925=extracts(tmp,v,o.dummy,myr,0); 
+  k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc850=extracts(tmp,v,o.dummy,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.atm.mc850.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.mc850.al0=getts(v.atm.mc850.all,o);
+  k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc775=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc700=extracts(tmp,v,o.dummy,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.atm.mc700.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.mc700.al0=getts(v.atm.mc700.all,o);
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc600=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc500=extracts(tmp,v,o.dummy,myr,0); 
+  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
+  v.atm.mc500.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+  v.atm.mc500.al0=getts(v.atm.mc500.all,o);
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc400=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.mc300=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe);tmp=squeeze(tmp);
+  v.atm.mc250=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe);tmp=squeeze(tmp);
+  v.atm.mc200=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe);tmp=squeeze(tmp);
+  v.atm.mc150=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe);tmp=squeeze(tmp);
+  v.atm.mc100=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe);tmp=squeeze(tmp);
+  v.atm.mc70=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe);tmp=squeeze(tmp);
+  v.atm.mc50=extracts(tmp,v,o.dummy,myr,0); 
+  close(f)
+end
+
+%ATM T
+varn='temp'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t1000=tmp;
+v.atm.t1000=extracts(tmp,v,o.atm.t1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t925=tmp;
+v.atm.t925=extracts(tmp,v,o.atm.t925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t850=tmp;
+v.atm.t850=extracts(tmp,v,o.atm.t850,myr,0); 
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t775=tmp;
+v.atm.t775=extracts(tmp,v,o.atm.t775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t700=tmp;
+v.atm.t700=extracts(tmp,v,o.atm.t700,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t600=tmp;
+v.atm.t600=extracts(tmp,v,o.atm.t600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t500=tmp;
+v.atm.t500=extracts(tmp,v,o.atm.t500,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t400=tmp;
+v.atm.t400=extracts(tmp,v,o.atm.t400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t300=tmp;
+v.atm.t300=extracts(tmp,v,o.atm.t300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t250=tmp;
+v.atm.t250=extracts(tmp,v,o.atm.t250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t200=tmp;
+v.atm.t200=extracts(tmp,v,o.atm.t200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t150=tmp;
+v.atm.t150=extracts(tmp,v,o.atm.t150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t100=tmp;
+v.atm.t100=extracts(tmp,v,o.atm.t100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t70=tmp;
+v.atm.t70=extracts(tmp,v,o.atm.t70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);t50=tmp;
+v.atm.t50=extracts(tmp,v,o.atm.t50,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.t30=extracts(tmp,v,o.atm.t30,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.t20=extracts(tmp,v,o.atm.t20,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.t10=extracts(tmp,v,o.atm.t10,myr,0); 
+close(f)
+
+% $$$ varn='t975'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+% $$$ f=netcdf(fname,'nowrite'); 
+% $$$ tmp=f{'temp'}(v.ts:v.te,1,v.ys:v.ye,v.xs:v.xe);close(f);tmp=squeeze(tmp);
+% $$$ v.atm.t975=extracts(tmp,v,o.atm.t975,myr,0); 
+% $$$ varn='t950'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+% $$$ f=netcdf(fname,'nowrite'); 
+% $$$ tmp=f{'temp'}(v.ts:v.te,1,v.ys:v.ye,v.xs:v.xe);close(f);tmp=squeeze(tmp);
+% $$$ v.atm.t950=extracts(tmp,v,o.atm.t950,myr,0); 
+% $$$ figure; pcolor(squeeze(v.atm.t975.sea_bias(1,:,:))); shading flat; caxis([-.8 .8]); colorbar;
+% $$$ figure; pcolor(squeeze(v.atm.t950.sea_bias(1,:,:))); shading flat; caxis([-.8 .8]); colorbar;
+% $$$ figure; pcolor(squeeze(v.sfc.tref.sea_bias(1,:,:))); shading flat; caxis([-.8 .8]); colorbar;
+
+%ATM q
+varn='sphum'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q1000=tmp;
+v.atm.q1000=extracts(tmp,v,o.atm.q1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q925=tmp;
+v.atm.q925=extracts(tmp,v,o.atm.q925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q850=tmp;
+v.atm.q850=extracts(tmp,v,o.atm.q850,myr,0); 
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q775=tmp;
+v.atm.q775=extracts(tmp,v,o.atm.q775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q700=tmp;
+v.atm.q700=extracts(tmp,v,o.atm.q700,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q600=tmp;
+v.atm.q600=extracts(tmp,v,o.atm.q600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q500=tmp;
+v.atm.q500=extracts(tmp,v,o.atm.q500,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q400=tmp;
+v.atm.q400=extracts(tmp,v,o.atm.q400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q300=tmp;
+v.atm.q300=extracts(tmp,v,o.atm.q300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q250=tmp;
+v.atm.q250=extracts(tmp,v,o.atm.q250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q200=tmp;
+v.atm.q200=extracts(tmp,v,o.atm.q200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q150=tmp;
+v.atm.q150=extracts(tmp,v,o.atm.q150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q100=tmp;
+v.atm.q100=extracts(tmp,v,o.atm.q100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q70=tmp;
+v.atm.q70=extracts(tmp,v,o.atm.q70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.q50=extracts(tmp,v,o.atm.q50,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.q30=extracts(tmp,v,o.atm.q30,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.q20=extracts(tmp,v,o.atm.q20,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.q10=extracts(tmp,v,o.atm.q10,myr,0); 
+close(f)
+%ATM ql
+varn='liq_wat'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q1000=tmp;
+v.atm.ql1000=extracts(tmp,v,o.atm.q1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q925=tmp;
+v.atm.ql925=extracts(tmp,v,o.atm.q925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q850=tmp;
+v.atm.ql850=extracts(tmp,v,o.atm.q850,myr,0); 
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q775=tmp;
+v.atm.ql775=extracts(tmp,v,o.atm.q775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q700=tmp;
+v.atm.ql700=extracts(tmp,v,o.atm.q700,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q600=tmp;
+v.atm.ql600=extracts(tmp,v,o.atm.q600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q500=tmp;
+v.atm.ql500=extracts(tmp,v,o.atm.q500,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q400=tmp;
+v.atm.ql400=extracts(tmp,v,o.atm.q400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q300=tmp;
+v.atm.ql300=extracts(tmp,v,o.atm.q300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q250=tmp;
+v.atm.ql250=extracts(tmp,v,o.atm.q250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q200=tmp;
+v.atm.ql200=extracts(tmp,v,o.atm.q200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q150=tmp;
+v.atm.ql150=extracts(tmp,v,o.atm.q150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q100=tmp;
+v.atm.ql100=extracts(tmp,v,o.atm.q100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q70=tmp;
+v.atm.ql70=extracts(tmp,v,o.atm.q70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.ql50=extracts(tmp,v,o.atm.q50,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.ql30=extracts(tmp,v,o.atm.q30,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.ql20=extracts(tmp,v,o.atm.q20,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.ql10=extracts(tmp,v,o.atm.q10,myr,0); 
+close(f)
+%ATM qi
+varn='ice_wat'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q1000=tmp;
+v.atm.qi1000=extracts(tmp,v,o.atm.q1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q925=tmp;
+v.atm.qi925=extracts(tmp,v,o.atm.q925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q850=tmp;
+v.atm.qi850=extracts(tmp,v,o.atm.q850,myr,0); 
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q775=tmp;
+v.atm.qi775=extracts(tmp,v,o.atm.q775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q700=tmp;
+v.atm.qi700=extracts(tmp,v,o.atm.q700,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q600=tmp;
+v.atm.qi600=extracts(tmp,v,o.atm.q600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q500=tmp;
+v.atm.qi500=extracts(tmp,v,o.atm.q500,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q400=tmp;
+v.atm.qi400=extracts(tmp,v,o.atm.q400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q300=tmp;
+v.atm.qi300=extracts(tmp,v,o.atm.q300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q250=tmp;
+v.atm.qi250=extracts(tmp,v,o.atm.q250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q200=tmp;
+v.atm.qi200=extracts(tmp,v,o.atm.q200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q150=tmp;
+v.atm.qi150=extracts(tmp,v,o.atm.q150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q100=tmp;
+v.atm.qi100=extracts(tmp,v,o.atm.q100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q70=tmp;
+v.atm.qi70=extracts(tmp,v,o.atm.q70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.qi50=extracts(tmp,v,o.atm.q50,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.qi30=extracts(tmp,v,o.atm.q30,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.qi20=extracts(tmp,v,o.atm.q20,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.qi10=extracts(tmp,v,o.atm.q10,myr,0); 
+close(f)
+%ATM qa
+varn='cld_amt'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q1000=tmp;
+v.atm.qa1000=extracts(tmp,v,o.atm.q1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q925=tmp;
+v.atm.qa925=extracts(tmp,v,o.atm.q925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q850=tmp;
+v.atm.qa850=extracts(tmp,v,o.atm.q850,myr,0); 
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q775=tmp;
+v.atm.qa775=extracts(tmp,v,o.atm.q775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q700=tmp;
+v.atm.qa700=extracts(tmp,v,o.atm.q700,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q600=tmp;
+v.atm.qa600=extracts(tmp,v,o.atm.q600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q500=tmp;
+v.atm.qa500=extracts(tmp,v,o.atm.q500,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q400=tmp;
+v.atm.qa400=extracts(tmp,v,o.atm.q400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q300=tmp;
+v.atm.qa300=extracts(tmp,v,o.atm.q300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q250=tmp;
+v.atm.qa250=extracts(tmp,v,o.atm.q250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q200=tmp;
+v.atm.qa200=extracts(tmp,v,o.atm.q200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q150=tmp;
+v.atm.qa150=extracts(tmp,v,o.atm.q150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q100=tmp;
+v.atm.qa100=extracts(tmp,v,o.atm.q100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q70=tmp;
+v.atm.qa70=extracts(tmp,v,o.atm.q70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.qa50=extracts(tmp,v,o.atm.q50,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.qa30=extracts(tmp,v,o.atm.q30,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.qa20=extracts(tmp,v,o.atm.q20,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);q50=tmp;
+v.atm.qa10=extracts(tmp,v,o.atm.q10,myr,0); 
+close(f)
+%ATM rh
+varn='rh'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  f=netcdf(fname,'nowrite'); 
+  k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh1000=extracts(tmp,v,o.atm.rh1000,myr,0); 
+  k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh925=extracts(tmp,v,o.atm.rh925,myr,0); 
+  k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh850=extracts(tmp,v,o.atm.rh850,myr,0); 
+  k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh775=extracts(tmp,v,o.atm.rh775,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh700=extracts(tmp,v,o.atm.rh700,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh600=extracts(tmp,v,o.atm.rh600,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh500=extracts(tmp,v,o.atm.rh500,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh400=extracts(tmp,v,o.atm.rh400,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh300=extracts(tmp,v,o.atm.rh300,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh250=extracts(tmp,v,o.atm.rh250,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh200=extracts(tmp,v,o.atm.rh200,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh150=extracts(tmp,v,o.atm.rh150,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh100=extracts(tmp,v,o.atm.rh100,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh70=extracts(tmp,v,o.atm.rh70,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+  v.atm.rh50=extracts(tmp,v,o.atm.rh50,myr,0); 
+  close(f)
+end
+%ATM hght
+varn='hght'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z1000=tmp;
+v.atm.z1000=extracts(tmp,v,o.atm.z1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z925=tmp;
+v.atm.z925=extracts(tmp,v,o.atm.z925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z850=tmp;
+v.atm.z850=extracts(tmp,v,o.atm.z850,myr,0); 
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z775=tmp;
+v.atm.z775=extracts(tmp,v,o.atm.z775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z700=tmp;
+v.atm.z700=extracts(tmp,v,o.atm.z700,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z600=tmp;
+v.atm.z600=extracts(tmp,v,o.atm.z600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z500=tmp;
+v.atm.z500=extracts(tmp,v,o.atm.z500,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z400=tmp;
+v.atm.z400=extracts(tmp,v,o.atm.z400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z300=tmp;
+v.atm.z300=extracts(tmp,v,o.atm.z300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z250=tmp;
+v.atm.z250=extracts(tmp,v,o.atm.z250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z200=tmp;
+v.atm.z200=extracts(tmp,v,o.atm.z200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z150=tmp;
+v.atm.z150=extracts(tmp,v,o.atm.z150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z100=tmp;
+v.atm.z100=extracts(tmp,v,o.atm.z100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z70=tmp;
+v.atm.z70=extracts(tmp,v,o.atm.z70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);z50=tmp;
+v.atm.z50=extracts(tmp,v,o.atm.z50,myr,0); 
+close(f)
+%MSE
+%k=1-15:1000,925,850,775,700,600,500,400,300,250,200,150,100,70,50hPa
+tmp=CPD*t1000+G*z1000+LV0*q1000; v.atm.h1000=extracts(tmp,v,o.atm.h1000,myr,0);
+tmp=CPD*t925 +G*z925 +LV0*q925;  v.atm.h925 =extracts(tmp,v,o.atm.h925,myr,0); 
+tmp=CPD*t850 +G*z850 +LV0*q850;  v.atm.h850 =extracts(tmp,v,o.atm.h850,myr,0); 
+%tmp=CPD*t775 +G*z775 +LV0*q775;  v.atm.h775 =extracts(tmp,v,o.atm.h775,myr,0); 
+tmp=CPD*t700 +G*z700 +LV0*q700;  v.atm.h700 =extracts(tmp,v,o.atm.h700,myr,0); 
+tmp=CPD*t600 +G*z600 +LV0*q600;  v.atm.h600 =extracts(tmp,v,o.atm.h600,myr,0); 
+tmp=CPD*t500 +G*z500 +LV0*q500;  v.atm.h500 =extracts(tmp,v,o.atm.h500,myr,0); 
+tmp=CPD*t400 +G*z400 +LV0*q400;  v.atm.h400 =extracts(tmp,v,o.atm.h400,myr,0); 
+tmp=CPD*t300 +G*z300 +LV0*q300;  v.atm.h300 =extracts(tmp,v,o.atm.h300,myr,0); 
+tmp=CPD*t250 +G*z250 +LV0*q250;  v.atm.h250 =extracts(tmp,v,o.atm.h250,myr,0); 
+tmp=CPD*t200 +G*z200 +LV0*q200;  v.atm.h200 =extracts(tmp,v,o.atm.h200,myr,0); 
+tmp=CPD*t150 +G*z150 +LV0*q150;  v.atm.h150 =extracts(tmp,v,o.atm.h150,myr,0); 
+tmp=CPD*t100 +G*z100 +LV0*q100;  v.atm.h100 =extracts(tmp,v,o.atm.h100,myr,0); 
+clear t1000 t925 t850 t775 t700 t600 t500 t400 t300 t250 t200 t150 t100;
+clear q1000 q925 q850 q775 q700 q600 q500 q400 q300 q250 q200 q150 q100;
+clear z1000 z925 z850 z775 z700 z600 z500 z400 z300 z250 z200 z150 z100;
+
+%ATM U
+varn='ucomp'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u1000=extracts(tmp,v,o.atm.u1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u925=extracts(tmp,v,o.atm.u925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u850=extracts(tmp,v,o.atm.u850,myr,0); 
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u775=extracts(tmp,v,o.atm.u775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u700=extracts(tmp,v,o.atm.u700,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u600=extracts(tmp,v,o.atm.u600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u500=extracts(tmp,v,o.atm.u500,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u400=extracts(tmp,v,o.atm.u400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u300=extracts(tmp,v,o.atm.u300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u250=extracts(tmp,v,o.atm.u250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u200=extracts(tmp,v,o.atm.u200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u150=extracts(tmp,v,o.atm.u150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u100=extracts(tmp,v,o.atm.u100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u70=extracts(tmp,v,o.atm.u70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u50=extracts(tmp,v,o.atm.u50,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u30=extracts(tmp,v,o.atm.u30,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u20=extracts(tmp,v,o.atm.u20,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.u10=extracts(tmp,v,o.atm.u10,myr,0); 
+close(f)
+%ATM V
+varn='vcomp'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+f=netcdf(fname,'nowrite'); 
+k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v1000=extracts(tmp,v,o.atm.v1000,myr,0); 
+k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v925=extracts(tmp,v,o.atm.v925,myr,0); 
+k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v850=extracts(tmp,v,o.atm.v850,myr,0); 
+k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v775=extracts(tmp,v,o.atm.v775,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v700=extracts(tmp,v,o.atm.v700,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v600=extracts(tmp,v,o.atm.v600,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v500=extracts(tmp,v,o.atm.v500,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v400=extracts(tmp,v,o.atm.v400,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v300=extracts(tmp,v,o.atm.v300,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v250=extracts(tmp,v,o.atm.v250,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v200=extracts(tmp,v,o.atm.v200,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v150=extracts(tmp,v,o.atm.v150,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v100=extracts(tmp,v,o.atm.v100,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v70=extracts(tmp,v,o.atm.v70,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v50=extracts(tmp,v,o.atm.v50,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v30=extracts(tmp,v,o.atm.v30,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v20=extracts(tmp,v,o.atm.v20,myr,0); 
+k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
+v.atm.v10=extracts(tmp,v,o.atm.v10,myr,0); 
+close(f)
+
+%ATM liq_drp
+varn='liq_drp'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  f=netcdf(fname,'nowrite'); 
+  k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn1000=extracts(tmp,v,o.dummy,myr,0); 
+  k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn925=extracts(tmp,v,o.dummy,myr,0); 
+  k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn850=extracts(tmp,v,o.dummy,myr,0); 
+  k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn775=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn700=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn600=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn500=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn400=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn300=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn250=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.qn200=extracts(tmp,v,o.dummy,myr,0); 
+  close(f)
+end
+
+%ATM droplets
+varn='droplets'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  f=netcdf(fname,'nowrite'); 
+  k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn1000=extracts(tmp,v,o.dummy,myr,0); 
+  k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn925=extracts(tmp,v,o.dummy,myr,0); 
+  k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn850=extracts(tmp,v,o.dummy,myr,0); 
+  k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn775=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn700=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn600=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn500=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn400=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn300=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn250=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.nn200=extracts(tmp,v,o.dummy,myr,0); 
+  close(f)
+end
+
+%ATM aliq
+varn='aliq'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  f=netcdf(fname,'nowrite'); 
+  k=1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al1000=extracts(tmp,v,o.dummy,myr,0); 
+  k=2; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al925=extracts(tmp,v,o.dummy,myr,0); 
+  k=3; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al850=extracts(tmp,v,o.dummy,myr,0); 
+  k=4; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al775=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al700=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al600=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al500=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al400=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al300=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al250=extracts(tmp,v,o.dummy,myr,0); 
+  k=k+1; tmp=f{varn}(v.ts:v.te,k,v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);%tmp(tmp<0)=0;
+  v.atm.al200=extracts(tmp,v,o.dummy,myr,0); 
+  close(f)
+end
+
+v.time=[str2num(yr1):1:str2num(yr2)];
+n=length(v.time); n=floor(n/5);
+yr=str2num(yr1)-1; v.tpen=[2.5:5:n*5-2.5]+yr;
+
+pp='/ts_all_aero/';fext =strcat('atmos_month_aer.',yr1,'01-',yr2,'12.');
+varn='aer_ex_c_vs'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.atm.aod=extracts(tmp,v,o.dummy,myr,0);
+end
+
+varn='sulfate_col'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.atm.sul=extracts(tmp,v,o.dummy,myr,0);
+end
+
+varn='blk_crb_col'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+%  f=netcdf(fname,'nowrite'); 
+%  tmp=f{varn}(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); close(f);
+  v.atm.blk=extracts(tmp,v,o.dummy,myr,0);
+end
+
+%computer CRF sorting into omega scheme
+latlon_t=[0 360 -30 30]; latlon_nhet=[0 360 30 90]; latlon_shet=[0 360 -90 -30];
+dlo='do_all';   %set dlo=do_all
+omega=v.atm.w700.all; omega_clm=v.atm.w700.clm;
+v.om700.glob=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon,dlo);
+v.om700.trop=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_t,dlo);
+v.om700.nhet=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_nhet,dlo);
+v.om700.shet=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_shet,dlo);
+omega=v.atm.w500.all; omega_clm=v.atm.w500.clm;
+v.om500.glob=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon,dlo);
+v.om500.trop=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_t,dlo);
+v.om500.nhet=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_nhet,dlo);
+v.om500.shet=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_shet,dlo);
+dlo='do_ocean'; %set dlo=do_ocean
+omega=v.atm.w700.all; omega_clm=v.atm.w700.clm;
+v.om700.glob_ocean=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon,dlo);
+v.om700.trop_ocean=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_t,dlo);
+v.om700.nhet_ocean=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_nhet,dlo);
+v.om700.shet_ocean=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_shet,dlo);
+omega=v.atm.w500.all; omega_clm=v.atm.w500.clm;
+v.om500.glob_ocean=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon,dlo);
+v.om500.trop_ocean=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_t,dlo);
+v.om500.nhet_ocean=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_nhet,dlo);
+v.om500.shet_ocean=do_bony(v,omega,omega_clm,o.lm0,o.aa0,o.lat,o.lon,latlon_shet,dlo);
+
+%computer CRF correlation and slope
+do_cre_trend = false
+if (do_cre_trend)
+  v.crf  =regress_mvar(v,o.nlat,o.nlon,1);
+  v.trend=trend_ana(v);
+end
+v.aa=0; %v.time=[str2num(yr1):1:str2num(yr2)];
+v.time=[str2num(yr1):1:str2num(yr1)+nyr];
+n=length(v.time); n=floor(n/5);
+yr=str2num(yr1)-1; v.tpen=[2.5:5:n*5-2.5]+yr;
+v.f=0; v.imk=0;
+
+if (opt>2)
+  save_matfile(v,mpath,expn,region,mext,opt); return
+else
+  fn=strcat(tpath,expn,'/',expn,'_',region,'_tsana_new.mat'); %save(fn,'v');
+  save(fn,'v','-v7.3'); %save very large files
+  %save -v7.3 '/work/miz/tmp.mat' 'v'; 
+  return
+end
+
+return
+
+x=v.bony.obinc; c1=[0.8 0.8 0.8]; c2=[0.5 0.5 0.5]; 
+figure; y=o.bony.lwcf;
+shadedplot(x,y.avg-y.std,y.avg+y.std,c1,c1); hold on;
+plot(x,y.avg,'r'); hold on;
+y=v.bony.lwcf_clm; 
+plot(x,y.avg,'b'); 
+
+figure; 
+plot(obinc,o.bony.swcf_clm.avg,'r'); hold on;
+plot(obinc,v.bony.swcf_clm.avg); hold on
+
+%usage:
+%below opt=1 for writing mat file to /work/miz
+%below opt=2 for writing mat file to /archive
+ latlon=[0 360 -90 90]; region='global'; nyr=4; myr=1; opt=2;
+%latlon=[0 360 -30 30]; region='tropic'; myr=1; opt=0;
+%latlon=[150 250 -5 5]; region='equpac'; myr=1; opt=0;
+%read in or generate observation data
+%o=readobs(latlon,region,'c96');
+fn=strcat('/work/miz/mat_cm4/obs_',region,'_tsana.mat'); load(fn); 
+%%%start analysis%%%================
+tpath='/archive/Ming.Zhao/awg/tikal_201403/';
+expn='CM_c96L48_am4d1r0_FO_2000_ctrl2'; yr1='0001'; yr2='0004'; mod='c96';
+v=tsana(o,tpath,expn,yr1,yr2,latlon,region,nyr,myr,mod,opt);
+
+%load CM2.5FLOR and previous analysis matlab
+pp='/ts_all/'; region='global'; 
+dr=strcat('_',region,'_tsana.mat'); 
+tpath='/archive/Ming.Zhao/awg/tikal_201403/';
+load(strcat('/work/miz/mat_cm4/CM2.5_A_Control-1990_FLOR_B01',dr)); cm25f=v;
+
+expn='CM_c96L48_am4d1r0_FO_2000_ctrl2';
+fn=strcat(tpath,expn,pp,expn,dr); load(fn); x=v;
+vname='sst_bias'; k1=1; k2=1; s=x.s; f=1; s0=expn; s0(s0=='_')='-';
+t=1; z1=squeeze(mean(cm25f.sst.dif_myr (t,:,:),1));s.s1=strcat('CM2.5F-year-',num2str(t));
+t=2; z3=squeeze(mean(cm25f.sst.dif_myr (t,:,:),1));s.s3=strcat('CM2.5F-year-',num2str(t));
+t=3; z5=squeeze(mean(cm25f.sst.dif_myr (t,:,:),1));s.s5=strcat('CM2.5F-year-',num2str(t));
+t=1; z2=squeeze(mean(x.sst.dif_myr (t,:,:),1));s.s2=strcat(s0,'-year-',num2str(t));
+t=2; z4=squeeze(mean(x.sst.dif_myr (t,:,:),1));s.s4=strcat(s0,'-year-',num2str(t));
+t=3; z6=squeeze(mean(x.sst.dif_myr (t,:,:),1));s.s6=strcat(s0,'-year-',num2str(t));
+cmin=-5; cmax=5; vbin=[cmin:(cmax-cmin)/20:cmax]; 
+fpath=strcat(tpath,expn,pp,'figs/'); exp='cm'; %fpath='./fig_cm4'; exp='cm4';
+plot_6panel_cm4(s,z1,z2,z3,z4,z5,z6,vbin,cmin,cmax,vname,fpath,exp,f);
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure; pcolor(v.skt_mod_1979_2020.trend); shading flat; colorbar; colormap(jet); caxis([0 2]); hold on; contour(s.lm0,1,'k');
+figure; pcolor(v.skt_obs_1979_2020.trend); shading flat; colorbar; colormap(jet); caxis([0 2]); hold on; contour(s.lm0,1,'k');
+figure; pcolor(v.skt_mod_1979_2020.trend-v.skt_obs_1979_2020.trend); shading flat; colorbar; colormap(jet); caxis([-0.5 0.5]); hold on; contour(s.lm0,1,'k');
+
+figure; pcolor(v.vpref_mod_1979_2020.mean); shading flat; colorbar; colormap(jet); caxis([0 20]); hold on; contour(s.lm0,1,'k');
+figure; pcolor(v.vpref_obs_1979_2020.mean); shading flat; colorbar; colormap(jet); caxis([0 20]); hold on; contour(s.lm0,1,'k');
+figure; pcolor(v.vpref_mod_1979_2020.mean-v.vpref_obs_1979_2020.mean); shading flat; colorbar; colormap(jet); caxis([-2 2]); hold on; contour(s.lm0,1,'k');
+figure; pcolor(v.vpref_mod_1979_2020.trend*4.1); shading flat; colorbar; colormap(jet); caxis([-1 1]); hold on; contour(s.lm0,1,'k');
+figure; pcolor(v.vpref_obs_1979_2020.trend*4.1); shading flat; colorbar; colormap(jet); caxis([-1 1]); hold on; contour(s.lm0,1,'k');
+figure; pcolor((v.vpref_mod_1979_2020.trend-v.vpref_obs_1979_2020.trend)*4.1); shading flat; colorbar; colormap(jet); caxis([-1 1]); hold on; contour(s.lm0,1,'k');
+
+figure; pcolor(v.rhref_mod_1979_2020.trend); shading flat; colorbar; colormap(jet); caxis([-3 3]); hold on; contour(s.lm0,1,'k');
+figure; pcolor(v.rhref_obs_1979_2020.trend); shading flat; colorbar; colormap(jet); caxis([-3 3]); hold on; contour(s.lm0,1,'k');

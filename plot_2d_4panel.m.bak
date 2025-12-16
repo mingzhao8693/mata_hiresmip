@@ -1,0 +1,44 @@
+function plot_2d_4panel(p)
+%str=vname(end-2:end);
+x=p.x; y=p.y; lm=p.lm; aa=p.aa; id=p.id;
+z1=p.z1; z2=p.z2; z3=p.z3; z4=p.z4;
+cs0=p.cs0; cs1=p.cs1; cs2=p.cs2;
+%s0=p.s0; s1=p.s1; s2=p.s2; str=p.str; a=p.a;
+
+a=z1; i=~isnan(a)&id; a=aa(i)/mean(aa(i)); z1_mean=mean(z1(i).*a);
+a=z2; i=~isnan(a)&id; a=aa(i)/mean(aa(i)); z2_mean=mean(z2(i).*a);
+a=z3; i=~isnan(a)&id; a=aa(i)/mean(aa(i)); z3_mean=mean(z3(i).*a);
+a=z4; i=~isnan(a)&id; a=aa(i)/mean(aa(i)); z4_mean=mean(z4(i).*a);
+s1='AR'; s2='TC'; s3='TD'; s4='MC';
+
+xy=[0 360 -90 90]; xl='longitude'; yl='latitude';
+
+pms=[ 0, 0, 1100, 500]*1; fsize=16; lw=2; row=2; col=2;
+handle = figure('Position', pms,'visible','on');
+subplot(row,col,1); 
+pcolor(x,y,z1); hold on; shading flat; colorbar; caxis([cs1]); 
+contour(x,y,lm,1,'w'); axis(xy); 
+ylabel(yl,'FontSize',fsize); set(gca,'FontSize',fsize);
+s1=sprintf('%s (mean:%5.2f)',s1,z1_mean);
+title(s1,'FontSize',fsize); 
+subplot(row,col,2); 
+pcolor(x,y,z2); hold on; shading flat; colorbar; caxis([cs1]); 
+contour(x,y,lm,1,'w'); axis(xy); 
+ylabel(yl,'FontSize',fsize); set(gca,'FontSize',fsize);
+s2=sprintf('%s (mean:%5.2f)',s2,z2_mean);
+title(s2,'FontSize',fsize); 
+subplot(row,col,3); 
+pcolor(x,y,z3); hold on; shading flat; colorbar; caxis([cs1]); 
+contour(x,y,lm,1,'w'); axis(xy); 
+ylabel(yl,'FontSize',fsize); set(gca,'FontSize',fsize);
+s3=sprintf('%s (mean:%5.2f)',s3,z3_mean);
+title(s3,'FontSize',fsize); 
+subplot(row,col,4); 
+pcolor(x,y,z4); hold on; shading flat; colorbar; caxis([cs1]); 
+contour(x,y,lm,1,'w'); axis(xy); 
+ylabel(yl,'FontSize',fsize); set(gca,'FontSize',fsize);
+s4=sprintf('%s (mean:%5.2f)',s4,z4_mean);
+title(s4,'FontSize',fsize); 
+
+visfig='off'; figpath='./fig_PE/'; expn='readartc'; 
+printit(visfig,figpath,expn,p.vname);

@@ -1,0 +1,279 @@
+function [p]=extracts(var,v,obs,myr,opt)
+%var=tmp; obs=o.sst; opt=0; %myr=5;
+p.ts=compute_ts_ann(var,v); disp('finished compute_ts_ann');
+
+var(var==v.missing_value)=NaN;
+mm=12; nt=length(var(:,1,1)); nyr=nt/mm;
+
+if(myr~=1)
+  x=reshape(var,mm,nyr,v.nlat,v.nlon);
+  nnn=floor(nyr/myr);
+  for i=1:nnn
+    xx(:,i,:,:)=squeeze(mean(x(:,myr*(i-1)+1:myr*i,:,:),2));
+  end
+  var=reshape(xx,nnn*mm,v.nlat,v.nlon);
+  
+  if isfield(v,'imk')
+    x=reshape(v.imk,mm,nyr,v.nlat,v.nlon);
+    for i=1:nnn
+      xx(:,i,:,:)=squeeze(mean(x(:,myr*(i-1)+1:myr*i,:,:),2));
+    end
+    imk=xx;%reshape(xx,nnn*mm,v.nlat,v.nlon);
+  else
+    imk=xx; imk(:,:,:,:)=0;
+  end
+  nyr=nnn; v.aa=v.aa(1:nyr*mm,:,:);
+else
+  if isfield(v,'imk')
+    imk=reshape(v.imk,mm,nyr,v.nlat,v.nlon);
+  else
+    imk=reshape(var,mm,nyr,v.nlat,v.nlon); imk(:,:,:,:)=0;
+  end
+end
+
+var=reshape(var,  mm,nyr,v.nlat,v.nlon);%size(var)
+idl=(v.lm0>0.5);     %land region
+ido=~idl;            %ocean region
+ida=idl; ida(:,:)=1; %everywhere
+a0=v.aa0;            %grid area
+
+for m=1:12
+  for t=1:nyr
+    varx = squeeze(var(m,t,:,:)); %figure; pcolor(varx); colorbar;
+    im0  = squeeze(imk(m,t,:,:));
+    idi  = (im0>0.5);             %figure;contourf(idi);%ice region
+    id=ida; %all
+    aa=a0(id)/mean(a0(id)); b=varx(id).*aa; b=b(~isnan(b));
+    p.ts_mon.all(m,t)=mean(b);
+    id=idl; %land
+    aa=a0(id)/mean(a0(id)); b=varx(id).*aa; b=b(~isnan(b));
+    p.ts_mon.land(m,t)=mean(b);
+    id=ido; %ocean
+    aa=a0(id)/mean(a0(id));  b=varx(id).*aa; b=b(~isnan(b));
+    p.ts_mon.ocean(m,t)=mean(b);
+    id=idi; %ice
+    aa=a0(id)/mean(a0(id));  b=varx(id).*aa; b=b(~isnan(b));
+    p.ts_mon.ice(m,t)=mean(b);
+  end
+end
+  
+s=v.s;
+a=reshape(var,mm,nyr,v.nlat,v.nlon); 
+clm=squeeze(mean(a,2));
+ann=squeeze(mean(a,1));
+
+if (strcmp(v.mod,'c48'))
+  'In extracts: this is c48 model run, no intepolation needed'
+  p.clm=clm;
+  p.ann=ann;
+else
+  %mapping to a uniform grid
+  'In extracts: this is NOT c48 model run, intepolating...'
+  lonx=s.lon; latx =s.lat; disp(v.mod)
+  p.clm=interp_grid(clm,lonx,latx,v.lon,v.lat,1);
+  p.ann=interp_grid(ann,lonx,latx,v.lon,v.lat,1);
+end
+
+p.tavg0 =squeeze(mean(p.clm,1));%averaging over T
+p.txavg0=squeeze(mean(p.tavg0,2));  %averaging over T and x
+p.tyavg0=squeeze(mean(p.tavg0,1));  %averaging over T and y
+%p.xyavg0=mean(p.txavg0);           %averaging over T, x and y
+p.txavg_ann=squeeze(mean(p.ann,3));   %averaging over T and x
+p.tyavg_ann=squeeze(mean(p.ann,2));   %averaging over T and y
+%p.xyavg_ann=squeeze(mean(p.txavg_ann,2));%averaging over T, x and y
+
+oann=obs.ann; %oann(isnan(oann))=0; %figure; contourf(oann);
+%figure; contourf(s.lm0);figure; contourf(s.im0);
+id=(s.lm0>=0); idl=(s.lm0>=0.5);
+%below remove Antarctic land from idl
+%k1=min(find(s.lat(:)>=-90)); k2=max(find(s.lat(:)<=-65)); idl(k1:k2,:)=0; 
+%if (opt==1) %if opt=1 set
+%   idl(k1:k2,:)=1;%figure; contourf(idl);
+%end
+ido=~idl; ida=id;
+
+%below set the tropical region for 30S-30N
+idt=id; idt(:,:)=0; 
+k1=min(find(s.lat(:)>=-30)); k2=max(find(s.lat(:)<=30)); idt(k1:k2,:)=1; 
+
+a0=s.aa; %a0(:,:)=1;
+oann=obs.ann; %oann(isnan(oann))=0; %figure; contourf(oann);
+%size(p.ann); p
+for t=1:length(p.ann(:,1,1));
+  vobs=oann;
+  vmod=squeeze(p.ann(t,:,:));
+  diff=vmod-vobs; p.ann_bias(t,:,:)=diff;
+
+  p.ann_stat.latdis.mod(t,:)=squeeze(mean(vmod,2));
+  p.ann_stat.latdis.all(t,:)=squeeze(mean(diff,2));
+  [dif_ocean dif_land]=getlat(diff,s.lat,s.lm0);
+  p.ann_stat.latdis.ocean(t,:)=dif_ocean;
+  p.ann_stat.latdis.land (t,:)=dif_land;
+  
+  idx=isnan(vmod)|isnan(vobs); idx=~idx;
+
+  id=ida&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.ann_stat.bias.all(t)=x.bias; 
+  p.ann_stat.rmse.all(t)=x.rmse; 
+  p.ann_stat.corr.all(t)=x.corr;
+  p.ann_stat.mstd.all(t)=x.mstd; 
+  p.ann_stat.mmen.all(t)=x.mmen; 
+  p.ann_stat.omen.all(t)=x.omen;
+  p.ann_stat.ostd.all(t)=x.ostd; 
+
+  id=idl&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.ann_stat.bias.land(t)=x.bias; 
+  p.ann_stat.rmse.land(t)=x.rmse; 
+  p.ann_stat.corr.land(t)=x.corr;
+  p.ann_stat.mstd.land(t)=x.mstd; 
+  p.ann_stat.mmen.land(t)=x.mmen; 
+  p.ann_stat.omen.land(t)=x.omen;
+  p.ann_stat.ostd.land(t)=x.ostd;
+  
+  id=ido&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.ann_stat.bias.ocean(t)=x.bias; 
+  p.ann_stat.rmse.ocean(t)=x.rmse; 
+  p.ann_stat.corr.ocean(t)=x.corr;
+  p.ann_stat.mstd.ocean(t)=x.mstd; 
+  p.ann_stat.mmen.ocean(t)=x.mmen; 
+  p.ann_stat.omen.ocean(t)=x.omen;
+  p.ann_stat.ostd.ocean(t)=x.ostd;
+
+  id=idt&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.ann_stat.bias.trop(t)=x.bias; 
+  p.ann_stat.rmse.trop(t)=x.rmse; 
+  p.ann_stat.corr.trop(t)=x.corr;
+  p.ann_stat.mstd.trop(t)=x.mstd; 
+  p.ann_stat.mmen.trop(t)=x.mmen; 
+  p.ann_stat.omen.trop(t)=x.omen;
+  p.ann_stat.ostd.trop(t)=x.ostd;
+end
+
+p.sea=get4season(p.clm);
+for t=1:5 %1st:ann;2nd-last:mam,jja,son,djf
+  vobs=squeeze(obs.sea  (t,:,:));
+  vmod=squeeze(p.sea(t,:,:));
+  diff=vmod-vobs; %diff=vmod;
+  p.sea_bias(t,:,:)=diff;
+
+  p.sea_stat.latdis_all(t,:)=squeeze(mean(diff,2));
+  [dif_ocean dif_land]=getlat(diff,s.lat,s.lm0);
+  p.sea_stat.latdis.ocean(t,:)=dif_ocean;
+  p.sea_stat.latdis.land (t,:)=dif_land;
+
+  idx=isnan(vmod)|isnan(vobs); idx=~idx;
+  
+  id=ida&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.sea_stat.bias.all(t)=x.bias; 
+  p.sea_stat.rmse.all(t)=x.rmse; 
+  p.sea_stat.corr.all(t)=x.corr;
+  p.sea_stat.mstd.all(t)=x.mstd; 
+  p.sea_stat.mmen.all(t)=x.mmen; 
+  p.sea_stat.omen.all(t)=x.omen;
+  p.sea_stat.ostd.all(t)=x.ostd; 
+
+  id=idl&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.sea_stat.bias.land(t)=x.bias; 
+  p.sea_stat.rmse.land(t)=x.rmse; 
+  p.sea_stat.corr.land(t)=x.corr;
+  p.sea_stat.mstd.land(t)=x.mstd; 
+  p.sea_stat.mmen.land(t)=x.mmen; 
+  p.sea_stat.omen.land(t)=x.omen;
+  p.sea_stat.ostd.land(t)=x.ostd;
+  
+  id=ido&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.sea_stat.bias.ocean(t)=x.bias; 
+  p.sea_stat.rmse.ocean(t)=x.rmse; 
+  p.sea_stat.corr.ocean(t)=x.corr;
+  p.sea_stat.mstd.ocean(t)=x.mstd; 
+  p.sea_stat.mmen.ocean(t)=x.mmen; 
+  p.sea_stat.omen.ocean(t)=x.omen;
+  p.sea_stat.ostd.ocean(t)=x.ostd;
+  
+  id=idt&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.sea_stat.bias.trop(t)=x.bias; 
+  p.sea_stat.rmse.trop(t)=x.rmse; 
+  p.sea_stat.corr.trop(t)=x.corr;
+  p.sea_stat.mstd.trop(t)=x.mstd; 
+  p.sea_stat.mmen.trop(t)=x.mmen; 
+  p.sea_stat.omen.trop(t)=x.omen;
+  p.sea_stat.ostd.trop(t)=x.ostd;
+end
+
+p.sea=get4season(p.clm);
+for t=1:12 %12 months
+  vobs=squeeze(obs.clm(t,:,:));
+  vmod=squeeze(p.clm  (t,:,:));
+  diff=vmod-vobs; 
+
+  p.clm_stat.latdis_all(t,:)=squeeze(mean(diff,2));
+  [dif_ocean dif_land]=getlat(diff,s.lat,s.lm0);
+  p.clm_stat.latdis.ocean(t,:)=dif_ocean;
+  p.clm_stat.latdis.land (t,:)=dif_land;
+
+  idx=isnan(vmod)|isnan(vobs); idx=~idx;
+  
+  id=ida&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.clm_stat.bias.all(t)=x.bias; 
+  p.clm_stat.rmse.all(t)=x.rmse; 
+  p.clm_stat.corr.all(t)=x.corr;
+  p.clm_stat.mstd.all(t)=x.mstd; 
+  p.clm_stat.mmen.all(t)=x.mmen; 
+  p.clm_stat.omen.all(t)=x.omen;
+  p.clm_stat.ostd.all(t)=x.ostd; 
+
+  id=idl&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.clm_stat.bias.land(t)=x.bias; 
+  p.clm_stat.rmse.land(t)=x.rmse; 
+  p.clm_stat.corr.land(t)=x.corr;
+  p.clm_stat.mstd.land(t)=x.mstd; 
+  p.clm_stat.mmen.land(t)=x.mmen; 
+  p.clm_stat.omen.land(t)=x.omen;
+  p.clm_stat.ostd.land(t)=x.ostd;
+  
+  id=ido&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.clm_stat.bias.ocean(t)=x.bias; 
+  p.clm_stat.rmse.ocean(t)=x.rmse; 
+  p.clm_stat.corr.ocean(t)=x.corr;
+  p.clm_stat.mstd.ocean(t)=x.mstd; 
+  p.clm_stat.mmen.ocean(t)=x.mmen; 
+  p.clm_stat.omen.ocean(t)=x.omen;
+  p.clm_stat.ostd.ocean(t)=x.ostd;
+  
+  id=idt&idx;
+  vmd=vmod(id); vob=vobs(id); aa=a0(id)/mean(a0(id));
+  x=getstatis(vmd,vob,aa);
+  p.clm_stat.bias.trop(t)=x.bias; 
+  p.clm_stat.rmse.trop(t)=x.rmse; 
+  p.clm_stat.corr.trop(t)=x.corr;
+  p.clm_stat.mstd.trop(t)=x.mstd; 
+  p.clm_stat.mmen.trop(t)=x.mmen; 
+  p.clm_stat.omen.trop(t)=x.omen;
+  p.clm_stat.ostd.trop(t)=x.ostd;
+end
+
+
+return
+
