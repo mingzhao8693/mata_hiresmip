@@ -382,6 +382,7 @@ for i = 1:n2
     
     idx_BUI_case1 = DMC_i <= 0.4 .* DC_i;
     idx_BUI_case2 = ~idx_BUI_case1;
+    idx_BUI_case3 = DMC_i == 0 & DC_i == 0;
     
     BUI_i = zeros(grid_size);
     
@@ -390,6 +391,9 @@ for i = 1:n2
     % Case 2 (Note: Uses the complex, original-code BUI formula)
     BUI_i(idx_BUI_case2) = DMC_i(idx_BUI_case2) - (1 - (0.8 .* DC_i(idx_BUI_case2)) ./ (DMC_i(idx_BUI_case2) + 0.4 .* DC_i(idx_BUI_case2))) .* ...
                             (0.92 + (0.0114 .* DMC_i(idx_BUI_case2)).^1.7);
+    % Case 3 if DMC=0 and DC=0 %added by MZhao
+    BUI_i(idx_BUI_case3) = 0;
+    
     BUI_i = miz_setmin(BUI_i, 0);
     BUI(i, :, :) = BUI_i;
 
@@ -450,10 +454,16 @@ DSR  = 0.0272 .* FWI .^ 1.77;
 
 % This section requires knowing the desired final output shape (N x K, where K = M*L).
 % For simplicity here, we return the 3D arrays and rely on the user to select the components.
-vars = struct('FFMC',FFMC,'DMC',DMC,'DC',DC,'ISI',ISI,'BUI',BUI,'FWI',FWI,'DSR',DSR);
+vars = struct('FFMC',single(FFMC),...
+	      'DMC', single(DMC), ...
+	      'DC',  single(DC),  ...
+	      'ISI', single(ISI), ...
+	      'BUI', single(BUI), ...
+	      'FWI', single(FWI), ...
+	      'DSR', single(DSR));
 
 out_cols = length(what);
-out = zeros(N, M, L, out_cols); % Example: Time x (Lat*Lon) x Components
+out = zeros(N, M, L, out_cols, 'single'); % Example: Time x (Lat*Lon) x Components
 size(out)
 vars
 for k = 1:out_cols

@@ -1,4 +1,7 @@
 function [var,time]=readallyear_reg(v,exd,varn,exf1,exf2,exf3,opt,lev)
+% this is smart file reading script to allow for
+% regional, seasonal, and years selections
+
 tpath=v.tpath; expn=v.expn; yr1=v.yr1; yr2=v.yr2; nyr=v.nyr;
 
 dbeg=v.d_beg(1); dend=v.d_end(end); no=length(v.d_beg);
@@ -56,13 +59,21 @@ for t=1:nyr
       nt=length(b(:,1,1)); nt
       var(i).mbeg=mbeg;
       var(i).mend=mend;
-      mmon=floor([mbeg:(mend-mbeg+1)/nt:mend+1]); mmon=mmon';
+      mofy=floor([mbeg:(mend-mbeg+1)/nt:mend+1]); mofy=mofy';
+      dofy=[tbeg:1:tend+1]; dofy=dofy';
+      year=dofy; year(:)=t;
       if (t==1)
 	var(i).a=b;
-	var(i).mmon=mmon(1:end-1);
+	var(i).mofy=mofy(1:end-1);
+	var(i).dofy=dofy(1:end-1);
+	var(i).year=year(1:end-1);
+	var(i).time=time;
       else
 	var(i).a=cat(1,var(i).a,b);
-	var(i).mmon=cat(1,var(i).mmon,mmon(1:end-1));
+	var(i).mofy=cat(1,var(i).mofy,mofy(1:end-1));
+	var(i).dofy=cat(1,var(i).dofy,dofy(1:end-1));
+	var(i).year=cat(1,var(i).year,year(1:end-1));
+	var(i).time=cat(1,var(i).time,time);
       end
     end
   else
@@ -101,23 +112,45 @@ for t=1:nyr
       var(i).mend=mend;
       if (mend>mbeg)
 	a=floor([mbeg:(mend-mbeg+1)/nt:mend+1]);
+	b=[mbeg:1:mend];
+	c=b; c(:)=t;
       else
 	mend=mend+12;
 	a=floor([mbeg:(mend-mbeg+1)/nt:mend+1]);
 	a=mod(a,12);
 	a(a==0)=12;
+	b=[mbeg:1:mend];
+	c=b; c(:)=t;
       end
-      var(i).mmon=a(1:end-1);
+      var(i).mofy=a(1:end-1);
+      var(i).dofy=b(1:end-1);
+      var(i).year=c(1:end-1);
     end
   end
 end
 
 for i=1:length(var)
+  var(i).a=single(var(i).a);
+  var(i).mofy=single(var(i).mofy);
+  var(i).dofy=single(var(i).dofy);
+  var(i).year=single(var(i).year);
+end
+
+
+return
+
+
+
+
+
+
+
+for i=1:length(var)
+  var(i).a=single(var(i).a);
   a=var(i).a;
   var(i).min=min(min(min(a)));
   var(i).max=max(max(max(a)));
   var(i).mean=mean(mean(mean(a)));
-  
 end
 
 return

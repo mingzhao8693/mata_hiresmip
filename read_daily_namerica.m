@@ -1,8 +1,8 @@
 function [v]=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=5; opt='RO';
-pct  =[25 50 75 90 95 99 99.9 99.99]; latlon=[180 340 10 90]; latlon=[190 304 16 75]; diag=0;
+%tpath='/archive/Ming.Zhao/awg/2023.04/';
+%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=21; opt=1;
+%pct  =[25 50 75 90 95 99 99.9 99.99]; latlon=[180 340 10 90]; latlon=[190 304 16 75]; diag=0;
 
 atmos_data_dir='atmos_data';
 if strcmp(atmos_data_dir,'atmos_data_240_480')
@@ -58,58 +58,110 @@ m=0; %read annual data all together; m=1-12 read monthly data one at a time
 varn='ps'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-for k=1:length(var); var(k).a=var(k).a*0.01; end; og.psday=var; %unit:hPa
-thresh=[800 900 1000];
-v.psday=extremes_ana(var,pct,thresh)
+for k=1:length(var); var(k).a=var(k).a*0.01; end; %og.psday=var; %unit:hPa
+thresh=[800 900 1000]; v.psday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='pr'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a*86400; end; og.prday=var; %unit:mm/day
+for k=1:length(var); var(k).a=var(k).a*86400; end; %og.prday=var; %unit:mm/day
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.prday=extremes_ana(var,pct,thresh)
+v.prday=extremes_ana(var,pct,thresh,1)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='hfls'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
+for k=1:length(var); var(k).a=var(k).a; end; %og.evapday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.evapday=extremes_ana(var,pct,thresh,opt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='hfss'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.shfxday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.shfxday=extremes_ana(var,pct,thresh,opt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='rsds'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rsdsday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.rsdsday=extremes_ana(var,pct,thresh,opt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='rsus'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rsusday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.rsusday=extremes_ana(var,pct,thresh,opt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='rlds'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rldsday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.rldsday=extremes_ana(var,pct,thresh,opt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='rlus'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rlusday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.rlusday=extremes_ana(var,pct,thresh,opt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='clt'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.cltday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.cltday=extremes_ana(var,pct,thresh,opt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='clwvi'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.lwpday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.lwpday=extremes_ana(var,pct,thresh,opt)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='clivi'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.iwpday=var; %unit:W/m2
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.iwpday=extremes_ana(var,pct,thresh,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='tas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a-273.15; end; og.tasday=var; %unit:C
+for k=1:length(var); var(k).a=var(k).a-273.15; end; %og.tasday=var; %unit:C
 thresh=[30 35 40]; 
-v.tasday=extremes_ana(var,pct,thresh)
+v.tasday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface saturation vapor pressure vps in unit of hPa
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k=1:length(var); var(k).a=es_t_array(var(k).a+273.15); end;
 %for k=1:length(var); var2(k).a=es_t_array_tetens(var(k).a+273.15); end;
 %for k=1:length(var); var3(k).a=es_t_array_ardenbuck(var(k).a+273.15); end;
-%for k=1:length(var); var3(k).a=es_t_array_goffgratch(var(k).a+273.15); end;
-og.vpsday=var;
-thresh=[30 35 40]; v.vpsday=extremes_ana(var,pct,thresh)
+%for k=1:length(var); var3(k).a=es_t_array_goffgratch(var(k).a+273.15); end; %og.vpsday=var;
+thresh=[30 35 40]; v.vpsday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %surface humidity kg/kg
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='huss'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); og.qvday=var; %unit:kg/kg
-thresh=[1 2 3]; v.qvday=extremes_ana(var,pct,thresh)
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.qvday=var; %unit:kg/kg
+thresh=[1 2 3]; v.qvday=extremes_ana(var,pct,thresh,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface vapor pressure vp (hPa) from surface specific humidity huss
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for k=1:length(var); var(k).a=e_qp_array(var(k).a,og.psday(k).a); end; og.vpday=var;
-thresh=[20 30 40];
-v.vpday=extremes_ana(var,pct,thresh)
+for k=1:length(var); var(k).a=e_qp_array(var(k).a,v.psday.var(k).a); end; %og.vpday=var;
+thresh=[20 30 40]; v.vpday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface vapor pressure vp in unit of hPa from surface specific humidity huss
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for k=1:length(var); var(k).a=og.vpsday(k).a-og.vpday(k).a; end;
-for k=1:length(var); id=var(k).a<=0; var(k).a(id)=0;  end; og.vpdday=var;
-thresh=[5 10 20 30 40]; v.vpdday=extremes_ana(var,pct,thresh)
+for k=1:length(var); var(k).a=v.vpsday.var(k).a-v.vpday.var(k).a; end;
+for k=1:length(var); id=var(k).a<=0; var(k).a(id)=0;  end; %og.vpdday=var;
+thresh=[5 10 20 30 40]; v.vpdday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface relative humidity based on vapor pressure and saturation vapor pressure
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for k=1:length(var); var(k).a=og.vpday(k).a./og.vpsday(k).a*100; end; 
+for k=1:length(var); var(k).a=v.vpday.var(k).a./v.vpsday.var(k).a*100; end; 
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
-for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; og.rhxday=var; %unit:%
-thresh=[5 10 20 30 40]; v.rhxday=extremes_ana(var,pct,thresh)
+for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhxday=var; %unit:%
+thresh=[5 10 20 30 40]; v.rhxday=extremes_ana(var,pct,thresh,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %read in surface relative humidity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,25 +169,25 @@ varn='hurs'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
-for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end;
-og.rhday=var; %unit:%
-thresh=[5 10 20 30 40]; v.rhday=extremes_ana(var,pct,thresh)
+for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhday=var; %unit:%
+thresh=[5 10 20 30 40]; v.rhday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute dewpoint and wet bulb temperatures
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k=1:length(var)
-  tas  =og.tasday(k).a;    %unit: C
-  rhday=og.rhday(k).a*0.01;%change unit from %(0-100) to fraction(0-1)
-  psday=og.psday(k).a*0.1; %change unit from hPa to kPa
-  var(k).a=dewpoint_frostpoint(tas,rhday); og.tdpday(k)=var(k);
-  var(k).a=wetbulb_vec(tas,rhday,psday);   og.twbday(k)=var(k);
+  tas  =v.tasday.var(k).a;    %unit: C
+  rhday=v.rhday.var(k).a*0.01;%change unit from %(0-100) to fraction(0-1)
+  psday=v.psday.var(k).a*0.1; %change unit from hPa to kPa
+  var1(k).a=dewpoint_frostpoint(tas,rhday); %og.tdpday(k)=var(k);
+  var2(k).a=wetbulb_vec(tas,rhday,psday);   %og.twbday(k)=var(k);
 end
+thresh=[5 10 20 30 40]; v.tdpday=extremes_ana(var1,pct,thresh,opt)
+thresh=[5 10 20 30 40]; v.twbday=extremes_ana(var2,pct,thresh,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='sfcWind'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); og.wsdday=var; %unit:m/s
-thresh=[10 20 30];
-v.wsdday=extremes_ana(var,pct,thresh)
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.wsdday=var; %unit:m/s
+thresh=[10 20 30]; v.wsdday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % daily max and min
@@ -144,120 +196,93 @@ v.wsdday=extremes_ana(var,pct,thresh)
 varn='tasmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a-273.15; end; og.tasmaxday=var; %unit:C
-thresh=[30 35 40]; 
-v.tasmaxday=extremes_ana(var,pct,thresh)
+for k=1:length(var); var(k).a=var(k).a-273.15; end; %og.tasmaxday=var; %unit:C
+thresh=[30 35 40]; v.tasmaxday=extremes_ana(var,pct,thresh,1)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute heatwave statistics
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='hursmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
-for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end;
-og.rhmaxday=var; thresh=[20 30 40];
-v.rhmaxday=extremes_ana(var,pct,thresh)
+for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhmaxday=var;
+thresh=[20 30 40]; v.rhmaxday=extremes_ana(var,pct,thresh,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='hursmin'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
-for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end;
-og.rhminday=var; thresh=[20 30 40];
-v.rhminday=extremes_ana(var,pct,thresh)
+for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhminday=var;
+thresh=[20 30 40]; v.rhminday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='sfcWindmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); og.wsdmax=var; %unit:m/s
-thresh=[10 20 30];
-v.wsdmax=extremes_ana(var,pct,thresh)
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.wsdmax=var; %unit:m/s
+thresh=[10 20 30]; v.wsdmax=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute Canadian FWI along with FFMC, DMC, DC, ISI, BUI, FWI and DSR
 %using daily mean TAS and wind speed
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 lat2d=repmat(v.lat,[1 v.nlon]); %latitude of the data
-for k=1:length(og.prday)
-  mn=og.prday (k).mmon;    %month of the day
-  pr=og.prday (k).a;       %precip,            unit: mm per day
-  ta=og.tasday(k).a;       %temperature,       unit: C
-  rh=og.rhday (k).a;       %relative humidity, unit: %
-  wm=og.wsdday(k).a*0.001*3600; %change unit from m/s to km/h
+for k=1:length(v.prday.var)
+  mn=v.prday.var (k).mofy;         %month of the day
+  pr=v.prday.var (k).a;            %precip,            unit: mm per day
+  ta=v.tasday.var(k).a;            %temperature,       unit: C
+  rh=v.rhday.var (k).a;            %relative humidity, unit: %
+  wm=v.wsdday.var(k).a*0.001*3600; %wind, unit changed from m/s to km/h
   a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'});
   var1(k).a=a;
 end
-n=length(var);
-for k=1:n; var(k).a=var1(k).a.FFMC; end; og.fwiday.ffmc=var; v.fwiday.ffmc=extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.DMC;  end; og.fwiday.dmc =var; v.fwiday.dmc =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.DC;   end; og.fwiday.dc  =var; v.fwiday.dc  =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.ISI;  end; og.fwiday.isi =var; v.fwiday.isi =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.BUI;  end; og.fwiday.bui =var; v.fwiday.bui =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.FWI;  end; og.fwiday.fwi =var; v.fwiday.fwi =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.DSR;  end; og.fwiday.dsr =var; v.fwiday.dsr =extremes_ana(var,pct,thresh);
+n=length(var1);
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday.ffmc=extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday.dmc =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday.dc  =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday.isi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,opt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute Canadian FWI along with FFMC, DMC, DC, ISI, BUI, FWI and DSR
-%using daily max TAS and wind speed, and min RH
+%using daily max TAS and wind speed, and daily min RH
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 lat2d=repmat(v.lat,[1 v.nlon]); %latitude of the data
-for k=1:length(og.prday)
-  mn=(og.prday(k).mmon)';    %month of the day
-  pr=og.prday(k).a;          %precip,            unit: mm per day
-  ta=og.tasmaxday(k).a;      %temperature,       unit: C
-  rh=og.rhminday(k).a;       %relative humidity, unit: %
-  wm=og.windmaxday(k).a*0.001*3600; %change unit from m/s to km/h
+for k=1:length(v.prday.var)
+  mn=v.prday.var(k).mofy;          %month of the day
+  pr=v.prday.var(k).a;             %daily mean precip,            unit: mm per day
+  ta=v.tasmaxday.var(k).a;         %maximum daily temperature,       unit: C
+  rh=v.rhminday.var(k).a;          %minimum daily relative humidity, unit: %
+  wm=v.wsdmax.var(k).a*0.001*3600; %maximum windspeed, unit changed from m/s to km/h
   a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'});
   var1(k).a=a;
 end
 n=length(var);
-for k=1:n; var(k).a=var1(k).a.FFMC; end; og.fwidaymax.ffmc=var; v.fwidaymax.ffmc=extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.DMC;  end; og.fwidaymax.dmc =var; v.fwidaymax.dmc =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.DC;   end; og.fwidaymax.dc  =var; v.fwidaymax.dc  =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.ISI;  end; og.fwidaymax.isi =var; v.fwidaymax.isi =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.BUI;  end; og.fwidaymax.bui =var; v.fwidaymax.bui =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.FWI;  end; og.fwidaymax.fwi =var; v.fwidaymax.fwi =extremes_ana(var,pct,thresh);
-for k=1:n; var(k).a=var1(k).a.DSR;  end; og.fwidaymax.dsr =var; v.fwidaymax.dsr =extremes_ana(var,pct,thresh);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%test plotting
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-m=1; k=5; vx=v.fwiday;
-a=squeeze(vx.ffmc.pct(m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 110]); colormap(jet);
-a=squeeze(vx.dmc.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 200]); colormap(jet);
-a=squeeze(vx.dc.pct  (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 1000]);colormap(jet);
-a=squeeze(vx.isi.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
-a=squeeze(vx.bui.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 200]); colormap(jet);
-a=squeeze(vx.fwi.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 70]);  colormap(jet);
-a=squeeze(vx.dsr.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 50]);  colormap(jet);
-
-m=3; vx=v.fwiday_max;
-a=squeeze(vx.fwi.av(m,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 10]); colormap(jet);
-a=squeeze(vx.dmc.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
-a=squeeze(vx.dc.pct  (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
-a=squeeze(vx.isi.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 100]); colormap(jet);
-a=squeeze(vx.bui.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
-a=squeeze(vx.fwi.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 50]);  colormap(jet);
-a=squeeze(vx.dsr.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
-
-a=squeeze(v.windmaxday.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]); colormap(jet);
-
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwidaymax.ffmc=extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwidaymax.dmc =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwidaymax.dc  =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwidaymax.isi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwidaymax.bui =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwidaymax.fwi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwidaymax.dsr =extremes_ana(var,pct,thresh,opt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute FWI using a statistical log-linear regression model
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for k=1:length(og.prday)
-  pr=og.prday(k).a;  %unit: mm/day
-  ta=og.tasday(k).a; %unit: C
-  rh=og.rhday(k).a;  %unit: %
-  wm=og.windday(k).a*0.001*3600; %change unit from m/s to km/h
-  a=estimate_fwi_regression(ta,rh,wm,pr); var(k).a=a;
-end
-thresh=[1 10 20 30]; og.fwiday_stat=var;
-v.fwiday_stat=extremes_ana(var,pct,thresh);
+%for k=1:length(og.prday)
+%  pr=v.prday.var(k).a;  %unit: mm/day
+%  ta=v.tasday.var(k).a; %unit: C
+%  rh=v.rhday.var(k).a;  %unit: %
+%  wm=v.wsdday.var(k).a*0.001*3600; %change unit from m/s to km/h
+%  a=estimate_fwi_regression(ta,rh,wm,pr); var(k).a=a;
+%end
+%thresh=[1 10 20 30]; v.fwiday_stat=extremes_ana(var,pct,thresh,opt);
 %compute FWIMAXDAY%%%%%%%%%%%%%
-for k=1:length(og.prday)
-  pr=og.prday(k).a;                 %daily precipitation
-  ta=og.tasmaxday(k).a;             %daily maximum SAT
-  rh=og.rhmaxday(k).a;              %daily maximum RH
-  wm=og.windmaxday(k).a*0.001*3600; %daily maximum 10m wind speed
-  a=estimate_fwi_regression(ta,rh,wm,pr); var(k).a=a;
-end
-thresh=[1 10 20 30]; og.fwimaxday_stat=var;
-v.fwimaxday_stat=extremes_ana(var,pct,thresh);
+%for k=1:length(og.prday)
+%  pr=v.prday.var(k).a;                 %daily precipitation
+%  ta=v.tasmaxday.var(k).a;             %daily maximum SAT
+%  rh=v.rhmaxday.var(k).a;              %daily maximum RH
+%  wm=v.wsdmaxday.var(k).a*0.001*3600; %daily maximum 10m wind speed
+%  a=estimate_fwi_regression(ta,rh,wm,pr); var(k).a=a;
+%end
+%thresh=[1 10 20 30]; v.fwimaxday_stat=extremes_ana(var,pct,thresh,opt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Other variables%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -266,26 +291,27 @@ exf1='atmos_cmip.'; exf2='010100-'; exf3='123123.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a*86400; end; %unit:mm/day
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.pr3hr=extremes_ana(var,pct,thresh)
+v.pr3hr=extremes_ana(var,pct,thresh,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %River flow%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='rv_o_h2o'; ff='day'; exd='/atmos_data/daily_river/'; exf1='river.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a*86400; end; og.rvfday=var; %kg/m2/s
+for k=1:length(var); var(k).a=var(k).a*86400; end; %og.rvfday=var; %kg/m2/s
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.rvfday=extremes_ana(var,pct,thresh)
+v.rvfday=extremes_ana(var,pct,thresh,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Land total runoff%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='runf_soil'; ff='day'; exd='/atmos_data/daily_land/'; exf1='land.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a*86400; end; og.runfday=var; %kg/m2/s
+for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.runfday=extremes_ana(var,pct,thresh)
+v.runfday=extremes_ana(var,pct,thresh,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-v.og=og;
+%save data to matfile
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v=clearvar(v,opt);
 epath=strcat('/work/miz/mat_hiresmip/land/');
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
 fnmat=strcat(epath,expn,fext,'_',opt,'_diag',num2str(diag),'_read_daily_namerica_new.mat')
@@ -294,70 +320,157 @@ save(fnmat,'v','-v7.3'); %save(fnmat,'v');
 
 return
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%the following plotting and comparing fwi1D and fwi2D_vectorized
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-lat=v.lat; lon=v.lon; t1=1; t2=1000; j=80; i=42;
-tas=og.tasday.a  (t1:t2,i,j);
-twb=og.twbday.a  (t1:t2,i,j);
-tdp=og.tdpday.a  (t1:t2,i,j);
-vps=og.vpsday.a  (t1:t2,i,j);
-vp =og.vpday.a   (t1:t2,i,j);
-vpd=og.vpdday.a  (t1:t2,i,j);
-rhd=og.rhday.a   (t1:t2,i,j);
-rhx=og.rhxday.a  (t1:t2,i,j);
-rmx=og.rhmaxday.a(t1:t2,i,j);
-rmn=og.rhminday.a(t1:t2,i,j);
-prd=og.prday.a   (t1:t2,i,j);
-psd=og.psday.a   (t1:t2,i,j);
-wsd=og.wsdday.a  (t1:t2,i,j);%*0.001*3600;
-wmx=og.wsdmax.a  (t1:t2,i,j);%*0.001*3600;
-z=og.fwiday.ffmc.a; z1=z(t1:t2,i,j);
-z=og.fwiday.dmc.a;  z2=z(t1:t2,i,j);
-z=og.fwiday.dc.a;   z3=z(t1:t2,i,j);
-z=og.fwiday.isi.a;  z4=z(t1:t2,i,j);
-z=og.fwiday.bui.a;  z5=z(t1:t2,i,j);
-z=og.fwiday.fwi.a;  z6=z(t1:t2,i,j);
-z=og.fwiday.dsr.a;  z7=z(t1:t2,i,j);
 
-figure; i=1; row=6; col=1; t=[t1:t2]; %t=t./30;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%the following testing/plotting time series; comparing fwi1D and fwi2D_vectorized
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; lat=v.lat; lon=v.lon; t1=1; t2=1000; j=80; i=42;
+tas=v.tasday.var(k).a  (t1:t2,i,j);
+twb=v.twbday.var(k).a  (t1:t2,i,j);
+tdp=v.tdpday.var(k).a  (t1:t2,i,j);
+vps=v.vpsday.var(k).a  (t1:t2,i,j);
+vp =v.vpday.var(k).a   (t1:t2,i,j);
+vpd=v.vpdday.var(k).a  (t1:t2,i,j);
+rhd=v.rhday.var(k).a   (t1:t2,i,j);
+rhx=v.rhxday.var(k).a  (t1:t2,i,j);
+rmx=v.rhmaxday.var(k).a(t1:t2,i,j);
+rmn=v.rhminday.var(k).a(t1:t2,i,j);
+prd=v.prday.var(k).a   (t1:t2,i,j);
+psd=v.psday.var(k).a   (t1:t2,i,j);
+wsd=v.wsdday.var(k).a  (t1:t2,i,j);%*0.001*3600;
+wmx=v.wsdmax.var(k).a  (t1:t2,i,j);%*0.001*3600;
+ruf=v.runfday.var(k).a (t1:t2,i,j);
+evp=v.evapday.var(k).a (t1:t2,i,j);
+shx=v.shfxday.var(k).a (t1:t2,i,j);
+rsds=v.rsdsday.var(k).a(t1:t2,i,j);
+rsus=v.rsusday.var(k).a(t1:t2,i,j); rsns=rsds-rsus;
+rlds=v.rldsday.var(k).a(t1:t2,i,j);
+rlus=v.rlusday.var(k).a(t1:t2,i,j); rlns=rlds-rlus; rads=rsns+rlns;
+clt =v.cltday.var(k).a (t1:t2,i,j)*100;
+lwp =v.lwpday.var(k).a (t1:t2,i,j)*100;
+iwp =v.iwpday.var(k).a (t1:t2,i,j)*100;
+zz=v.fwiday;
+z=zz.ffmc.var(k).a; z1=z(t1:t2,i,j);
+z=zz.dmc.var(k).a;  z2=z(t1:t2,i,j);
+z=zz.dc.var(k).a;   z3=z(t1:t2,i,j);
+z=zz.isi.var(k).a;  z4=z(t1:t2,i,j);
+z=zz.bui.var(k).a;  z5=z(t1:t2,i,j);
+z=zz.fwi.var(k).a;  z6=z(t1:t2,i,j);
+z=zz.dsr.var(k).a;  z7=z(t1:t2,i,j);
+zz=v.fwidaymax;
+z=zz.ffmc.var(k).a; zz1=z(t1:t2,i,j);
+z=zz.dmc.var(k).a;  zz2=z(t1:t2,i,j);
+z=zz.dc.var(k).a;   zz3=z(t1:t2,i,j);
+z=zz.isi.var(k).a;  zz4=z(t1:t2,i,j);
+z=zz.bui.var(k).a;  zz5=z(t1:t2,i,j);
+z=zz.fwi.var(k).a;  zz6=z(t1:t2,i,j);
+z=zz.dsr.var(k).a;  zz7=z(t1:t2,i,j);
+%plot a point value
+figure; i=1; row=7; col=1; t=[t1:t2]; %t=t./30;
 subplot(row,col,i); i=i+1; plot(t,tas,'r'); hold on; plot(t,twb,'g'); plot(t,tdp,'b'); ylabel('TA, TWB, TDP');
 subplot(row,col,i); i=i+1; plot(t,vps,'r'); hold on; plot(t,vp, 'g'); plot(t,vpd,'b'); ylabel('VPS, VP, VPD');
 subplot(row,col,i); i=i+1; plot(t,rhd,'r'); hold on; plot(t,rhx,'g'); plot(t,rmn,'b'); plot(t,rmx,'k'); ylabel('RHD, RHX,RMX,RMN');
-subplot(row,col,i); i=i+1; plot(t,prd); ylabel('Pr');
+subplot(row,col,i); i=i+1; plot(t,prd,'r'); hold on; plot(t,ruf,'g'); plot(t,evp,'b'); plot(t,shx,'k'); ylabel('Pr, Runf, Evap, SHLX');
 subplot(row,col,i); i=i+1; plot(t,psd); ylabel('Ps');
 subplot(row,col,i); i=i+1; plot(t,wsd,'r'); hold on; plot(t,wmx,'g'); ylabel('WSD');
+figure; row=1; col=1; i=1; lw=2;
+subplot(row,col,i); i=i+1;
+plot(t,rsds,'r--'); hold on; plot(t,rsus,'g--'); plot(t,rlds,'m--'); plot(t,rlus,'b--');
+plot(t,rsns,'r-','LineWidth',lw);
+plot(t,rlns,'b-','LineWidth',lw);
+plot(t,rads,'k-','LineWidth',lw);
+plot(t,-evp,'c-','LineWidth',lw);
+plot(t,-shx,'m-','LineWidth',lw);
+plot(t,prd*LV0/86400,'k-','LineWidth',lw); plot(t,lwp*5,'y'); plot(t,iwp*10,'y--');
+legend('SWDNSFC','SWUPSFC','LWDNSFS','LWUPSFC','SWNETSFC','LWNETSFC','RADNETSFC','EVAP','SHFX','PR','LWP','IWP')
 
 figure; i=1; row=7; col=1;
-subplot(row,col,i); i=i+1; plot(t,z1); ylabel('FFMC');
-subplot(row,col,i); i=i+1; plot(t,z2); ylabel('DMC');
-subplot(row,col,i); i=i+1; plot(t,z3); ylabel('DC');
-subplot(row,col,i); i=i+1; plot(t,z4); ylabel('ISI');
-subplot(row,col,i); i=i+1; plot(t,z5); ylabel('BUI');
-subplot(row,col,i); i=i+1; plot(t,z6); ylabel('FWI');
-subplot(row,col,i); i=i+1; plot(t,z7); ylabel('DSR');
-
-t=100;
-z=og.fwiday.ffmc.a; z1=squeeze(z(t,:,:));
-z=og.fwiday.dmc.a;  z2=squeeze(z(t,:,:));
-z=og.fwiday.dc.a;   z3=squeeze(z(t,:,:));
-z=og.fwiday.isi.a;  z4=squeeze(z(t,:,:));
-z=og.fwiday.bui.a;  z5=squeeze(z(t,:,:));
-z=og.fwiday.fwi.a;  z6=squeeze(z(t,:,:));
-z=og.fwiday.dsr.a;  z7=squeeze(z(t,:,:));
-
-pms=[ 0, 0, 2000, 800]*1.2; fsize=12; row=2; col=4; j=80; i=42;
+subplot(row,col,i); i=i+1; plot(t,z1,'b'); hold on; plot(t,zz1,'r'); ylabel('FFMC');
+subplot(row,col,i); i=i+1; plot(t,z2,'b'); hold on; plot(t,zz2,'r'); ylabel('DMC');
+subplot(row,col,i); i=i+1; plot(t,z3,'b'); hold on; plot(t,zz3,'r'); ylabel('DC');
+subplot(row,col,i); i=i+1; plot(t,z4,'b'); hold on; plot(t,zz4,'r'); ylabel('ISI');
+subplot(row,col,i); i=i+1; plot(t,z5,'b'); hold on; plot(t,zz5,'r'); ylabel('BUI');
+subplot(row,col,i); i=i+1; plot(t,z6,'b'); hold on; plot(t,zz6,'r'); ylabel('FWI');
+subplot(row,col,i); i=i+1; plot(t,z7,'b'); hold on; plot(t,zz7,'r'); ylabel('DSR');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot a map of daily FWI%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+t=100; k=1;
+z=v.fwiday.ffmc.var(k).a; z1=squeeze(z(t,:,:)); s1='FFMC';
+z=v.fwiday.dmc.var(k).a;  z2=squeeze(z(t,:,:)); s2='DMC';
+z=v.fwiday.dc.var(k).a;   z3=squeeze(z(t,:,:)); s3='DC';
+z=v.fwiday.isi.var(k).a;  z4=squeeze(z(t,:,:)); s4='ISI';
+z=v.fwiday.bui.var(k).a;  z5=squeeze(z(t,:,:)); s5='BUI';
+z=v.fwiday.fwi.var(k).a;  z6=squeeze(z(t,:,:)); s6='FWI';
+z=v.fwiday.dsr.var(k).a;  z7=squeeze(z(t,:,:)); s7='DSR';
+pms=[ 0, 0, 2000, 800]*1.2; fsize=12; row=2; col=4; j0=80; i0=42; i=1;
 handle = figure('Position', pms,'visible','on');
-subplot(row,col,1);
+subplot(row,col,i); i=i+1;
 pcolor(lon,lat,z1); shading flat; colorbar; hold on; colormap(jet);
-contour(lon,lat,v.lm,'w'); hold on; plot(lon(j),lat(i),'wp'); 
+contour(lon,lat,v.lm,'w'); hold on; title(s1); plot(lon(j0),lat(i0),'wp');
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z2); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s2);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z3); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s3);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z4); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s4);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z5); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s5);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z6); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s6);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z7); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s7);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot a map of 95 percentile for FWI
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+k=1; ipct=5; lat=v.lat; lon=v.lon;
+z=v.fwiday.ffmc.pct(k,ipct,:,:); z1=squeeze(z); s1='FFMC';
+z=v.fwiday.dmc.pct (k,ipct,:,:); z2=squeeze(z); s2='DMC';
+z=v.fwiday.dc.pct  (k,ipct,:,:); z3=squeeze(z); s3='DC';
+z=v.fwiday.isi.pct (k,ipct,:,:); z4=squeeze(z); s4='ISI';
+z=v.fwiday.bui.pct (k,ipct,:,:); z5=squeeze(z); s5='BUI';
+z=v.fwiday.fwi.pct (k,ipct,:,:); z6=squeeze(z); s6='FWI';
+z=v.fwiday.dsr.pct (k,ipct,:,:); z7=squeeze(z); s7='DSR';
+pms=[ 0, 0, 2000, 600]*1.2; fsize=12; row=2; col=4; j0=80; i0=42; i=1;
+handle = figure('Position', pms,'visible','on');
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z1); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s1); plot(lon(j0),lat(i0),'wp');
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z2); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s2);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z3); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s3);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z4); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s4);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z5); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s5);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z6); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s6); caxis([0 100]);
+subplot(row,col,i); i=i+1;
+pcolor(lon,lat,z7); shading flat; colorbar; hold on; colormap(jet);
+contour(lon,lat,v.lm,'w'); hold on; title(s7);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-n=length(ta); mo=zeros(n,1); mo(:)=og.prday(k).mmon(t1:t2);
+%comparing with fwi1D
+n=length(ta); mo=zeros(n,1); mo(:)=og.prday(k).mofy(t1:t2);
 out=fwi1D(mo,ta,rh,pr,wd,45,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'})
 %%%%%%%%%%%%%%%%%%%%%%%%
 ta=og.tasday.a; rh=og.rhday.a; pr=og.prday.a; wd=og.windday.a*0.001*3600;
-lat2d=repmat(v.lat,[1 v.nlon]); mn=(og.prday(k).mmon); 
+lat2d=repmat(v.lat,[1 v.nlon]); mn=(og.prday(k).mofy); 
 o2d=fwi2D_vectorized(mn,ta,rh,pr,wd,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'})
 figure; plot(t,out(:,1),'r*'); hold on; plot(t,o2d.FFMC(t1:t2,i,j),'-bs')
 figure; plot(t,out(:,2),'r*'); hold on; plot(t,o2d.DMC (t1:t2,i,j),'-bs')
@@ -387,6 +500,28 @@ e='c192L33_am4p0_2010climo_newctl_p1K';             n=strcat(ph,e,f); load(n);z.
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear';  n=strcat(ph,e,f); load(n);z.w1=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(ph,e,f); load(n);z.w2=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%test plotting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+m=1; k=5; vx=v.fwiday;
+a=squeeze(vx.ffmc.pct(m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 110]); colormap(jet);
+a=squeeze(vx.dmc.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 200]); colormap(jet);
+a=squeeze(vx.dc.pct  (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 1000]);colormap(jet);
+a=squeeze(vx.isi.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
+a=squeeze(vx.bui.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 200]); colormap(jet);
+a=squeeze(vx.fwi.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 70]);  colormap(jet);
+a=squeeze(vx.dsr.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 50]);  colormap(jet);
+
+m=3; vx=v.fwiday_max;
+a=squeeze(vx.fwi.av(m,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 10]); colormap(jet);
+a=squeeze(vx.dmc.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
+a=squeeze(vx.dc.pct  (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
+a=squeeze(vx.isi.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 100]); colormap(jet);
+a=squeeze(vx.bui.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
+a=squeeze(vx.fwi.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 50]);  colormap(jet);
+a=squeeze(vx.dsr.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]);  colormap(jet);
+
+a=squeeze(v.windmaxday.pct (m,k,:,:)); figure; pcolor(a); shading flat; colorbar; caxis([0 20]); colormap(jet);
 
 
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...

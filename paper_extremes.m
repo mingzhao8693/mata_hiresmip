@@ -11,14 +11,14 @@ set expn  = c192L33_am4p0_2010climo_old
 
 set epath = $tpath/$expn
 cd $epath/atmos_data/daily
-dmget *pr.nc *tas.nc *sfcWind.nc *hurs.nc
+dmget *pr.nc *tas*.nc *sfcWind*.nc *hurs*.nc
 cd $epath/atmos_data/3hr
 dmget *pr.nc
 cd $epath/atmos_data/daily_river
 dmget *rv_o_h2o.nc 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/'; opt='extremes'; diag=0;
+tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0; diag=0;
 pct=[25 50 75 90 95 99 99.9 99.99 99.999]; latlon=[190 304 16 75]; yr1=2; yr2=101; 
 expn='c192L33_am4p0_2010climo_p4K';                     v=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)
 expn='c192L33_am4p0_2010climo_old';                     v=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)

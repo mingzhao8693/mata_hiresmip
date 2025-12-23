@@ -42,4 +42,12 @@ if exist('mod','var')
   v.lm0=a(v.ys:v.ye,v.xs:v.xe);
 end
 
+%change all subfield to single instead of double
+subnames = fieldnames(v)
+for i=1:length(subnames)
+  if isfield(v, subnames{i})
+    v.(subnames{i})=single(v.(subnames{i}))
+  end
+end
+
 return
