@@ -1,4 +1,4 @@
-function [var,time]=readallyear_reg(v,exd,varn,exf1,exf2,exf3,opt,lev)
+function [var,time]=readallyear_reg_fwihw(v,exd,varn,exf1,exf2,exf3,opt,lev)
 % this is smart file reading script to allow for
 % regional, seasonal, and years selections
 
@@ -34,7 +34,7 @@ for t=1:nyr
   days=strcat('dbeg=',num2str(dbeg),'; dend=',num2str(dend));
   disp(strcat(days,'; tbeg=',num2str(tbeg),'; tend=',num2str(tend),'; tcon=',num2str(tcon)));
   varn
-  fn=strcat(tpath,expn,exd,exf1,yr,exf2,yr,exf3,varn,'.nc');disp(fn);
+  fn=strcat(tpath,expn,exd,exf1,yr,exf2,exf3,'.nc');disp(fn);
   
   if (exist(fn,'file') == 2)
     a=ncread(fn,varn,[1 1 tbeg],[Inf Inf tcon]);
@@ -134,7 +134,6 @@ for i=1:length(var)
   var(i).mofy=single(var(i).mofy);
   var(i).dofy=single(var(i).dofy);
   var(i).year=single(var(i).year);
-  var(i).fn = fn;
 end
 
 

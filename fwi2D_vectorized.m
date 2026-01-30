@@ -23,7 +23,7 @@ n = N; % Total days for original output size
 % --- Default and Validation (Simplified for focus on vectorization) ---
 if nargin < 6 || isempty(lat_array), lat_array = repmat(46, grid_size); end
 if nargin < 7 || isempty(what), what = "FWI"; end
-if nargin < 8 || isempty(init_pars), init_pars = [85 6 15]; end
+if nargin < 8 || isempty(init_pars), init_pars = [85 6 15]; initcond=0; else; initcond=1; end
 if nargin < 9 || isempty(spin_up), spin_up = 0; end
 
 % --- Missing Data Handling is skipped for simplicity but must be handled carefully in 3D ---
@@ -95,9 +95,15 @@ p0 = NaN(N + 1, M, L);
 d0 = NaN(N + 1, M, L);
 
 % Initial values replicated across the M x L grid (Day 0)
-f0(1, :, :) = repmat(init_pars(1), grid_size);
-p0(1, :, :) = repmat(init_pars(2), grid_size);
-d0(1, :, :) = repmat(init_pars(3), grid_size);
+if initcond==0
+  f0(1, :, :) = repmat(init_pars(1), grid_size);
+  p0(1, :, :) = repmat(init_pars(2), grid_size);
+  d0(1, :, :) = repmat(init_pars(3), grid_size);
+elseif initcond==1
+  f0(1, :, :) = init_pars(1,:,:);
+  p0(1, :, :) = init_pars(2,:,:);
+  d0(1, :, :) = init_pars(3,:,:);
+end
 
 % Indices (N x M x L)
 ISI = NaN(N, M, L);

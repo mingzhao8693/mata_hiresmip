@@ -1,44 +1,68 @@
-% Example MATLAB Code to Compute Canadian Fire Weather Index (FWI)
-% Ensure you have temperature (T), relative humidity (RH), wind speed (WS), and precipitation (P) data
-% Downloaded from ERA5.
+function [v]=compute_canadian_fwi(v)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute Canadian FWI along with FFMC, DMC, DC, ISI, BUI, FWI and DSR
+%using daily mean TAS and wind speed
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+lat2d=repmat(v.lat,[1 v.nlon]); %latitude of the data
+for k=1:length(v.prday.var)
+  mn=v.prday.var (k).mofy;         %month of the day
+  pr=v.prday.var (k).a;            %precip,            unit: mm per day
+  ta=v.tasday.var(k).a;            %temperature,       unit: C
+  rh=v.rhday.var (k).a;            %relative humidity, unit: %
+  wm=v.wsdday.var(k).a*0.001*3600; %wind, unit changed from m/s to km/h
+  a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'});
+  var1(k).a=a;
+end
+n=length(var1); pct=v.pct; opt=v.opt; thresh=[100]; 
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday.ffmc=extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday.dmc =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday.dc  =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday.isi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute Canadian FWI along with FFMC, DMC, DC, ISI, BUI, FWI and DSR
+%using daily max TAS and wind speed, and daily min RH
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+lat2d=repmat(v.lat,[1 v.nlon]); %latitude of the data
+for k=1:length(v.prday.var)
+  mn=v.prday.var(k).mofy;          %month of the day
+  pr=v.prday.var(k).a;             %daily mean precip,            unit: mm per day
+  ta=v.tasmaxday.var(k).a;         %maximum daily temperature,       unit: C
+  rh=v.rhminday.var(k).a;          %minimum daily relative humidity, unit: %
+  wm=v.wsdmaxday.var(k).a*0.001*3600; %maximum windspeed, unit changed from m/s to km/h
+  a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'});
+  var1(k).a=a;
+end
+n=length(var); pct=v.pct; opt=v.opt; thresh=[100];
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwidaymax.ffmc=extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwidaymax.dmc =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwidaymax.dc  =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwidaymax.isi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwidaymax.bui =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwidaymax.fwi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwidaymax.dsr =extremes_ana(var,pct,thresh,opt);
 
-% Assuming ERA5 data is loaded into variables: T (Temperature in Celsius),
-% RH (Relative Humidity in %), WS (Wind Speed in km/h), and P (Precipitation in mm)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute FWI using a statistical log-linear regression model
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%for k=1:length(og.prday)
+%  pr=v.prday.var(k).a;  %unit: mm/day
+%  ta=v.tasday.var(k).a; %unit: C
+%  rh=v.rhday.var(k).a;  %unit: %
+%  wm=v.wsdday.var(k).a*0.001*3600; %change unit from m/s to km/h
+%  a=estimate_fwi_regression(ta,rh,wm,pr); var(k).a=a;
+%end
+%thresh=[1 10 20 30]; v.fwiday_stat=extremes_ana(var,pct,thresh,opt);
+%compute FWIMAXDAY%%%%%%%%%%%%%
+%for k=1:length(og.prday)
+%  pr=v.prday.var(k).a;                 %daily precipitation
+%  ta=v.tasmaxday.var(k).a;             %daily maximum SAT
+%  rh=v.rhmaxday.var(k).a;              %daily maximum RH
+%  wm=v.wsdmaxday.var(k).a*0.001*3600; %daily maximum 10m wind speed
+%  a=estimate_fwi_regression(ta,rh,wm,pr); var(k).a=a;
+%end
+%thresh=[1 10 20 30]; v.fwimaxday_stat=extremes_ana(var,pct,thresh,opt);
 
-% Sample input data for demonstration (replace with ERA5 data)
-T = 25;        % Temperature in Celsius
-RH = 40;       % Relative Humidity in percentage
-WS = 15;       % Wind Speed in km/h
-P = 0.5;       % Precipitation in mm
-
-% Constants for FWI calculation
-alpha = 0.1;   % A constant for fuel moisture model (can vary)
-beta = 0.5;    % Wind factor in ISI
-gamma = 0.5;   % Temperature and humidity factor in BUI
-
-% Step 1: Calculate the Initial Spread Index (ISI)
-% ISI = Wind * (e^(0.035 * Temperature)) * (1 - RH/100)
-% Adjust based on specific FWI equations
-
-ISI = WS * exp(0.035 * T) * (1 - RH / 100);
-
-% Step 2: Calculate the Build-Up Index (BUI)
-% BUI = (0.1 * Temperature + 0.4 * RH) * exp(-0.002 * P)
-% Again, this may vary slightly based on your specific needs
-
-BUI = (0.1 * T + 0.4 * RH) * exp(-0.002 * P);
-
-% Step 3: Calculate Fire Weather Index (FWI)
-% FWI = ISI * BUI * alpha + beta
-
-FWI = ISI * BUI * alpha + beta;
-
-% Display the computed FWI
-disp(['The computed Fire Weather Index (FWI) is: ', num2str(FWI)])
-
-% Visualization (Optional)
-figure;
-bar(FWI);
-title('Fire Weather Index (FWI)');
-ylabel('FWI');
-xlabel('Time Period');
+return

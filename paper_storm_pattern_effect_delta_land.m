@@ -34,7 +34,7 @@ tpath='/archive/Ming.Zhao/awg/2023.04/';
 %expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2_p2K'; ardir='AR_climlmt';
 %expn='c192L33_CM4X_amip_p2K'; ardir='AR_climlmt'; 
 %expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_amip_07'; ardir='AR_climlmt'; 
+expn='c192L33_CM4X_amip_13'; ardir='AR_climlmt'; 
 yr1=1950; yr2=2020; pct=[99 99.9]; use_obs_tc=0;
 opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -252,8 +252,8 @@ fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1D.tc=v;
 %Load ts_ana%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_1_do_all_1.mat';
-ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c192_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_0_do_all_1.mat';
+ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_1_do_all_1.mat';
+%ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c192_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_0_do_all_1.mat';
 %e='c192L33_am4p0_2010climo_old';                    n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
 e='c192L33_am4p0_2010climo_newctl';                 n=strcat(ph,e,'/',e,f); load(n);z.v0=v; %z.v0=z.v0b;
 e='c192L33_am4p0_2010climo_p4K';             n=strcat(ph,e,'/',e,f); load(n);z.w0=v; 

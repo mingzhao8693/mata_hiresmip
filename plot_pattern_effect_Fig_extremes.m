@@ -20,6 +20,9 @@ if p.flipcmap; colormap(flipud(cmap)); end; %sgtitle(upper(p.sea))
 %v0 v1 v2 (v2-v1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(row,col,i); a=p.v0; b=p.dv0; a(~p.id)=NaN; sx=let(i)+p.s0; i=i+1; a0=a; b0=b;
+%[Lon,Lat] = meshgrid(p.lon,p.lat); Lat=double(Lat); Lon=double(Lon);
+%axesm('lambert','MapLatLimit',[20 55], 'MapLonLimit',[-130 -60],'Frame','on','Grid','on')
+%surfm(Lat, Lon, a); return
 pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([p.cmin0 p.cmax0]);
 %if p.do_add; contour(p.lon0,p.lat0,p.v1_add,p.v1_addbin,p.v1_co,'showtext',p.show);end;
 contour(p.lon,p.lat,p.lm,1,co); axis(p.xy); 

@@ -1,8 +1,29 @@
-function [v]=fwihw_ana(tpath,expn,yr1,yr2,pct,latlon,opt)
+function [v]=fwihw_ana(tpath,expn,yr1,yr2,pct,latlon,opt,init_fwiday,init_fwiday_c,do_bias_correct)
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 %tpath='/archive/Ming.Zhao/awg/2023.04/';
-%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=3; opt=1;
-%pct  =[90 95]; latlon=[180 340 10 90]; latlon=[190 304 16 75]; diag=0;
+%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=2; opt=1;
+%pct=[90 95 99]; latlon=[180 340 10 90]; latlon=[190 304 16 75]; latlon=[0 360 -90 90]; diag=0;
+%init_fwiday=[]; init_fwiday_c=[];
+%do_bias_correct = true; %correct model daily climo bias
+
+if do_bias_correct
+%  fn=strcat(tpath,expn,'/',expn,'_daily_climo_bias.mat')
+%  x=load(fn); v=x.v.c192am4; O=x.v.era5; O.pr_mswep=x.v.mswep.pr;
+%  B.pr.bias_f30 =v.pr.bias_f30;
+%  B.tas.bias_f30=v.tas.bias_f30;
+%  B.rh.bias_f30 =v.rh.bias_f30;  
+%  B.wsd.bias_f30=v.wsd.bias_f30;
+%  save('/work/miz/mat_hiresmip/daily_climo_bias.mat','B','-v7.3');
+%  load('/archive/Ming.Zhao/awg/2023.04/c192L33_am4p0_2010climo_newctl/c192L33_am4p0_2010climo_newctl_1979_2020_daily_climo_only.mat');
+%  x=v.c192am4;
+%  B.pr.bias_f30 =x.pr.bias_f30;
+%  B.tas.bias_f30=x.tas.bias_f30;
+%  B.rh.bias_f30 =x.rh.bias_f30;  
+%  B.wsd.bias_f30=x.wsd.bias_f30;
+%  save('/archive/Ming.Zhao/awg/2023.04/c192L33_am4p0_2010climo_newctl/c192L33_am4p0_2010climo_newctl_1979_2020_daily_climo_onlybias.mat','B','-v7.3');
+  fn='/archive/Ming.Zhao/awg/2023.04/c192L33_am4p0_2010climo_newctl/c192L33_am4p0_2010climo_newctl_2_101_read_daily_obs_bias_only.mat';
+  load(fn);fn
+end
 
 atmos_data_dir='atmos_data';
 if strcmp(atmos_data_dir,'atmos_data_240_480')
@@ -10,7 +31,7 @@ if strcmp(atmos_data_dir,'atmos_data_240_480')
 else
   fn=strcat(tpath,expn,'/atmos.static.nc');
 end
-disp(fn);
+disp(fn); 
 
 v=readts_grid_2d(tpath,expn,fn,latlon,'c192'); v.latlon=latlon;
 a=ncread(fn,'land_mask'); v.lm_org=a';
@@ -26,6 +47,7 @@ v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1;
 yea=[365]; ddd=cumsum(yea); d.beg_yea=[0 ddd(1:end-1)]+1; d.end_yea=ddd;
 
 v.do_yea=1; v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
+v.do_bias_correct=do_bias_correct; v
 
 m=0; %read annual data all together; m=1-12 read monthly data one at a time
 
@@ -35,16 +57,15 @@ m=0; %read annual data all together; m=1-12 read monthly data one at a time
 varn='tas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a-273.15; end; %og.tasday=var; %unit:C
-thresh=[30 35 40]; 
-v.tasday=extremes_ana(var,pct,thresh,1)
+for k=1:length(var); var(k).a=var(k).a-273.15; end; %unit:C
+thresh=[30 35 40]; v.tasday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %daily surface precipitation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='pr'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a*86400; end; %og.prday=var; %unit:mm/day
+for k=1:length(var); var(k).a=var(k).a*86400; end; %unit:mm/day
 thresh=[0.2 1 5 10 50 100 200 400 500];
 v.prday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,9 +115,38 @@ var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.wsdmax=var; %unit:m/s
 thresh=[10 20 30]; v.wsdmaxday=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%if do bias correction for computing FWI
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if do_bias_correct
+  var=v.prday.var;  a=B.pr.bias_f30;  a=repmat(a,[v.nyr 1 1]);
+  for k=1:length(var); var(k).a=var(k).a-a; end;
+  thresh=[]; v.prday_c=extremes_ana(var,pct,thresh,1);
+  
+  var=v.tasday.var; a=B.tas.bias_f30; a=repmat(a,[v.nyr 1 1]);
+  for k=1:length(var); var(k).a=var(k).a-a; end;
+  thresh=[]; v.tasday_c=extremes_ana(var,pct,thresh,1);
+
+  var=v.tasmaxday.var; a=B.tasmax.bias_f30; a=repmat(a,[v.nyr 1 1]);
+  for k=1:length(var); var(k).a=var(k).a-a; end;
+  thresh=[]; v.tasmaxday_c=extremes_ana(var,pct,thresh,1);
+ 
+  var=v.rhday.var; a=B.rh.bias_f30; a=repmat(a,[v.nyr 1 1]);
+  for k=1:length(var); var(k).a=var(k).a-a; end;
+  thresh=[]; v.rhday_c=extremes_ana(var,pct,thresh,1);
+  
+  var=v.wsdday.var; a=B.wsd.bias_f30; a=repmat(a,[v.nyr 1 1]);
+  for k=1:length(var); var(k).a=var(k).a-a; end;
+  thresh=[]; v.wsdday_c=extremes_ana(var,pct,thresh,1);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute Canadian FWI along with FFMC, DMC, DC, ISI, BUI, FWI and DSR
 %using daily mean TAS Pr RH and wind speed and stored in fwiday structure
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+'computing FWI...'
 lat2d=repmat(v.lat,[1 v.nlon]); %latitude of the data
 for k=1:length(v.prday.var)
   mn=v.prday.var (k).mofy;         %month of the day
@@ -104,7 +154,7 @@ for k=1:length(v.prday.var)
   ta=v.tasday.var(k).a;            %daily mean temperature,       unit: C
   rh=v.rhday.var (k).a;            %daily mean relative humidity, unit: %
   wm=v.wsdday.var(k).a*0.001*3600; %daily mean wind, unit changed from m/s to km/h
-  a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'});
+  a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'},init_fwiday);
   var1(k).a=a;
 end
 n=length(var1);
@@ -115,6 +165,43 @@ for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday.isi =extremes_ana(var,pct,thre
 for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,opt);
 for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,opt);
 for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%save initial condition for FFMC, DMC and DC for fwiday calculation%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+a=v.fwiday; v.init_fwiday=[a.ffmc.var.a(end,:,:); a.dmc.var.a(end,:,:); a.dc.var.a(end,:,:)];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute Canadian FWI along with FFMC, DMC, DC, ISI, BUI, FWI and DSR
+%using bias corrected TAS, RH, Pr, and wind speed and stored in fwiday_c
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+'computing FWI using bias corrected field...'
+lat2d=repmat(v.lat,[1 v.nlon]); %latitude of the data
+for k=1:length(v.prday.var)
+  mn=v.prday_c.var(k).mofy;           %month of the day
+  pr=v.prday_c.var(k).a;             %daily mean precip,               unit: mm per day
+  ta=v.tasday_c.var(k).a;            %daily maximum temperature,       unit: C
+  rh=v.rhday_c.var(k).a;             %daily minimum relative humidity, unit: %
+  wm=v.wsdday_c.var(k).a*0.001*3600; %daily maximum windspeed, unit changed from m/s to km/h
+  a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'},init_fwiday_c);
+  var1(k).a=a;
+end
+n=length(var);
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday_c.ffmc=extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday_c.dmc =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday_c.dc  =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday_c.isi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday_c.bui =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday_c.fwi =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday_c.dsr =extremes_ana(var,pct,thresh,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%save initial condition for FFMC, DMC and DC used for fwiday_c calculation%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+a=v.fwiday_c; v.init_fwiday_c=[a.ffmc.var.a(end,:,:); a.dmc.var.a(end,:,:); a.dc.var.a(end,:,:)];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+return
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute Canadian FWI along with FFMC, DMC, DC, ISI, BUI, FWI and DSR
 %using daily maximum TAS and wind speed, and daily mininum RH and stored in fwidaymax
@@ -122,11 +209,11 @@ for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday.dsr =extremes_ana(var,pct,thre
 lat2d=repmat(v.lat,[1 v.nlon]); %latitude of the data
 for k=1:length(v.prday.var)
   mn=v.prday.var(k).mofy;          %month of the day
-  pr=v.prday.var(k).a;             %daily mean precip,               unit: mm per day
+  pr=v.prday_correct.var(k).a;     %daily mean precip,               unit: mm per day
   ta=v.tasmaxday.var(k).a;         %daily maximum temperature,       unit: C
   rh=v.rhminday.var(k).a;          %daily minimum relative humidity, unit: %
   wm=v.wsdmaxday.var(k).a*0.001*3600; %daily maximum windspeed, unit changed from m/s to km/h
-  a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'});
+  a=fwi2D_vectorized(mn,ta,rh,pr,wm,lat2d,{'FFMC','DMC','DC','ISI','BUI','FWI','DSR'},init_fwidaymax);
   var1(k).a=a;
 end
 n=length(var);
@@ -137,5 +224,9 @@ for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwidaymax.isi =extremes_ana(var,pct,t
 for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwidaymax.bui =extremes_ana(var,pct,thresh,opt);
 for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwidaymax.fwi =extremes_ana(var,pct,thresh,opt);
 for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwidaymax.dsr =extremes_ana(var,pct,thresh,opt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%save initial condition for FFMC, DMC and DC used for fwidaymax calculation%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+a=v.fwidaymax; v.init_fwidaymax=[a.ffmc.var.a(end,:,:); a.dmc.var.a(end,:,:); a.dc.var.a(end,:,:)];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-return
