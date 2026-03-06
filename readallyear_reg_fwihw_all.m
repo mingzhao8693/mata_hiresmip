@@ -37,7 +37,8 @@ for t=1:nyr
   days=strcat('dbeg=',num2str(dbeg),'; dend=',num2str(dend));
   disp(strcat(days,'; tbeg=',num2str(tbeg),'; tend=',num2str(tend),'; tcon=',num2str(tcon)));
   fn=strcat(tpath,expn,exd,exf1,yr,exf2,exf3,'.nc'); disp(fn); size(fn)
-
+  if (t==1); fn1=fn; end;
+ 
   if (exist(fn,'file') == 2)
     a=ncread(fn,varn(1),[1 1 tbeg],[Inf Inf tcon]); ffmc=permute(a,[3 2 1]);
     a=ncread(fn,varn(2),[1 1 tbeg],[Inf Inf tcon]); dmc =permute(a,[3 2 1]);
@@ -178,6 +179,7 @@ for t=1:nyr
 end
 
 for i=1:length(var)
+  var(i).varn=varn;
   var(i).ffmc=single(var(i).ffmc);
   var(i).dmc =single(var(i).dmc);
   var(i).dc  =single(var(i).dc);
@@ -188,6 +190,13 @@ for i=1:length(var)
   var(i).mofy=single(var(i).mofy);
   var(i).dofy=single(var(i).dofy);
   var(i).year=single(var(i).year);
+  var(i).fn1 = fn1;
+  var(i).fn2 = fn;
+  var(i).yr1=v.yr1;
+  var(i).yr2=v.yr2;
+  var(i).nyr=v.nyr
+  var(i).lat=v.lat;
+  var(i).lon=v.lon;
 end
 
 

@@ -1,19 +1,43 @@
-function [x]=extremes_ana(var,pct,thresh,opt)
-if isempty(thresh)
-  thresh=[0];
-end
+function [x]=extremes_ana(var,pct,thresh,nbin,opt)
+if isempty(thresh); thresh=[0]; end
+if isempty(nbin);   nbin=20;    end
+  
+x.fn1=var(1).fn1;
+x.fn2=var(1).fn2;
+x.nyr=var(1).nyr;
+x.lat=var(1).lat;
+x.lon=var(1).lon;
+x.pct_th=pct; x.thresh=thresh; x.opt=opt;
 
-x.pct_th=pct; 
-x.thresh=thresh;
-x.opt=opt;
-x.daily_climo=compute_daily_climo(var(1).a);
+nn = length(var);
+for k=1:nn
+  x.daily_climo(k).daily =compute_daily_climo (var(k).a,var(k).nyr);
+%  x.climo(k).season=squeeze(nanmean(x.climo(k).daily,1));
+%  x.climo(k).season=compute_season_climo(var(k).a,var(k).nyr);
+  x.tbeg(k) =var(k).tbeg;
+  x.tend(k) =var(k).tend;
+end
+if nn == 1
+  x.season_climo=compute_season_from_daily(x.daily_climo(1).daily);
+end
 
 for k=1:length(var)
   var(k).a=single(var(k).a);
-  a=var(k).a;
+  a=var(k).a; 
+  x.av (k,:,:)  =squeeze(nanmean(a, 1)); %all time average
+  x.std(k,:,:)  =squeeze(nanstd (a, 1)); %all time std
   x.pct(k,:,:,:)=prctile(a,pct,1);
-  x.av (k,:,:)  =squeeze(mean(a, 1)); %all time average
-  x.std(k,:,:)  =squeeze(std (a, 1)); %all time std
+  [nt nlat nlon]=size(a);
+  a=reshape(a,nt*nlat*nlon,1);
+  pctall(k,:)=prctile(a,pct,1); pctall(k,:)
+  amin=pctall(k,2);   amin
+  amax=pctall(k,end); amax
+  bin(k,:) = [amin:(amax-amin)/nbin:amax]; nbin=nbin;
+  [count(k,:), edges(k,:)] = histcounts(a,bin(k,:));
+  pdfall(k,:) =count(k,:)/sum(count(k,:));
+  binc  (k,:)=(edges(k,1:end-1)+edges(k,2:end))*0.5;
+  x.pctall=pctall; x.nbin=nbin; x.bin=bin; x.binc=binc;
+  x.pdfall=pdfall; x.count=count; x.edges=edges;
 end
 
 for k=1:length(var)
@@ -55,7 +79,6 @@ end
 
 if opt==1
   x.var=var;
-  x.fn=var(1).fn;
 end
 
 return

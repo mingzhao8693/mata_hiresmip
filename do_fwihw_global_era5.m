@@ -1,54 +1,33 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%fn='/archive/Ming.Zhao/awg/2023.04/c192_obs/c192_obs_1979_2020_daily_climo_obs_climo.mat';fn
-%x=load(fn); era5=x.v.era5; mswep=x.v.mswep; clear x;
-fn='/archive/Ming.Zhao/awg/2023.04/c192L33_am4p0_2010climo_newctl/c192L33_am4p0_2010climo_newctl_2_101_read_daily_obs_bias_only';fn
-load(fn)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/';
-pct=[90 95 99]; latlon=[0 360 -90 90]; yr1=2; yr2=101; opt=1;
-expn='c192L33_am4p0_2010climo_newctl'; 
-%expn='c192L33_am4p0_2010climo_newctl_p1K'; 
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2';
-%expn='c192L33_CM4X_amip_13'; opt=1; yr1=1950; yr2=2020;
-%expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_30min'; opt=1; yr1=1951; yr2=2020;
-%fn='_1979_2020_daily_climo_onlybias.mat';
-%fn=strcat(tpath,expn,'/',expn,fn); load(fn); fn
+expn='c192_obs'; pct=[90 95 99]; latlon=[0 360 -90 90];
+yr1=1950; yr2=2020; opt=1; %using year 1950 to 2020 to compute threshold
+yr1=1979; yr2=2020; opt=1; %using year 1979 to 2020 to compute threshold
 
 atmos_data_dir='atmos_data';
 fn=strcat(tpath,expn,'/atmos.static.nc'); disp(fn);
 v=readts_grid_2d(tpath,expn,fn,latlon,'c192'); v.latlon=latlon;
-v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1;
+v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1; nbin=[];
 
 yea=[365]; ddd=cumsum(yea); d.beg_yea=[0 ddd(1:end-1)]+1; d.end_yea=ddd;
 v.do_yea=1; v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
 
-% precomputing tasmax threshhold for heatwave analysis
-varn='tasmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%precomputing tasmax threshhold using pct percentile value for heatwave analysis
+%read in long record of t2mmax value and compute percentiles at each grid
+varn='t2mmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
+exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %this is a smart reader script
-thresh=[]; tasmax=extremes_ana(var,pct,thresh,1)
-
+thresh=[]; tasmax=extremes_ana(var,pct,thresh,nbin,1)
+%below the array a contains the raw t2mmax in C; win=windows for compute t2mmax percentiles
+%heatwave_threshold_grid is used to compute the threshold value later used for detecting heatwave events
 var=tasmax.var(1); dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time;
 a=var.a-273.15; win=15; v.thresh=heatwave_threshold_grid(a,dofy,pct,win);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% do bias correction for tasmax based on ERA5 data
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-do_bias_correction = true
-if do_bias_correction
-  var=tasmax.var(1); dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time;
-  a=B.tasmax.bias_f30;  a=repmat(a,[v.nyr 1 1]); var.a=var.a-a;
-  a=var.a-273.15; win=15; v.thresh_c=heatwave_threshold_grid(a,dofy,pct,win);
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% end of do bias correction for tasmax based on ERA5 data
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %save precomputed threshold values for heatwave analysis only
 v.pct=pct; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
 fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correction.mat')
 save(fnmat,'v','-v7.3');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %save precomputed threshold values and original data
 v.tasmax=tasmax; clear tasmax var;
@@ -61,22 +40,10 @@ save(fnmat,'v','-v7.3'); v.tasmax=0; clear var;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/';
-pct=[90 95 99]; latlon=[0 360 -90 90]; opt=1;
-yr1=2; yr2=101; nyr=yr2-yr1+1;
-expn='c192L33_am4p0_2010climo_newctl'; 
-%expn='c192L33_am4p0_2010climo_newctl_p1K'; 
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   
-
-yr1=1950; yr2=2020; nyr=yr2-yr1+1;
-expn='c192L33_CM4X_amip';
-expn='c192L33_CM4X_amip_13';
-expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_30min'; yr1=1951; yr2=2020; nyr=yr2-yr1+1;
-
-atmos_data_dir='atmos_data';
+expn='c192_obs'; yr1=1979; yr2=2020; nyr=yr2-yr1+1; %pct=[90 95 99]; latlon=[0 360 -90 90]; opt=1;
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
 fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correction.mat')
-load(fnmat); thresh=v.thresh; thresh_c=v.thresh_c;
+load(fnmat); thresh=v.thresh; %thresh_c=v.thresh;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %The following is normally not needed but they are needed
@@ -99,7 +66,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 minlen=3; %used for heat wave analysis lenght of days tasmax exceeding
 nlat=v.nlat; nlon=v.nlon; lat=v.lat; lon=v.lon; t=1;
-for t=15:nyr; %t=27 corresponds to year 28
+for t=1:nyr; %t=27 corresponds to year 28
   yrt=yr1+t-1; 
   if (yrt<10)
     yr=strcat('000',num2str(yrt));
@@ -112,19 +79,16 @@ for t=15:nyr; %t=27 corresponds to year 28
   end
 % read in daily data and compute fwi
   if t==1
-    init_fwiday=[]; init_fwiday_c=[];
+    init_fwiday=[]; 
   end
-  v=fwihw_ana(tpath,expn,yrt,yrt,pct,latlon,opt,init_fwiday,init_fwiday_c,true); v
+  v=fwihw_ana_obs(tpath,expn,yrt,yrt,pct,latlon,opt,init_fwiday); v
   init_fwiday=v.init_fwiday;
-  init_fwiday_c=v.init_fwiday_c;
 % heatwave analysis using tasmax and precomputed thresh duration of minlen
   var=v.tasmaxday.var(1);
   a=var.a; dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time;
-  i=2; th=squeeze(thresh  (:,i,:,:)); [hw2d1,hwg1,hwday1,hwtmx1]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
-  var=v.tasmaxday_c.var(1);
-  a=var.a; dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time;
-  i=2; th=squeeze(thresh_c(:,i,:,:)); [hw2d2,hwg2,hwday2,hwtmx2]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
-  i=3; th=squeeze(thresh_c(:,i,:,:)); [hw2d3,hwg3,hwday3,hwtmx3]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
+  i=1; th=squeeze(thresh(:,i,:,:)); [hw2d1,hwg1,hwday1,hwtmx1]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
+  i=2; th=squeeze(thresh(:,i,:,:)); [hw2d2,hwg2,hwday2,hwtmx2]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
+  i=3; th=squeeze(thresh(:,i,:,:)); [hw2d3,hwg3,hwday3,hwtmx3]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
   v.nt=length(hwday1(:,1,1)); v.nday=v.nt/v.nyr;
   a=reshape(hwday1,v.nyr,v.nday,v.nlat,v.nlon); hwday1=permute(a,[4 3 2 1]); 
   a=reshape(hwtmx1,v.nyr,v.nday,v.nlat,v.nlon); hwtmx1=permute(a,[4 3 2 1]); 
@@ -135,16 +99,10 @@ for t=15:nyr; %t=27 corresponds to year 28
 
   a=reshape(time, v.nday,v.nyr); time=a;
   a=v.prday.var(1).a;         a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); prday      =permute(a,[4 3 2 1]); 
-  a=v.prday_c.var(1).a;       a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); prday_c    =permute(a,[4 3 2 1]); 
   a=v.tasday.var(1).a;        a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); tasday     =permute(a,[4 3 2 1]); 
-  a=v.tasday_c.var(1).a;      a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); tasday_c   =permute(a,[4 3 2 1]); 
   a=v.rhday.var(1).a;         a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); rhday      =permute(a,[4 3 2 1]); 
-  a=v.rhday_c.var(1).a;       a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); rhday_c    =permute(a,[4 3 2 1]); 
   a=v.wsdday.var(1).a;        a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); wsdday     =permute(a,[4 3 2 1]); 
-  a=v.wsdday_c.var(1).a;      a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); wsdday_c   =permute(a,[4 3 2 1]); 
   a=v.tasmaxday.var(1).a;     a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); tasmaxday  =permute(a,[4 3 2 1]); 
-  a=v.tasmaxday_c.var(1).a;   a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); tasmaxday_c=permute(a,[4 3 2 1]); 
-  a=v.wsdmaxday.var(1).a;     a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); wsdmaxday  =permute(a,[4 3 2 1]); 
 
   a=v.fwiday.ffmc.var(1).a;   a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); ffmcday    =permute(a,[4 3 2 1]); 
   a=v.fwiday.dmc.var(1).a;    a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); dmcday     =permute(a,[4 3 2 1]); 
@@ -154,31 +112,16 @@ for t=15:nyr; %t=27 corresponds to year 28
   a=v.fwiday.fwi.var(1).a;    a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); fwiday     =permute(a,[4 3 2 1]); 
   a=v.fwiday.dsr.var(1).a;    a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); dsrday     =permute(a,[4 3 2 1]); 
 
-  a=v.fwiday_c.ffmc.var(1).a; a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); ffmcday_c  =permute(a,[4 3 2 1]); 
-  a=v.fwiday_c.dmc.var(1).a;  a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); dmcday_c   =permute(a,[4 3 2 1]); 
-  a=v.fwiday_c.dc.var(1).a;   a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); dcday_c    =permute(a,[4 3 2 1]); 
-  a=v.fwiday_c.isi.var(1).a;  a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); isiday_c   =permute(a,[4 3 2 1]); 
-  a=v.fwiday_c.bui.var(1).a;  a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); buiday_c   =permute(a,[4 3 2 1]); 
-  a=v.fwiday_c.fwi.var(1).a;  a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); fwiday_c   =permute(a,[4 3 2 1]); 
-  a=v.fwiday_c.dsr.var(1).a;  a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); dsrday_c   =permute(a,[4 3 2 1]); 
-  
   exd='/fwihw/'; cl=8; form='netcdf4'; nt=v.nday;
-  fnout=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw_ctlthresh.nc');disp(fnout);
-%  fnout=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw.nc');disp(fnout);
+  fnout=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw.nc');disp(fnout);
   nccreate(fnout,'time','Dimensions',{'time' Inf},'Format',form);
   nccreate(fnout,'lat', 'Dimensions',{'lat' nlat},'Format',form);
   nccreate(fnout,'lon', 'Dimensions',{'lon' nlon},'Format',form);
   nccreate(fnout,'prday',       'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'prday_c',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
   nccreate(fnout,'tasday',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'tasday_c',    'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
   nccreate(fnout,'rhday',       'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'rhday_c',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
   nccreate(fnout,'wsdday',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'wsdday_c',    'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'wsdmaxday',   'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
   nccreate(fnout,'tasmaxday',   'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'tasmaxday_c', 'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
   nccreate(fnout,'hwday1',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','int8',  'Format',form,'DeflateLevel',cl);
   nccreate(fnout,'hwtmx1',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
   nccreate(fnout,'hwday2',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','int8',  'Format',form,'DeflateLevel',cl);
@@ -193,28 +136,15 @@ for t=15:nyr; %t=27 corresponds to year 28
   nccreate(fnout,'buiday',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
   nccreate(fnout,'fwiday',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
   nccreate(fnout,'dsrday',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'ffmcday_c',   'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'dmcday_c',    'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'dcday_c',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'isiday_c',    'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'buiday_c',    'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'fwiday_c',    'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-  nccreate(fnout,'dsrday_c',    'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
 
   ncwrite(fnout,'time', time(:));
   ncwrite(fnout,'lat',  lat);
   ncwrite(fnout,'lon',  lon);
   ncwrite(fnout,'prday',       prday      (:,:,:))
-  ncwrite(fnout,'prday_c',     prday_c    (:,:,:))
   ncwrite(fnout,'tasday',      tasday     (:,:,:))
-  ncwrite(fnout,'tasday_c',    tasday_c   (:,:,:))
   ncwrite(fnout,'rhday',       rhday      (:,:,:))
-  ncwrite(fnout,'rhday_c',     rhday_c    (:,:,:))
   ncwrite(fnout,'wsdday',      wsdday     (:,:,:))
-  ncwrite(fnout,'wsdday_c',    wsdday_c   (:,:,:))
-  ncwrite(fnout,'wsdmaxday',   wsdmaxday  (:,:,:))
   ncwrite(fnout,'tasmaxday',   tasmaxday  (:,:,:))
-  ncwrite(fnout,'tasmaxday_c', tasmaxday_c(:,:,:))
   ncwrite(fnout,'hwday1',      int8(hwday1(:,:,:)))
   ncwrite(fnout,'hwtmx1',      hwtmx1     (:,:,:))
   ncwrite(fnout,'hwday2',      int8(hwday2(:,:,:)))
@@ -228,13 +158,6 @@ for t=15:nyr; %t=27 corresponds to year 28
   ncwrite(fnout,'buiday',      buiday     (:,:,:))
   ncwrite(fnout,'fwiday',      fwiday     (:,:,:))
   ncwrite(fnout,'dsrday',      dsrday     (:,:,:))
-  ncwrite(fnout,'ffmcday_c',   ffmcday_c  (:,:,:))
-  ncwrite(fnout,'dmcday_c',    dmcday_c   (:,:,:))
-  ncwrite(fnout,'dcday_c',     dcday_c    (:,:,:))
-  ncwrite(fnout,'isiday_c',    isiday_c   (:,:,:))
-  ncwrite(fnout,'buiday_c',    buiday_c   (:,:,:))
-  ncwrite(fnout,'fwiday_c',    fwiday_c   (:,:,:))
-  ncwrite(fnout,'dsrday_c',    dsrday_c   (:,:,:))
 %  str=strcat('hours since+',yr,'-01-01 00:00:00'); str(str=='+')=' ';
 %  str=strcat('days since 1950-01-01 00:00:00'); 
   str=strcat('days since 0001-01-01 00:00:00'); 
@@ -244,41 +167,3 @@ for t=15:nyr; %t=27 corresponds to year 28
 end
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%The following script is used to create a netcdf files
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-pct=[90 95 99]; latlon=[0 360 -90 90]; opt=1;
-yr1=2; yr2=101; nyr=yr2-yr1+1;
-expn='c192L33_am4p0_2010climo_newctl'; 
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   
-%expn='c192L33_am4p0_2010climo_newctl_p1K'; 
-
-%yr1=1950; yr2=2020; nyr=yr2-yr1+1;
-%expn='c192L33_CM4X_amip_13';
-
-atmos_data_dir='atmos_data';
-fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_all.mat')
-load(fnmat); var=v.var; 
-
-dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time; clear var;
-v.thresh=heatwave_threshold_grid(v.tasmax,dofy,pct,win);
-exd='/fwihw/'; cl=8; form='netcdf4'; nt=v.nday;
-fnout=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw_tasmax_percentile.nc');disp(fnout);
-nccreate(fnout,'time','Dimensions',{'time' nt},'Format',form);
-nccreate(fnout,'lat', 'Dimensions',{'lat' nlat},'Format',form);
-nccreate(fnout,'lon', 'Dimensions',{'lon' nlon},'Format',form);
-nccreate(fnout,'tasmax_p90', 'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tasmax_p95', 'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tasmax_p99', 'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-ncwrite(fnout,'time', time(:));
-ncwrite(fnout,'lat',  lat);
-ncwrite(fnout,'lon',  lon);
-ncwrite(fnout,'tasmax_p90',p90(:,:,:))
-ncwrite(fnout,'tasmax_p95',p95(:,:,:))
-ncwrite(fnout,'tasmax_p99',p99(:,:,:))
- 

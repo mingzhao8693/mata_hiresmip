@@ -4,23 +4,25 @@ set expn  = c192L33_am4p0_2010climo_newctl
 set expn  = c192L33_am4p0_2010climo_newctl_p1K
 set expn  = c192L33_am4p0_2010climo_newctl_p4K
 set expn  = c192L33_am4p0_2010climo_newctl_4xCO2
-#set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear
-#set expn  = c192L33_am4p0_2010climo_trend_1979_2020_times_2
+set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear
+set expn  = c192L33_am4p0_2010climo_trend_1979_2020_times_2
 set expn  = c192L33_am4p0_2010climo_p4K
 set expn  = c192L33_am4p0_2010climo_old
 
-set epath = $tpath/$expn
-cd $epath/atmos_data/daily
+set epath = $tpath/$expn/atmos_data
+cd $epath/daily
 dmget *pr.nc *tas*.nc *sfcWind*.nc *hurs*.nc
-cd $epath/atmos_data/3hr
-dmget *pr.nc
-cd $epath/atmos_data/daily_river
-dmget *rv_o_h2o.nc 
+cd $epath
+dmget $epath/3hr/*pr.nc
+dmget $epath/daily_river/*rv_o_h2o.nc
+dmget $epath/daily_land_cmip/*mrsos*.nc
+dmget $epath/daily_land/*runf_soil.nc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0; diag=0;
 pct=[25 50 75 90 95 99 99.9 99.99 99.999]; latlon=[190 304 16 75]; yr1=2; yr2=101; 
 pct=[1 5 10 25 50 75 90 95 99 99.9 99.99 99.999]; latlon=[190 304 16 75]; yr1=2; yr2=101; 
+pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[190 304 16 75]; yr1=2; yr2=101; 
 expn='c192L33_am4p0_2010climo_p4K';                     v=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)
 expn='c192L33_am4p0_2010climo_old';                     v=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)
 expn='c192L33_am4p0_2010climo_newctl';                  v=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)
@@ -29,7 +31,7 @@ expn='c192L33_am4p0_2010climo_newctl_4xCO2';            v=read_daily_namerica(tp
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   v=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; v=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%load results%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%load results%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%c192L33_am4p0_2010climo_newctl_2_101_opt0_diag0_read_daily_namerica
 ph='/work/miz/mat_hiresmip/land/'; f='_2_101_RO_diag0_read_daily_namerica_new.mat';
 ph='/work/miz/mat_hiresmip/land/'; f='_2_101_opt0_diag0_read_daily_namerica_year.mat';
 ph='/work/miz/mat_hiresmip/land/'; f='_2_101_opt0_diag0_read_daily_namerica_sea.mat';
@@ -38,6 +40,11 @@ e='c192L33_am4p0_2010climo_newctl_p1K';             n=strcat(ph,e,f); load(n);z.
 e='c192L33_am4p0_2010climo_newctl_4xCO2';           n=strcat(ph,e,f); load(n);z.g0=v; 
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear';  n=strcat(ph,e,f); load(n);z.w1=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(ph,e,f); load(n);z.w2=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0; diag=0; f='_2_101_opt0_diag0_read_daily_namerica.mat';
+e='c192L33_am4p0_2010climo_newctl';                 n=strcat(tpath,e,'/',e,f); load(n);z.v0=v;
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear';  n=strcat(tpath,e,'/',e,f); load(n);z.w1=v;
+e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(tpath,e,'/',e,f); load(n);z.w2=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %percentile changes in TAS, VPD, TWB, and RH at 2m%
