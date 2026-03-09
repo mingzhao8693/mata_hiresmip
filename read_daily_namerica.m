@@ -1,8 +1,8 @@
 function [v]=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon)
-%[CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
-%tpath='/archive/Ming.Zhao/awg/2023.04/';
-%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=31; opt=1;
-%pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[180 340 10 90]; latlon=[190 304 16 75]; diag=0;
+[CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
+tpath='/archive/Ming.Zhao/awg/2023.04/';
+expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=101; opt=1;
+pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[180 340 10 90]; latlon=[190 304 16 75]; diag=0;
 
 atmos_data_dir='atmos_data';
 if strcmp(atmos_data_dir,'atmos_data_240_480')
@@ -32,7 +32,7 @@ amean=mean(mean(v.aa0)); v.aa = v.aa0/amean;
 %fn='/home/Ming.Zhao/AM2p12b/warsaw/input_warsaw/mata_hiresmip/ca_precip_annual_mean_ERAI_grid.nc';
 %a=ncread(fn,'precip'); a=a'; v.id_ca_org=a; a=a(v.ys:v.ye,v.xs:v.xe); v.id_ca=(a>0);
 
-v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1;
+v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1; v.tyr=[yr1:yr2]';
 v.pct=pct; v.opt=opt; opt1=0; v.opt1=opt1;
 
 yea=[365];                                 ddd=cumsum(yea); d.beg_yea=[0 ddd(1:end-1)]+1; d.end_yea=ddd;
@@ -93,8 +93,8 @@ varn='pr'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a*86400; end; %og.prday=var; %unit:mm/day
-thresh=[0.2 1 5 10 50 100 200 400 500]; nbin=[];
-v.prday=extremes_ana(var,pct,thresh,nbin,opt1);
+thresh=[0.2 1 5 10 50 100 200 400 500]; nbin=[]; do_trend=1;
+v.prday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='tas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';

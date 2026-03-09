@@ -1,43 +1,68 @@
-function [x]=extremes_ana(var,pct,thresh,nbin,opt)
+function [x]=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+'extremes_ana...' 
 if isempty(thresh); thresh=[0]; end
 if isempty(nbin);   nbin=20;    end
   
 x.fn1=var(1).fn1;
 x.fn2=var(1).fn2;
-x.nyr=var(1).nyr;
+x.nyr=var(1).nyr; nyr=x.nyr;
+x.tyr=var(1).tyr; tyr=x.tyr;
 x.lat=var(1).lat;
 x.lon=var(1).lon;
-x.pct_th=pct; x.thresh=thresh; x.opt=opt;
+x.pct_th=pct; x.thresh=thresh; x.opt=opt; x.do_trend=do_trend;
 
 nn = length(var);
 for k=1:nn
-  x.daily_climo(k).daily =compute_daily_climo (var(k).a,var(k).nyr);
+  x.daily_climo(k).daily =compute_daily_climo (var(k).a,nyr);
 %  x.climo(k).season=squeeze(nanmean(x.climo(k).daily,1));
-%  x.climo(k).season=compute_season_climo(var(k).a,var(k).nyr);
+%  x.climo(k).season=compute_season_climo(var(k).a,nyr);
   x.tbeg(k) =var(k).tbeg;
   x.tend(k) =var(k).tend;
 end
-if nn == 1
+if nn == 1 %yearly data chunk
+  x.season_name = {'DJF','MAM','JJA','SON','ANN'};
   x.season_climo=compute_season_from_daily(x.daily_climo(1).daily);
+  if do_trend
+    a=var(1).a; [nt nlat nlon]=size(a);
+    a=reshape(a,[nt/nyr,nyr,nlat,nlon]);
+    [nday nyr nlat nlon]=size(a);  size(a)
+    z(5,:,:,:)=squeeze(nanmean(a,1)); %ANN
+    b = [1  60  152 244 335];
+    e = [59 151 243 334 365];
+    i=2; n1=b(i); n2=e(i); z(2,:,:,:)=squeeze(nanmean(a(n1:n2,:,:,:),1)); %MAM
+    i=3; n1=b(i); n2=e(i); z(3,:,:,:)=squeeze(nanmean(a(n1:n2,:,:,:),1)); %JJA
+    i=4; n1=b(i); n2=e(i); z(4,:,:,:)=squeeze(nanmean(a(n1:n2,:,:,:),1)); %SON
+    s=circshift(a, 31, 1); %s(32,,::,:)==a(1,:,:,:); s(90,:,:)==a(59,:,:,:); s(1,:,:,:)==a(335,:,:,:);
+    z(1,:,:,:)=squeeze(nanmean(s(1:90,:,:,:),1)); %DJF
+    x.alpha=0.8; x.season_trend=get_trend_TSR_simple(z,x.tyr,x.alpha);
+  end
 end
 
 for k=1:length(var)
   var(k).a=single(var(k).a);
-  a=var(k).a; 
+  a=var(k).a;
+  x.sname(k)=var(k).sname;
   x.av (k,:,:)  =squeeze(nanmean(a, 1)); %all time average
   x.std(k,:,:)  =squeeze(nanstd (a, 1)); %all time std
   x.pct(k,:,:,:)=prctile(a,pct,1);
   [nt nlat nlon]=size(a);
   a=reshape(a,nt*nlat*nlon,1);
-  pctall(k,:)=prctile(a,pct,1); pctall(k,:)
-  amin=pctall(k,2);   amin
-  amax=pctall(k,end); amax
+  pctall(k,:)=prctile(a,pct,1); 
+  amin=pctall(k,2);   disp(sprintf('min=%f',amin));
+  amax=pctall(k,end); disp(sprintf('max=%f',amax));
   bin(k,:) = [amin:(amax-amin)/nbin:amax]; nbin=nbin;
   [count(k,:), edges(k,:)] = histcounts(a,bin(k,:));
-  pdfall(k,:) =count(k,:)/sum(count(k,:));
+  pdfall(k,:)=count(k,:)/sum(count(k,:),2);
   binc  (k,:)=(edges(k,1:end-1)+edges(k,2:end))*0.5;
   x.pctall=pctall; x.nbin=nbin; x.bin=bin; x.binc=binc;
   x.pdfall=pdfall; x.count=count; x.edges=edges;
+  if do_trend
+    a=reshape(a,[nt/nyr,nyr,nlat,nlon]); a=mean(a,1); size(a)
+    x.alpha=0.8; z=get_trend_TSR_simple(a,tyr,x.alpha);
+    x.trend (k,:,:)=z.trend;
+    x.signif(k,:,:)=z.signif;
+    x.pvalue(k,:,:)=z.pvalue;
+  end
 end
 
 for k=1:length(var)

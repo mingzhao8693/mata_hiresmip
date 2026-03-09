@@ -1,8 +1,8 @@
-function [v]=clearvar(v,opt)
+function [v]=clearvar(v,opt,varlist)
 %remove field var except for certain variables
 %e.g., tasmaxday twbday vpdday
 %if opt==1 don't do anything
-varlist={'tasmaxday','twbday','vpdday'}; varlist={'tasmaxday'};
+%varlist={'tasmaxday','twbday','vpdday'}; varlist={'tasmaxday'};
 
 if opt==0
   subnames = fieldnames(v);

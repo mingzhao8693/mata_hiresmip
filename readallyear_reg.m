@@ -57,7 +57,7 @@ for t=1:nyr
 
   if v.do_yea==1
     for i=1:no
-      var(i).sname=i;
+      var(i).sname={'ALL'};
       tbeg=t_beg(i); var(i).tbeg=tbeg;
       tend=t_end(i); var(i).tend=tend;
       b=a(tbeg:tend,v.ys:v.ye,v.xs:v.xe);
@@ -144,7 +144,8 @@ for i=1:length(var)
   var(i).year=single(var(i).year);
   var(i).fn1 = fn1;
   var(i).fn2 = fn;
-  var(i).nyr=v.nyr
+  var(i).nyr=v.nyr;
+  var(i).tyr=v.tyr;
   var(i).yr1=v.yr1;
   var(i).yr2=v.yr2;
   var(i).lat=v.lat;

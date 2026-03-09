@@ -2,7 +2,7 @@
 tpath='/archive/Ming.Zhao/awg/2023.04/';
 expn='c192_obs'; pct=[90 95 99]; latlon=[0 360 -90 90];
 yr1=1950; yr2=2020; opt=1; %using year 1950 to 2020 to compute threshold
-yr1=1979; yr2=2020; opt=1; %using year 1979 to 2020 to compute threshold
+%yr1=1979; yr2=2020; opt=1; %using year 1979 to 2020 to compute threshold
 
 atmos_data_dir='atmos_data';
 fn=strcat(tpath,expn,'/atmos.static.nc'); disp(fn);
@@ -28,7 +28,6 @@ v.pct=pct; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
 fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correction.mat')
 save(fnmat,'v','-v7.3');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %save precomputed threshold values and original data
 v.tasmax=tasmax; clear tasmax var;
 fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_all.mat')
