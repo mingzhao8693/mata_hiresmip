@@ -9,14 +9,26 @@ set expn  = c192L33_am4p0_2010climo_trend_1979_2020_times_2
 set expn  = c192L33_am4p0_2010climo_p4K
 set expn  = c192L33_am4p0_2010climo_old
 
+set tpath = /archive/Ming.Zhao/awg/2023.04
+set expn  = c192L33_CM4X_amip_02
 set epath = $tpath/$expn/atmos_data
 cd $epath/daily
-dmget *pr.nc *tas*.nc *sfcWind*.nc *hurs*.nc
+dmget *ps.nc *pr.nc *tas*.nc *sfcWind*.nc *hurs*.nc *ts.nc *uas.nc *vas.nc *huss.nc 
 cd $epath
 dmget $epath/3hr/*pr.nc
 dmget $epath/daily_river/*rv_o_h2o.nc
 dmget $epath/daily_land_cmip/*mrsos*.nc
 dmget $epath/daily_land/*runf_soil.nc
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0;
+pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[0 360 -90 90]; yr1=1979; yr2=2020; do_trend=1;
+pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[0 360 -90 90]; yr1=1979; yr2=1979; do_trend=0;
+expn='c192_obs';             read_daily_obs  (tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip';    read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_02'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_03'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_04'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0; diag=0;

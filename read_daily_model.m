@@ -1,4 +1,4 @@
-function [v]=read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon)
+function [v]=read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %if one wants to load observations%%%%%
 %tpath='/archive/Ming.Zhao/awg/2023.04/'; expn ='c192_obs'; yr1=1979; yr2=2020; opt=0; 
@@ -7,19 +7,19 @@ function [v]=read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon)
 %fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_obs_climo.mat'); %load(fnmat); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=101; opt=0; 
-%expn ='c192L33_CM4X_amip'; yr1=1979; yr2=2020; opt=0; 
+%[CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
+%tpath='/archive/Ming.Zhao/awg/2023.04/';
+%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=101; opt=0; 
+%expn ='c192L33_CM4X_amip'; yr1=1979; yr2=1980; opt=0; 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Model evaluations:
 %cd /archive/Ming.Zhao/awg/2023.04/c192L33_CM4X_amip/atmos_data/daily
 %dmget *.ps.nc *.tas.nc *huss.nc *hurs.nc *pr.nc *uas.nc *vas.nc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-pct=[0.1 1 5 10 25 50 75 90 95 99 99.9];
-latlon=[180 340 10 90];
-latlon=[190 304 16 75];
-latlon=[0 360 -90 90];
+%pct=[0.1 1 5 10 25 50 75 90 95 99 99.9];
+%latlon=[180 340 10 90];
+%latlon=[190 304 16 75];
+%latlon=[0 360 -90 90];
 
 atmos_data_dir='atmos_data';
 if strcmp(atmos_data_dir,'atmos_data_240_480')
@@ -54,7 +54,7 @@ else
   v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
 end
 m=0; %read annual data all together; m=1-12 read monthly data one at a time
-nbin=[]; do_trend=1;
+nbin=[]; v.do_trend=do_trend;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -135,8 +135,8 @@ varn='pr'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a*86400; end; %unit:mm/day
-thresh=[0.2 1 5 10 50 100 200 400 500]; nbin=[];
-v.c192am4.pr=extremes_ana(var,pct,thresh,nbin,nbin,do_trend,opt)
+thresh=[0.2 1 5 10 50 100 200 400 500];
+v.c192am4.pr=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='uas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
@@ -152,259 +152,48 @@ thresh=[]; v.c192am4.vas=extremes_ana(var,pct,thresh,nbin,do_trend,1)
 %compute wind speed %%%%%%%%%%%
 for k=1:length(var); var(k).a=sqrt(v.c192am4.uas.var(k).a.^2+v.c192am4.vas.var(k).a.^2); end;
 thresh=[]; v.c192am4.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Save model analysis data data%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Save model analysis data data
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_all.mat'); disp(fnmat); save(fnmat,'v','-v7.3');
-%load(fnmat); 
+%fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_all.mat'); disp(fnmat); save(fnmat,'v','-v7.3'); %load(fnmat); 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Save less model analysis data data%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varlist={'pr','tasmaxday'}; v.c192am4=clearvar(v.c192am4,0,varlist);
-fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo.mat'); disp(fnmat); save(fnmat,'v','-v7.3');
-%load(fnmat); 
+fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo.mat'); disp(fnmat); save(fnmat,'v','-v7.3'); %load(fnmat); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %reload both model and obs to compute daily climatological biases
-load('/archive/Ming.Zhao/awg/2023.04/c192_obs/c192_obs_1979_2020_daily_climo_obs_climo.mat');
-o=v; clear v;
-load('/archive/Ming.Zhao/awg/2023.04/c192L33_am4p0_2010climo_newctl_1979_2020_daily_climo_mod_climo.mat');
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-expn ='c192L33_am4p0_2010climo_newctl'; yr1=1979; yr2=2020; opt=0; 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-v.c192am4.pr_mswep.bias=v.c192am4.pr.daily_climo    -o.mswep.pr.daily_climo;
-v.c192am4.pr.bias      =v.c192am4.pr.daily_climo    -o.era5.pr.daily_climo;
-v.c192am4.ps.bias      =v.c192am4.ps.daily_climo    -o.era5.ps.daily_climo;
-v.c192am4.ts.bias      =v.c192am4.ts.daily_climo    -o.era5.ts.daily_climo;
-v.c192am4.tas.bias     =v.c192am4.tas.daily_climo   -o.era5.tas.daily_climo;
-v.c192am4.tasmax.bias  =v.c192am4.tasmax.daily_climo-o.era5.tasmax.daily_climo;
-v.c192am4.vps.bias     =v.c192am4.vps.daily_climo   -o.era5.vps.daily_climo;
-v.c192am4.vp.bias      =v.c192am4.vp.daily_climo    -o.era5.vp.daily_climo;
-v.c192am4.vpd.bias     =v.c192am4.vpd.daily_climo   -o.era5.vpd.daily_climo;
-v.c192am4.rh.bias      =v.c192am4.rh.daily_climo    -o.era5.rh.daily_climo;
-v.c192am4.qv.bias      =v.c192am4.qv.daily_climo    -o.era5.qv.daily_climo;
-v.c192am4.uas.bias     =v.c192am4.uas.daily_climo   -o.era5.uas.daily_climo;
-v.c192am4.vas.bias     =v.c192am4.vas.daily_climo   -o.era5.vas.daily_climo;
-v.c192am4.wsd.bias     =v.c192am4.wsd.daily_climo   -o.era5.wsd.daily_climo;
+%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2;    yr2=101; 
+%expn ='c192L33_CM4X_amip';              yr1=1979; yr2=2020; 
+%fext =strcat('_',num2str(yr1),'_',num2str(yr2));
+%fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo.mat'); disp(fnmat); load(fnmat); 
 
-a=v.c192am4.pr_mswep.bias; v.c192am4.pr_mswep.bias_f15 =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.pr_mswep.bias; v.c192am4.pr_mswep.bias_f30 =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.pr.bias;       v.c192am4.pr.bias_f15       =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.pr.bias;       v.c192am4.pr.bias_f30       =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.ps.bias;       v.c192am4.ps.bias_f15       =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.ps.bias;       v.c192am4.ps.bias_f30       =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.ts.bias;       v.c192am4.ts.bias_f15       =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.ts.bias;       v.c192am4.ts.bias_f30       =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.tas.bias;      v.c192am4.tas.bias_f15      =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.tas.bias;      v.c192am4.tas.bias_f30      =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.tasmax.bias;   v.c192am4.tasmax.bias_f15   =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.tasmax.bias;   v.c192am4.tasmax.bias_f30   =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.vps.bias;      v.c192am4.vps.bias_f15      =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.vps.bias;      v.c192am4.vps.bias_f30      =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.vp.bias;       v.c192am4.vp.bias_f15       =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.vp.bias;       v.c192am4.vp.bias_f30       =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.vpd.bias;      v.c192am4.vpd.bias_f15      =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.vpd.bias;      v.c192am4.vpd.bias_f30      =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.rh.bias;       v.c192am4.rh.bias_f15       =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.rh.bias;       v.c192am4.rh.bias_f30       =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.qv.bias;       v.c192am4.qv.bias_f15       =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.qv.bias;       v.c192am4.qv.bias_f30       =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.uas.bias;      v.c192am4.uas.bias_f15      =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.uas.bias;      v.c192am4.uas.bias_f30      =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.vas.bias;      v.c192am4.vas.bias_f15      =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.vas.bias;      v.c192am4.vas.bias_f30      =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.wsd.bias;      v.c192am4.wsd.bias_f15      =movmean(a,15,1,'omitnan', 'Endpoints', 'fill');
-a=v.c192am4.wsd.bias;      v.c192am4.wsd.bias_f30      =movmean(a,30,1,'omitnan', 'Endpoints', 'fill');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%compute model daily climo bias
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+opath='/archive/Ming.Zhao/awg/2023.04/'; expo ='c192_obs'; fext ='_1979_2020';
+fnmat=strcat(opath,expo,'/',expo,fext,'_daily_climo_obs_climo.mat'); disp(fnmat); o=load(fnmat); o=o.v;
 
-%Save model bias
+fday=30; v=compute_daily_model_bias(v,o,fday);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Save model daily climatological bias to mat file
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_bias.mat')
+fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo_bias_f30.mat')
 save(fnmat,'v','-v7.3'); %save(fnmat,'v');
-
-
-%Save climo data only
-%v.c192am4=clearvar(v.c192am4,0)
-%v.era5   =clearvar(v.era5,   0)
-%fext =strcat('_',num2str(v.yr1),'_',num2str(v.yr2));
-%fnmat=strcat(tpath,v.expn,'/',expn,fext,'_daily_climo_obs_mod_climo_only.mat')
-%save(fnmat,'v','-v7.3'); %save(fnmat,'v');
-%save(fnmat,'v','-v7.3'); %save(fnmat,'v');
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%write model daily bias to netcdf file%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%write results to netcdf file%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-fnout=strcat(tpath,expn,'/',expn,'_daily_climo_bias.nc')
-%fnout=strcat('/work/miz/mat_hiresmip/',expn,'daily_climo_bias.nc');
+fnout=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo_bias_f30.nc')
+write_model_bias(v, fnout)
 
-nt=365; nlat=v.nlat; nlon=v.nlon; lat=v.lat; lon=v.lon;
-cl=8; form='netcdf4'; time=[1:1:nt];
-nccreate(fnout,'time','Dimensions',{'time' Inf},'Format',form);
-nccreate(fnout,'lat', 'Dimensions',{'lat' nlat},'Format',form);
-nccreate(fnout,'lon', 'Dimensions',{'lon' nlon},'Format',form);
-nccreate(fnout,'pr_mswep',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'pr_era5',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'ps_era5',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'ts_era5',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tas_era5',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tasmax_era5',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vps_era5',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vp_era5',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vpd_era5',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'rh_era5',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'qv_era5',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'uas_era5',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vas_era5',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'wsd_era5',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
+return
 
-nccreate(fnout,'pr_c192am4',       'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'ps_c192am4',       'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'ts_c192am4',       'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tas_c192am4',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tasmax_c192am4',   'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vps_c192am4',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vp_c192am4',       'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vpd_c192am4',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'rh_c192am4',       'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'qv_c192am4',       'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'uas_c192am4',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vas_c192am4',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'wsd_c192am4',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
 
-nccreate(fnout,'pr_bias_mswep',    'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'pr_bias_mswep_f15','Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'pr_bias_mswep_f30','Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'pr_bias',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'pr_bias_f15',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'pr_bias_f30',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'ps_bias',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'ps_bias_f15',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'ps_bias_f30',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'ts_bias',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'ts_bias_f15',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'ts_bias_f30',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tas_bias',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'tas_bias_f15',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tas_bias_f30',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tasmax_bias',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'tasmax_bias_f15',  'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'tasmax_bias_f30',  'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vps_bias',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'vps_bias_f15',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vps_bias_f30',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vp_bias',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'vp_bias_f15',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vp_bias_f30',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vpd_bias',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'vpd_bias_f15',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vpd_bias_f30',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'rh_bias',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'rh_bias_f15',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'rh_bias_f30',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'qv_bias',          'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'qv_bias_f15',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'qv_bias_f30',      'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'uas_bias',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'uas_bias_f15',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'uas_bias_f30',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vas_bias',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'vas_bias_f15',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'vas_bias_f30',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'wsd_bias',         'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-%nccreate(fnout,'wsd_bias_f15',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-nccreate(fnout,'wsd_bias_f30',     'Dimensions',{'lon' nlon 'lat' nlat 'time' nt},'Datatype','single','Format',form,'DeflateLevel',cl);
-
-ncwrite(fnout,'time', time(:));
-ncwrite(fnout,'lat',  lat);
-ncwrite(fnout,'lon',  lon); x=v.c192am4;;
-ncwrite(fnout,'pr_mswep',         permute(v.mswep.pr.daily_climo,       [3 2 1]))
-ncwrite(fnout,'pr_era5',          permute(v.era5.pr.daily_climo,        [3 2 1]))
-ncwrite(fnout,'ps_era5',          permute(v.era5.ps.daily_climo,        [3 2 1]))
-ncwrite(fnout,'tas_era5',         permute(v.era5.tas.daily_climo,       [3 2 1]))
-ncwrite(fnout,'ts_era5',          permute(v.era5.ts.daily_climo,        [3 2 1]))
-ncwrite(fnout,'tasmax_era5',      permute(v.era5.tasmax.daily_climo,    [3 2 1]))
-ncwrite(fnout,'vps_era5',         permute(v.era5.vps.daily_climo,       [3 2 1]))
-ncwrite(fnout,'vp_era5',          permute(v.era5.vp.daily_climo,        [3 2 1]))
-ncwrite(fnout,'vpd_era5',         permute(v.era5.vpd.daily_climo,       [3 2 1]))
-ncwrite(fnout,'rh_era5',          permute(v.era5.rh.daily_climo,        [3 2 1]))
-ncwrite(fnout,'qv_era5',          permute(v.era5.qv.daily_climo,        [3 2 1]))
-ncwrite(fnout,'uas_era5',         permute(v.era5.uas.daily_climo,       [3 2 1]))
-ncwrite(fnout,'vas_era5',         permute(v.era5.vas.daily_climo,       [3 2 1]))
-ncwrite(fnout,'wsd_era5',         permute(v.era5.wsd.daily_climo,       [3 2 1]))
-
-ncwrite(fnout,'pr_c192am4',       permute(v.c192am4.pr.daily_climo,     [3 2 1]))
-ncwrite(fnout,'ps_c192am4',       permute(v.c192am4.ps.daily_climo,     [3 2 1]))
-ncwrite(fnout,'ts_c192am4',       permute(v.c192am4.ts.daily_climo,     [3 2 1]))
-ncwrite(fnout,'tas_c192am4',      permute(v.c192am4.tas.daily_climo,    [3 2 1]))
-ncwrite(fnout,'tasmax_c192am4',   permute(v.c192am4.tasmax.daily_climo, [3 2 1]))
-ncwrite(fnout,'vps_c192am4',      permute(v.c192am4.vps.daily_climo,    [3 2 1]))
-ncwrite(fnout,'vp_c192am4',       permute(v.c192am4.vp.daily_climo,     [3 2 1]))
-ncwrite(fnout,'vpd_c192am4',      permute(v.c192am4.vpd.daily_climo,    [3 2 1]))
-ncwrite(fnout,'rh_c192am4',       permute(v.c192am4.rh.daily_climo,     [3 2 1]))
-ncwrite(fnout,'qv_c192am4',       permute(v.c192am4.qv.daily_climo,     [3 2 1]))
-ncwrite(fnout,'uas_c192am4',      permute(v.c192am4.uas.daily_climo,    [3 2 1]))
-ncwrite(fnout,'vas_c192am4',      permute(v.c192am4.vas.daily_climo,    [3 2 1]))
-ncwrite(fnout,'wsd_c192am4',      permute(v.c192am4.wsd.daily_climo,    [3 2 1]))
-
-ncwrite(fnout,'pr_bias_mswep',     permute(v.c192am4.pr_mswep.bias,     [3 2 1]))
-%ncwrite(fnout,'pr_bias_mswep_f15', permute(v.c192am4.pr_mswep.bias_f15, [3 2 1]))
-ncwrite(fnout,'pr_bias_mswep_f30', permute(v.c192am4.pr_mswep.bias_f30, [3 2 1]))
-ncwrite(fnout,'pr_bias',           permute(v.c192am4.pr.bias,           [3 2 1]))
-%ncwrite(fnout,'pr_bias_f15',       permute(v.c192am4.pr.bias_f15,       [3 2 1]))
-ncwrite(fnout,'pr_bias_f30',       permute(v.c192am4.pr.bias_f30,       [3 2 1]))
-ncwrite(fnout,'ps_bias',           permute(v.c192am4.ps.bias,           [3 2 1]))
-%ncwrite(fnout,'ps_bias_f15',       permute(v.c192am4.ps.bias_f15,       [3 2 1]))
-ncwrite(fnout,'ps_bias_f30',       permute(v.c192am4.ps.bias_f30,       [3 2 1]))
-ncwrite(fnout,'ts_bias',           permute(v.c192am4.ts.bias,           [3 2 1]))
-%ncwrite(fnout,'ts_bias_f15',       permute(v.c192am4.ts.bias_f15,       [3 2 1]))
-ncwrite(fnout,'ts_bias_f30',       permute(v.c192am4.ts.bias_f30,       [3 2 1]))
-ncwrite(fnout,'tas_bias',          permute(v.c192am4.tas.bias,          [3 2 1]))
-%ncwrite(fnout,'tas_bias_f15',      permute(v.c192am4.tas.bias_f15,      [3 2 1]))
-ncwrite(fnout,'tas_bias_f30',      permute(v.c192am4.tas.bias_f30,      [3 2 1]))
-ncwrite(fnout,'tasmax_bias',       permute(v.c192am4.tasmax.bias,       [3 2 1]))
-%ncwrite(fnout,'tasmax_bias_f15',   permute(v.c192am4.tasmax.bias_f15,   [3 2 1]))
-ncwrite(fnout,'tasmax_bias_f30',   permute(v.c192am4.tasmax.bias_f30,   [3 2 1]))
-ncwrite(fnout,'vps_bias',          permute(v.c192am4.vps.bias,          [3 2 1]))
-%ncwrite(fnout,'vps_bias_f15',      permute(v.c192am4.vps.bias_f15,      [3 2 1]))
-ncwrite(fnout,'vps_bias_f30',      permute(v.c192am4.vps.bias_f30,      [3 2 1]))
-ncwrite(fnout,'vp_bias',           permute(v.c192am4.vp.bias,           [3 2 1]))
-%ncwrite(fnout,'vp_bias_f15',       permute(v.c192am4.vp.bias_f15,       [3 2 1]))
-ncwrite(fnout,'vp_bias_f30',       permute(v.c192am4.vp.bias_f30,       [3 2 1]))
-ncwrite(fnout,'vpd_bias',          permute(v.c192am4.vpd.bias,          [3 2 1]))
-%ncwrite(fnout,'vpd_bias_f15',      permute(v.c192am4.vpd.bias_f15,      [3 2 1]))
-ncwrite(fnout,'vpd_bias_f30',      permute(v.c192am4.vpd.bias_f30,      [3 2 1]))
-ncwrite(fnout,'rh_bias',           permute(v.c192am4.rh.bias,           [3 2 1]))
-%ncwrite(fnout,'rh_bias_f15',       permute(v.c192am4.rh.bias_f15,       [3 2 1]))
-ncwrite(fnout,'rh_bias_f30',       permute(v.c192am4.rh.bias_f30,       [3 2 1]))
-ncwrite(fnout,'qv_bias',           permute(v.c192am4.qv.bias,           [3 2 1]))
-%ncwrite(fnout,'qv_bias_f15',       permute(v.c192am4.qv.bias_f15,       [3 2 1]))
-ncwrite(fnout,'qv_bias_f30',       permute(v.c192am4.qv.bias_f30,       [3 2 1]))
-ncwrite(fnout,'uas_bias',          permute(v.c192am4.uas.bias,          [3 2 1]))
-%ncwrite(fnout,'uas_bias_f15',      permute(v.c192am4.uas.bias_f15,      [3 2 1]))
-ncwrite(fnout,'uas_bias_f30',      permute(v.c192am4.uas.bias_f30,      [3 2 1]))
-ncwrite(fnout,'vas_bias',          permute(v.c192am4.vas.bias,          [3 2 1]))
-%ncwrite(fnout,'vas_bias_f15',      permute(v.c192am4.vas.bias_f15,      [3 2 1]))
-ncwrite(fnout,'vas_bias_f30',      permute(v.c192am4.vas.bias_f30,      [3 2 1]))
-ncwrite(fnout,'wsd_bias',          permute(v.c192am4.wsd.bias,          [3 2 1]))
-%ncwrite(fnout,'wsd_bias_f15',      permute(v.c192am4.wsd.bias_f15,      [3 2 1]))
-ncwrite(fnout,'wsd_bias_f30',      permute(v.c192am4.wsd.bias_f30,      [3 2 1]))
-str=strcat('days since 1979-01-01 00:00:00'); 
-ncwriteatt(fnout,'time','units',str);
-
-%Save full data 
-epath=strcat('/work/miz/mat_hiresmip/land/');
-fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fnmat=strcat(epath,expn,fext,'_c192am4_bias_read_daily_obs_all.mat')
-save(fnmat,'v','-v7.3'); %save(fnmat,'v');
-
-%Save climo data only
-v.prday_mswep=0; v.prday_c192am4=0;
-fnmat=strcat(tpath,expn,'/',expn,fext,'_read_daily_obs_climo_only.mat')
-save(fnmat,'v','-v7.3'); %save(fnmat,'v');
 
 
 %Save only climo bias only

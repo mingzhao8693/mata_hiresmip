@@ -1,18 +1,8 @@
-function [v]=compute_daily_model_bias(tpath,expn,yr1,yr2,pct,opt,latlon)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%read in obs daily data%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-expn ='c192_obs'; yr1=1979; yr2=2020; opt=0; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-%fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_obs_all.mat');  disp(fnmat); %load(fnmat); 
-fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_obs_climo.mat'); disp(fnmat); load(fnmat); 
-o=v; clear v;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [v]=compute_daily_model_bias(v,o,fday)
 %load model daily data%%%%%%%%%%%%%%%%%
-expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=101; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
+%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=101; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
 %fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_all.mat');  disp(fnmat); %load(fnmat); 
-fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo.mat'); disp(fnmat); load(fnmat); 
+%fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo.mat'); disp(fnmat); load(fnmat); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute climatological biases%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,26 +12,27 @@ fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo.mat'); disp(fnmat)
 %figure; pcolor(squeeze(mean(v.c192am4.pr.bias_gpm,1)));    shading flat; colorbar; caxis([c1 c2]); cmap=bluewhitered(128); colormap(cmap);title('GPM');
 %figure; pcolor(squeeze(mean(v.c192am4.pr.bias_mswep,1)));  shading flat; colorbar; caxis([c1 c2]); cmap=bluewhitered(128); colormap(cmap);title('MSWEP');
 %figure; pcolor(squeeze(mean(v.c192am4.pr.bias_era5,1)));   shading flat; colorbar; caxis([c1 c2]); cmap=bluewhitered(128); colormap(cmap);title('ERA5');
-clear b
-a=v.c192am4.pr.daily_climo    -o.gpcp.pr13.daily_climo;   b.daily.gpcp13=a; b.season.gpcp13=compute_season_from_daily(a); 
-a=v.c192am4.pr.daily_climo    -o.gpcp.pr32.daily_climo;   b.daily.gpcp32=a; b.season.gpcp32=compute_season_from_daily(a); 
-a=v.c192am4.pr.daily_climo    -o.gpm.pr.daily_climo;      b.daily.gpm   =a; b.season.gpm   =compute_season_from_daily(a);
-a=v.c192am4.pr.daily_climo    -o.mswep.pr.daily_climo;    b.daily.mswep =a; b.season.mswep =compute_season_from_daily(a);
-a=v.c192am4.pr.daily_climo    -o.era5.pr.daily_climo;     b.daily.era5  =a; b.season.era5  =compute_season_from_daily(a); v.c192am4.pr.bias    =b; clear b;
-a=v.c192am4.ps.daily_climo    -o.era5.ps.daily_climo;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.ps.bias    =b; clear b;
-a=v.c192am4.ts.daily_climo    -o.era5.ts.daily_climo;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.ts.bias    =b; clear b;
-a=v.c192am4.tas.daily_climo   -o.era5.tas.daily_climo;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.tas.bias   =b; clear b;
-a=v.c192am4.tasmax.daily_climo-o.era5.tasmax.daily_climo; b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.tasmax.bias=b; clear b;
-a=v.c192am4.vps.daily_climo   -o.era5.vps.daily_climo;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.vps.bias   =b; clear b;
-a=v.c192am4.vp.daily_climo    -o.era5.vp.daily_climo;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.vp.bias    =b; clear b;
-a=v.c192am4.vpd.daily_climo   -o.era5.vpd.daily_climo;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.vpd.bias   =b; clear b;
-a=v.c192am4.rh.daily_climo    -o.era5.rh.daily_climo;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.rh.bias    =b; clear b;
-a=v.c192am4.qv.daily_climo    -o.era5.qv.daily_climo;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.qv.bias    =b; clear b;
-a=v.c192am4.uas.daily_climo   -o.era5.uas.daily_climo;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.uas.bias   =b; clear b;
-a=v.c192am4.vas.daily_climo   -o.era5.vas.daily_climo;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.vas.bias   =b; clear b;
-a=v.c192am4.wsd.daily_climo   -o.era5.wsd.daily_climo;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.wsd.bias   =b; clear b;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clear b; 'compute_daily_model_bias....'
+a=v.c192am4.pr.daily_climo.daily    -o.gpcp.pr13.daily_climo.daily;   b.daily.gpcp13=a; b.season.gpcp13=compute_season_from_daily(a); 
+a=v.c192am4.pr.daily_climo.daily    -o.gpcp.pr32.daily_climo.daily;   b.daily.gpcp32=a; b.season.gpcp32=compute_season_from_daily(a); 
+a=v.c192am4.pr.daily_climo.daily    -o.gpm.pr.daily_climo.daily;      b.daily.gpm   =a; b.season.gpm   =compute_season_from_daily(a);
+a=v.c192am4.pr.daily_climo.daily    -o.mswep.pr.daily_climo.daily;    b.daily.mswep =a; b.season.mswep =compute_season_from_daily(a);
+a=v.c192am4.pr.daily_climo.daily    -o.era5.pr.daily_climo.daily;     b.daily.era5  =a; b.season.era5  =compute_season_from_daily(a); v.c192am4.pr.bias    =b; clear b;
+a=v.c192am4.ps.daily_climo.daily    -o.era5.ps.daily_climo.daily;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.ps.bias    =b; clear b;
+a=v.c192am4.ts.daily_climo.daily    -o.era5.ts.daily_climo.daily;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.ts.bias    =b; clear b;
+a=v.c192am4.tas.daily_climo.daily   -o.era5.tas.daily_climo.daily;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.tas.bias   =b; clear b;
+a=v.c192am4.tasmax.daily_climo.daily-o.era5.tasmax.daily_climo.daily; b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.tasmax.bias=b; clear b;
+a=v.c192am4.vps.daily_climo.daily   -o.era5.vps.daily_climo.daily;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.vps.bias   =b; clear b;
+a=v.c192am4.vp.daily_climo.daily    -o.era5.vp.daily_climo.daily;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.vp.bias    =b; clear b;
+a=v.c192am4.vpd.daily_climo.daily   -o.era5.vpd.daily_climo.daily;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.vpd.bias   =b; clear b;
+a=v.c192am4.rh.daily_climo.daily    -o.era5.rh.daily_climo.daily;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.rh.bias    =b; clear b;
+a=v.c192am4.qv.daily_climo.daily    -o.era5.qv.daily_climo.daily;     b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.qv.bias    =b; clear b;
+a=v.c192am4.uas.daily_climo.daily   -o.era5.uas.daily_climo.daily;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.uas.bias   =b; clear b;
+a=v.c192am4.vas.daily_climo.daily   -o.era5.vas.daily_climo.daily;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.vas.bias   =b; clear b;
+a=v.c192am4.wsd.daily_climo.daily   -o.era5.wsd.daily_climo.daily;    b.daily       =a; b.season       =compute_season_from_daily(a); v.c192am4.wsd.bias   =b; clear b;
 
-fday=30; 
+%fday=30; 
 a=v.c192am4.pr.bias.daily.gpcp13; v.c192am4.pr.bias.daily.gpcp13_f=movmean(a,fday,1,'omitnan', 'Endpoints', 'fill');
 a=v.c192am4.pr.bias.daily.gpcp32; v.c192am4.pr.bias.daily.gpcp32_f=movmean(a,fday,1,'omitnan', 'Endpoints', 'fill');
 a=v.c192am4.pr.bias.daily.gpm;    v.c192am4.pr.bias.daily.gpm_f   =movmean(a,fday,1,'omitnan', 'Endpoints', 'fill');
@@ -59,6 +50,9 @@ a=v.c192am4.qv.bias.daily;        v.c192am4.qv.bias.daily_f       =movmean(a,fda
 a=v.c192am4.uas.bias.daily;       v.c192am4.uas.bias.daily_f      =movmean(a,fday,1,'omitnan', 'Endpoints', 'fill');
 a=v.c192am4.vas.bias.daily;       v.c192am4.vas.bias.daily_f      =movmean(a,fday,1,'omitnan', 'Endpoints', 'fill');
 a=v.c192am4.wsd.bias.daily;       v.c192am4.wsd.bias.daily_f      =movmean(a,fday,1,'omitnan', 'Endpoints', 'fill');
+
+return
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Save model daily climatological bias to mat file
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
