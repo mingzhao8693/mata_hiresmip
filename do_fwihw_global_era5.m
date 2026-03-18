@@ -1,48 +1,20 @@
+function [v]=do_fwihw_global_era5(tpath,expn,yr1,yr2,do_trend)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-expn='c192_obs'; pct=[90 95 99]; latlon=[0 360 -90 90];
-yr1=1950; yr2=2020; opt=1; %using year 1950 to 2020 to compute threshold
-%yr1=1979; yr2=2020; opt=1; %using year 1979 to 2020 to compute threshold
+%tpath='/archive/Ming.Zhao/awg/2023.04/';
+%expn ='c192L33_am4p0_2010climo_newctl';                 yr1=2;    yr2=101;
+%expn='c192L33_am4p0_2010climo_newctl_p1K';              yr1=2;    yr2=101;
+%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   yr1=2;    yr2=101;
+%expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; yr1=2;    yr2=101;
+%expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_30min';    yr1=1951; yr2=2020;
+%expn ='c192L33_CM4X_amip';                              yr1=1979; yr2=2020;
 
-atmos_data_dir='atmos_data';
-fn=strcat(tpath,expn,'/atmos.static.nc'); disp(fn);
-v=readts_grid_2d(tpath,expn,fn,latlon,'c192'); v.latlon=latlon;
-v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1; nbin=[];
-
-yea=[365]; ddd=cumsum(yea); d.beg_yea=[0 ddd(1:end-1)]+1; d.end_yea=ddd;
-v.do_yea=1; v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
-
-%precomputing tasmax threshhold using pct percentile value for heatwave analysis
-%read in long record of t2mmax value and compute percentiles at each grid
-varn='t2mmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
-exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %this is a smart reader script
-thresh=[]; tasmax=extremes_ana(var,pct,thresh,nbin,1)
-%below the array a contains the raw t2mmax in C; win=windows for compute t2mmax percentiles
-%heatwave_threshold_grid is used to compute the threshold value later used for detecting heatwave events
-var=tasmax.var(1); dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time;
-a=var.a-273.15; win=15; v.thresh=heatwave_threshold_grid(a,dofy,pct,win);
-
-%save precomputed threshold values for heatwave analysis only
-v.pct=pct; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correction.mat')
-save(fnmat,'v','-v7.3');
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%save precomputed threshold values and original data
-v.tasmax=tasmax; clear tasmax var;
-fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_all.mat')
-save(fnmat,'v','-v7.3'); v.tasmax=0; clear var;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%The following script is used to generate annual fwihw file
-%for a number of daily variables including heatwaves and FWI
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-expn='c192_obs'; yr1=1979; yr2=2020; nyr=yr2-yr1+1; %pct=[90 95 99]; latlon=[0 360 -90 90]; opt=1;
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correction.mat')
-load(fnmat); thresh=v.thresh; %thresh_c=v.thresh;
+fn=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correct.mat')
+if (exist(fn,'file') == 2)
+  disp('load in file...'); load(fn); thresh=v.thresh; v
+else
+  disp(strcat('file not exist:',fn)); return
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %The following is normally not needed but they are needed
@@ -50,21 +22,20 @@ load(fnmat); thresh=v.thresh; %thresh_c=v.thresh;
 %ffmc, dmc and dc calculation require memory of previous state
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-exd='/fwihw/'; yr='0015'; fn=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw_ctlthresh.nc');disp(fn);
-if (exist(fn,'file') == 2)
-  a=ncread(fn,'ffmcday');   a=a(:,:,end); a=permute(a,[3 2 1]); ffmc=a;
-  a=ncread(fn,'dmcday');    a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
-  a=ncread(fn,'dcday');     a=a(:,:,end); a=permute(a,[3 2 1]); dc  =a;
-  init_fwiday=[ffmc; dmc; dc;];
-  a=ncread(fn,'ffmcday_c'); a=a(:,:,end); a=permute(a,[3 2 1]); ffmc=a;
-  a=ncread(fn,'dmcday_c');  a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
-  a=ncread(fn,'dcday_c');   a=a(:,:,end); a=permute(a,[3 2 1]); dc  =a;
-  init_fwiday_c=[ffmc; dmc; dc;]; clear ffmc dmc dc;
+do_continue = false %don't do this unless something broken
+if do_continue
+  exd='/fwihw/'; yr='0015'; fn=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw_ctlthresh.nc');disp(fn);
+  if (exist(fn,'file') == 2)
+    a=ncread(fn,'ffmcday');   a=a(:,:,end); a=permute(a,[3 2 1]); ffmc=a;
+    a=ncread(fn,'dmcday');    a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
+    a=ncread(fn,'dcday');     a=a(:,:,end); a=permute(a,[3 2 1]); dc  =a;
+    init_fwiday=[ffmc; dmc; dc;];
+  end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 minlen=3; %used for heat wave analysis lenght of days tasmax exceeding
-nlat=v.nlat; nlon=v.nlon; lat=v.lat; lon=v.lon; t=1;
+nlat=v.nlat; nlon=v.nlon; lat=v.lat; lon=v.lon; nyr=v.nyr; pct=v.pct; latlon=v.latlon; opt=0; t=1;
 for t=1:nyr; %t=27 corresponds to year 28
   yrt=yr1+t-1; 
   if (yrt<10)
@@ -80,7 +51,8 @@ for t=1:nyr; %t=27 corresponds to year 28
   if t==1
     init_fwiday=[]; 
   end
-  v=fwihw_ana_obs(tpath,expn,yrt,yrt,pct,latlon,opt,init_fwiday); v
+  nbin=[]; pct=[0.01 0.1 99.9];
+  v=fwihw_ana_obs(tpath,expn,yrt,yrt,pct,latlon,opt,init_fwiday,nbin,do_trend); v
   init_fwiday=v.init_fwiday;
 % heatwave analysis using tasmax and precomputed thresh duration of minlen
   var=v.tasmaxday.var(1);

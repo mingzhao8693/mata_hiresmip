@@ -1,4 +1,4 @@
-function [v]=fwihw_ana(tpath,expn,yr1,yr2,pct,latlon,opt,init_fwiday,init_fwiday_c,do_bias_correct)
+function [v]=fwihw_ana(tpath,expn,yr1,yr2,pct,latlon,opt,init_fwiday,init_fwiday_c,do_bias_correct,nbin,do_trend)
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 %tpath='/archive/Ming.Zhao/awg/2023.04/';
 %expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=2; opt=1;
@@ -42,7 +42,7 @@ amean=mean(mean(v.aa0)); v.aa = v.aa0/amean;
 
 v.lm=single(v.lm); v.lm_org=single(v.lm_org); v.aa=single(v.aa); v.aa0=single(v.aa0);
 
-v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1;
+v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1; v.tyr=[yr1:yr2]';
 
 yea=[365]; ddd=cumsum(yea); d.beg_yea=[0 ddd(1:end-1)]+1; d.end_yea=ddd;
 
@@ -58,7 +58,7 @@ varn='tas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a-273.15; end; %unit:C
-thresh=[30 35 40]; v.tasday=extremes_ana(var,pct,thresh,1)
+thresh=[30 35 40]; v.tasday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %daily surface precipitation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,7 +67,7 @@ exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a*86400; end; %unit:mm/day
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.prday=extremes_ana(var,pct,thresh,1)
+v.prday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %daily surface relative humidity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,14 +76,14 @@ exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
 for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhday=var; %unit:%
-thresh=[5 10 20 30 40]; v.rhday=extremes_ana(var,pct,thresh,1)
+thresh=[5 10 20 30 40]; v.rhday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %daily surface wind speed
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='sfcWind'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.wsdday=var; %unit:m/s
-thresh=[10 20 30]; v.wsdday=extremes_ana(var,pct,thresh,1)
+thresh=[10 20 30]; v.wsdday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % daily maximum surface temperature relative humidity wind speed, and mininum relative humidity
@@ -93,26 +93,26 @@ varn='tasmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a-273.15; end; %og.tasmaxday=var; %unit:C
-thresh=[30 35 40]; v.tasmaxday=extremes_ana(var,pct,thresh,1)
+thresh=[30 35 40]; v.tasmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %varn='hursmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 %exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 %var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 %for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
 %for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhmaxday=var;
-%thresh=[20 30 40]; v.rhmaxday=extremes_ana(var,pct,thresh,opt)
+%thresh=[20 30 40]; v.rhmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='hursmin'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
 for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhminday=var;
-thresh=[20 30 40]; v.rhminday=extremes_ana(var,pct,thresh,1)
+thresh=[20 30 40]; v.rhminday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='sfcWindmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.wsdmax=var; %unit:m/s
-thresh=[10 20 30]; v.wsdmaxday=extremes_ana(var,pct,thresh,1)
+thresh=[10 20 30]; v.wsdmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %if do bias correction for computing FWI
@@ -121,23 +121,23 @@ thresh=[10 20 30]; v.wsdmaxday=extremes_ana(var,pct,thresh,1)
 if do_bias_correct
   var=v.prday.var;  a=B.pr.bias_f30;  a=repmat(a,[v.nyr 1 1]);
   for k=1:length(var); var(k).a=var(k).a-a; end;
-  thresh=[]; v.prday_c=extremes_ana(var,pct,thresh,1);
+  thresh=[]; v.prday_c=extremes_ana(var,pct,thresh,nbin,do_trend,1);
   
   var=v.tasday.var; a=B.tas.bias_f30; a=repmat(a,[v.nyr 1 1]);
   for k=1:length(var); var(k).a=var(k).a-a; end;
-  thresh=[]; v.tasday_c=extremes_ana(var,pct,thresh,1);
+  thresh=[]; v.tasday_c=extremes_ana(var,pct,thresh,nbin,do_trend,1);
 
   var=v.tasmaxday.var; a=B.tasmax.bias_f30; a=repmat(a,[v.nyr 1 1]);
   for k=1:length(var); var(k).a=var(k).a-a; end;
-  thresh=[]; v.tasmaxday_c=extremes_ana(var,pct,thresh,1);
+  thresh=[]; v.tasmaxday_c=extremes_ana(var,pct,thresh,nbin,do_trend,1);
  
   var=v.rhday.var; a=B.rh.bias_f30; a=repmat(a,[v.nyr 1 1]);
   for k=1:length(var); var(k).a=var(k).a-a; end;
-  thresh=[]; v.rhday_c=extremes_ana(var,pct,thresh,1);
+  thresh=[]; v.rhday_c=extremes_ana(var,pct,thresh,nbin,do_trend,1);
   
   var=v.wsdday.var; a=B.wsd.bias_f30; a=repmat(a,[v.nyr 1 1]);
   for k=1:length(var); var(k).a=var(k).a-a; end;
-  thresh=[]; v.wsdday_c=extremes_ana(var,pct,thresh,1);
+  thresh=[]; v.wsdday_c=extremes_ana(var,pct,thresh,nbin,do_trend,1);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -158,13 +158,13 @@ for k=1:length(v.prday.var)
   var1(k).a=a;
 end
 n=length(var1);
-for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday.ffmc=extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday.dmc =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday.dc  =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday.isi =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday.isi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %save initial condition for FFMC, DMC and DC for fwiday calculation%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -186,13 +186,13 @@ for k=1:length(v.prday.var)
   var1(k).a=a;
 end
 n=length(var);
-for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday_c.ffmc=extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday_c.dmc =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday_c.dc  =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday_c.isi =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday_c.bui =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday_c.fwi =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday_c.dsr =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday_c.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday_c.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday_c.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday_c.isi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday_c.bui =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday_c.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday_c.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %save initial condition for FFMC, DMC and DC used for fwiday_c calculation%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -200,6 +200,10 @@ a=v.fwiday_c; v.init_fwiday_c=[a.ffmc.var.a(end,:,:); a.dmc.var.a(end,:,:); a.dc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 return
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -217,13 +221,13 @@ for k=1:length(v.prday.var)
   var1(k).a=a;
 end
 n=length(var);
-for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwidaymax.ffmc=extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwidaymax.dmc =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwidaymax.dc  =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwidaymax.isi =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwidaymax.bui =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwidaymax.fwi =extremes_ana(var,pct,thresh,opt);
-for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwidaymax.dsr =extremes_ana(var,pct,thresh,opt);
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwidaymax.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwidaymax.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwidaymax.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwidaymax.isi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwidaymax.bui =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwidaymax.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwidaymax.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %save initial condition for FFMC, DMC and DC used for fwidaymax calculation%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

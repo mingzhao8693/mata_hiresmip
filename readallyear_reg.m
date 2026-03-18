@@ -44,14 +44,18 @@ for t=1:nyr
   if (t==1); fn1=fn; end;
   
   if (exist(fn,'file') == 2)
-    a=ncread(fn,varn,[1 1 tbeg],[Inf Inf tcon]);
-  end
-
-  if (exist(fn,'file') == 2)
     time=ncread(fn,'time',tbeg,tcon); %b=ncread(fn,'lat');
+    a=ncread(fn,varn,[1 1 tbeg],[Inf Inf tcon]);
   else
     time=[tbeg:tcon];
+    disp('file not exist!!!!!!!!!!!!!!!!!!!!!!!!!'); return
   end
+
+%  if (exist(fn,'file') == 2)
+%    time=ncread(fn,'time',tbeg,tcon); %b=ncread(fn,'lat');
+%  else
+%    time=[tbeg:tcon];
+%  end
   
   a=permute(a,[3 2 1]); size(a)
 

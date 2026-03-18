@@ -1,82 +1,20 @@
+function [v]=do_fwihw_global(tpath,expn,yr1,yr2,do_trend)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%fn='/archive/Ming.Zhao/awg/2023.04/c192_obs/c192_obs_1979_2020_daily_climo_obs_climo.mat';fn
-%x=load(fn); era5=x.v.era5; mswep=x.v.mswep; clear x;
-fn='/archive/Ming.Zhao/awg/2023.04/c192L33_am4p0_2010climo_newctl/c192L33_am4p0_2010climo_newctl_2_101_read_daily_obs_bias_only';fn
-load(fn)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-pct=[90 95 99]; latlon=[0 360 -90 90]; yr1=2; yr2=101; opt=1;
-expn='c192L33_am4p0_2010climo_newctl'; 
-%expn='c192L33_am4p0_2010climo_newctl_p1K'; 
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2';
-%expn='c192L33_CM4X_amip_13'; opt=1; yr1=1950; yr2=2020;
-%expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_30min'; opt=1; yr1=1951; yr2=2020;
-%fn='_1979_2020_daily_climo_onlybias.mat';
-%fn=strcat(tpath,expn,'/',expn,fn); load(fn); fn
+%tpath='/archive/Ming.Zhao/awg/2023.04/';
+%expn ='c192L33_am4p0_2010climo_newctl';                 yr1=2;    yr2=101;
+%expn='c192L33_am4p0_2010climo_newctl_p1K';              yr1=2;    yr2=101;
+%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   yr1=2;    yr2=101;
+%expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; yr1=2;    yr2=101;
+%expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_30min';    yr1=1951; yr2=2020;
+%expn ='c192L33_CM4X_amip';                              yr1=1979; yr2=2020;
 
-atmos_data_dir='atmos_data';
-fn=strcat(tpath,expn,'/atmos.static.nc'); disp(fn);
-v=readts_grid_2d(tpath,expn,fn,latlon,'c192'); v.latlon=latlon;
-v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1;
-
-yea=[365]; ddd=cumsum(yea); d.beg_yea=[0 ddd(1:end-1)]+1; d.end_yea=ddd;
-v.do_yea=1; v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
-
-% precomputing tasmax threshhold for heatwave analysis
-varn='tasmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %this is a smart reader script
-thresh=[]; tasmax=extremes_ana(var,pct,thresh,1)
-
-var=tasmax.var(1); dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time;
-a=var.a-273.15; win=15; v.thresh=heatwave_threshold_grid(a,dofy,pct,win);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% do bias correction for tasmax based on ERA5 data
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-do_bias_correction = true
-if do_bias_correction
-  var=tasmax.var(1); dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time;
-  a=B.tasmax.bias_f30;  a=repmat(a,[v.nyr 1 1]); var.a=var.a-a;
-  a=var.a-273.15; win=15; v.thresh_c=heatwave_threshold_grid(a,dofy,pct,win);
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% end of do bias correction for tasmax based on ERA5 data
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%save precomputed threshold values for heatwave analysis only
-v.pct=pct; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correction.mat')
-save(fnmat,'v','-v7.3');
-
-%save precomputed threshold values and original data
-v.tasmax=tasmax; clear tasmax var;
-fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_all.mat')
-save(fnmat,'v','-v7.3'); v.tasmax=0; clear var;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%The following script is used to generate annual fwihw file
-%for a number of daily variables including heatwaves and FWI
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-pct=[90 95 99]; latlon=[0 360 -90 90]; opt=1;
-yr1=2; yr2=101; nyr=yr2-yr1+1;
-expn='c192L33_am4p0_2010climo_newctl'; 
-%expn='c192L33_am4p0_2010climo_newctl_p1K'; 
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   
-
-yr1=1950; yr2=2020; nyr=yr2-yr1+1;
-expn='c192L33_CM4X_amip';
-expn='c192L33_CM4X_amip_13';
-expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_30min'; yr1=1951; yr2=2020; nyr=yr2-yr1+1;
-
-atmos_data_dir='atmos_data';
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fnmat=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correction.mat')
-load(fnmat); thresh=v.thresh; thresh_c=v.thresh_c;
+fn=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correct.mat')
+if (exist(fn,'file') == 2)
+  disp('load in file...'); load(fn); thresh=v.thresh; thresh_c=v.thresh_c; v
+else
+  disp(strcat('file not exist:',fn)); return
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %The following is normally not needed but they are needed
@@ -84,22 +22,25 @@ load(fnmat); thresh=v.thresh; thresh_c=v.thresh_c;
 %ffmc, dmc and dc calculation require memory of previous state
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-exd='/fwihw/'; yr='0015'; fn=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw_ctlthresh.nc');disp(fn);
-if (exist(fn,'file') == 2)
-  a=ncread(fn,'ffmcday');   a=a(:,:,end); a=permute(a,[3 2 1]); ffmc=a;
-  a=ncread(fn,'dmcday');    a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
-  a=ncread(fn,'dcday');     a=a(:,:,end); a=permute(a,[3 2 1]); dc  =a;
-  init_fwiday=[ffmc; dmc; dc;];
-  a=ncread(fn,'ffmcday_c'); a=a(:,:,end); a=permute(a,[3 2 1]); ffmc=a;
-  a=ncread(fn,'dmcday_c');  a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
-  a=ncread(fn,'dcday_c');   a=a(:,:,end); a=permute(a,[3 2 1]); dc  =a;
-  init_fwiday_c=[ffmc; dmc; dc;]; clear ffmc dmc dc;
+do_continue = false %don't do this unless something broken
+if do_continue
+  exd='/fwihw/'; yr='0015'; fn=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw.nc');disp(fn);
+  if (exist(fn,'file') == 2)
+    a=ncread(fn,'ffmcday');   a=a(:,:,end); a=permute(a,[3 2 1]); ffmc=a;
+    a=ncread(fn,'dmcday');    a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
+    a=ncread(fn,'dcday');     a=a(:,:,end); a=permute(a,[3 2 1]); dc  =a;
+    init_fwiday=[ffmc; dmc; dc;];
+    a=ncread(fn,'ffmcday_c'); a=a(:,:,end); a=permute(a,[3 2 1]); ffmc=a;
+    a=ncread(fn,'dmcday_c');  a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
+    a=ncread(fn,'dcday_c');   a=a(:,:,end); a=permute(a,[3 2 1]); dc  =a;
+    init_fwiday_c=[ffmc; dmc; dc;]; clear ffmc dmc dc;
+  end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 minlen=3; %used for heat wave analysis lenght of days tasmax exceeding
-nlat=v.nlat; nlon=v.nlon; lat=v.lat; lon=v.lon; t=1;
-for t=15:nyr; %t=27 corresponds to year 28
+nlat=v.nlat; nlon=v.nlon; lat=v.lat; lon=v.lon; nyr=v.nyr; pct=v.pct; latlon=v.latlon; opt=1; t=1;
+for t=1:nyr; %t=27 corresponds to year 28
   yrt=yr1+t-1; 
   if (yrt<10)
     yr=strcat('000',num2str(yrt));
@@ -114,7 +55,8 @@ for t=15:nyr; %t=27 corresponds to year 28
   if t==1
     init_fwiday=[]; init_fwiday_c=[];
   end
-  v=fwihw_ana(tpath,expn,yrt,yrt,pct,latlon,opt,init_fwiday,init_fwiday_c,true); v
+  nbin=[]; pct=[0.01 0.1 99.9];
+  v=fwihw_ana(tpath,expn,yrt,yrt,pct,latlon,opt,init_fwiday,init_fwiday_c,true,nbin,do_trend); v
   init_fwiday=v.init_fwiday;
   init_fwiday_c=v.init_fwiday_c;
 % heatwave analysis using tasmax and precomputed thresh duration of minlen
@@ -163,8 +105,7 @@ for t=15:nyr; %t=27 corresponds to year 28
   a=v.fwiday_c.dsr.var(1).a;  a=reshape(a,v.nyr,v.nday,v.nlat,v.nlon); dsrday_c   =permute(a,[4 3 2 1]); 
   
   exd='/fwihw/'; cl=8; form='netcdf4'; nt=v.nday;
-  fnout=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw_ctlthresh.nc');disp(fnout);
-%  fnout=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw.nc');disp(fnout);
+  fnout=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw.nc');disp(fnout);
   nccreate(fnout,'time','Dimensions',{'time' Inf},'Format',form);
   nccreate(fnout,'lat', 'Dimensions',{'lat' nlat},'Format',form);
   nccreate(fnout,'lon', 'Dimensions',{'lon' nlon},'Format',form);
@@ -243,6 +184,7 @@ for t=15:nyr; %t=27 corresponds to year 28
   whos v
 end
 
+return
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
