@@ -1,4 +1,7 @@
 function thresh = heatwave_threshold_grid(Tmax, time, pct, win)
+% This function computes the climatological percentile of daily
+% maximum temperature (tmax) for each calendar day based on a
+% 30-day moving window pooled across all years.
 % Tmax: day x lat x lon
 % time: day array of length time
 % pct: percentile (e.g., [90 95 99])

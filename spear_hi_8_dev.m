@@ -11,9 +11,15 @@ fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c96.mat'); load(fn); o.mod='
 %fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c192do_erai_3d_1.mat'); load(fn); o.mod='c192';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
-p.do_trend=0; p.do_scalar=0; p.myr=1; p.opt=1; p.do_3d_atm=0; p.do_all=1;
-p.yr1='0001'; p.yr2='0050'; p.syr=1; p.nyr=50; p.y1=0001; p.y2=0050; 
+p.do_trend=0; p.do_scalar=0; p.myr=5; p.opt=1; p.do_3d_atm=0; p.do_all=1;
+
+p.yr1='0101'; p.yr2='0200'; p.syr=1;  
 tpath='/archive/Ming.Zhao/spear_hi_8_dev/';
+p.nyr=100; p.y1=0001; p.y2=0100; p.expn='SPEAR_c384_OM4p08_Control_1990_A13';   v=tsana_hiresmip_new(o,tpath,p);
+
+p.yr1='0001'; p.yr2='0100'; p.syr=1; 
+p.nyr=100; p.y1=0001; p.y2=0100; p.expn='SPEAR_c384_OM4p08_Ctrl_1990_A13_IC0101_1PctTo2X';   v=tsana_hiresmip_new(o,tpath,p);
+
 p.nyr=50; p.y1=0001; p.y2=0050; p.expn='SPEAR_c384_OM4p25_Control_1990_R92';   v=tsana_hiresmip_new(o,tpath,p);
 p.nyr=50; p.y1=0001; p.y2=0050; p.expn='SPEAR_c384_OM4p25_Control_1990_R93';   v=tsana_hiresmip_new(o,tpath,p);
 p.nyr=50; p.y1=0001; p.y2=0050; p.expn='SPEAR_c384_OM4p25_Control_1990_R84';   v=tsana_hiresmip_new(o,tpath,p);
@@ -85,6 +91,15 @@ e='SPEAR_c384_OM4p25_Control_1990_R93';  n=strcat(ph,e,'/',e,f);                
 %e='SPEAR_c384_OM4p25_Control_1990_R61_rkm_dp1_0p5';  n=strcat(ph,e,'/',e,f);     load(n);z.w2d=v; 
 %f='_global_opt1.c96_tsana_hiresmip_new_1-50_0001-0050_do_3d_atm_0_do_all_1.mat';
 %e='SPEAR_c384_OM4p25_Control_1990_R61_CAmer_2Xghprime';  n=strcat(ph,e,'/',e,f); load(n);z.w2e=v; 
+
+ph='/archive/Ming.Zhao/spear_hi_8_dev/';
+f='_global_opt1.c96_tsana_hiresmip_new_1-100_0101-0200_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p08_Control_1990_A13';               n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
+f='_global_opt1.c96_tsana_hiresmip_new_1-100_0001-0100_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p08_Ctrl_1990_A13_IC0101_1PctTo2X';  n=strcat(ph,e,'/',e,f); load(n);z.w1a=v; 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ph='/archive/Ming.Zhao/spear_hi_8_dev/';

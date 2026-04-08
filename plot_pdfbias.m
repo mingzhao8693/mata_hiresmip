@@ -25,5 +25,5 @@ else
 end
 
 set(gca,'FontSize',fsize); 
-visfig='off'; figpath='./fig_AR/'; expn='hiresmip'; 
+visfig='off'; figpath='./fig_spearhi/'; expn='spearhi8'; 
 printit(visfig,figpath,expn,vname);

@@ -1,6 +1,10 @@
-function printnew(visfig,figpath,expn,vname)
-fmt='-depsc2'; %fmt='-dpdf'; 
-%fmt='-dpng';
+function printnew(visfig,figpath,expn,vname,fmt)
+if strcmp(fmt,'eps');
+  fmt='-depsc2'; %fmt='-dpdf';
+else strcmp(fmt,'png')
+  fmt='-dpng';
+end
+
 if strcmp(visfig,'off')
   if strcmp(fmt,'-depsc2')
     ext='.eps';

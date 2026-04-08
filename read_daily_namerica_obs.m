@@ -34,7 +34,7 @@ amean=mean(mean(v.aa0)); v.aa = v.aa0/amean;
 
 v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1; v.tyr=[yr1:yr2]'; v.pct=pct;
 v.opt=opt;           %opt=0: don't save yearly data; opt=1: save yearly data
-opt1=0; v.opt1=opt1; %if FWI is to be computed here opt1 must be set to 1 so that variables are available
+opt1=opt; v.opt1=opt1; %if FWI is to be computed here opt1 must be set to 1 so that variables are available
 
 yea=[365];                                 ddd=cumsum(yea); d.beg_yea=[0 ddd(1:end-1)]+1; d.end_yea=ddd;
 hyr=[90 183 92];                           ddd=cumsum(hyr); d.beg_hyr=[0 ddd(1:end-1)]+1; d.end_hyr=ddd;
@@ -112,7 +112,7 @@ yr1=max(vx.yr1,1950); yr2=max(min(vx.yr2,2020),yr1); v.yr1=yr1; v.yr2=yr2; v.nyr
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a*1000; end; %unit:mm/day
 thresh=[0.2 1 5 10 50 100 200 400 500]; 
-v.pr_era5=extremes_ana(var,pct,thresh,nbin,do_trend,opt1); return
+v.pr_era5=extremes_ana(var,pct,thresh,nbin,do_trend,opt1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %atmospheric variables from ERA5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,17 +236,23 @@ else
   varn='tasmaxday';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[30 35 40]; v.tasmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
   
+% hwday1 and hwtmx1: HW calculations without tasmax correction: pct=90;  
   varn='hwday1';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[]; v.hwday1=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  
   varn='hwtmx1';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[]; v.hwtmx1=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
   
-  varn='hwday2';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
+% hwday2 and hwtmx2: HW calculations with tasmax correction: pct=95;  
+   varn='hwday2';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[]; v.hwday2=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  
   varn='hwtmx2';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[]; v.hwtmx2=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+  
+% hwday3 and hwtmx3: HW calculations with tasmax correction: pct=99;  
+  varn='hwday3';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
+  thresh=[]; v.hwday3=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+  varn='hwtmx3';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
+  thresh=[]; v.hwtmx3=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
 
   varn=["ffmcday","dmcday","dcday","isiday","buiday","fwiday","dsrday"];
   var1=readallyear_reg_fwihw_all(v,exd,varn,exf1,exf2,exf3,ff); 
@@ -259,7 +265,7 @@ else
   thresh=[10]; for k=1:no; var(k).a=var1(k).fwi;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
   thresh=[10]; for k=1:no; var(k).a=var1(k).dsr;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
 end
-return
+
 if (diag==0)
   varlist={'tp','tasmaxday','twbday','vpdday'}; v=clearvar(v,opt,varlist);
   epath = tpath; fext =strcat('_',num2str(yr1),'_',num2str(yr2));

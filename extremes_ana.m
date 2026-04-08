@@ -50,6 +50,7 @@ for k=1:length(var)
   pctall(k,:)=prctile(a,pct,1); 
   amin=pctall(k,2);   disp(sprintf('min=%f',amin));
   amax=pctall(k,end); disp(sprintf('max=%f',amax));
+  if amin==amax; amax=amin+1; disp(sprintf('max=%f',amax)); end;
   bin(k,:) = [amin:(amax-amin)/nbin:amax]; nbin=nbin;
   [count(k,:), edges(k,:)] = histcounts(a,bin(k,:));
   pdfall(k,:)=count(k,:)/sum(count(k,:),2);

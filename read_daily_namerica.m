@@ -228,25 +228,31 @@ if do_compute_fwihw==1
   nt=length(hwday(:,1,1)); nday=nt/v.nyr;
   v.hwday=reshape(hwday,v.nyr,nday,v.nlat,v.nlon);
 else
-  ff='day';  exd=strcat('/fwihw/'); exf1=strcat(expn,'_'); exf2=''; exf3='.fwihwh_thresh.nc';
+  ff='day';  exd=strcat('/fwihw/'); exf1=strcat(expn,'_'); exf2=''; exf3='.fwihw';
   varn='prday_c'; var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[0.2 1 5 10 50 100 200 400 500]; nbin=[];
   v.prday_c=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
   
   varn='tasmaxday_c';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[30 35 40]; v.tasmaxday_c=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-  
+
+% hwday1 and hwtmx1: HW calculations without tasmax correction: pct=95;  
   varn='hwday1';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[]; v.hwday1=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-  
   varn='hwtmx1';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[]; v.hwtmx1=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
   
+% hwday2 and hwtmx2: HW calculations with tasmax correction: pct=95;  
   varn='hwday2';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[]; v.hwday2=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-  
   varn='hwtmx2';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[]; v.hwtmx2=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  
+% hwday3 and hwtmx3: HW calculations with tasmax correction: pct=99;  
+  varn='hwday3';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
+  thresh=[]; v.hwday3=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  varn='hwtmx3';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
+  thresh=[]; v.hwtmx3=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
    
 %  ff='day'; exd=strcat('/fwihw/'); exf1=strcat(expn,'_'); exf2=''; exf3='.fwihw';
 %  fext =strcat('_',num2str(yr1),'_',num2str(yr2)); fext =strcat('_',num2str(yr1),'_101');
@@ -275,7 +281,7 @@ else
   thresh=[10]; for k=1:no; var(k).a=var1(k).dsr;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
 
   varn=["ffmcday_c","dmcday_c","dcday_c","isiday_c","buiday_c","fwiday_c","dsrday_c"];
-  var1=readallyear_reg_fwihw_all(v,exd,varn,exf1,exf2,exf3,ff); var=var1;
+  var1=readallyear_reg_fwihw_all(v,exd,varn,exf1,exf2,exf3,ff); 
   thresh=[10]; for k=1:no; var(k).a=var1(k).ffmc; end; v.fwiday_c.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
   thresh=[10]; for k=1:no; var(k).a=var1(k).dmc;  end; v.fwiday_c.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
   thresh=[10]; for k=1:no; var(k).a=var1(k).dc;   end; v.fwiday_c.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
@@ -286,10 +292,11 @@ else
 end
 
 if (diag==0)
-  v=clearvar(v,opt);
+  varlist={'prday','tasmaxday'};  v=clearvar(v,opt,varlist);
   epath = tpath; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
   fnmat=strcat(epath,expn,'/',expn,fext,'_','opt',num2str(opt),'_diag',num2str(diag),'_read_daily_namerica.mat')
   save(fnmat,'v','-v7.3'); %save(fnmat,'v');
+  return
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

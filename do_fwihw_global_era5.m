@@ -57,6 +57,7 @@ for t=1:nyr; %t=27 corresponds to year 28
 % heatwave analysis using tasmax and precomputed thresh duration of minlen
   var=v.tasmaxday.var(1);
   a=var.a; dofy=var.dofy; mofy=var.mofy; year=var.year; time=var.time;
+  %i=1,2,3 corresponds to pct=90,95,99
   i=1; th=squeeze(thresh(:,i,:,:)); [hw2d1,hwg1,hwday1,hwtmx1]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
   i=2; th=squeeze(thresh(:,i,:,:)); [hw2d2,hwg2,hwday2,hwtmx2]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
   i=3; th=squeeze(thresh(:,i,:,:)); [hw2d3,hwg3,hwday3,hwtmx3]=detect_heatwaves_grid_new(a,th,minlen,year,mofy,dofy);
