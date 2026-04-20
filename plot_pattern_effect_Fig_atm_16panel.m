@@ -322,5 +322,5 @@ set(get(cb0,'title'),'string',p.unit10_bar,'Rotation',0.0);
 %nn=256; cmap=cbrewer('seq','Greens',nn); colormap(cmap);
 %expn='cm4_spear_climsen'; visfig='off'; figpath='./fig_gclimsen/';
 expn='pattern_effect'; visfig='off'; figpath='./fig_land/';
-printnew(visfig,figpath,expn,p.vname);
+printnew(visfig,figpath,expn,p.vname,p.fmt);
 return

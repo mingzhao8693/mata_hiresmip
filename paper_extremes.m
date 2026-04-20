@@ -1,3 +1,24 @@
+o=load('/archive/Ming.Zhao/awg/2023.04/c192_obs/fwihw/c192_obs_1979_2020.hw_thresh_original_and_correct.mat'); o=o.v;
+v=load('/archive/Ming.Zhao/awg/2023.04/c192L33_am4p0_2010climo_newctl/fwihw/c192L33_am4p0_2010climo_newctl_2_101.hw_thresh_original_and_correction.mat'); v=v.v;
+xs=z.v0.xs; xe=z.v0.xe; ys=z.v0.ys; ye=z.v0.ye;
+for i=1:length(v.thresh(1,:,1,1))
+  a=squeeze(v.thresh  (:,2,ys:ye,xs:xe)); cntl.th(i)=compute_season_from_daily(a);
+  a=squeeze(v.thresh_c(:,2,ys:ye,xs:xe)); ctlc.th(i)=compute_season_from_daily(a);
+  a=squeeze(o.thresh  (:,2,ys:ye,xs:xe)); era5.th(i)=compute_season_from_daily(a);
+end
+hw.cntl.th(1,:,:)=cntl.th(2).djf;
+hw.cntl.th(2,:,:)=cntl.th(2).mam; 
+hw.cntl.th(3,:,:)=cntl.th(2).jja;
+hw.cntl.th(4,:,:)=cntl.th(2).son; 
+hw.ctlc.th(1,:,:)=ctlc.th(2).djf;
+hw.ctlc.th(2,:,:)=ctlc.th(2).mam; 
+hw.ctlc.th(3,:,:)=ctlc.th(2).jja;
+hw.ctlc.th(4,:,:)=ctlc.th(2).son; 
+hw.era5.th(1,:,:)=era5.th(2).djf;
+hw.era5.th(2,:,:)=era5.th(2).mam; 
+hw.era5.th(3,:,:)=era5.th(2).jja;
+hw.era5.th(4,:,:)=era5.th(2).son; 
+
 %dmget data
 set tpath = /archive/Ming.Zhao/awg/2023.04/
 set expn  = c192L33_am4p0_2010climo_newctl
@@ -224,14 +245,14 @@ p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
 plot_pattern_effect_Fig_extremes(p)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%HeatWave statistics%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%HeatWave statistics: HWF and HWI Intensity%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-nsea={'DJF','MAM','JJA','SON'}; isea=4; m=isea; ipct=9; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9];
+nsea={'DJF','MAM','JJA','SON'}; isea=3; m=isea; ipct=9; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9];
 A0='ERA5'; a0='Control'; a1='SPEAR-pattern M;~'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
-p.vname='hwf2_hwf2c_tasmax2_tasmax2c'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-del=' $\Delta$'; s0='HWF;'; s1='HWFc; '; s2='TASMAX; '; s3='TASMAXc; ';
+p.vname='hwf2_hwf2c_hwi2_hwi2c'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
+del=' $\Delta$'; s0='HWF;'; s1='HWFc; '; s2='HWI; '; s3='HWIc; ';
 A0=strcat(A0,'~(',p.sea,');~'); a0=strcat(a0,'~(',p.sea,');~');;
 p.S0 =strcat(A0,s0); p.s0 =strcat(a0,s0); p.s1 =strcat(a1,del,s0); p.s2 =strcat(a2,del,s0); 
 p.S3 =strcat(A0,s1); p.s3 =strcat(a0,s1); p.s4 =strcat(a1,del,s1); p.s5 =strcat(a2,del,s1); 
@@ -246,11 +267,11 @@ p.unit7 ='$\rm{KK^{-1}}$';      p.unit7_bar ='\rm{KK^{-1}}';
 p.unit9 ='$\rm{^{\circ}C}$';    p.unit9_bar ='\rm{^{\circ}C}';
 p.unit10='$\rm{KK^{-1}}$';      p.unit10_bar='\rm{KK^{-1}}';
 
-p.cmin0= 0.0; p.cmax0=4;   p.cmin1 =-20;  p.cmax1 =20;
-p.cmin3= 0.0; p.cmax3=4;   p.cmin4 =-20;  p.cmax4 =20;
-p.cmin6= 0.0; p.cmax6=40;  p.cmin7 =-4;   p.cmax7 =4;
-p.cmin9= 0.0; p.cmax9=40;  p.cmin10=-4;   p.cmax10=4;
-p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=0;
+p.cmin0= 0.0; p.cmax0=4;  p.cmin1 =-20;  p.cmax1 =20;
+p.cmin3= 0.0; p.cmax3=4;  p.cmin4 =-20;  p.cmax4 =20;
+p.cmin6= 0.0; p.cmax6=40; p.cmin7 =-2;   p.cmax7 =2;
+p.cmin9= 0.0; p.cmax9=40; p.cmin10=-2;   p.cmax10=2;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=1;
 p.dT1=1.22; p.dT2=1.24;
 
 v=z.v0;
@@ -267,8 +288,8 @@ id=(id==1); aa=p.aa(id); aa=aa/mean(aa); p.id=id;
 
 v=z.v0; 
 pct_th=v.pct; spct=sprintf( '%4.2fth',pct_th(ipct));
-p.S0=strcat(p.S0);p.S3=strcat(p.S3);p.S6=strcat(p.S6,'~',spct);p.S9=strcat(p.S9,'~',spct);
-p.s0=strcat(p.s0);p.s3=strcat(p.s3);p.s6=strcat(p.s6,'~',spct);p.s9=strcat(p.s9,'~',spct);
+p.S0=strcat(p.S0);p.S3=strcat(p.S3);p.S6=strcat(p.S6);p.S9=strcat(p.S9);
+p.s0=strcat(p.s0);p.s3=strcat(p.s3);p.s6=strcat(p.s6);p.s9=strcat(p.s9);
 p.vname=strcat(p.vname,'_ipct_',num2str(ipct))
 
 %HWday2
@@ -293,22 +314,22 @@ if (p.do_bias); a=a0-A0; p.v3=a; p.dv3=mean(a(id).*aa); p.cmin3= p.cmin1; p.cmax
 a=(a1-a0)/p.dT1; p.v4=a; p.dv4=mean(a(id).*aa);
 a=(a2-a0)/p.dT2; p.v5=a; p.dv5=mean(a(id).*aa);
 
-%taxmaxday
-v=z.vo.tasmaxday; A0=squeeze(v.pct(m,ipct,:,:));
-v=z.v0.tasmaxday; a0=squeeze(v.pct(m,ipct,:,:));
-v=z.w1.tasmaxday; a1=squeeze(v.pct(m,ipct,:,:));
-v=z.w2.tasmaxday; a2=squeeze(v.pct(m,ipct,:,:));
+%HWtmx
+v=z.vo.hwtmx2; A0=squeeze(v.av(m,:,:)./z.vo.hwday2.av(m,:,:))+squeeze(hw.era5.th(m,:,:));
+v=z.v0.hwtmx1; a0=squeeze(v.av(m,:,:)./z.v0.hwday1.av(m,:,:))+squeeze(hw.cntl.th(m,:,:));
+v=z.w1.hwtmx1; a1=squeeze(v.av(m,:,:)./z.w1.hwday1.av(m,:,:))+squeeze(hw.cntl.th(m,:,:));
+v=z.w2.hwtmx1; a2=squeeze(v.av(m,:,:)./z.w2.hwday1.av(m,:,:))+squeeze(hw.cntl.th(m,:,:));
 a=A0; p.V6=a; p.dV6=mean(a(id).*aa);
 a=a0; p.v6=a; p.dv6=mean(a(id).*aa);
 if (p.do_bias); a=a0-A0; p.v6=a; p.dv6=mean(a(id).*aa); p.cmin6= p.cmin7; p.cmax6=p.cmax7; end;
 a=(a1-a0)/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa);
 a=(a2-a0)/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa);
 
-%taxmaxday_c
-v=z.vo.tasmaxday;   A0=squeeze(v.pct(m,ipct,:,:));
-v=z.v0.tasmaxday_c; a0=squeeze(v.pct(m,ipct,:,:));
-v=z.w1.tasmaxday_c; a1=squeeze(v.pct(m,ipct,:,:));
-v=z.w2.tasmaxday_c; a2=squeeze(v.pct(m,ipct,:,:));
+%HWtmx_c
+v=z.vo.hwtmx2; A0=squeeze(v.av(m,:,:)./z.vo.hwday2.av(m,:,:))+squeeze(hw.era5.th(m,:,:));
+v=z.v0.hwtmx2; a0=squeeze(v.av(m,:,:)./z.v0.hwday2.av(m,:,:))+squeeze(hw.ctlc.th(m,:,:));
+v=z.w1.hwtmx2; a1=squeeze(v.av(m,:,:)./z.w1.hwday2.av(m,:,:))+squeeze(hw.ctlc.th(m,:,:));
+v=z.w2.hwtmx2; a2=squeeze(v.av(m,:,:)./z.w2.hwday2.av(m,:,:))+squeeze(hw.ctlc.th(m,:,:));
 a=A0; p.V9=a; p.dV9=mean(a(id).*aa);
 a=a0; p.v9=a; p.dv9=mean(a(id).*aa);
 if (p.do_bias); a=a0-A0; p.v9=a; p.dv9=mean(a(id).*aa); p.cmin9= p.cmin10; p.cmax9=p.cmax10; end;
@@ -319,7 +340,7 @@ a=id; a(:,:)=0;
 p.isig1=a; p.isig2=a; p.isig4 =a; p.isig5 =a; 
 p.isig7=a; p.isig8=a; p.isig10=a; p.isig11=a;
 
-p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
+p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
 plot_pattern_effect_Fig_extremes(p)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -367,9 +388,9 @@ a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a;
 id=(id==1); aa=p.aa(id); aa=aa/mean(aa); p.id=id; 
 
 v=z.v0; 
-pct_th=v.pct; spct=sprintf( '%4.2fth',pct_th(ipct));
-p.S0=strcat(p.S0,'~',spct);p.S3=strcat(p.S3,'~',spct);p.S6=strcat(p.S6,'~',spct);p.S9=strcat(p.S9,'~',spct);
-p.s0=strcat(p.s0,'~',spct);p.s3=strcat(p.s3,'~',spct);p.s6=strcat(p.s6,'~',spct);p.s9=strcat(p.s9,'~',spct);
+pct_th=v.pct; spct=sprintf( '%4.2fth',pct_th(ipct));  iipct=3; ispct=sprintf( '%4.2fth',pct_th(iipct));
+p.S0=strcat(p.S0,'~',spct);p.S3=strcat(p.S3,'~',spct);p.S6=strcat(p.S6,'~',spct);p.S9=strcat(p.S9,'~',ispct);
+p.s0=strcat(p.s0,'~',spct);p.s3=strcat(p.s3,'~',spct);p.s6=strcat(p.s6,'~',spct);p.s9=strcat(p.s9,'~',ispct);
 p.vname=strcat(p.vname,'_ipct_',num2str(ipct))
 
 %tasday
@@ -406,10 +427,11 @@ a=(a1-a0)/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa);
 a=(a2-a0)/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa);
 
 %RHday
-v=z.vo.rhday; A0=squeeze(v.pct(m,ipct,:,:));
-v=z.v0.rhday; a0=squeeze(v.pct(m,ipct,:,:));
-v=z.w1.rhday; a1=squeeze(v.pct(m,ipct,:,:));
-v=z.w2.rhday; a2=squeeze(v.pct(m,ipct,:,:));
+iipct=3;
+v=z.vo.rhday; A0=squeeze(v.pct(m,iipct,:,:));
+v=z.v0.rhday; a0=squeeze(v.pct(m,iipct,:,:));
+v=z.w1.rhday; a1=squeeze(v.pct(m,iipct,:,:));
+v=z.w2.rhday; a2=squeeze(v.pct(m,iipct,:,:));
 a=A0; p.V9=a; p.dV9=nanmean(a(id).*aa);
 a=a0; p.v9=a; p.dv9=nanmean(a(id).*aa);
 if (p.do_bias); a=a0-A0; p.v9=a; p.dv9=mean(a(id).*aa); p.cmin9= p.cmin10; p.cmax9=p.cmax10; end;

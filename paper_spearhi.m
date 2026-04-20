@@ -5,16 +5,16 @@ opt='obs'; v=readarmap_sim(tpath,expn,yr1,yr2,ardir,opt);
 opt=1;     v=readar_all   (tpath,expn,yr1,yr2,ardir,opt);
 
 tpath='/archive/Ming.Zhao/spear_hi_8_dev/'; ardir='AR_climlmt';
-expn='c384_obs'; yr1=1959; yr2=1959; opt='obs';
+expn='c384_obs'; yr1=1979; yr2=2020; opt='obs';
 v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt);
 opt=1;     v=readarall_spearhi(tpath,expn,yr1,yr2,ardir,opt);
            v=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt);
 
 tpath='/archive/Ming.Zhao/spear_hi_8_dev/'; ardir='AR_climlmt';
-expn='SPEAR_c384_OM4p08_Control_1990_A13'; yr1=301; yr2=302;
-opt=1; v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt);
-opt=1; v=readarall_spearhi(tpath,expn,yr1,yr2,ardir,opt);
-       v=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+expn='SPEAR_c384_OM4p08_Control_1990_A13'; yr1=301; yr2=320; opt=1;
+v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+v=readarall_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+v=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Analysis

@@ -9,7 +9,7 @@ g.lonx=ncread(fn,'lon'); g.latx=ncread(fn,'lat'); g.opt=opt;
 fn=strcat(tpath,expn,'/atmos.static.nc'); v.lon=ncread(fn,'lon'); 
 v.lat=ncread(fn,'lat'); a=ncread(fn,'land_mask'); v.lm=a';
 
-v.lm(v.lm>=0.5)=1; v.lm(v.lm<0.5)=0; g.lon=v.lon; g.lat=v.lat;
+v.lm(v.lm>=0.5)=1; v.lm(v.lm<0.5)=0; g.lon=v.lon; g.lat=v.lat; v.g=g;
 
 v.nlat=length(v.lat); v.nlon=length(v.lon); v.ngrid=v.nlat*v.nlon;
 R0=6371.0e3; dtor=1./180.*pi;
@@ -47,11 +47,11 @@ for t=1:v.nyr
   v.time=ncread(fn,'time'); v.nt=length(v.time); b=ncread(fn,'lat');
   a=ncread(fn,'shape'); shape=permute(a,[3 2 1]); 
   id=isnan(shape); shape(id)=0; size(shape)
-  varn='iwty';
-  fn=strcat(tpath,expn,'/atmos_data/','atmos.',yr,'010100-',yr,'123123.',varn,'.nc');disp(fn);
+  if strcmp(expn,'c384_obs'); varn='ivty'; pre='ERA5.'; else; varn='iwty'; pre='atmos.'; end;
+  fn=strcat(tpath,expn,'/atmos_data/',pre,yr,'010100-',yr,'123123.',varn,'.nc');disp(fn);
   a=ncread(fn,varn); ivty=permute(a,[3 2 1]); v.nt=length(ivty(:,1,1));
-  varn='iwtx';
-  fn=strcat(tpath,expn,'/atmos_data/','atmos.',yr,'010100-',yr,'123123.',varn,'.nc');disp(fn);
+  if strcmp(expn,'c384_obs'); varn='ivtx'; pre='ERA5.'; else; varn='iwtx'; pre='atmos.'; end;
+  fn=strcat(tpath,expn,'/atmos_data/',pre,yr,'010100-',yr,'123123.',varn,'.nc');disp(fn);
   a=ncread(fn,varn); ivtx=permute(a,[3 2 1]);
   ivt=sqrt(ivtx.*ivtx+ivty.*ivty);
   

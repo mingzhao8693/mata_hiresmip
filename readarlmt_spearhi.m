@@ -1,16 +1,14 @@
 function [v]=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt)
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 %tpath='/archive/Ming.Zhao/spear_hi_8_dev/'; ardir='AR_climlmt';
-%expn ='SPEAR_c384_OM4p08_Control_1990_A13'; yr1=301; yr2=302; opt='mod';
+%expn ='SPEAR_c384_OM4p08_Control_1990_A13'; yr1=301; yr2=302; opt=1;
+
+fn=strcat(tpath,expn,'/atmos.static.c192.nc');
+g.lonx=ncread(fn,'lon'); g.latx=ncread(fn,'lat'); g.opt=opt;
 
 fn=strcat(tpath,expn,'/atmos.static.nc'); v.lon=ncread(fn,'lon'); v.expn=expn;
-if strcmp(opt,'obs')
-  lat=ncread(fn,'lat'); v.lat=flipud(lat);
-  a=ncread(fn,'land_mask'); a=a'; v.lm=flipud(a);
-else
-  v.lat=ncread(fn,'lat'); a=ncread(fn,'land_mask'); v.lm=a';
-end
-v.lm(v.lm>=0.5)=1; v.lm(v.lm<0.5)=0;
+v.lat=ncread(fn,'lat'); a=ncread(fn,'land_mask'); v.lm=a';
+v.lm(v.lm>=0.5)=1; v.lm(v.lm<0.5)=0; g.lon=v.lon; g.lat=v.lat; v.g=g;
 
 v.nlat=length(v.lat); v.nlon=length(v.lon); v.ngrid=v.nlat*v.nlon;
 R0=6371.0e3; dtor=1./180.*pi;
@@ -51,7 +49,11 @@ for t=1:v.nyr
   i1=12*(t-1)+1; i2=i1+12-1;
   ivt(i1:i2,:,:)=a;
 end
-v.ivt_limit=reshape(ivt,12,v.nyr,v.nlat,v.nlon);
+
+if g.opt==1; ivt=interp_grid(ivt,g.lonx,g.latx,g.lon,g.lat,1); end; %interp to lower resolution (c192)
+a=size(ivt); nlat=a(2); nlon=a(3);
+
+v.ivt_limit=reshape(ivt,12,v.nyr,nlat,nlon);
 v.ivt_limit_clm=get_clm_ann(v.ivt_limit);
 
 epath='/work/miz/mat_AR/'; epath=tpath;
