@@ -56,6 +56,9 @@ a=size(ivt); nlat=a(2); nlon=a(3);
 v.ivt_limit=reshape(ivt,12,v.nyr,nlat,nlon);
 v.ivt_limit_clm=get_clm_ann(v.ivt_limit);
 
+xt=[v.yr1:v.yr2]; alpha=0.1; %a=permute(v.ivt_limit,[2 1 3 4]);
+v.ivt_limit_trend=get_trend_TSR_simple(v.ivt_limit,xt,alpha);
+
 epath='/work/miz/mat_AR/'; epath=tpath;
 fnmat=strcat(epath,expn,'/',expn,'_',num2str(yr1),'_',num2str(yr2),'_readarlmt.mat')
 

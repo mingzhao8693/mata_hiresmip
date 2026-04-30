@@ -21,8 +21,6 @@ ano_org=reshape(anom, v.nt,1);
 dd1=20; dd2=100;
 ano_iso=mybandpass(ano_org,dd1,dd2);
 
-var_ano_iso=var(ano_iso);
-
 %winter time TS: t1=Nov01; t2=Apr30
 for n=1:v.nyr-1;
   %t1(n)=n*10*30+1; t2(n)=t1(n)+30*6; %Nov-to-Apr, 6mon after Nov 1

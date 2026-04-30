@@ -1,4 +1,4 @@
-function tr=compute_trend(v,o,s,p)
+function tr=compute_trend_mod(v,o,s,p)
 y1=p.y1; y2=p.y2; 
 i1=v.t1; i2=v.t2-1; Ym=[i1:i2]'; m1=1; m2=12; alpha=0.8;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,86 +16,8 @@ imsk=v.sfc.ice.all  (i1:i2,m1:m2,:,:);
 ts=compute_gocean_sst_mon(vmod,imsk,s.lm,s.aa);%a=squeeze(mean(vmod,2));
 ts.findit=findit; ts.xt_mod=xt_mod;
 a=get4season_all(vmod);
-tr.tsurf.mod=get_trend_TSR(s,a,xt_mod,alpha);
-tr.tsurf.mod.ts=ts;
-%HadISST%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1870; ib=2021; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2);
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.sst_1870_2020.all(i1:i2,m1:m2,:,:);
-imsk=o.sfc.ice_1870_2020.all(i1:i2,m1:m2,:,:);
-ts=compute_gocean_sst_mon(vobs,imsk,s.lm,s.aa);
-ts.findit=findit; ts.xt_obs=xt_obs;
-ts.ice=imsk; %a=squeeze(mean(vobs,2));
-a=get4season_all(vobs);
-tr.sst.hadisst=get_trend_TSR(s,a,xt_obs,alpha);
-tr.sst.hadisst.ts=ts;
-%ERSSTv5 1870-2020%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1870; ib=2020; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2);
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.ersst_1870_2020.all(i1:i2,m1:m2,:,:);
-imsk=(vobs<0);
-ts=compute_gocean_sst_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2)); 
-ts.findit=findit; ts.xt_obs=xt_obs;
-a=get4season_all(vobs);
-tr.sst.ersst=get_trend_TSR(s,a,xt_obs,alpha);
-tr.sst.ersst.ts=ts;
-%COBESST% 1891-2020%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1891; ib=2020; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2);
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.cobesst_1891_2020.all(i1:i2,m1:m2,:,:);
-imsk=(vobs<0);
-ts=compute_gocean_sst_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2)); 
-ts.findit=findit; ts.xt_obs=xt_obs;
-a=get4season_all(vobs);
-tr.sst.cobesst=get_trend_TSR(s,a,xt_obs,alpha);
-tr.sst.cobesst.ts=ts;
-%COBE2SST 1850-2019%%%%%%%%%%%%%%%%%%%%%%%%%%%
-a=o.sfc.cobe2sst_1850_2019.all; a(end+1,:,:,:)=a(end,:,:,:);
-o.sfc.cobe2sst_1850_2020.all=a; %extend one more year to 2020
-ia=1850; ib=2020; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2);
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.cobe2sst_1850_2020.all(i1:i2,m1:m2,:,:);
-imsk=(vobs<0);
-ts=compute_gocean_sst_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2)); 
-ts.findit=findit; ts.xt_obs=xt_obs;
-a=get4season_all(vobs);
-tr.sst.cobe2sst=get_trend_TSR(s,a,xt_obs,alpha);
-tr.sst.cobe2sst.ts=ts;
-%ERA5%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1959; ib=2021; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.skt_era5.all(i1:i2,m1:m2,:,:);
-imsk=(vobs<0);
-ts=compute_gocean_sst_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2)); 
-ts.findit=findit; ts.xt_obs=xt_obs;
-a=get4season_all(vobs);
-tr.tsurf_obs_1979_2020=get_trend_TSR(s,a,xt_obs,alpha);
-tr.tsurf_obs_1979_2020.ts=ts;
+tr.tsurf=get_trend_TSR(s,a,xt_mod,alpha);
+tr.tsurf.ts=ts;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface precip trend 
@@ -113,68 +35,8 @@ imsk=v.sfc.ice.all(i1:i2,m1:m2,:,:);
 ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa); %a=squeeze(mean(vmod,2));
 ts.findit=findit; ts.xt_mod=xt_mod;
 a=get4season_all(vmod);
-tr.pcp.mod=get_trend_TSR(s,a,xt_mod,alpha);
-tr.pcp.mod.ts=ts;
-%GPCPv2.3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1979; ib=2020; Y=[ia:ib]';%GPCPv2.3 precip start and end year
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.pcp.all(i1:i2,m1:m2,:,:); %GPCPv2.3
-imsk=(vobs<0);
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
-ts.findit=findit; ts.xt_obs=xt_obs; %a=squeeze(mean(vobs,2));
-a=get4season_all(vobs);
-tr.pcp.obs_gpcp=get_trend_TSR(s,a,xt_obs,alpha);
-tr.pcp.obs_gpcp.ts=ts;
-%MSWEP%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1979; ib=2020; Y=[ia:ib]'; %MSWEP precip start and end year
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.pcp_mswep.all(i1:i2,m1:m2,:,:);
-imsk=(vobs<0);
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
-ts.findit=findit; ts.xt_obs=xt_obs; %a=squeeze(mean(vobs,2));
-a=get4season_all(vobs);
-tr.pcp.obs_mswep=get_trend_TSR(s,a,xt_obs,alpha);
-tr.pcp.obs_mswep.ts=ts;
-%GPCC%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1891; ib=2020; Y=[ia:ib]'; %GPCC precip start and end year
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0
-end
-vobs=o.sfc.pcp_gpcc.all(i1:i2,m1:m2,:,:);
-imsk=(vobs<0);
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
-ts.findit=findit; ts.xt_obs=xt_obs; %a=squeeze(mean(vobs,2));
-a=get4season_all(vobs);
-tr.pcp.obs_gpcc=get_trend_TSR(s,a,xt_obs,alpha);
-tr.pcp.obs_gpcc.ts=ts;
-%ERA5%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1940; ib=2023; Y=[ia:ib]'; %ERA5 precip start and end year
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0
-end
-vobs=o.sfc.pcp_era5.all(i1:i2,m1:m2,:,:);
-imsk=(vobs<0);
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa);
-ts.findit=findit; ts.xt_obs=xt_obs; %a=squeeze(mean(vobs,2));
-a=get4season_all(vobs);
-tr.pcp.obs_era5=get_trend_TSR(s,a,xt_obs,alpha);
-tr.pcp.obs_era5.ts=ts;
+tr.pcp=get_trend_TSR(s,a,xt_mod,alpha);
+tr.pcp.ts=ts;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute sea level pressure trend 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -189,23 +51,8 @@ imsk=v.sfc.ice.all(i1:i2,m1:m2,:,:);
 ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa); %a=squeeze(mean(vmod,2));
 ts.findit=findit; ts.xt_mod=xt_mod;
 a=get4season_all(vmod);
-tr.slp.mod=get_trend_TSR(s,a,xt_mod,alpha);
-tr.slp.mod.ts=ts;
-%ERA5%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1959; ib=2021; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.slp_era5.all(i1:i2,m1:m2,:,:)*0.01;
-imsk=(vobs<0);
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2));
-ts.findit=findit; ts.xt_mod=xt_mod;
-a=get4season_all(vobs);
-tr.slp.obs_era5=get_trend_TSR(s,a,xt_obs,alpha);
-tr.slp.obs_era5.ts=ts;
+tr.slp=get_trend_TSR(s,a,xt_mod,alpha);
+tr.slp.ts=ts;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface air temperature trend
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -220,23 +67,8 @@ imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
 ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa); %a=squeeze(mean(vmod,2));
 ts.findit=findit; ts.xt_mod=xt_mod;
 a=get4season_all(vmod);
-tr.tref.mod=get_trend_TSR(s,a,xt_mod,alpha);
-tr.tref.mod.ts=ts;
-%ERA5%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1959; ib=2021; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.t2m_era5.all(i1:i2,m1:m2,:,:);
-imsk=(vobs<0);
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2));
-ts.findit=findit; ts.xt_mod=xt_mod;
-a=get4season_all(vobs);
-tr.tref.obs_era5=get_trend_TSR(s,a,xt_obs,alpha);
-tr.tref.obs_era5.ts=ts;
+tr.tref=get_trend_TSR(s,a,xt_mod,alpha);
+tr.tref.ts=ts;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface RH trend
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -251,22 +83,8 @@ imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
 ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa); %a=squeeze(mean(vmod,2));
 ts.findit=findit; ts.xt_mod=xt_mod;
 a=get4season_all(vmod);
-tr.rhref.mod=get_trend_TSR(s,a,xt_mod,alpha);
-tr.rhref.mod.ts=ts;
-%ERA5%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1959; ib=2021; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.rh2m_era5.all(i1:i2,m1:m2,:,:)*100;
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2));
-ts.findit=findit; ts.xt_mod=xt_mod;
-a=get4season_all(vobs);
-tr.rhref.obs=get_trend_TSR(s,a,xt_obs,alpha);
-tr.rhref.obs.ts=ts;
+tr.rhref=get_trend_TSR(s,a,xt_mod,alpha);
+tr.rhref.ts=ts;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface latent heat flux (evap) trend
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -281,22 +99,8 @@ imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
 ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa); %a=squeeze(mean(vmod,2));
 ts.findit=findit; ts.xt_mod=xt_mod;
 a=get4season_all(vmod);
-tr.evap.mod=get_trend_TSR(s,a,xt_mod,alpha);
-tr.evap.mod.ts=ts;
-%ERA5%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1959; ib=2021; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2); 
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.mslhf_era5.all(i1:i2,m1:m2,:,:);
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2));
-ts.findit=findit; ts.xt_mod=xt_mod;
-a=get4season_all(vobs);
-tr.evap.obs=get_trend_TSR(s,a,xt_obs,alpha);
-tr.evap.obs.ts=ts;
+tr.evap=get_trend_TSR(s,a,xt_mod,alpha);
+tr.evap.ts=ts;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface sensible heat flux (evap) trend
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -311,24 +115,13 @@ imsk=v.sfc.ice.all (i1:i2,m1:m2,:,:);
 ts=compute_gmean_mon(vmod,imsk,s.lm,s.aa); %a=squeeze(mean(vmod,2));
 ts.findit=findit; ts.xt_mod=xt_mod;
 a=get4season_all(vmod);
-tr.shflx.mod=get_trend_TSR(s,a,xt_mod,alpha);
-tr.shflx.mod.ts=ts;
-%ERA5%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ia=1959; ib=2021; Y=[ia:ib]';
-i1=find(Y==y1); i2=find(Y==y2);
-if ~isempty(i1) & ~isempty(i2)
-  xt_obs=Y(i1:i2); findit=1;
-else
-  i1=1; i2=ib-ia+1; xt_obs=[ia:ib]; findit=0;
-end
-vobs=o.sfc.mslhf_era5.all(i1:i2,m1:m2,:,:);
-ts=compute_gmean_mon(vobs,imsk,s.lm,s.aa); %a=squeeze(mean(vobs,2));
-ts.findit=findit; ts.xt_mod=xt_mod;
-a=get4season_all(vobs);
-tr.shflx.obs=get_trend_TSR(s,a,xt_obs,alpha);
-tr.shflx.obs.ts=ts;
+tr.shflx=get_trend_TSR(s,a,xt_mod,alpha);
+tr.shflx.ts=ts;
 
 return
+
+
+
 
 z1=v.skt_mod_1979_2020.trend; c1=-0.5; c2=0.5; vname='tsurf';
 z2=v.skt_obs_1979_2020.trend;

@@ -2,7 +2,7 @@ function v=tsana_hiresmip_new(o,tpath,p)
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 %fn=strcat('/work/miz/mat_hiresmip/obs_global_to_c96.mat'); load(fn); o.mod='c96';
 % $$$ p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c192'; p.myr=1; p.opt=0; 
-% $$$ %tpath='/archive/Ming.Zhao/am4_spear/';
+% $$$ tpath='/archive/Ming.Zhao/am4_spear/';
 % $$$ %p.yr1='1921'; p.yr2='2100';
 % $$$ %p.syr=101; p.nyr=4; p.y1=2021; p.y2=2060; 
 % $$$ %p.syr=59;  p.nyr=42; p.y1=1979; p.y2=2020; 
@@ -24,7 +24,7 @@ yr1=p.yr1; yr2=p.yr2; syr=p.syr; nyr=p.nyr; myr=p.myr; y1=p.y1; y2=p.y2;
 expn=p.expn; latlon=p.latlon; region=p.region; mod=p.mod; opt=p.opt;
 mext=strcat(num2str(y1),'-',num2str(y2),'_',num2str(yr1),'-',num2str(yr2));
 mext=strcat(mext,'_do_3d_atm_',num2str(p.do_3d_atm));mext
-mext=strcat(mext,'_do_all_',num2str(p.do_all));mext
+mext=strcat(mext,'_do_trend_',num2str(p.do_trend));mext
 mext=strcat(o.mod,'_tsana_hiresmip_new_',mext,'.mat');
 
 mpath=strcat(tpath,expn,'/');%mpath='/work/miz/mat_hiresmip/';
@@ -87,6 +87,10 @@ if (exist(fname,'file') == 2)
 %  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon);
 %  v.sfc.ice.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
 %  v.sfc.ice.al0=getts(v.sfc.ice.all,o);
+end
+
+if p.do_trend_obs
+  tr=compute_trend_obs(v,o,s,p); v.tr.obs=tr; 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -211,6 +215,12 @@ if (exist(fname,'file') == 2)
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  
   v.sfc.wref=extracts(tmp,v,o.sfc.wref,myr,0);
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if p.do_trend
+  tr=compute_trend_mod(v,o,s,p); v.tr.mod=tr;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %land_cmip mrsos: moisture in upper soil analysis%%%%%%%%%%%%%%%%
 fext_land =strcat('land_cmip.',yr1,'01-',yr2,'12.'); 
@@ -551,9 +561,9 @@ if (exist(fname,'file') == 2)
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if p.do_trend
-  tr=compute_trend(v,o,s,p); v.tr=tr;
-end
+%if p.do_trend
+%  tr=compute_trend(v,o,s,p); v.tr=tr;
+%end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if (opt==0); save_matfile(v,mpath,expn,region,mext,opt); return; end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

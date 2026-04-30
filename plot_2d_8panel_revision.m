@@ -141,7 +141,8 @@ end
 
 %xy=[0 360 -90 90]; 
 xl='longitude'; yl='latitude'; xy=p.xy;
-unit='$~~\rm{W\,m^{-2}}$'; %unit='%';
+%unit='$~~\rm{W\,m^{-2}}$'; %unit='%';
+unit=p.un;
 
 pms=[ 0, 0, 900, 900]*1.15; lw=2; row=4; col=2;
 handle = figure('Position', pms,'visible','on');
@@ -256,4 +257,4 @@ end
 %end
 
 visfig='off'; figpath='./fig_cre/'; %expn='storm_cre'; 
-printnew(visfig,figpath,p.expn,p.vn);
+printnew(visfig,figpath,p.expn,p.vn,p.fmt);

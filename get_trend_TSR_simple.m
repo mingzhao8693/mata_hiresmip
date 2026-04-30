@@ -1,6 +1,8 @@
 function v=get_trend_TSR_simple(x,xt,alpha)
 %note xt must be column vector otherwise it returns with NaN
 'get_trend_TSR_simple...'
+%note xt must be column vector otherwise it returns with NaN
+if ~iscolumn(xt); xt=xt'; end;
 [nsea nyr nlat nlon]=size(x);
 for m=1:nsea
   for j=1:nlat

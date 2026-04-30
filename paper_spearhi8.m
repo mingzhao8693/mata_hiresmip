@@ -1,114 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/backup/ECMWF/'; 
-expn='ERAI_6h_DATA'; ardir='AR_climlmt'; yr1=2001;yr2=2014; pct=[99 99.9];
-opt='obs'; addtc_to_AR_obs_ceres(tpath,expn,yr1,yr2,opt,-20,238);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2022.03/'; 
-expn='c192_obs'; ardir='AR_climlmt'; yr1=1959;yr2=2000; pct=[99 99.9];
-opt='obs'; addtc_to_AR_obs(tpath,expn,yr1,yr2,opt,-30);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/'; 
-expn='c192L33_am4p0_2010climo_newctl_p1K'; ardir='AR_climlmt'; 
-expn='c192L33_am4p0_2010climo_newctl_4xCO2'; ardir='AR_climlmt'; 
-expn='c192L33_am4p0_2010climo'; ardir='AR_climlmt'; 
-expn='c192L33_am4p0_2010climo_4xCO2_p4K'; ardir='AR_climlmt'; 
-expn='c192L33_am4p0_2010climo_trend_1979_2020'; ardir='AR_climlmt'; 
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear'; ardir='AR_climlmt'; 
-expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010climo'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010GHG'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010GHG_Photo'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010aero'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010VolOzone'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_1850climo_pisst_obs'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_1850climo_pisst_uniform'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010climo_p2K'; ardir='AR_climlmt'; 
-yr1=0002; yr2=0101; pct=[99 99.9]; use_obs_tc=0;
-opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/'; 
-%expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2_p2K'; ardir='AR_climlmt';
-%expn='c192L33_CM4X_amip_p2K'; ardir='AR_climlmt'; 
-%expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_amip_18'; ardir='AR_climlmt'; 
-yr1=1974; yr2=2020; pct=[99 99.9]; use_obs_tc=0;
-opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2022.03/'; diag=2; 
-expn='c192L33_am4p0_2010climo'; ardir='AR_climlmt';yr1=0002;yr2=0101;pct=[99 99.9];
-expn='c192L33_am4p0_2010climo_trend_1979_2020'; ardir='AR_climlmt';yr1=0002;yr2=0101;pct=[99 99.9];
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear'; ardir='AR_climlmt';yr1=0002;yr2=0101;pct=[99 99.9];
-expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; ardir='AR_climlmt';yr1=0002;yr2=0101;pct=[99 99.9];
-opt='MC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='AR';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='TC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='AL';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='PR01'; v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='P02';  v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='PB';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='PC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='PD';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-% $$$ opt='P00';  v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-% $$$ opt='P01';  v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-% $$$ opt='PA';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/'; ardir='AR_climlmt';
-pct=[99 99.9]; use_obs_tc=0; opt='mod';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m17';
-yr1=0047; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m26';
-yr1=0070; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';
-yr1=0027; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';
-yr1=0077; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';
-yr1=0009; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient';
-yr1=0005; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient';
-yr1=0002; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';
-yr1=0002; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';
-yr1=0002; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs';
-yr1=0007; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';
-yr1=0002; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';
-yr1=0002; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs';
-yr1=0093; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/'; diag=2;
-ardir='AR_climlmt';yr1=0002;yr2=0101;pct=[99 99.9]; %yr2=0021;
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';
-opt='MC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='AR';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='TC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-opt='AL';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 latlon=[0 360 -90 90];region='global';
 %o=readobs(latlon,region,'c192',true);
@@ -116,357 +7,595 @@ latlon=[0 360 -90 90];region='global';
 %o=readobs(latlon,region,'c96',true);
 %o=readobs(latlon,region,'c48',false);
 %fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c48.mat'); load(fn); o.mod='c48';
-fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c96.mat'); load(fn); o.mod='c96'; z.V0=o;
-fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c192do_erai_3d_1.mat'); load(fn); o.mod='c192';
+fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c96.mat'); load(fn); o.mod='c96';
+%fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c192do_erai_3d_1.mat'); load(fn); o.mod='c192';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
-p.do_trend=0; p.do_scalar=0; p.myr=1; p.opt=2; p.do_3d_atm=1; p.do_all=1;
-p.yr1='0002'; p.yr2='0101'; p.syr=1; p.nyr=100; p.y1=0002; p.y2=0101; 
-p.yr1='0002'; p.yr2='0101'; p.syr=1; p.nyr=2; p.y1=0002; p.y2=003; 
-tpath='/archive/Ming.Zhao/awg/2023.04/';
-p.mod='c192'; p.do_3d_atm=0; p.do_all=1;
-p.yr1='0002'; p.yr2='0101'; p.syr=1; p.nyr=5; p.y1=0002; p.y2=0010; p.opt=2; p.do_3d_atm=0; p.mod='c192';
-p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_south_pacific_10s_45s_obs'; v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs'; v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs';         v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_newctl';                  v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_newctl_p1K';              v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_newctl_4xCO2';            v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_old';                     v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_p4K';                     v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_p1K';                     v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; v=tsana_hiresmip_new(o,tpath,p);
+p.do_trend=1; p.do_trend_obs=0; p.do_scalar=0; p.myr=5; p.opt=1; p.do_3d_atm=1; p.do_all=1;
+tpath='/archive/Ming.Zhao/spear_hi_8_dev/';
 
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs'; v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';    v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs'; v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';    v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';  v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient'; v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient'; v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';v=tsana_hiresmip_new(o,tpath,p);
+p.yr1='0101'; p.yr2='0200'; p.syr=1;  
+p.nyr=100; p.y1=0001; p.y2=0100; p.expn='SPEAR_c384_OM4p08_Control_1990_A13';   v=tsana_hiresmip_new(o,tpath,p);
+
+p.yr1='1991'; p.yr2='2100'; p.syr=1; 
+p.nyr=110; p.y1=1991; p.y2=2100; p.expn='SPEAR_c384_OM4p08_Hist_SSP245_IC1991_A13'; v=tsana_hiresmip_new(o,tpath,p);
+
+p.yr1='0001'; p.yr2='0100'; p.syr=1; 
+p.nyr=100; p.y1=0001; p.y2=0100; p.expn='SPEAR_c384_OM4p08_Ctrl_1990_A13_IC0101_1PctTo2X';   v=tsana_hiresmip_new(o,tpath,p);
+
+p.nyr=50; p.y1=0001; p.y2=0050; p.expn='SPEAR_c384_OM4p25_Control_1990_R92';   v=tsana_hiresmip_new(o,tpath,p);
+p.nyr=50; p.y1=0001; p.y2=0050; p.expn='SPEAR_c384_OM4p25_Control_1990_R93';   v=tsana_hiresmip_new(o,tpath,p);
+p.nyr=50; p.y1=0001; p.y2=0050; p.expn='SPEAR_c384_OM4p25_Control_1990_R84';   v=tsana_hiresmip_new(o,tpath,p);
+
+p.nyr=50; p.y1=0001; p.y2=0050; p.expn='SPEAR_c384_OM4p25_Control_1990_R61_peff_l_d_9e_5';   v=tsana_hiresmip_new(o,tpath,p);
+p.nyr=40; p.y1=0001; p.y2=0040; p.expn='SPEAR_c384_OM4p25_Control_1990_R61_peff_l_d_3e_5';   v=tsana_hiresmip_new(o,tpath,p);
+p.nyr=20; p.y1=0001; p.y2=0020; p.expn='SPEAR_c384_OM4p25_Control_1990_R61_rkm_dp1_0p5';     v=tsana_hiresmip_new(o,tpath,p);
+p.nyr=50; p.y1=0001; p.y2=0050; p.expn='SPEAR_c384_OM4p25_Control_1990_R61_CAmer_2Xghprime'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='SPEAR_c384_OM4p08_Control_1990_A03';                 v=tsana_hiresmip_new(o,tpath,p);
+p.yr1='0001'; p.yr2='0090'; p.syr=1; p.nyr=50; p.y1=0001; p.y2=0050; 
+p.expn='SPEAR_c384_OM4p25_Control_1990_R61';                 v=tsana_hiresmip_new(o,tpath,p);
+p.yr1='1981'; p.yr2='2020'; p.syr=1; p.nyr=40; p.y1=1981; p.y2=2020; 
+p.expn='SPEAR_c384_OM4p25_pres_SST_HIST_AllForc_IC1971_R61'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='SPEAR_c384_OM4p25_pres_SST_HIST_AllForc_IC1971_R47'; v=tsana_hiresmip_new(o,tpath,p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Load AR, TC, MCS analysis for SST pattern paper%%%%%%%%%%%%%%%%%newwwwwwwwwwwwwwwwwwwwww
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/work/miz/mat_hiresmip_cre/'; s='_readartcmcs_day_cre_newer.mat';
-expn='c192L33_am4p0_2010climo'; yrs='_2_101_'; diag='_diag1';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.tc=v;
-fext=strcat(yrs,'AL',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.al=v;
-fext=strcat(yrs,'PR01',diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pr=v;
-fext=strcat(yrs,'P02', diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.p2=v;
-fext=strcat(yrs,'PB',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pb=v;
-fext=strcat(yrs,'PC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pc=v;
-fext=strcat(yrs,'PD',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pd=v;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/work/miz/mat_hiresmip_cre/'; s='_readartcmcs_day_cre_newer.mat';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear'; yrs='_2_101_'; diag='_diag1';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.tc=v;
-fext=strcat(yrs,'AL',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.al=v;
-fext=strcat(yrs,'PR01',diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.pr=v;
-fext=strcat(yrs,'P02', diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.p2=v;
-fext=strcat(yrs,'PB',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.pb=v;
-fext=strcat(yrs,'PC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.pc=v;
-fext=strcat(yrs,'PD',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.pd=v;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/work/miz/mat_hiresmip_cre/'; s='_readartcmcs_day_cre_newer.mat';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; yrs='_2_101_'; diag='_diag1';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.tc=v;
-fext=strcat(yrs,'AL',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.al=v;
-fext=strcat(yrs,'PR01',diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.pr=v;
-fext=strcat(yrs,'P02', diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.p2=v;
-fext=strcat(yrs,'PB',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.pb=v;
-fext=strcat(yrs,'PC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.pc=v;
-fext=strcat(yrs,'PD',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.pd=v;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Load AR, TC, MCS analysis for SST pattern paper%%%%%%%%%%%%%%%%%newwwwwwwwwwwwwwwwwwwwww
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/work/miz/mat_hiresmip_cre/'; s='_readartcmcs_day_cre_newer.mat';
-expn='c192L33_am4p0_2010climo'; yrs='_2_101_'; diag='_diag1';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear'; yrs='_2_101_'; diag='_diag1';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; yrs='_2_101_'; diag='_diag1';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w2.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';  yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1a.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1a.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1a.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient'; yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1b.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1b.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1b.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1c.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1c.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1c.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient'; yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1d.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1d.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1d.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient'; yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1e.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1e.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1e.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs'; yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1A.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1A.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1A.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs'; yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1B.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1B.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1B.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs'; yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1C.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1C.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1C.tc=v;
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs'; yrs='_2_101_'; diag='_diag2';
-fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1D.mc=v;
-fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1D.ar=v;
-fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1D.tc=v;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
+p.do_trend=0; p.do_scalar=0; p.myr=1; p.opt=1; p.do_3d_atm=0; p.do_all=1;
+p.yr1='1980'; p.yr2='2020'; p.syr=2; p.nyr=40; p.y1=1981; p.y2=2020; 
+tpath='/archive/Ming.Zhao/awg/2023.04/';
+p.expn='c384L33_am4p0_spearhi_peff_l_d_9e_5';        v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_peff_l_d_9e_5_tuned';  v=tsana_hiresmip_new(o,tpath,p);
+
+p.expn='c384L33_am4p0_spearhi_peff_l_d_9e_5_tuned1'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_ssa_test7';            v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_ssa_test12';           v=tsana_hiresmip_new(o,tpath,p);
+
+p.yr1='1980'; p.yr2='2020'; p.syr=2; p.nyr=40; p.y1=1981; p.y2=2020; 
+p.expn='c384L33_am4p0_spearhi_peff_l_d_9e_5_tuned';  v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_rkm_dp1_0p7';          v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_rkm_dp1_0p7_test4';    v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_rkm_dp1_0p7_test3';    v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi';                      v=tsana_hiresmip_new(o,tpath,p);       
+
+p.expn='c384L33_am4p0_spearhi_dt600';         v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi';               v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_peff_l_d_9e_5'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_peff_l_d_3e_5'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c384L33_am4p0_spearhi_rkm_dp1_0p5';   v=tsana_hiresmip_new(o,tpath,p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Load ts_ana%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_1_do_all_1.mat';
-%ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c192_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_0_do_all_1.mat';
-%e='c192L33_am4p0_2010climo_old';                    n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
-e='c192L33_am4p0_2010climo_newctl';                 n=strcat(ph,e,'/',e,f); load(n);z.v0=v; %z.v0=z.v0b;
-%e='c192L33_am4p0_2010climo_p4K';             n=strcat(ph,e,'/',e,f); load(n);z.w0=v; 
-%e='c192L33_am4p0_2010climo_newctl_p1K';             n=strcat(ph,e,'/',e,f); load(n);z.w0=v; 
-%e='c192L33_am4p0_2010climo_newctl_4xCO2';           n=strcat(ph,e,'/',e,f); load(n);z.g0=v; 
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear';  n=strcat(ph,e,'/',e,f); load(n);z.w1=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(ph,e,'/',e,f); load(n);z.w2=v;
-fn=strcat('/work/miz/mat_hiresmip/obs_global','_to_c96.mat'); load(fn); o.mod='c96'; z.V0=o;
+ph='/archive/Ming.Zhao/spear_hi_8_dev/';
+f='_global_opt1.c96_tsana_hiresmip_new_1981-2020_1981-2020_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p25_pres_SST_HIST_AllForc_IC1971_R47';  n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
+f='_global_opt1.c96_tsana_hiresmip_new_1981-2000_1981-2020_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p25_pres_SST_HIST_AllForc_IC1971_R61';  n=strcat(ph,e,'/',e,f); load(n);z.v0b=v; 
+f='_global_opt1.c96_tsana_hiresmip_new_1981-2020_1980-2020_do_3d_atm_0_do_all_1.mat';
+e='c384L33_am4p0_spearhi_peff_l_d_9e_5_tuned';           n=strcat(ph,e,'/',e,f); load(n);z.v0c=v; 
 
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs';  n=strcat(ph,e,'/',e,f);load(n);z.w2a=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';     n=strcat(ph,e,'/',e,f);load(n);z.w2b=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs';  n=strcat(ph,e,'/',e,f);load(n);z.w2c=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';     n=strcat(ph,e,'/',e,f);load(n);z.w2d=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_30ns_obs'; n=strcat(ph,e,'/',e,f);load(n);z.w2e=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs'; n=strcat(ph,e,'/',e,f);load(n);z.w2g=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs'; n=strcat(ph,e,'/',e,f);load(n);z.w2e=v;
-%load GF exp
-fn='/work/miz/mat_gf/control_and_patchinfo_mon.mat'; load(fn); z.gf.v0=v;
-fn='/work/miz/mat_gf/dvar_final.mat'; load(fn); z.gf.vm=vm;
-%end of load GF exp
-ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_2_101.mat';
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';  n=strcat(ph,e,'/',e,f);load(n);z.w1a=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient'; n=strcat(ph,e,'/',e,f);load(n);z.w1b=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';n=strcat(ph,e,'/',e,f);load(n);z.w1c=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';n=strcat(ph,e,'/',e,f);load(n);z.w1d=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient'; n=strcat(ph,e,'/',e,f);load(n);z.w1e=v;
+f='_global_opt1.c96_tsana_hiresmip_new_1-50_0001-0090_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p25_Control_1990_R61';  n=strcat(ph,e,'/',e,f);                 load(n);z.w1=v; 
 
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs'; n=strcat(ph,e,'/',e,f);load(n);z.w1A=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';    n=strcat(ph,e,'/',e,f);load(n);z.w1B=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs'; n=strcat(ph,e,'/',e,f);load(n);z.w1C=v;
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs';n=strcat(ph,e,'/',e,f);load(n);z.w1D=v;
+f='_global_opt1.c96_tsana_hiresmip_new_1-50_0001-0050_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p25_Control_1990_R84';  n=strcat(ph,e,'/',e,f);                 load(n);z.w2a=v; 
+f='_global_opt1.c96_tsana_hiresmip_new_1-50_0001-0050_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p25_Control_1990_R92';  n=strcat(ph,e,'/',e,f);                 load(n);z.w2b=v; 
+f='_global_opt1.c96_tsana_hiresmip_new_1-50_0001-0050_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p25_Control_1990_R93';  n=strcat(ph,e,'/',e,f);                 load(n);z.w2c=v; 
+
+%f='_global_opt1.c96_tsana_hiresmip_new_1-50_0001-0050_do_3d_atm_0_do_all_1.mat';
+%e='SPEAR_c384_OM4p08_Control_1990_A03';  n=strcat(ph,e,'/',e,f);                 load(n);z.w2a=v; 
+%f='_global_opt1.c96_tsana_hiresmip_new_1-50_0001-0050_do_3d_atm_0_do_all_1.mat';
+%e='SPEAR_c384_OM4p25_Control_1990_R61_peff_l_d_9e_5';  n=strcat(ph,e,'/',e,f);   load(n);z.w2b=v; 
+%f='_global_opt1.c96_tsana_hiresmip_new_1-40_0001-0050_do_3d_atm_0_do_all_1.mat';
+%e='SPEAR_c384_OM4p25_Control_1990_R61_peff_l_d_3e_5';  n=strcat(ph,e,'/',e,f);   load(n);z.w2c=v; 
+%f='_global_opt1.c96_tsana_hiresmip_new_1-20_0001-0050_do_3d_atm_0_do_all_1.mat';
+%e='SPEAR_c384_OM4p25_Control_1990_R61_rkm_dp1_0p5';  n=strcat(ph,e,'/',e,f);     load(n);z.w2d=v; 
+%f='_global_opt1.c96_tsana_hiresmip_new_1-50_0001-0050_do_3d_atm_0_do_all_1.mat';
+%e='SPEAR_c384_OM4p25_Control_1990_R61_CAmer_2Xghprime';  n=strcat(ph,e,'/',e,f); load(n);z.w2e=v; 
+
+ph='/archive/Ming.Zhao/spear_hi_8_dev/';
+f='_global_opt1.c96_tsana_hiresmip_new_1-100_0101-0200_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p08_Control_1990_A13';               n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
+f='_global_opt1.c96_tsana_hiresmip_new_1-100_0001-0100_do_3d_atm_0_do_all_1.mat';
+e='SPEAR_c384_OM4p08_Ctrl_1990_A13_IC0101_1PctTo2X';  n=strcat(ph,e,'/',e,f); load(n);z.w1a=v; 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Figs for atmospheric circulation changes across various season%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ph='/archive/Ming.Zhao/spear_hi_8_dev/';
+f='_global_opt1.c96_tsana_hiresmip_new_1981-2020_1981-2020_do_3d_atm_0_do_all_1.mat';
+%e='SPEAR_c384_OM4p25_pres_SST_HIST_AllForc_IC1971_R47';  n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
+e='SPEAR_c384_OM4p25_pres_SST_HIST_AllForc_IC1971_R61';  n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ph='/archive/Ming.Zhao/awg/2023.04/';
+f='_global_opt1.c96_tsana_hiresmip_new_1981-2020_1980-2020_do_3d_atm_0_do_all_1.mat';
+e='c384L33_am4p0_spearhi';                      n=strcat(ph,e,'/',e,f); load(n);z.v0b=v; 
+e='c384L33_am4p0_spearhi_peff_l_d_9e_5';        n=strcat(ph,e,'/',e,f); load(n);z.v0c=v; 
+e='c384L33_am4p0_spearhi_rkm_dp1_0p5';          n=strcat(ph,e,'/',e,f); load(n);z.v0d=v; 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ph='/archive/Ming.Zhao/awg/2023.04/';
+%f='_global_opt1.c96_tsana_hiresmip_new_1981-2020_1980-2020_do_3d_atm_0_do_all_1.mat';
+%f='_global_opt1.c96_tsana_hiresmip_new_1981-2000_1980-2020_do_3d_atm_0_do_all_1.mat';
+f='_global_opt1.c96_tsana_hiresmip_new_1981-2020_1980-2020_do_3d_atm_0_do_all_1.mat';
+e='c384L33_am4p0_spearhi_peff_l_d_9e_5_tuned';  n=strcat(ph,e,'/',e,f); load(n);z.w1a=v; %z.w1b=z.w1a; z.w1c=z.w1a; z.w1d=z.w1a;
+e='c384L33_am4p0_spearhi_peff_l_d_9e_5_tuned1'; n=strcat(ph,e,'/',e,f); load(n);z.w1b=v; 
+e='c384L33_am4p0_spearhi_rkm_dp1_0p7';          n=strcat(ph,e,'/',e,f); load(n);z.w2a=v; 
+e='c384L33_am4p0_spearhi_rkm_dp1_0p7_test3';    n=strcat(ph,e,'/',e,f); load(n);z.w2b=v; 
+e='c384L33_am4p0_spearhi_rkm_dp1_0p7_test4';    n=strcat(ph,e,'/',e,f); load(n);z.w2c=v; 
+e='c384L33_am4p0_spearhi_ssa_test7';            n=strcat(ph,e,'/',e,f); load(n);z.w3a=v; 
+e='c384L33_am4p0_spearhi_ssa_test12';           n=strcat(ph,e,'/',e,f); load(n);z.w3b=v; 
+
+%e='c384L33_am4p0_spearhi_peff_l_d_3e_5';  n=strcat(ph,e,'/',e,f); load(n);z.w2b=v; 
+%e='c384L33_am4p0_spearhi_rkm_dp1_0p5';    n=strcat(ph,e,'/',e,f); load(n);z.w2c=v; 
+%e='c384L33_am4p0_spearhi_dt600';          n=strcat(ph,e,'/',e,f); load(n);z.w2d=v; 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1500, 800]*1.5; xm1=[1981:2020];
+handle = figure('Position', pms,'visible','on'); lw=1; fsize=18;
+xo=[2001:2020]; a=o.toa.netrad.ts.ann; a=yo; s='OBS';           s0=sprintf('%s [mean(2001-2020)=%5.2f]',s,mean(a));
+v=z.v0a.toa; a=v.netrad.ts.org_ann; a=ym1; s='R61AMIP';         s1=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.v0b.toa; a=v.netrad.ts.org_ann; a=ym2; s='CTL';             s2=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.v0c.toa; a=v.netrad.ts.org_ann; a=ym3; s='PE9';             s3=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.v0d.toa; a=v.netrad.ts.org_ann; a=ym4; s='RKM0.5';          s4=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.w1a.toa; a=v.netrad.ts.org_ann; a=ym5; s='PE9-tuned';       s5=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.w1b.toa; a=v.netrad.ts.org_ann; a=ym6; s='PE9-tuned1';      s6=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.w2a.toa; a=v.netrad.ts.org_ann; a=ym7; s='RKM0.7';          s7=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.w2b.toa; a=v.netrad.ts.org_ann; a=ym8; s='PE9+RKM0.7-tuned';s8=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.w3a.toa; a=v.netrad.ts.org_ann; a=ym9; s='SCA-cntl';        s9=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+v=z.w3b.toa; a=v.netrad.ts.org_ann; a=ym10; s='SCA-tuned';     s10=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(a),mean(a(end-19:end)));
+plot(xo,  yo,  'ko-', 'LineWidth',lw*2); hold on;
+plot(xm1, ym1, 'cd-', 'LineWidth',lw); 
+plot(xm1, ym2, 'gp-', 'LineWidth',lw);
+plot(xm1, ym3, 'r^-', 'LineWidth',lw);
+plot(xm1, ym4, 'm*-', 'LineWidth',lw);
+plot(xm1, ym5, 'bs--','LineWidth',lw*2);
+plot(xm1, ym6, 'bv-', 'LineWidth',lw);
+plot(xm1, ym7, 'k*-', 'LineWidth',lw);
+plot(xm1, ym8, 'k--', 'LineWidth',lw);
+plot(xm1, ym9, 'c^-', 'LineWidth',lw);
+plot(xm1, ym10,'cv-', 'LineWidth',lw);
+legend(s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,'Location','SouthEast');
+set(gca,'FontSize',fsize); grid on; axis([1980 2020 -2.5 5.5]);
+visfig='off'; figpath='./fig_spearhi8/'; expn='spearhi8'; vname='toa_netrad'
+printnew(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1500, 800]*1.5; xm1=[1981:2020]; xm2=[1981:2019]; xm5=[1981:2019]; xm7=[1981:2020]; xm8=[1981:2020]; xm9=[1981:2015];
+handle = figure('Position', pms,'visible','on'); lw=1; fsize=18;
+xo=[2001:2020]; yo=o.toa.netrad.ts.ann; s='OBS';        s0=sprintf('%s [mean(2001-2020)=%5.2f]',s,mean(yo));
+v=z.v0a.atm; ym1 =v.lwp.ts.org_ann; s='R61AMIP';      s1=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(ym1),mean(ym1(end-19:end)));
+v=z.v0b.atm; ym2 =v.lwp.ts.org_ann; s='CTL';          s2=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(ym2),mean(ym2(end-19:end)));
+v=z.v0c.atm; ym3 =v.lwp.ts.org_ann; s='PE9';          s3=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(ym3),mean(ym3(end-19:end)));
+v=z.v0d.atm; ym4 =v.lwp.ts.org_ann; s='RKM0.5';       s4=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(ym4),mean(ym4(end-19:end)));
+v=z.w1a.atm; ym5 =v.lwp.ts.org_ann; s='PE9-tuned';    s5=sprintf('%s [mean=%5.2f]',s,mean(ym5));
+v=z.w1b.atm; ym6 =v.lwp.ts.org_ann; s='PE9-tuned1';   s6=sprintf('%s [mean=%5.2f]',s,mean(ym6));
+v=z.w2a.atm; ym7 =v.lwp.ts.org_ann; s='RKM0.7';       s7=sprintf('%s [mean=%5.2f]',s,mean(ym7));
+v=z.w2b.atm; ym8 =v.lwp.ts.org_ann; s='PE9+RKM0.7-tuned';s8 =sprintf('%s [mean=%5.2f]',s,mean(ym8));
+v=z.w3a.atm; ym9 =v.lwp.ts.org_ann; s='SCA_test7';       s9 =sprintf('%s [mean=%5.2f]',s,mean(ym9));
+v=z.w3b.atm; ym10=v.lwp.ts.org_ann; s='SCA_test7-tuned'; s10=sprintf('%s [mean=%5.2f]',s,mean(ym10));
+%plot(xo,  yo,  'ko-', 'LineWidth',lw*2); hold on;
+plot(xm1, ym1, 'cd-', 'LineWidth',lw); hold on;
+plot(xm1, ym2, 'gp-', 'LineWidth',lw);
+plot(xm1, ym3, 'r^-', 'LineWidth',lw);
+plot(xm1, ym4, 'm*-', 'LineWidth',lw);
+plot(xm5, ym5, 'bs--','LineWidth',lw);
+plot(xm6, ym6, 'bv-', 'LineWidth',lw);
+plot(xm7, ym7, 'k*-', 'LineWidth',lw);
+plot(xm8, ym8, 'k--', 'LineWidth',lw);
+plot(xm9, ym9, 'y*-', 'LineWidth',lw);
+plot(xm9, ym10,'ys-', 'LineWidth',lw);
+legend(s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,'Location','SouthEast');
+set(gca,'FontSize',fsize); grid on;
+visfig='off'; figpath='./fig_spearhi8/'; expn='spearhi8'; vname='atm_lwp'
+printnew(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1500, 800]*1.5; xm1=[1981:2020]; xm2=[1981:2019]; xm5=[1981:2019]; xm7=[1981:2020]; xm8=[1981:2020]; xm9=[1981:2015];
+handle = figure('Position', pms,'visible','on'); lw=1; fsize=18;
+xo=[2001:2020]; yo=o.toa.netrad.ts.ann; s='OBS';        s0=sprintf('%s [mean(2001-2020)=%5.2f]',s,mean(yo));
+v=z.v0a.atm; ym1 =v.lwp.ts.org_ann; s='R61AMIP';      s1=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(ym1),mean(ym1(end-19:end)));
+v=z.v0b.atm; ym2 =v.lwp.ts.org_ann; s='CTL';          s2=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(ym2),mean(ym2(end-19:end)));
+v=z.v0c.atm; ym3 =v.lwp.ts.org_ann; s='PE9';          s3=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(ym3),mean(ym3(end-19:end)));
+v=z.v0d.atm; ym4 =v.lwp.ts.org_ann; s='RKM0.5';       s4=sprintf('%s [mean=%5.2f; mean(2001-2020)=%5.2f)]',s,mean(ym4),mean(ym4(end-19:end)));
+v=z.w1a.atm; ym5 =v.lwp.ts.org_ann; s='PE9-tuned';    s5=sprintf('%s [mean=%5.2f]',s,mean(ym5));
+v=z.w1b.atm; ym6 =v.lwp.ts.org_ann; s='PE9-tuned1';   s6=sprintf('%s [mean=%5.2f]',s,mean(ym6));
+v=z.w2a.atm; ym7 =v.lwp.ts.org_ann; s='RKM0.7';       s7=sprintf('%s [mean=%5.2f]',s,mean(ym7));
+v=z.w2b.atm; ym8 =v.lwp.ts.org_ann; s='PE9+RKM0.7-tuned';s8 =sprintf('%s [mean=%5.2f]',s,mean(ym8));
+v=z.w3a.atm; ym9 =v.lwp.ts.org_ann; s='SCA_test7';       s9 =sprintf('%s [mean=%5.2f]',s,mean(ym9));
+v=z.w3b.atm; ym10=v.lwp.ts.org_ann; s='SCA_test7-tuned'; s10=sprintf('%s [mean=%5.2f]',s,mean(ym10));
+%plot(xo,  yo,  'ko-', 'LineWidth',lw*2); hold on;
+plot(xm1, ym1, 'cd-', 'LineWidth',lw); hold on;
+plot(xm1, ym2, 'gp-', 'LineWidth',lw);
+plot(xm1, ym3, 'r^-', 'LineWidth',lw);
+plot(xm1, ym4, 'm*-', 'LineWidth',lw);
+plot(xm5, ym5, 'bs--','LineWidth',lw);
+plot(xm6, ym6, 'bv-', 'LineWidth',lw);
+plot(xm7, ym7, 'k*-', 'LineWidth',lw);
+plot(xm8, ym8, 'k--', 'LineWidth',lw);
+plot(xm9, ym9, 'y*-', 'LineWidth',lw);
+plot(xm9, ym10,'ys-', 'LineWidth',lw);
+legend(s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,'Location','SouthEast');
+set(gca,'FontSize',fsize); grid on;
+visfig='off'; figpath='./fig_spearhi8/'; expn='spearhi8'; vname='atm_lwp'
+printnew(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+pms=[ 0, 0, 1500, 1000]*1.5; xm1=[1:40]; xm2=[1:50];
+handle = figure('Position', pms,'visible','on'); lw=1; fsize=16;
+subplot(2,2,1);
+xo=[21:40]; yo=o.toa.netrad.ts.ann; s='OBS';         s0=sprintf('%s [mean(2001-2020)=%5.2f]',s,mean(yo));
+v=z.v0c.toa; a=v.netrad.ts.org_ann; ym1=a; s='AMIP'; s1=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2a.toa; a=v.netrad.ts.org_ann; ym2=a; s='R84';  s2=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2b.toa; a=v.netrad.ts.org_ann; ym3=a; s='R92';  s3=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2c.toa; a=v.netrad.ts.org_ann; ym4=a; s='R93';  s4=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+plot(xo,  yo,  'k-', 'LineWidth',lw); hold on;
+plot(xm1, ym1, 'r-', 'LineWidth',lw); hold on;
+plot(xm2, ym2, 'b-', 'LineWidth',lw);
+plot(xm2, ym3, 'g-', 'LineWidth',lw);
+plot(xm2, ym4, 'c-', 'LineWidth',lw);
+legend(s0,s1,s2,s3,s4,'Location','SouthEast'); title('TOA NETRAD');
+set(gca,'FontSize',fsize); grid on; axis([0 50 -2.5 2.5]);
+subplot(2,2,2);
+v=z.v0c.sfc; a=v.netrad.ts.org_ann; ym1=a; s='AMIP'; s1=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2a.sfc; a=v.netrad.ts.org_ann; ym2=a; s='R84';  s2=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2b.sfc; a=v.netrad.ts.org_ann; ym3=a; s='R92';  s3=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2c.sfc; a=v.netrad.ts.org_ann; ym4=a; s='R93';  s4=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+plot(xm1, ym1, 'r-', 'LineWidth',lw); hold on;
+plot(xm2, ym2, 'b-', 'LineWidth',lw);
+plot(xm2, ym3, 'g-', 'LineWidth',lw);
+plot(xm2, ym4, 'c-', 'LineWidth',lw);
+legend(s1,s2,s3,s4,'Location','SouthEast'); title('SFC NETRAD')
+set(gca,'FontSize',fsize); grid on; axis([0 50 101 106]);
+subplot(2,2,3);
+v=z.v0c.sfc; a=v.netflx.ts.org_ann; ym1=a; s='AMIP'; s1=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2a.sfc; a=v.netflx.ts.org_ann; ym2=a; s='R84';  s2=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2b.sfc; a=v.netflx.ts.org_ann; ym3=a; s='R92';  s3=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2c.sfc; a=v.netflx.ts.org_ann; ym4=a; s='R93';  s4=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+plot(xm1, ym1, 'r-', 'LineWidth',lw); hold on;
+plot(xm2, ym2, 'b-', 'LineWidth',lw);
+plot(xm2, ym3, 'g-', 'LineWidth',lw);
+plot(xm2, ym4, 'c-', 'LineWidth',lw);
+legend(s1,s2,s3,s4,'Location','SouthEast'); title('SFC NET Heat Flux')
+set(gca,'FontSize',fsize); grid on; axis([0 50 -2.5 2.5]);
+subplot(2,2,4);
+v=z.v0c.sfc; a=v.tref.ts.org_ann; ym1=a; s='AMIP'; s1=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2a.sfc; a=v.tref.ts.org_ann; ym2=a; s='R84';  s2=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2b.sfc; a=v.tref.ts.org_ann; ym3=a; s='R92';  s3=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+v=z.w2c.sfc; a=v.tref.ts.org_ann; ym4=a; s='R93';  s4=sprintf('%s [mean=%5.2f; mean(last10year)=%5.2f)]',s,mean(a),mean(a(end-10:end)));
+plot(xm1, ym1, 'r-', 'LineWidth',lw); hold on;
+plot(xm2, ym2, 'b-', 'LineWidth',lw);
+plot(xm2, ym3, 'g-', 'LineWidth',lw);
+plot(xm2, ym4, 'c-', 'LineWidth',lw);
+legend(s1,s2,s3,s4,'Location','SouthWest'); title('SAT')
+set(gca,'FontSize',fsize); grid on; axis([0 50 285.5 288]);
+visfig='off'; figpath='./fig_spearhi8/'; expn='spearhi8'; vname='toa_sfc'
+printnew(visfig,figpath,expn,vname);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TOA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-A0='ERA5; '; a0='Control; '; a1='SPEAR-pattern M; '; a2='Observed-pattern; '; a3='Uniform';
-nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=3; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
-p.vname='atm_z500_u200_z850_slp'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-del=' $\Delta$'; s0='Z500'''; s1='U200'; s2='Z850'''; s3='SLP'; p.flipcmap=0; p.do_bias=0;
-p.S0=strcat(A0,'~(',p.sea,')~',s0);
-p.s0=strcat(a0,'~(',p.sea,')~',s0);
-p.s1 =strcat(a1,'~',del,s0);
-p.s2 =strcat(a2,'~',del,s0); 
-%p.s0=strcat(a0,'~(',nsea{isea},');',s0);
-%p.s1=strcat(a1,'~(',nsea{isea},');',del,s0);
-%p.s2=strcat(a2,'~(',nsea{isea},');',del,s0);
-p.S3=strcat(A0,'~(',p.sea,')~',s1); p.s3=strcat(a0,'~(',p.sea,')~',s1); p.s4 =strcat(a1,del,s1); p.s5 =strcat(a2,del,s1); 
-p.S6=strcat(A0,'~(',p.sea,')~',s2); p.s6=strcat(a0,'~(',p.sea,')~',s2); p.s7 =strcat(a1,del,s2); p.s8 =strcat(a2,del,s2); 
-p.S9=strcat(A0,'~(',p.sea,')~',s3); p.s9=strcat(a0,'~(',p.sea,')~',s3); p.s10=strcat(a1,del,s3); p.s11=strcat(a2,del,s3); 
-p.unit0 ='GPM';          p.unit0_bar =p.unit0;
-p.unit1 ='GPM';          p.unit1_bar =p.unit1;
-p.unit3 ='m s^{-1}';     p.unit3_bar =p.unit3;
-p.unit4 ='m s^{-1}';     p.unit4_bar =p.unit4;
-p.unit6 ='GPM';          p.unit6_bar =p.unit6;
-p.unit7 ='GPM';          p.unit7_bar =p.unit7;
-p.unit9 ='hPA';          p.unit9_bar =p.unit9;
-p.unit10='hPA';          p.unit10_bar=p.unit10;
+nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
+a0='R47AMIP minus OBS'; a1='R61 minus R47AMIP'; a2='A03 minus R47AMIP'; p.flipcmap=0;
+p.vname0='toa_netrad_lwnet_swnet_ttcf'; p.vname0=strcat('Fig_',p.vname0,'_',nsea{isea}); p.sea=nsea{isea};
 
-p.cmin0= -500.0; p.cmax0=500;  p.cmin1 = -50; p.cmax1 =50.;
-p.cmin3=  -50.0; p.cmax3=50;   p.cmin4 =-5.0; p.cmax4 =5.0;
-p.cmin6= -150.0; p.cmax6=150.; p.cmin7 =-15.; p.cmax7 =15.;
-p.cmin9=  990.0; p.cmax9=1030; p.cmin10=-3.0; p.cmax10=3.0;
-p.do_add=1; p.show='off'; p.z1_co='c'; p.co='k'; p.xy=[280 360 0 90];
+%p.vname0=strcat(p.vname0,'_coupled');
+%z.v0=z.v0a; a='R47AMIP';
+%z.v0=z.v0b; a='R61AMIP'; 
+%a0=strcat(a,' minus OBS'); b=strcat(' minus~',a);
+%z.w1=z.w1;  a='R61';    a1=strcat(a,b); 
+%z.w2=z.w2a; a='A03';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2b; a='PE9';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2c; a='PE3';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2d; a='DP0p5';  a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2e; a='CAmer';  a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+
+%p.vname0=strcat(p.vname0,'_R92');
+%z.v0=z.v0b; a='R61AMIP'; 
+z.v0=z.v0c; a='AMIP';       a0=strcat(a,' minus OBS'); b=strcat(' minus~',a);
+z.w1=z.w2a; a='R84';        a1=strcat(a,b);
+z.w2=z.w2b; a='R92';        a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2c; a='R93';        a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2c; a='R93';        a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2d; a='PE9+DP0p7';  a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+
+del=' $\Delta$'; s0='NETRAD;'; s1='LWNET; '; s2='SWNET; '; s3='TTCF; '; p.do_bias=0;
+p.s0 =strcat(a0,'~(',p.sea,');~',s0); p.s1 =strcat(a1,';~',del,s0); p.s2 =strcat(a2,';~',del,s0); 
+p.s3 =strcat(s1); p.s4 =strcat(del,s1); p.s5 =strcat(del,s1); 
+p.s6 =strcat(s2); p.s7 =strcat(del,s2); p.s8 =strcat(del,s2); 
+p.s9 =strcat(s3); p.s10=strcat(del,s3); p.s11=strcat(del,s3);
+p.unit0 ='$\rm{W m^{-2}}$';  p.unit0_bar ='\rm{W m^{-2}}';
+p.unit1 ='$\rm{W m^{-2}}$';  p.unit1_bar ='\rm{W m^{-2}}';
+p.unit3 ='$\rm{W m^{-2}}$';  p.unit3_bar ='\rm{W m^{-2}}'; 
+p.unit4 ='$\rm{W m^{-2}}$';  p.unit4_bar ='\rm{W m^{-2}}'; 
+p.unit6 ='$\rm{W m^{-2}}$';  p.unit6_bar ='\rm{W m^{-2}}';
+p.unit7 ='$\rm{W m^{-2}}$';  p.unit7_bar ='\rm{W m^{-2}}';
+p.unit9 ='$\rm{W m^{-2}}$';  p.unit9_bar ='\rm{W m^{-2}}'; 
+p.unit10='$\rm{W m^{-2}}$';  p.unit10_bar='\rm{W m^{-2}}';
+
+p.cmin0=-150; p.cmax0=150; p.cmin1 =-20; p.cmax1 =20;
+p.cmin3= 100; p.cmax3=350; p.cmin4 =-20; p.cmax4 =20;
+p.cmin6= 100; p.cmax6=350; p.cmin7 =-20; p.cmax7 =20;
+p.cmin9= -50; p.cmax9=20;  p.cmin10=-20; p.cmax10=20;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[0 360 -90 90]; 
 s=z.v0.s; p.lon0=s.lon; p.lat0=s.lat; p.lm0=s.lm; aa=s.aa;
 a0=z.v0.sfc.tref.tavg0;
-a =z.w1.sfc.tref.tavg0-a0;  p.dT1=mean(mean(a.*aa)); p.tas1=a;
-a =z.w2.sfc.tref.tavg0-a0;  p.dT2=mean(mean(a.*aa)); p.tas2=a;
+a =z.w1.sfc.tref.tavg0-a0; p.dT1=1;% mean(mean(a.*aa));
+a =z.w2.sfc.tref.tavg0-a0; p.dT2=1;% mean(mean(a.*aa));
 imk=z.v0.sfc.ice.tavg0;  aa0=aa; 
 
 v=z.v0.s; p.lm=v.lm; aa0=v.aa; p.lon=v.lon; p.lat=v.lat; LV0=2.5E6;
-id=p.lm; id(id<0.5)=0; id(id>=0.5)=1; p.id_lm=(id==1);
-lat1= 15; lat2=85; lon1=190; lon2=344; p.xy=[280 360  0 90];
-lat1=-90; lat2=90; lon1=0;   lon2=360; p.xy=[0   360 -90 90];
-p.xy=[lon1 lon2 lat1 lat2];
+nyr1=100; nyr2=100; mskopt=0; num=30; N=365*50; 
+id=p.lm; id(id<0.5)=1; id(id>=0.5)=1;
+lat1=-90; lat2=90; lon1=0; lon2=360; p.xy=[lon1 lon2 lat1 lat2];
 p.ys=min(find(s.lat(:)>=lat1)); p.ye=max(find(s.lat(:)<=lat2));
 p.xs=min(find(s.lon(:)>=lon1)); p.xe=max(find(s.lon(:)<=lon2));
-a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=a; %id=id.*a; 
-id=(id==1); aa=aa0(id); aa=aa/mean(aa); nlon=length(p.lon); %figure; pcolor(id); shading flat; colorbar;
-
-k=7; %500hPa: Z500', U500, V500; 0:CNTL, 1:ModPattern minus CNTL; 2:ObsPattern minus CNTL
-v=z.V0.atm.za(k);  a=v.sea; a0=squeeze(a(isea,:,:)); a=mean(mean(a0.*aa0)); A0=a0-a; %a0=get_zonala(a0);
-v=z.v0.atm.za(k);  a=v.sea; a0=squeeze(a(isea,:,:)); a=mean(mean(a0.*aa0)); a0=a0-a; %a0=get_zonala(a0);
-v=z.w1.atm.za(k);  a=v.sea; a1=squeeze(a(isea,:,:)); a=mean(mean(a1.*aa0)); a1=a1-a; %a1=get_zonala(a1);
-v=z.w2.atm.za(k);  a=v.sea; a2=squeeze(a(isea,:,:)); a=mean(mean(a2.*aa0)); a2=a2-a; %a2=get_zonala(a2);
-a=A0;            p.Z0=a; p.dZ0=mean(a(id).*aa);
-a=a0;            p.z0=a; p.dz0=mean(a(id).*aa); p.z0_bin=[0:50:150];
-a=(a1-a0)/p.dT1; p.z1=a; p.dz1=mean(a(id).*aa); p.isig1=id; 
-a=(a2-a0)/p.dT2; p.z2=a; p.dz2=mean(a(id).*aa); p.isig2=id;
-
-v=z.V0.atm.ua(k);  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.atm.ua(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.atm.ua(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.atm.ua(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.U0 =a; p.dU0 =mean(a(id).*aa); 
-a=a0;            p.u0 =a; p.du0 =mean(a(id).*aa); p.u0_bin=[10:5:50];
-a=(a1-a0)/p.dT1; p.u1 =a; p.du1 =mean(a(id).*aa); 
-a=(a2-a0)/p.dT2; p.u2 =a; p.du2 =mean(a(id).*aa); 
-
-v=z.V0.atm.va(k);  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.atm.va(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.atm.va(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.atm.va(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.V0 =a; p.dV0 =mean(a(id).*aa);
-a=a0;            p.v0 =a; p.dv0 =mean(a(id).*aa); p.v0_bin=[0:5:50];
-a=(a1-a0)/p.dT1; p.v1 =a; p.dv1 =mean(a(id).*aa); 
-a=(a2-a0)/p.dT2; p.v2 =a; p.dv2 =mean(a(id).*aa); 
-
-k=11; %200hPa: Z200', U200, V200; 3:CNTL, 4:ModPattern minus CNTL; 5:ObsPattern minus CNTL
-v=z.V0.atm.za(k);  a=v.sea; a0=squeeze(a(isea,:,:)); A0=get_zonala(a0);
-v=z.v0.atm.za(k);  a=v.sea; a0=squeeze(a(isea,:,:)); a0=get_zonala(a0);
-v=z.w1.atm.za(k);  a=v.sea; a1=squeeze(a(isea,:,:)); a1=get_zonala(a1);
-v=z.w2.atm.za(k);  a=v.sea; a2=squeeze(a(isea,:,:)); a2=get_zonala(a2);
-a=A0;            p.Z3 =a; p.dZ3 =mean(a(id).*aa); 
-a=a0;            p.z3 =a; p.dz3 =mean(a(id).*aa); p.z3_bin=[0:50:150];
-a=(a1-a0)/p.dT1; p.z4 =a; p.dz4 =mean(a(id).*aa); 
-a=(a2-a0)/p.dT2; p.z5 =a; p.dz5 =mean(a(id).*aa); 
-
-v=z.V0.atm.ua(k);  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.atm.ua(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.atm.ua(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.atm.ua(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.U3 =a; p.dU3 =mean(a(id).*aa); 
-a=a0;            p.u3 =a; p.du3 =mean(a(id).*aa); p.u3_bin=[15:5:50];
-a=(a1-a0)/p.dT1; p.u4 =a; p.du4 =mean(a(id).*aa); p.isig4 =id;
-a=(a2-a0)/p.dT2; p.u5 =a; p.du5 =mean(a(id).*aa); p.isig5 =id;
-
-v=z.V0.atm.va(k);  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.atm.va(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.atm.va(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.atm.va(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.V3 =a; p.dV3 =mean(a(id).*aa);
-a=a0;            p.v3 =a; p.dv3 =mean(a(id).*aa); p.v3_bin=[0:5:50];
-a=(a1-a0)/p.dT1; p.v4 =a; p.dv4 =mean(a(id).*aa); 
-a=(a2-a0)/p.dT2; p.v5 =a; p.dv5 =mean(a(id).*aa); 
-
-k=3; %850hPa: Z850', U850, V850; 6:CNTL, 7:ModPattern minus CNTL; 8:ObsPattern minus CNTL
-v=z.V0.atm.za(k);  a=v.sea; a0=squeeze(a(isea,:,:)); A0=get_zonala(a0);
-v=z.v0.atm.za(k);  a=v.sea; a0=squeeze(a(isea,:,:)); a0=get_zonala(a0);
-v=z.w1.atm.za(k);  a=v.sea; a1=squeeze(a(isea,:,:)); a1=get_zonala(a1);
-v=z.w2.atm.za(k);  a=v.sea; a2=squeeze(a(isea,:,:)); a2=get_zonala(a2);
-a=A0;            p.Z6=a; p.dZ6=mean(a(id).*aa); 
-a=a0;            p.z6=a; p.dz6=mean(a(id).*aa); p.z6_bin=[0:10:150];
-a=(a1-a0)/p.dT1; p.z7=a; p.dz7=mean(a(id).*aa); 
-a=(a2-a0)/p.dT2; p.z8=a; p.dz8=mean(a(id).*aa); 
-
-v=z.V0.atm.ua(k);  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.atm.ua(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.atm.ua(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.atm.ua(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.U6=a; p.dU6=mean(a(id).*aa); 
-a=a0;            p.u6=a; p.du6=mean(a(id).*aa); p.u6_bin=[5:5:30];
-a=(a1-a0)/p.dT1; p.u7=a; p.du7=mean(a(id).*aa); p.isig7=id;
-a=(a2-a0)/p.dT2; p.u8=a; p.du8=mean(a(id).*aa); p.isig8=id;
-
-v=z.V0.atm.va(k);  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.atm.va(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.atm.va(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.atm.va(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.V6=a; p.dV6=mean(a(id).*aa);
-a=a0;            p.v6=a; p.dv6=mean(a(id).*aa); p.v6_bin=[0:5:20];
-a=(a1-a0)/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa);
-a=(a2-a0)/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa);
-
-%%SLP, U950, V950; 9:CNTL, 10:ModPattern minus CNTL; 11:ObsPattern minus CNTL
-v=z.V0.sfc.slp;  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.sfc.slp;  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.sfc.slp;  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.sfc.slp;  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.Z9 =a; p.dZ9 =mean(a(id).*aa); 
-a=a0;            p.z9 =a; p.dz9 =mean(a(id).*aa); p.z9_bin=[980:5:1020];
-a=(a1-a0)/p.dT1; p.z10=a; p.dz10=mean(a(id).*aa); p.isig10=id;
-a=(a2-a0)/p.dT2; p.z11=a; p.dz11=mean(a(id).*aa); p.isig11=id;
-
-k=2; %950hPa, U and V
-v=z.V0.atm.ua(k);  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.atm.ua(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.atm.ua(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.atm.ua(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.U9  =a; p.dU9  =mean(a(id).*aa); 
-a=a0;            p.u9  =a; p.du9  =mean(a(id).*aa); p.u9_bin=[5:5:30];
-a=(a1-a0)/p.dT1; p.u10 =a; p.du10 =mean(a(id).*aa); 
-a=(a2-a0)/p.dT2; p.u11 =a; p.du11 =mean(a(id).*aa); 
-
-v=z.V0.atm.va(k);  a=v.sea; A0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.v0.atm.va(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
-v=z.w1.atm.va(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
-v=z.w2.atm.va(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
-a=A0;            p.V9  =a; p.dV9  =mean(a(id).*aa);
-a=a0;            p.v9  =a; p.dv9  =mean(a(id).*aa); p.v9_bin=[0:5:10];
-a=(a1-a0)/p.dT1; p.v10 =a; p.dv10 =mean(a(id).*aa); 
-a=(a2-a0)/p.dT2; p.v11 =a; p.dv11 =mean(a(id).*aa); 
-p.cfact=2; p.phi_bin=[0:50:300]; p.phi_co='r';
-
-p.fmt='eps'; p.fmt='png';
-p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed(p)
-
-p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_16panel(p)
-
-p.xy=[0 360 -60 90]; plot_pattern_effect_Fig_atm_16panel(p)
+a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a; 
+id=(id==1); aa=aa0(id); aa=aa/mean(aa); p.id=id; %figure; pcolor(id); shading flat; colorbar;
+%netrad
+v=z.v0.toa; a=get4season_all(v.netrad.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.toa; a=get4season_all(v.netrad.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.toa; a=get4season_all(v.netrad.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; if (p.do_bias); a=squeeze(z.v0.toa.netrad.sea_bias(isea,:,:)); p.cmin0= -20; p.cmax0=20; end;
+p.v0=a; p.dv0=mean(a(id).*aa);  
+[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT1; p.v1=a; p.dv1=mean(a(id).*aa); p.isig1=isig;
+[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT2; p.v2=a; p.dv2=mean(a(id).*aa); p.isig2=isig;
+%lwnet
+v=z.v0.toa; a=get4season_all(v.lwnet.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.toa; a=get4season_all(v.lwnet.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.toa; a=get4season_all(v.lwnet.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; if (p.do_bias); a=squeeze(z.v0.toa.lwnet.sea_bias(isea,:,:)); p.cmin3= -20.0; p.cmax3=20; end;
+p.v3=a; p.dv3=mean(a(id).*aa);
+[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT1; p.v4=a; p.dv4=mean(a(id).*aa); p.isig4=isig;
+[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT2; p.v5=a; p.dv5=mean(a(id).*aa); p.isig5=isig;
+%swnet
+v=z.v0.toa; a=get4season_all(v.swnet.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.toa; a=get4season_all(v.swnet.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.toa; a=get4season_all(v.swnet.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+%v=z.v0.toa; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+%v=z.w1.toa; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+%v=z.w2.toa; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; if (p.do_bias); a=squeeze(z.v0.toa.swnet.sea_bias(isea,:,:));  p.v6=a; p.dv6=mean(a(id).*aa); p.cmin6= -20; p.cmax6=20; end;
+p.v6=a; p.dv6=mean(a(id).*aa);
+[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa); p.isig7=isig;
+[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa); p.isig8=isig;
+%ttcf
+v=z.v0.toa; a=get4season_all(v.ttcf.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.toa; a=get4season_all(v.ttcf.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.toa; a=get4season_all(v.ttcf.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; if (p.do_bias); a=squeeze(z.v0.toa.ttcf.sea_bias(isea,:,:)); p.cmin9=-20; p.cmax9=20; end;
+p.v9=a; p.dv9=mean(a(id).*aa);
+[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT1; p.v10=a; p.dv10=mean(a(id).*aa); p.isig10=isig;
+[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT2; p.v11=a; p.dv11=mean(a(id).*aa); p.isig11=isig;
+plot_pattern_effect_Fig_land_16panel(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%end of Fig for atmos change %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Figs for surface variables%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
+     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
+nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
+a0='R47AMIP minus OBS'; a1='R61 minus R47AMIP'; a2='A03 minus R47AMIP'; p.flipcmap=0;
+p.vname0='sfc_ts_rh_evap_pcp'; p.vname0=strcat('Fig_',p.vname0,'_',nsea{isea}); p.sea=nsea{isea};
 
+%p.vname0=strcat(p.vname0,'_coupled');
+%z.v0=z.v0a; a='R47AMIP';
+%z.v0=z.v0b; a='R61AMIP'; 
+%a0=strcat(a,' minus OBS'); b=strcat(' minus~',a);
+%z.w1=z.w1;  a='R61';    a1=strcat(a,b); 
+%z.w2=z.w2a; a='A03';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2b; a='PE9';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2c; a='PE3';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2d; a='DP0p5';  a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2e; a='CAmer';  a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
 
+%p.vname0=strcat(p.vname0,'_R92');
+z.v0=z.v0c; a='AMIP'; a0=strcat(a,' minus OBS'); b=strcat(' minus~',a);
+z.w1=z.w2a; a='R84';         a1=strcat(a,b);
+z.w2=z.w2b; a='R92';         a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2b; a='PE9-tuned1';  a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2c; a='DP0p7';       a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2d; a='PE9+DP0p7';   a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
 
+del=' $\Delta$'; s0='TS;'; s1='RHS; '; s2='EVAP; '; s3='PRECIP; '; p.do_bias=1;
+p.s0 =strcat(a0,'~(',p.sea,');~',s0); p.s1 =strcat(a1,';~',del,s0); p.s2 =strcat(a2,';~',del,s0); 
+p.s3 =strcat(s1); p.s4 =strcat(del,s1); p.s5 =strcat(del,s1); 
+p.s6 =strcat(s2); p.s7 =strcat(del,s2); p.s8 =strcat(del,s2); 
+p.s9 =strcat(s3); p.s10=strcat(del,s3); p.s11=strcat(del,s3);
+p.unit0 ='$\rm{K}$';            p.unit0_bar ='\rm{K}';
+p.unit1 ='$\rm{K}$';            p.unit1_bar ='\rm{K}';
+p.unit3 ='$\rm{\%}$';           p.unit3_bar ='\rm{%}'; 
+p.unit4 ='$\rm{\%}$';           p.unit4_bar ='\rm{%}'; 
+p.unit6 ='$\rm{W m^{-2}}$';     p.unit6_bar ='\rm{W m^{-2}}';
+p.unit7 ='$\rm{W m^{-2}}$';     p.unit7_bar ='\rm{W m^{-2}}';
+p.unit9 ='$\rm{mm day^{-1}}$';  p.unit9_bar ='\rm{mm day^{-1}}'; 
+p.unit10='$\rm{mm day^{-1}}$';  p.unit10_bar='\rm{mm day^{-1}}';
+
+p.cmin0= 250; p.cmax0=303; p.cmin1 =-3.0; p.cmax1 =3.0;
+p.cmin3= 30.; p.cmax3=100; p.cmin4 =-5.0; p.cmax4 =5.0;
+p.cmin6= 20.; p.cmax6=200; p.cmin7 =-20;  p.cmax7 =20;
+p.cmin9= 0.0; p.cmax9=12;  p.cmin10 =-5;  p.cmax10=5;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[0 360 -90 90]; 
+s=z.v0.s; p.lon0=s.lon; p.lat0=s.lat; p.lm0=s.lm; aa=s.aa;
+a0=z.v0.sfc.tref.tavg0;
+a =z.w1.sfc.tref.tavg0-a0; p.dT1=1;% mean(mean(a.*aa));
+a =z.w2.sfc.tref.tavg0-a0; p.dT2=1;% mean(mean(a.*aa));
+imk=z.v0.sfc.ice.tavg0;  aa0=aa; 
+
+v=z.v0.s; p.lm=v.lm; aa0=v.aa; p.lon=v.lon; p.lat=v.lat; LV0=2.5E6;
+nyr1=100; nyr2=100; mskopt=0; num=30; N=365*50; 
+id=p.lm; id(id<0.5)=1; id(id>=0.5)=1;
+lat1=-90; lat2=90; lon1=0; lon2=360; p.xy=[lon1 lon2 lat1 lat2];
+p.ys=min(find(s.lat(:)>=lat1)); p.ye=max(find(s.lat(:)<=lat2));
+p.xs=min(find(s.lon(:)>=lon1)); p.xe=max(find(s.lon(:)<=lon2));
+a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a; 
+id=(id==1); aa=aa0(id); aa=aa/mean(aa); p.id=id; %figure; pcolor(id); shading flat; colorbar;
+%TS
+v=z.v0.sfc; a=get4season_all(v.tsurf.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.sfc; a=get4season_all(v.tsurf.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.sfc; a=get4season_all(v.tsurf.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; if (p.do_bias); a=squeeze(z.v0.sfc.tsurf.sea_bias(isea,:,:)); p.cmin0= -5.0; p.cmax0=5; end;
+p.v0=a; p.dv0=mean(a(id).*aa);  
+[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT1; p.v1=a; p.dv1=mean(a(id).*aa); p.isig1=isig;
+[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT2; p.v2=a; p.dv2=mean(a(id).*aa); p.isig2=isig;
+%surface RH
+v=z.v0.sfc; a=get4season_all(v.rhref.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.sfc; a=get4season_all(v.rhref.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.sfc; a=get4season_all(v.rhref.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; if (p.do_bias); a=squeeze(z.v0.sfc.rhref.sea_bias(isea,:,:)); p.cmin3= -20.0; p.cmax3=20; end;
+p.v3=a; p.dv3=mean(a(id).*aa);
+[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT1; p.v4=a; p.dv4=mean(a(id).*aa); p.isig4=isig;
+[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT2; p.v5=a; p.dv5=mean(a(id).*aa); p.isig5=isig;
+%evap
+v=z.v0.sfc; a=get4season_all(v.evap.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.sfc; a=get4season_all(v.evap.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.sfc; a=get4season_all(v.evap.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+%v=z.v0.sfc; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+%v=z.w1.sfc; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+%v=z.w2.sfc; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; if (p.do_bias); a=squeeze(z.v0.sfc.evap.sea_bias(isea,:,:));  p.v6=a; p.dv6=mean(a(id).*aa); p.cmin6= -20; p.cmax6=20; end;
+p.v6=a; p.dv6=mean(a(id).*aa);
+[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa); p.isig7=isig;
+[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa); p.isig8=isig;
+%precip
+v=z.v0.sfc; a=get4season_all(v.pcp.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.sfc; a=get4season_all(v.pcp.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.sfc; a=get4season_all(v.pcp.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; if (p.do_bias); a=squeeze(z.v0.sfc.pcp.sea_bias(isea,:,:)); p.cmin9=-5; p.cmax9=5; end;
+p.v9=a; p.dv9=mean(a(id).*aa);
+[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT1; p.v10=a; p.dv10=mean(a(id).*aa); p.isig10=isig;
+[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
+a=diff/p.dT2; p.v11=a; p.dv11=mean(a(id).*aa); p.isig11=isig;
+plot_pattern_effect_Fig_land_16panel(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Figs for surface wind and wind stress%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
+     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
+nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
+a0='R47AMIP minus OBS'; a1='R61 minus R47AMIP'; a2='A03 minus R47AMIP'; p.flipcmap=0;
+p.vname0='sfc_uref_taux_tauy_vref'; p.vname0=strcat('Fig_',p.vname0,'_',nsea{isea}); p.sea=nsea{isea};
+
+%p.vname0=strcat(p.vname0,'_coupled');
+%z.v0=z.v0a; a='R47AMIP';
+%z.v0=z.v0b; a='R61AMIP'; 
+%a0=strcat(a,' minus OBS'); b=strcat(' minus~',a);
+%z.w1=z.w1;  a='R61';    a1=strcat(a,b); 
+%z.w2=z.w2a; a='A03';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2b; a='PE9';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2c; a='PE3';    a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2d; a='DP0p5';  a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+%z.w2=z.w2e; a='CAmer';  a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+
+p.vname0=strcat(p.vname0,'_amip');
+z.v0=z.v0a; a='R47AMIP';
+z.v0=z.v0b; a='R61AMIP'; 
+a0=strcat(a,' minus OBS'); b=strcat(' minus~',a);
+z.w1=z.w1a; a='CTL';   a1=strcat(a,b);
+z.w2=z.w2a; a='PE9';   a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+z.w2=z.w2b; a='PE3';   a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+z.w2=z.w2c; a='DP0p5'; a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+z.w2=z.w2d; a='DT600'; a2=strcat(a,b); p.vname=strcat(p.vname0,'_',a);
+
+del=' $\Delta$'; s0='Uref;'; s1='TAUx; '; s2='TAUy; '; s3='Vref; '; p.do_bias=1;
+p.s0 =strcat(a0,'~(',p.sea,');~',s0); p.s1 =strcat(a1,';~',del,s0); p.s2 =strcat(a2,';~',del,s0); 
+p.s3 =strcat(s1); p.s4 =strcat(del,s1); p.s5 =strcat(del,s1); 
+p.s6 =strcat(s2); p.s7 =strcat(del,s2); p.s8 =strcat(del,s2); 
+p.s9 =strcat(s3); p.s10=strcat(del,s3); p.s11=strcat(del,s3);
+p.unit0 ='$\rm{m/s}$';          p.unit0_bar ='\rm{m/s}';
+p.unit1 ='$\rm{m/s}$';          p.unit1_bar ='\rm{m/s}';
+p.unit3 ='$\rm{dPa}$';          p.unit3_bar ='\rm{dPa}'; 
+p.unit4 ='$\rm{dPa}$';          p.unit4_bar ='\rm{dPa}'; 
+p.unit6 ='$\rm{dPa}$';          p.unit6_bar ='\rm{dPa}';
+p.unit7 ='$\rm{dPa}$';          p.unit7_bar ='\rm{dPa}';
+p.unit9 ='$\rm{m/s}$';          p.unit9_bar ='\rm{m/s}'; 
+p.unit10='$\rm{m/s}$';          p.unit10_bar='\rm{m/s}';
+
+p.cmin0=-8.0; p.cmax0=8.0; p.cmin1 =-3.0; p.cmax1 =3.0;
+p.cmin3=-1.0; p.cmax3=1.0; p.cmin4 =-0.4; p.cmax4 =0.4;
+p.cmin6=-1.0; p.cmax6=1.0; p.cmin7 =-0.4; p.cmax7 =0.4;
+p.cmin9=-8.0; p.cmax9=8.0; p.cmin10=-3.0; p.cmax10=3.0;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[0 360 -90 90];
+s=z.v0.s; p.lon0=s.lon; p.lat0=s.lat; p.lm0=s.lm; aa=s.aa;
+a0=z.v0.sfc.tref.tavg0;
+a =z.w1.sfc.tref.tavg0-a0; p.dT1=1;% mean(mean(a.*aa));
+a =z.w2.sfc.tref.tavg0-a0; p.dT2=1;% mean(mean(a.*aa));
+imk=z.v0.sfc.ice.tavg0;  aa0=aa; 
+
+v=z.v0.s; p.lm=v.lm; aa0=v.aa; p.lon=v.lon; p.lat=v.lat; LV0=2.5E6;
+nyr1=100; nyr2=100; mskopt=0; num=30; N=365*50; 
+id=p.lm; id(id<0.5)=1; id(id>=0.5)=1;
+lat1=-90; lat2=90; lon1=0; lon2=360; p.xy=[lon1 lon2 lat1 lat2];
+p.ys=min(find(s.lat(:)>=lat1)); p.ye=max(find(s.lat(:)<=lat2));
+p.xs=min(find(s.lon(:)>=lon1)); p.xe=max(find(s.lon(:)<=lon2));
+a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a; 
+id=(id==1); aa=aa0(id); aa=aa/mean(aa); p.id=id; %figure; pcolor(id); shading flat; colorbar;
+% Uref
+v=z.v0.sfc; a=v.uref.sea; a=squeeze(a(isea,:,:)); a0=squeeze(a); 
+v=z.w1.sfc; a=v.uref.sea; a=squeeze(a(isea,:,:)); a1=squeeze(a);
+v=z.w2.sfc; a=v.uref.sea; a=squeeze(a(isea,:,:)); a2=squeeze(a);
+a=a0; if (p.do_bias); a=squeeze(z.v0.sfc.uref.sea_bias(isea,:,:)); p.cmin0= -2.0; p.cmax0=2; end;
+p.v0=a; p.dv0=mean(a(id).*aa);
+diff=a1-a0;   
+a=diff/p.dT1; p.v1=a; p.dv1=mean(a(id).*aa); p.isig1=isig;
+diff=a2-a0;
+a=diff/p.dT2; p.v2=a; p.dv2=mean(a(id).*aa); p.isig2=isig;
+%taux
+v=z.v0.sfc; a=v.taux.sea*10; a=squeeze(a(isea,:,:)); a0=squeeze(a);
+v=z.w1.sfc; a=v.taux.sea*10; a=squeeze(a(isea,:,:)); a1=squeeze(a);
+v=z.w2.sfc; a=v.taux.sea*10; a=squeeze(a(isea,:,:)); a2=squeeze(a);
+a=a0; if (p.do_bias); a=squeeze(z.v0.sfc.taux.sea_bias(isea,:,:))*10; p.cmin3= -0.2; p.cmax3=0.2; end;
+p.v3=a; p.dv3=mean(a(id).*aa);
+diff=a1-a0;
+a=diff/p.dT1; p.v4=a; p.dv4=mean(a(id).*aa); p.isig4=isig;
+diff=a2-a0;
+a=diff/p.dT2; p.v5=a; p.dv5=mean(a(id).*aa); p.isig5=isig;
+%tauy
+v=z.v0.sfc; a=v.tauy.sea*10; a=squeeze(a(isea,:,:)); a0=squeeze(a);
+v=z.w1.sfc; a=v.tauy.sea*10; a=squeeze(a(isea,:,:)); a1=squeeze(a);
+v=z.w2.sfc; a=v.tauy.sea*10; a=squeeze(a(isea,:,:)); a2=squeeze(a);
+a=a0; if (p.do_bias); a=squeeze(z.v0.sfc.tauy.sea_bias(isea,:,:))*10; p.cmin6= -0.2; p.cmax6=0.2; end;
+p.v6=a; p.dv6=mean(a(id).*aa);
+diff=a1-a0;
+a=diff/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa); p.isig7=isig;
+diff=a2-a0;
+a=diff/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa); p.isig8=isig;
+%Vref
+v=z.v0.sfc; a=v.vref.sea; a=squeeze(a(isea,:,:)); a0=squeeze(a); 
+v=z.w1.sfc; a=v.vref.sea; a=squeeze(a(isea,:,:)); a1=squeeze(a); 
+v=z.w2.sfc; a=v.vref.sea; a=squeeze(a(isea,:,:)); a2=squeeze(a); 
+a=a0; if (p.do_bias); a=squeeze(z.v0.sfc.vref.sea_bias(isea,:,:)); p.cmin9= -2.0; p.cmax9=2; end;
+p.v9=a; p.dv9=mean(a(id).*aa);
+diff=a1-a0;
+a=diff/p.dT1; p.v10=a; p.dv10=mean(a(id).*aa); p.isig10=isig;
+diff=a2-a0;
+a=diff/p.dT2; p.v11=a; p.dv11=mean(a(id).*aa); p.isig11=isig;
+plot_pattern_effect_Fig_land_16panel(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Figs for atmospheric circulation changes across various season%%
@@ -476,31 +605,23 @@ p.xy=[0 360 -60 90]; plot_pattern_effect_Fig_atm_16panel(p)
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
 a1='Observed-pattern'; a2='SPEAR-pattern M'; a3='SPEAR-pattern EPACobs';
-a4='SPEAR-pattern IPWPobs'; a5='SPEAR-pattern AMDRobs'; %a5='SPEAR-pattern NPACobs';
-nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
-%nsea={'ANN','MAM','JJA','SON','DJF'}; isea=1; %1-5=ANN,MAM,JJA,SON,DJF
-p.vname='atmwind'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea});
-
-del=' $\Delta$'; s0='Z500'''; s1='U200'; s2='U850'; s3='SLP'; p.flipcmap=0;
-
+a4='SPEAR-pattern IPWPobs'; a5='SPEAR-pattern AMDRobs';
+nsea={'ANN','MAM','JJA','SON','DJF'}; isea=5; %1-5=ANN,MAM,JJA,SON,DJF
+p.vname='land_tas'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea});
+del=' $\Delta$'; s0='Z500'''; s1='U200'; s2='U850'; s3='SLP';
 p.s1 =strcat(a1,'~(',nsea{isea},');',del,s0); p.s2 =strcat(a2,'~(',nsea{isea},');',del,s0);
 p.s3 =strcat(a3,'~(',nsea{isea},');',del,s0); p.s4 =strcat(a4,'~(',nsea{isea},');',del,s0);
 p.s5 =strcat(a5,'~(',nsea{isea},');',del,s0); 
 p.s6 =strcat(del,s1); p.s7 =strcat(del,s1); p.s8 =strcat(del,s1); p.s9 =strcat(del,s1); p.s10=strcat(del,s1); 
 p.s11=strcat(del,s2); p.s12=strcat(del,s2); p.s13=strcat(del,s2); p.s14=strcat(del,s2); p.s15=strcat(del,s2); 
 p.s16=strcat(del,s3); p.s17=strcat(del,s3); p.s18=strcat(del,s3); p.s19=strcat(del,s3); p.s20=strcat(del,s3); 
-p.unit1 ='GPM';          p.unit1_bar =p.unit1;
-p.unit3 ='m s^{-1}';     p.unit3_bar =p.unit3;
-p.unit4 ='m s^{-1}';     p.unit4_bar =p.unit4;
-p.unit6 ='m s^{-1}';     p.unit6_bar =p.unit6;
-p.unit7 ='m s^{-1}';     p.unit7_bar =p.unit7;
-p.unit9 ='hPA';          p.unit9_bar =p.unit9;
-p.unit10='hPA';          p.unit10_bar=p.unit10;
+p.unit1='$\rm{m}$';                  p.unit1_bar='\rm{m}'; 
+p.unit2='$\rm{\% K^{-1}}$';          p.unit2_bar='\rm{% K^{-1}}'; 
+p.unit3='$\rm{mm day^{-1} K^{-1}}$'; p.unit3_bar='\rm{mm day^{-11 K^{-1}}'; 
+p.unit4='$\rm{mm day^{-1} K^{-1}}$'; p.unit4_bar='\rm{mm day^{-1} K^{-1}}'; 
 
-p.cmin0= -500.0; p.cmax0=500;  p.cmin1 = -50; p.cmax1 =50.;
-p.cmin3=  -50.0; p.cmax3=50;   p.cmin4 =-5.0; p.cmax4 =5.0;
-p.cmin6=  -20.0; p.cmax6=20.;  p.cmin7 =-2.0; p.cmax7 =2.0;
-p.cmin9=  990.0; p.cmax9=1030; p.cmin10=-3.0; p.cmax10=3.0;
+p.cmin1=-20.0; p.cmax1=20.0; p.cmin2=-5.0; p.cmax2=5.0;
+p.cmin3=-3.0;  p.cmax3=3.0;  p.cmin4=-3.0; p.cmax4=3.0; 
 p.do_add=1; p.show='off'; p.z1_co='c'; p.co='k'; p.xy=[280 360 0 90];
 s=z.v0.s; p.lon0=s.lon; p.lat0=s.lat; p.lm0=s.lm; aa=s.aa;
 a0=z.v0.sfc.tref.tavg0;
@@ -512,6 +633,7 @@ a =z.w2c.sfc.tref.tavg0-a0; p.dT5=mean(mean(a.*aa)); p.tas5=a;
 imk=z.v0.sfc.ice.tavg0;  aa0=aa; 
 
 v=z.v0.s; p.lm=v.lm; aa0=v.aa; p.lon=v.lon; p.lat=v.lat; LV0=2.5E6;
+nyr1=100; nyr2=100; mskopt=0; num=30; N=365*100; 
 id=p.lm; id(id<0.5)=0; id(id>=0.5)=1; p.id_lm=(id==1);
 lat1= 15; lat2=85; lon1=190; lon2=344; p.xy=[280 360  0 90];
 lat1=-90; lat2=90; lon1=0;   lon2=360; p.xy=[0   360 -90 90];
@@ -549,7 +671,7 @@ a=(a2-a0)/p.dT2; p.u2 =a; p.du2 =mean(a(id).*aa); p.isig7 =id;
 a=(a3-a0)/p.dT3; p.u3 =a; p.du3 =mean(a(id).*aa); p.isig8 =id;
 a=(a4-a0)/p.dT4; p.u4 =a; p.du4 =mean(a(id).*aa); p.isig9 =id;
 a=(a5-a0)/p.dT5; p.u5 =a; p.du5 =mean(a(id).*aa); p.isig10=id;
-p.u1_add=a0; p.u1_addbin=[15:5:50];
+p.u1_add=a0; p.u1_addbin=[20:10:50];
 v=z.v0.atm.va(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
 v=z.w1.atm.va(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
 v=z.w2.atm.va(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
@@ -589,7 +711,7 @@ a=(a2-a0)/p.dT2; p.u7 =a; p.du7 =mean(a(id).*aa); p.isig7 =id;
 a=(a3-a0)/p.dT3; p.u8 =a; p.du8 =mean(a(id).*aa); p.isig8 =id;
 a=(a4-a0)/p.dT4; p.u9 =a; p.du9 =mean(a(id).*aa); p.isig9 =id;
 a=(a5-a0)/p.dT5; p.u10=a; p.du10=mean(a(id).*aa); p.isig10=id;
-p.u6_add=a0; p.u6_addbin=[20:10:50];
+p.u6_add=a0; p.u6_addbin=[30:10:50];
 v=z.v0.atm.va(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
 v=z.w1.atm.va(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
 v=z.w2.atm.va(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
@@ -628,7 +750,7 @@ a=(a2-a0)/p.dT2; p.u12=a; p.du12=mean(a(id).*aa); p.isig12=id;
 a=(a3-a0)/p.dT3; p.u13=a; p.du13=mean(a(id).*aa); p.isig13=id;
 a=(a4-a0)/p.dT4; p.u14=a; p.du14=mean(a(id).*aa); p.isig14=id;
 a=(a5-a0)/p.dT5; p.u15=a; p.du15=mean(a(id).*aa); p.isig15=id;
-p.u11_add=a0; p.u11_addbin=[5:5:30];
+p.u11_add=a0; p.u11_addbin=[5:5:50];
 v=z.v0.atm.va(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
 v=z.w1.atm.va(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
 v=z.w2.atm.va(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
@@ -667,7 +789,7 @@ a=(a2-a0)/p.dT2; p.z17=a; p.dz17=mean(a(id).*aa); p.isig17=id;
 a=(a3-a0)/p.dT3; p.z18=a; p.dz18=mean(a(id).*aa); p.isig18=id;
 a=(a4-a0)/p.dT4; p.z19=a; p.dz19=mean(a(id).*aa); p.isig19=id;
 a=(a5-a0)/p.dT5; p.z20=a; p.dz20=mean(a(id).*aa); p.isig20=id;
-p.z16_add=a0; p.z16_addbin=[980:5:1020]; %p.z10_add(p.id_lm)=NaN;
+p.z16_add=a0; p.z16_addbin=[980:2:1020]; %p.z10_add(p.id_lm)=NaN;
 k=2; %950hPa
 v=z.v0.atm.ua(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
 v=z.w1.atm.ua(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
@@ -680,7 +802,7 @@ a=(a2-a0)/p.dT2; p.u17 =a; p.du17 =mean(a(id).*aa); p.isig7 =id;
 a=(a3-a0)/p.dT3; p.u18 =a; p.du18 =mean(a(id).*aa); p.isig8 =id;
 a=(a4-a0)/p.dT4; p.u19 =a; p.du19 =mean(a(id).*aa); p.isig9 =id;
 a=(a5-a0)/p.dT5; p.u20 =a; p.du20 =mean(a(id).*aa); p.isig10=id;
-p.u16_add=a0; p.u16_addbin=[5:5:30];
+p.u16_add=a0; p.u16_addbin=[0:2:10];
 v=z.v0.atm.va(k);  a=v.sea; a0=squeeze(a(isea,:,:)); %a0=get_zonala(a0);
 v=z.w1.atm.va(k);  a=v.sea; a1=squeeze(a(isea,:,:)); %a1=get_zonala(a1);
 v=z.w2.atm.va(k);  a=v.sea; a2=squeeze(a(isea,:,:)); %a2=get_zonala(a2);
@@ -692,12 +814,11 @@ a=(a2-a0)/p.dT2; p.v17 =a; p.dv17 =mean(a(id).*aa); p.isig7 =id;
 a=(a3-a0)/p.dT3; p.v18 =a; p.dv18 =mean(a(id).*aa); p.isig8 =id;
 a=(a4-a0)/p.dT4; p.v19 =a; p.dv19 =mean(a(id).*aa); p.isig9 =id;
 a=(a5-a0)/p.dT5; p.v20 =a; p.dv20 =mean(a(id).*aa); p.isig10=id;
-p.v16_add=a0; p.v16_addbin=[0:5:10];
-%p.xy=[0 360 -30 90]; p.z1_addbin=[0:100:500];
-p.cfact=1; p.phi_bin=[0:50:300]; p.phi_co='r';
-p.xy=[0 360 -60 90]; plot_pattern_effect_Fig_atm_20panel(p)
+p.v16_add=a0; p.v16_addbin=[0:2:10];
+p.xy=[0 360 -30 90]; p.z1_addbin=[0:100:500]; p.cfact=1;
+p.phi_bin=[0:50:300]; p.phi_co='r';
 p.xy=[100 360 -10 90]; plot_pattern_effect_Fig_atm_20panel(p)
-%p.xy=[180 350   0 80]; plot_pattern_effect_Fig_atm_20panel(p)
+p.xy=[180 350   0 80]; plot_pattern_effect_Fig_atm_20panel(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %end of Fig for atmos change %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -714,7 +835,7 @@ p.xy=[100 360 -10 90]; plot_pattern_effect_Fig_atm_20panel(p)
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
 a0='Present-day'; a1='SPEAR-pattern M'; a2='Observed-pattern'; a3='Uniform';
-nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
+nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=7; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
 p.vname='atm'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
 del=' $\Delta$'; s0='Z500'''; s1='U200'; s2='U850'; s3='SLP';
 p.s0=strcat(a0,';~(',p.sea,')~',s0); p.s1 =strcat(a1,';~',del,s0); p.s2 =strcat(a2,';~',del,s0); 
@@ -776,7 +897,7 @@ a=a0;            p.v0 =a; p.dv0 =mean(a(id).*aa); p.v0_bin=[0:5:50];
 a=(a1-a0)/p.dT1; p.v1 =a; p.dv1 =mean(a(id).*aa); 
 a=(a2-a0)/p.dT2; p.v2 =a; p.dv2 =mean(a(id).*aa); 
 
-k=11; %200hPa
+k=11 %200hPa
 v=z.v0.atm.za(k);  a=v.sea; a0=squeeze(a(isea,:,:)); a0=get_zonala(a0);
 v=z.w1.atm.za(k);  a=v.sea; a1=squeeze(a(isea,:,:)); a1=get_zonala(a1);
 v=z.w2.atm.za(k);  a=v.sea; a2=squeeze(a(isea,:,:)); a2=get_zonala(a2);
@@ -798,7 +919,7 @@ a=a0;            p.v3 =a; p.dv3 =mean(a(id).*aa); p.v3_bin=[0:5:50];
 a=(a1-a0)/p.dT1; p.v4 =a; p.dv4 =mean(a(id).*aa); 
 a=(a2-a0)/p.dT2; p.v5 =a; p.dv5 =mean(a(id).*aa); 
 
-k=3; %850hPa
+k=3 %850hPa
 v=z.v0.atm.za(k);  a=v.sea; a0=squeeze(a(isea,:,:)); a0=get_zonala(a0);
 v=z.w1.atm.za(k);  a=v.sea; a1=squeeze(a(isea,:,:)); a1=get_zonala(a1);
 v=z.w2.atm.za(k);  a=v.sea; a2=squeeze(a(isea,:,:)); a2=get_zonala(a2);
@@ -843,117 +964,14 @@ a=a0;            p.v9  =a; p.dv9  =mean(a(id).*aa); p.v9_bin=[0:5:10];
 a=(a1-a0)/p.dT1; p.v10 =a; p.dv10 =mean(a(id).*aa); 
 a=(a2-a0)/p.dT2; p.v11 =a; p.dv11 =mean(a(id).*aa); 
 p.cfact=1; p.phi_bin=[0:50:300]; p.phi_co='r';
-p.xy=[100 360 -10 90]; plot_pattern_effect_Fig_atm_16panel(p)
 p.xy=[0 360 -60 90]; plot_pattern_effect_Fig_atm_16panel(p)
+%p.xy=[0 360 -60 90]; plot_pattern_effect_Fig_atm_16panel(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %end of Fig for atmos change %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Figs for land temperature / heat change %%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
-     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
-a0='Present-day'; a1='SPEAR-pattern M'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
-p.vname='land_heat'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-del=' $\Delta$'; s0='TAS;'; s1='RHS; '; s2='PET; '; s3='(PET/P); ';
-p.s0 =strcat(a0,'~(',p.sea,');~',s0); p.s1 =strcat(a1,';~',del,s0); p.s2 =strcat(a2,';~',del,s0); 
-p.s3 =strcat(s1); p.s4 =strcat(del,s1); p.s5 =strcat(del,s1); 
-p.s6 =strcat(s2); p.s7 =strcat(del,s2); p.s8 =strcat(del,s2); 
-p.s9 =strcat(s3); p.s10=strcat(del,s3); p.s11=strcat(del,s3);
-p.unit0 ='$\rm{^{\circ}C}$';    p.unit0_bar ='\rm{^{\circ}C}';
-p.unit1 ='$\rm{KK^{-1}}$';      p.unit1_bar ='\rm{KK^{-1}}';
-p.unit3 ='$\rm{\%}$';           p.unit3_bar ='\rm{%}'; 
-p.unit4 ='$\rm{\% K^{-1}}$';    p.unit4_bar ='\rm{% K^{-1}}'; 
-p.unit6 ='$\rm{mm day^{-1}}$';  p.unit6_bar ='\rm{mm day^{-1}}';
-p.unit7 ='$\rm{mm day^{-1}K^{-1}}$';  p.unit7_bar ='\rm{mm day^{-1} K^{-1}}';
-p.unit9 ='$\rm{}$';             p.unit9_bar ='\rm{}'; 
-p.unit10='$\rm{K^{-1}}$';       p.unit10_bar='\rm{K^{-1}}'; 
-
-p.cmin0= 0.0; p.cmax0=25;  p.cmin1 =-3.0;  p.cmax1=3.0;
-p.cmin3= 0.0; p.cmax3=100; p.cmin4 =-10.0; p.cmax4 =10.0;
-p.cmin6= 0.0; p.cmax6=5.;  p.cmin7 =-0.2;  p.cmax7 =0.2;
-p.cmin9= 0.0; p.cmax9=2.;  p.cmin10=-1.0;  p.cmax10=1.0;
-p.do_add=0; p.show='off'; p.co='k'; p.xy=[280 360 0 90]; p.do_bias=0;
-s=z.v0.s; p.lon0=s.lon; p.lat0=s.lat; p.lm0=s.lm; aa=s.aa;
-a0=z.v0.sfc.tref.tavg0;
-a =z.w1.sfc.tref.tavg0-a0; p.dT1=mean(mean(a.*aa));
-a =z.w2.sfc.tref.tavg0-a0; p.dT2=mean(mean(a.*aa));
-imk=z.v0.sfc.ice.tavg0;  aa0=aa; 
-
-v=z.v0.s; p.lm=v.lm; aa0=v.aa; p.lon=v.lon; p.lat=v.lat; LV0=2.5E6;
-nyr1=100; nyr2=100; mskopt=0; num=30; N=365*100; 
-id=p.lm; id(id<0.5)=0; id(id>=0.5)=1;
-lat1=16; lat2=75; lon1=190; lon2=304; p.xy=[lon1 lon2 lat1 lat2];
-p.ys=min(find(s.lat(:)>=lat1)); p.ye=max(find(s.lat(:)<=lat2));
-p.xs=min(find(s.lon(:)>=lon1)); p.xe=max(find(s.lon(:)<=lon2));
-a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a; 
-id=(id==1); aa=aa0(id); aa=aa/mean(aa); p.id=id; %figure; pcolor(id); shading flat; colorbar;
-%SAT
-v=z.v0.sfc; a=get4season_all(v.tref.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.tref.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.tref.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0-273.15; p.v0=a; p.dv0=mean(a(id).*aa);
-if (p.do_bias); p.v0=squeeze(z.v0.sfc.tref.sea_bias(isea,:,:)); p.cmin0= -5.0; p.cmax0=5; end;
-[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
-a=diff/p.dT1; p.v1=a; p.dv1=mean(a(id).*aa); p.isig1=isig;
-[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
-a=diff/p.dT2; p.v2=a; p.dv2=mean(a(id).*aa); p.isig2=isig;
-%surface RH
-v=z.v0.sfc; a=get4season_all(v.rhref.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.rhref.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.rhref.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0; p.v3=a; p.dv3=mean(a(id).*aa);
-if (p.do_bias); p.v3=squeeze(z.v0.sfc.rhref.sea_bias(isea,:,:)); p.cmin3= -20.0; p.cmax3=20; end;
-[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
-a=diff/p.dT1; p.v4=a; p.dv4=mean(a(id).*aa); p.isig4=isig;
-[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
-a=diff/p.dT2; p.v5=a; p.dv5=mean(a(id).*aa); p.isig5=isig;
-%PET: Potential Evapotranspiration
-%v=z.v0.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%v=z.v0.sfc; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.shflx.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-v=z.v0.sfc; a=get4season_all(v.netrad.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.netrad.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.netrad.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0; p.v6=a; p.dv6=mean(a(id).*aa);
-if (p.do_bias); p.v6=squeeze(z.v0.sfc.evap.sea_bias(isea,:,:))/LV0*86400; p.cmin6= -0.5; p.cmax6=0.5; end;
-[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
-a=diff/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa); p.isig7=isig;
-[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
-a=diff/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa); p.isig8=isig;
-%PET/P: aridity index
-%v=z.v0.sfc; a=get4season_all(v.netrad.all/LV0*86400); x=0; a(a<x)=x; a=get4season_all(v.pcp.all)./a; a=squeeze(a(:,isea,:,:)); a(a>100)=100; a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.netrad.all/LV0*86400); x=0; a(a<x)=x; a=get4season_all(v.pcp.all)./a; a=squeeze(a(:,isea,:,:)); a(a>100)=100; a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.netrad.all/LV0*86400); x=0; a(a<x)=x; a=get4season_all(v.pcp.all)./a; a=squeeze(a(:,isea,:,:)); a(a>100)=100; a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-v=z.v0.sfc; a=get4season_all(v.netrad.all/LV0*86400); x=0; a(a<x)=x; a=a./get4season_all(v.pcp.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.netrad.all/LV0*86400); x=0; a(a<x)=x; a=a./get4season_all(v.pcp.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.netrad.all/LV0*86400); x=0; a(a<x)=x; a=a./get4season_all(v.pcp.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%MRSOS: surface moisture
-%v=z.v0.sfc; a=get4season_all(v.mrsos.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.mrsos.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.mrsos.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0; p.v9=a; p.dv9=mean(a(id).*aa);
-if (p.do_bias); p.v9=squeeze(z.v0.sfc.netrad.sea_bias(isea,:,:))/LV0*86400; p.cmin9= -0.5; p.cmax9=0.5; end;
-[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
-a=diff/p.dT1; p.v10=a; p.dv10=mean(a(id).*aa); p.isig10=isig;
-[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
-a=diff/p.dT2; p.v11=a; p.dv11=mean(a(id).*aa); p.isig11=isig;
-plot_pattern_effect_Fig_land_16panel(p)
-%lat1=16; lat2=75; lon1=190; lon2=304; p.xy=[lon1 lon2 lat1 lat2];
-%plot_pattern_effect_Fig_land_16panel(p);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%end of Fig for land heat change %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -976,7 +994,7 @@ nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,S
 a0='Present-day'; a1='SPEAR-pattern M'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
 p.vname='land_hydro'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
 del=' $\Delta$'; s0='Pr;'; s1='MRROS; '; s2='(RV-O-H2O); '; s3='(MRSOS); ';
-s0='Pr;'; s1='ET; '; s2='Runoff; ';  s3='River Flow; '; %s3='Soil Moisture; ';
+s0='Pr;'; s1='Runoff; '; s2='River Flow; '; s3='Soil Moisture; ';
 p.s0 =strcat(a0,'~(',p.sea,');~',s0); p.s1 =strcat(a1,';~',del,s0); p.s2 =strcat(a2,';~',del,s0); 
 p.s3 =strcat(s1); p.s4 =strcat(del,s1); p.s5 =strcat(del,s1); 
 p.s6 =strcat(s2); p.s7 =strcat(del,s2); p.s8 =strcat(del,s2); 
@@ -987,15 +1005,14 @@ p.unit3 ='$\rm{kg m^{-2} day^{-1}}$';        p.unit3_bar ='\rm{kg m^{-2} day^{-1
 p.unit4 ='$\rm{kg m^{-2} day^{-1} K^{-1}}$'; p.unit4_bar ='\rm{kg m^{-2} day^{-1} K^{-1}}'; 
 p.unit6 ='$\rm{kg m^{-2} day^{-1}}$';        p.unit6_bar ='\rm{kg m^{-2} day^{-1}}'; 
 p.unit7 ='$\rm{kg m^{-2} day^{-1} K^{-1}}$'; p.unit7_bar ='\rm{kg m^{-2} day^{-1} K^{-1}}'; 
-p.unit9 ='$\rm{kg m^{-2} day^{-1} K^{-1}}$'; p.unit9_bar ='\rm{kg m^{-2} day^{-1} K^{-1}}'; 
-p.unit10='$\rm{kg m^{-2} day^{-1} K^{-1}}$'; p.unit10_bar='\rm{kg m^{-2} day^{-1} K^{-1}}'; 
+p.unit9 ='$\rm{kg m^{-2}}$';                 p.unit9_bar ='\rm{kg m^{-2}}'; 
+p.unit10='$\rm{kg m^{-2}K^{-1}}$';           p.unit10_bar='\rm{kg m^{-2}K^{-1}}'; 
 
-p.cmin0= 0.0; p.cmax0=5.0; p.cmin1 =-0.5; p.cmax1 =0.5; %p.cmin0= 0.0; p.cmax0=1.0; p.cmin1 =-0.1; p.cmax1 =0.1;
-p.cmin3= 0.0; p.cmax3=5.0; p.cmin4 =-0.5; p.cmax4 =0.5;
-p.cmin6= 0.0; p.cmax6=5.0; p.cmin7 =-0.5; p.cmax7 =0.5; %p.cmin6= 0.0; p.cmax6=30.; p.cmin7 =-50; p.cmax7 =50; 
-p.cmin9= 0.0; p.cmax9=30.; p.cmin10=-3.0; p.cmax10=3.0; %p.cmin9= 0.0; p.cmax9=1.; p.cmin10=-0.1; p.cmax10=0.1;
-p.do_add=0; p.show='off'; p.co='k'; p.xy=[280 360 0 90]; p.do_bias=0;
-
+p.cmin0= 0.0; p.cmax0=5.0; p.cmin1 =-0.5; p.cmax1 =0.5; p.cmin0= 0.0; p.cmax0=1.0; p.cmin1 =-0.1; p.cmax1 =0.1;
+p.cmin3= 0.0; p.cmax3=1.0; p.cmin4 =-0.1; p.cmax4 =0.1;
+p.cmin6= 0.0; p.cmax6=30.; p.cmin7 =-3.0; p.cmax7 =3.0;
+p.cmin9= 0.0; p.cmax9=40.; p.cmin10=-4.0; p.cmax10=4.0;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[280 360 0 90];
 s=z.v0.s; p.lon0=s.lon; p.lat0=s.lat; p.lm0=s.lm; aa=s.aa;
 a0=z.v0.sfc.tref.tavg0;
 a =z.w1.sfc.tref.tavg0-a0; p.dT1=mean(mean(a.*aa));
@@ -1021,166 +1038,49 @@ v=z.w2.sfc; a=get4season_all(v.prec_land.all); a=squeeze(a(:,isea,:,:)); a2=sque
 %v=z.v0.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.evap_land.all*86400/LV0+v.fevap.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
 %v=z.w1.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.evap_land.all*86400/LV0+v.fevap.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
 %v=z.w2.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.evap_land.all*86400/LV0+v.fevap.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%v=z.v0.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+v=z.v0.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
 a=a0; p.v0=a; p.dv0=mean(a(id).*aa);
 [diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
 a=diff/p.dT1; p.v1=a; p.dv1=mean(a(id).*aa); p.isig1=isig;
 [diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
 a=diff/p.dT2; p.v2=a; p.dv2=mean(a(id).*aa); p.isig2=isig;
-%ET: Evapotranspiration
-v=z.v0.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+%MRROS: surface runoff: MRROS
+%v=z.v0.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+%v=z.w1.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+%v=z.w2.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+%RUNF: total RUNOFF: RUNF
+%v=z.v0.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+%v=z.w1.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+%v=z.w2.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+%total liquid RUNF: RUNF - FRUNF %note the code suggest it = runf - frunf - frunf_subs (missing here)
+v=z.v0.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
 a=a0; p.v3=a; p.dv3=mean(a(id).*aa);
 [diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
 a=diff/p.dT1; p.v4=a; p.dv4=mean(a(id).*aa); p.isig4=isig;
 [diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
 a=diff/p.dT2; p.v5=a; p.dv5=mean(a(id).*aa); p.isig5=isig;
-%MRROS: surface runoff: MRROS
-%v=z.v0.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%RUNF: total RUNOFF: RUNF
-%v=z.v0.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%total liquid RUNF: RUNF - FRUNF %note the code suggest it = runf - frunf - frunf_subs (missing here)
-v=z.v0.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+%RV_O_H2O: river flow
+v=z.v0.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
 a=a0; p.v6=a; p.dv6=mean(a(id).*aa);
-if (p.do_bias); p.v6=squeeze(z.v0.sfc.evap.sea_bias(isea,:,:))/LV0*86400; p.cmin6= -0.5; p.cmax6=0.5; end;
 [diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
 a=diff/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa); p.isig7=isig;
 [diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
 a=diff/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa); p.isig8=isig;
-%RV_O_H2O: river flow
-v=z.v0.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0; p.v9=a; p.dv9=mean(a(id).*aa); p.v9(a<1)=NaN;
+%MRSOS: surface moisture
+v=z.v0.sfc; a=get4season_all(v.mrsos.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
+v=z.w1.sfc; a=get4season_all(v.mrsos.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
+v=z.w2.sfc; a=get4season_all(v.mrsos.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
+a=a0; p.v9=a; p.dv9=mean(a(id).*aa);
 [diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
 a=diff/p.dT1; p.v10=a; p.dv10=mean(a(id).*aa); p.isig10=isig;
 [diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
 a=diff/p.dT2; p.v11=a; p.dv11=mean(a(id).*aa); p.isig11=isig;
-lat1=16; lat2=75; lon1=190; lon2=304; p.xy=[lon1 lon2 lat1 lat2];
-plot_pattern_effect_Fig_land_16panel(p);
-%lat1=-90; lat2=90; lon1=0; lon2=360; p.xy=[lon1 lon2 lat1 lat2]; plot_pattern_effect_Fig_land(p);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%end of Fig for land hydro change %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Fig for land hydrological change ann%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%prec-land (mm/day; land precip);
-%mrsos     (kg/m2; upper layer soil moisture);
-%rv-o-h2o  (kg/m2/s; river flow)';
-%mrros     (kg/m2/s; surface runoff)';
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Figs for land hydro change various season%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
-     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=6; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
-a0='Present-day'; a1='SPEAR-pattern M'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
-p.vname='land_hydro_pchange'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-del=' $\Delta$'; s0='Pr;'; s1='MRROS; '; s2='(RV-O-H2O); '; s3='(MRSOS); ';
-s0='Pr;'; s1='ET; '; s2='Runoff; ';  s3='River Flow; '; %s3='Soil Moisture; ';
-p.s0 =strcat(a0,'~(',p.sea,');~',s0); p.s1 =strcat(a1,';~',del,s0); p.s2 =strcat(a2,';~',del,s0); 
-p.s3 =strcat(s1); p.s4 =strcat(del,s1); p.s5 =strcat(del,s1); 
-p.s6 =strcat(s2); p.s7 =strcat(del,s2); p.s8 =strcat(del,s2); 
-p.s9 =strcat(s3); p.s10=strcat(del,s3); p.s11=strcat(del,s3);
-p.unit0 ='$\rm{kg m^{-2} day^{-1}}$'; p.unit0_bar ='\rm{kg m^{-2} day^{-1}}'; p.pos1=-0.08;
-p.unit1 ='$\rm{\% K^{-1}}$';          p.unit1_bar ='\rm{%K^{-1}}'; 
-p.unit3 ='$\rm{kg m^{-2} day^{-1}}$'; p.unit3_bar ='\rm{kg m^{-2} day^{-1}}'; 
-p.unit4 ='$\rm{\% K^{-1}}$';          p.unit4_bar ='\rm{% K^{-1}}'; 
-p.unit6 ='$\rm{kg m^{-2} day^{-1}}$'; p.unit6_bar ='\rm{kg m^{-2} day^{-1}}'; 
-p.unit7 ='$\rm{\% K^{-1}}$';          p.unit7_bar ='\rm{% K^{-1}}'; 
-p.unit9 ='$\rm{kg m^{-2}}$';          p.unit9_bar ='\rm{kg m^{-2}}'; 
-p.unit10='$\rm{\% K^{-1}}$';          p.unit10_bar='\rm{% K^{-1}}'; 
-
-p.cmin0= 0.0; p.cmax0=5.0; p.cmin1 =-0.5; p.cmax1 =0.5; p.cmin1 =-40; p.cmax1 =40;
-p.cmin3= 0.0; p.cmax3=5.0; p.cmin4 =-0.1; p.cmax4 =0.1; p.cmin4 =-40; p.cmax4 =40; 
-p.cmin6= 0.0; p.cmax6=5.0; p.cmin7 =-3.0; p.cmax7 =3.0; p.cmin7 =-40; p.cmax7 =40;
-p.cmin9= 0.0; p.cmax9=30.; p.cmin10=-4.0; p.cmax10=4.0; p.cmin10=-40; p.cmax10=40;
-p.do_add=0; p.show='off'; p.co='k'; p.xy=[280 360 0 90]; p.do_bias=0;
-s=z.v0.s; p.lon0=s.lon; p.lat0=s.lat; p.lm0=s.lm; aa=s.aa;
-a0=z.v0.sfc.tref.tavg0;
-a =z.w1.sfc.tref.tavg0-a0; p.dT1=mean(mean(a.*aa));
-a =z.w2.sfc.tref.tavg0-a0; p.dT2=mean(mean(a.*aa));
-imk=z.v0.sfc.ice.tavg0;  aa0=aa; 
-
-v=z.v0.s; p.lm=v.lm; aa0=v.aa; p.lon=v.lon; p.lat=v.lat; 
-nyr1=100; nyr2=100; mskopt=0; num=30; N=365*100; 
-id=p.lm; id(id<0.5)=0; id(id>=0.5)=1;
-lat1=16; lat2=75; lon1=190; lon2=304; p.xy=[lon1 lon2 lat1 lat2]; %lat1=-90;lat2=90;lon1=0;lon2=360;p.xy=[lon1 lon2 lat1 lat2];
-p.ys=min(find(s.lat(:)>=lat1)); p.ye=max(find(s.lat(:)<=lat2));
-p.xs=min(find(s.lon(:)>=lon1)); p.xe=max(find(s.lon(:)<=lon2));
-a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a; 
-id=(id==1); aa=aa0(id); aa=aa/mean(aa); p.id=id; %figure; pcolor(id); shading flat; colorbar;
-%PREC_LAND
-v=z.v0.sfc; a=get4season_all(v.prec_land.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.prec_land.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.prec_land.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%v=z.v0.sfc; a=get4season_all(v.prec_land.all-v.evap_land.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.prec_land.all-v.evap_land.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.prec_land.all-v.evap_land.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%liquid runoff: PREC - FPREC_L + MELTS - (EVAP - FEVAP); if in equilibrium state (long-tern annual mean): FPREC_L = MELTS + FEVAP
-%v=z.v0.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.evap_land.all*86400/LV0+v.fevap.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.evap_land.all*86400/LV0+v.fevap.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.evap_land.all*86400/LV0+v.fevap.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%v=z.v0.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.prec_land.all-v.fprec_l.all+v.melts.all-v.levap.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0; p.v0=a; p.dv0=mean(a(id).*aa);
-[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
-a=pdiff/p.dT1; p.v1=a; p.dv1=mean(a(id).*aa); p.isig1=isig;
-[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
-a=pdiff/p.dT2; p.v2=a; p.dv2=mean(a(id).*aa); p.isig2=isig;
-%ET: Evapotranspiration
-v=z.v0.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.evap.all/LV0*86400); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0; p.v3=a; p.dv3=mean(a(id).*aa);
-[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
-a=pdiff/p.dT1; p.v4=a; p.dv4=mean(a(id).*aa); p.isig4=isig;
-[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
-a=pdiff/p.dT2; p.v5=a; p.dv5=mean(a(id).*aa); p.isig5=isig;
-%MRROS: surface runoff: MRROS
-%v=z.v0.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.mrros.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%RUNF: total RUNOFF: RUNF
-%v=z.v0.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-%v=z.w1.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-%v=z.w2.sfc; a=get4season_all(v.runf.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-%total liquid RUNF: RUNF - FRUNF %note the code suggest it = runf - frunf - frunf_subs (missing here)
-v=z.v0.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.runf.all-v.frunf.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0; p.v6=a; p.dv6=mean(a(id).*aa);
-if (p.do_bias); p.v6=squeeze(z.v0.sfc.evap.sea_bias(isea,:,:))/LV0*86400; p.cmin6= -0.5; p.cmax6=0.5; end;
-[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
-a=pdiff/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa); p.isig7=isig;
-[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
-a=pdiff/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa); p.isig8=isig;
-%RV_O_H2O: river flow
-v=z.v0.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a0=squeeze(mean(a,1)); s0=squeeze(std(a,1)); n0=N;
-v=z.w1.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a1=squeeze(mean(a,1)); s1=squeeze(std(a,1)); n1=N;
-v=z.w2.sfc; a=get4season_all(v.rv_o_h2o.all); a=squeeze(a(:,isea,:,:)); a2=squeeze(mean(a,1)); s2=squeeze(std(a,1)); n2=N;
-a=a0; p.v9=a; p.dv9=mean(a(id).*aa); p.v9(a<1)=NaN;
-[diff,me,pdiff,a0_avg,a1_avg,isig]=compute_diff(a0,s0,n0,a1,s1,n1,num,nyr1,nyr2,aa0,mskopt);
-a=pdiff/p.dT1; p.v10=a; p.dv10=mean(a(id).*aa); p.isig10=isig;
-[diff,me,pdiff,a0_avg,a2_avg,isig]=compute_diff(a0,s0,n0,a2,s2,n2,num,nyr1,nyr2,aa0,mskopt);
-a=pdiff/p.dT2; p.v11=a; p.dv11=mean(a(id).*aa); p.isig11=isig;
 lat1=16; lat2=75; lon1=190; lon2=304; p.xy=[lon1 lon2 lat1 lat2];
 plot_pattern_effect_Fig_land_16panel(p);
 %lat1=-90; lat2=90; lon1=0; lon2=360; p.xy=[lon1 lon2 lat1 lat2]; plot_pattern_effect_Fig_land(p);
@@ -1352,7 +1252,7 @@ p.expn='Fig2_suppl2'; p.vname='dsst_dfrqday'; plot_pattern_effect_Fig2_suppl2(p)
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
 a0='SPEAR-pattern';
-a1=strcat(a0,'~EPACobs;'); a2=strcat(a0,'~IPWPobs;'); a3=strcat(a0,'~AMDRobs;'); a4=strcat(a0,'~NPACobs;'); 
+a1=strcat(a0,'~EPAC;'); a2=strcat(a0,'~IPWP;'); a3=strcat(a0,'~SO;'); a4=strcat(a0,'~AMDR;');
 del='$\Delta$'; s1='SST'; s2='AR days'; s3='TS days'; s4='MCS days';
 %p.s1 =strcat(a1,del,s1); p.s2 =strcat(a2,del,s1); p.s3 =strcat(a3,del,s1); 
 a='$(SST_A-\overline{SST_A})/\overline{SST_A}$'; 
@@ -1377,42 +1277,6 @@ v=z.w1B; a=v.sfc.tsurf.tavg0-a0; p.v2=a; p.dv2=mean(mean(a(id).*aa0));p.v2=(a-p.
 v=z.w1C; a=v.sfc.tsurf.tavg0-a0; p.v3=a; p.dv3=mean(mean(a(id).*aa0));p.v3=(a-p.dv3)/p.dv3;
 v=z.w1D; a=v.sfc.tsurf.tavg0-a0; p.v4=a; p.dv4=mean(mean(a(id).*aa0));p.v4=(a-p.dv4)/p.dv4;
 p.v1(~id)=NaN; p.v2(~id)=NaN; p.v3(~id)=NaN; p.v4(~id)=NaN; p.v1_add(~id)=NaN;
-
-let=p.let; %s1=p.s1; s2=p.s2; s3=p.s3; s4=p.s4; s5=p.s5; s6=p.s6;s7=p.s7; s8=p.s8;
-lon=p.lon; lat=p.lat; lm=p.lm; co=p.co; len=0.16; wid=0.02;
-cmin1=p.cmin1; cmax1=p.cmax1; cmin2=p.cmin2; cmax2=p.cmax2;
-mk='.'; ms=1; mc=0.1*[1 1 1]; ds=100;
-pms=[ 0, 0, 1600, 1000]*1; fsize=12; row=2; col=2; minus=char(8212);
-handle = figure('Position', pms,'visible','on'); i=1; unit=p.unit;
-nn=256;  cmap=bluewhitered_miz(nn); colormap(cmap); %colormap(jet); 
-subplot(row,col,i); a=p.v1; b=p.dv1; sx=let(i)+p.s1; i=i+1; a1=a; b1=b;
-pcolor(p.lon0,p.lat0,a); hold on; shading flat; caxis([cmin1 cmax1]);
-if p.do_add; contour(p.lon0,p.lat0,p.v1_add,p.v1_addbin,p.v1_co,'showtext',p.show);end;
-contour(p.lon0,p.lat0,p.lm0,1,co); 
-s=sprintf('%s (%5.3f%s)',sx,b,p.unit0); s=sprintf('%s',sx); 
-title(s,'FontSize',fsize,'Interpreter','latex');
-subplot(row,col,i); a=p.v2; b=p.dv2; sx=let(i)+p.s2; i=i+1; a2=a; b2=b;
-pcolor(p.lon0,p.lat0,a); hold on; shading flat;  caxis([cmin1 cmax1]);
-if p.do_add; contour(p.lon0,p.lat0,p.v1_add,p.v1_addbin,p.v1_co,'showtext',p.show);end;
-contour(p.lon0,p.lat0,p.lm0,1,co); 
-s=sprintf('%s (%5.3f%s)',sx,b,p.unit0); s=sprintf('%s',sx); 
-title(s,'FontSize',fsize,'Interpreter','latex');
-subplot(row,col,i); a=p.v3; b=p.dv3; sx=let(i)+p.s3; i=i+1; a3=a; b3=b;
-pcolor(p.lon0,p.lat0,a); hold on; shading flat;  caxis([cmin1 cmax1]);
-if p.do_add; contour(p.lon0,p.lat0,p.v1_add,p.v1_addbin,p.v1_co,'showtext',p.show);end;
-contour(p.lon0,p.lat0,p.lm0,1,co); 
-s=sprintf('%s (%5.3f%s)',sx,b,p.unit0); s=sprintf('%s',sx); 
-title(s,'FontSize',fsize,'Interpreter','latex');
-subplot(row,col,i); a=p.v4; b=p.dv4; sx=let(i)+p.s4; i=i+1; a4=a; b4=b;
-pcolor(p.lon0,p.lat0,a); hold on; shading flat;  caxis([cmin1 cmax1]);
-if p.do_add; contour(p.lon0,p.lat0,p.v1_add,p.v1_addbin,p.v1_co,'showtext',p.show);end;
-contour(p.lon0,p.lat0,p.lm0,1,co); 
-s=sprintf('%s (%5.3f%s)',sx,b,p.unit0); s=sprintf('%s',sx); 
-title(s,'FontSize',fsize,'Interpreter','latex');
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-visfig='off'; figpath='./fig_land/'; expn='sst_pattern'; vname='sst';
-printnew(visfig,figpath,expn,vname);
-
 
 p.lon=v.lon; p.lat=v.lat; p.lm=v.lm0; aa0=v.aa0; %id=~isnan(aa);
 nyr1=100; nyr2=100; mskopt=0; num=30; N=365*100;

@@ -1,8 +1,8 @@
-function v=get_trend_TSR(g,a,xt,alpha)
+function v=get_trend_TSR_new(g,a,xt,alpha)
 %note xt must be column vector otherwise it returns with NaN
 if ~iscolumn(xt); xt=xt'; end;
-nlat=length(g.lat); nlon=length(g.lon);
-for m=1:5
+nlat=length(a(1,1,:,1)); nlon=length(a(1,1,1,:));
+for m=1:length(a(1,:,1,1))
 for j=1:nlat
   for i=1:nlon    
     y=squeeze(a(:,m,j,i));
