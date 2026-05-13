@@ -1,11 +1,13 @@
-function plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-pms=[ 0, 0, 1200, 800]*0.6; fsize=20; lw=2; msize=8; msize=4;
+function plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,so,s0,s1,s2,vname,mylab)
+pms=[ 0, 0, 1200, 800]*0.6; fsize=18; lw=2; msize=8; msize=4;
 handle = figure('Position', pms,'visible','on');
 ax1=gca;
+%line(x,yo,'Color','g','Marker','.','MarkerSize',msize,'LineWidth',lw); hold on; 
 line(x,y0,'Color','k','Marker','*','MarkerSize',msize,'LineWidth',lw); hold on; 
 line(x,y1,'Color','b','Marker','s','MarkerSize',msize,'LineWidth',lw); 
+line(x,y2,'Color','r','Marker','s','MarkerSize',msize,'LineWidth',lw); 
 xlabel(xl,'FontSize',fsize); ylabel(yl,'FontSize',fsize);
-legend(s1,s2,0); legend('boxoff');
+legend(s0,s1,s2); legend('boxoff');
 %text(55, 0.01,'NH','FontSize',fsize);
 %text(105,0.0126,'SH','FontSize',fsize);
 axis(xy); set(gca,'FontSize',fsize);

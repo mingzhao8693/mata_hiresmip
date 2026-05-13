@@ -4,15 +4,33 @@ opt='obs'; v=readarmap_sim(tpath,expn,yr1,yr2,ardir,opt);
            v=readar_limit (tpath,expn,yr1,yr2,ardir,opt);
 opt=1;     v=readar_all   (tpath,expn,yr1,yr2,ardir,opt);
 
-tpath='/archive/Ming.Zhao/spear_hi_8_dev/'; ardir='AR_climlmt';
-expn='c384_obs'; yr1=1979; yr2=2020; opt='obs';
+tpath='/archive/Ming.Zhao/awg/2023.04/'; ardir='AR_climlmt';
+expn='c192_obs'; yr1=1979; yr2=2020; opt=0;
 v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt);
 opt=1;     v=readarall_spearhi(tpath,expn,yr1,yr2,ardir,opt);
            v=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt);
 
+tpath='/archive/Ming.Zhao/awg/2023.04/'; ardir='AR_climlmt';
+expn='c384L33_am4p0_spearhi_peff_l_d_9e_5_rthresh10'; yr1=1979; yr2=2020; opt=1; varn='ivt';
+v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt,varn);
+v=readarall_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+v=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+
+tpath='/archive/Ming.Zhao/spear_hi_8_dev/'; ardir='AR_climlmt';
+expn='c384_obs'; yr1=1979; yr2=2020; opt=1; varn='ivt';
+v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt,varn);
+v=readarall_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+v=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+
 tpath='/archive/Ming.Zhao/spear_hi_8_dev/'; ardir='AR_climlmt';
 expn='SPEAR_c384_OM4p08_Control_1990_A13'; yr1=301; yr2=400; opt=1;
-v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt,'ivt');
+v=readarall_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+v=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt);
+
+tpath='/archive/Ming.Zhao/spear_hi_8_dev/'; ardir='AR_climlmt';
+expn='SPEAR_c384_OM4p08_Hist_SSP245_IC1991_A13'; yr1=1991; yr2=2100; opt=1;
+v=readarmap_spearhi(tpath,expn,yr1,yr2,ardir,opt,'iwt');
 v=readarall_spearhi(tpath,expn,yr1,yr2,ardir,opt);
 v=readarlmt_spearhi(tpath,expn,yr1,yr2,ardir,opt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,10 +67,502 @@ fext=strcat(yrs,ardir,'_readar_limit.mat');                 fn=strcat(tpath,expn
 fext=strcat('_AR',yrs,'saveopt1_',ardir,'_readar_all.mat'); fn=strcat(tpath,expn,fext); load(fn);vo.ar=v.ar;
 
 tpath='/archive/Ming.Zhao/spear_hi_8_dev/';
-expn='SPEAR_c384_OM4p08_Control_1990_A13'; yrs='_301_302_';
-fext=strcat(yrs,'readarmap_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);vm=v;
-fext=strcat(yrs,'readarall_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);vm.arl=v.ar;
-fext=strcat(yrs,'readarlmt.spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);vm.lmt=v;
+expn='c384_obs'; yrs='_1979_2020_'; 
+fext=strcat(yrs,'readarmap_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v0=v;
+fext=strcat(yrs,'readarall_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v0.ar=v.ar;
+fext=strcat(yrs,'readarlmt_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v0.limit=v;
+
+tpath='/work/miz/mat_AR/';
+expn='c192L33_am4p0_amip_HIRESMIP_H8';
+fext='_1979_2014_readarmap_sim1.mat'; fn=strcat(tpath,expn,fext); load(fn); v1=v;
+fext='_AR_1979_2014_saveopt1.mat';   fn=strcat(tpath,expn,fext); load(fn);v1.ar=v.ar;
+
+tpath='/archive/Ming.Zhao/awg/2023.04/';
+expn='c384L33_am4p0_spearhi_peff_l_d_9e_5_rthresh10'; yrs='_1979_2020_';
+fext=strcat(yrs,'readarmap_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v1=v;
+fext=strcat(yrs,'readarall_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v1.ar=v.ar;
+fext=strcat(yrs,'readarlmt_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v1.lmt=v;
+
+tpath='/archive/Ming.Zhao/spear_hi_8_dev/';
+expn='SPEAR_c384_OM4p08_Control_1990_A13'; yrs='_301_400_';
+fext=strcat(yrs,'readarmap_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v2=v;
+fext=strcat(yrs,'readarall_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v2.ar=v.ar;
+fext=strcat(yrs,'readarlmt_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);v2.lmt=v;
+
+tpath='/archive/Ming.Zhao/spear_hi_8_dev/';
+expn='SPEAR_c384_OM4p08_Control_1990_A13'; yrs='_301_400_';
+fn=strcat(tpath,expn,'/atmos.static.c192.nc'); fn
+latlon=[0 360 -90 90]; g=get_grid(fn,latlon); g.lm(g.lm<0.5)=0; g.lm(g.lm>=0.5)=1;
+fn='SPEAR_c384_OM4p08_Control_1990_A13_enso_index.mat';        load(fn); y.fn=fn; g.a13=y;
+fn='c384L33_am4p0_spearhi_peff_l_d_9e_5_rthresh10_enso_index'; load(fn); y.fn=fn; g.obs=y;
+
+tpath='/archive/Ming.Zhao/spear_hi_8_dev/';
+expn='SPEAR_c384_OM4p08_Hist_SSP245_IC1991_A13'; yrs='_1991_2100_';
+fext=strcat(yrs,'readarmap_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);wm=v;
+fext=strcat(yrs,'readarall_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);wm.ar=v.ar;
+fext=strcat(yrs,'readarlmt_spearhi.mat'); fn=strcat(tpath,expn,'/',expn,fext); load(fn);wm.lmt=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%produce ENSO time series, ID and SST information for verification
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/spear_hi_8_dev/';
+expn='SPEAR_c384_OM4p08_Control_1990_A13'; 
+fn=strcat(tpath,expn,'/',expn,'_global_opt0.c96_tsana_hiresmip_new_301-400_0301-0400_do_3d_atm_0_do_trend_0.mat');
+ssti=v.sfc.sst_nino3.al0; yr1=v.t1; yr2=v.t2-1; thresh=0.5; minlen=5;
+y=get_id_ENSO_spearhi8(ssti,yr1,yr2,thresh,minlen);
+fn=strcat('./',v.expn,'_enso_index.mat'); disp(fn); save(fn,'y','-v7.3'); %save very large files
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2023.04/';
+expn ='c384L33_am4p0_spearhi_peff_l_d_9e_5_rthresh10';
+fn=strcat(tpath,expn,'/',expn,'_global_opt0.c96_tsana_hiresmip_new_1979-2020_1979-2020_do_3d_atm_0_do_trend_0.mat');
+load(fn); ssti=v.sfc.sst_nino3.al0; yr1=v.t1; yr2=v.t2-1; thresh=0.5; minlen=5;
+y=get_id_ENSO_spearhi8(ssti,yr1,yr2,thresh,minlen);
+fn=strcat('./',v.expn,'_enso_index.mat'); disp(fn); save(fn,'y','-v7.3'); %save very large files
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper: AR frequency (NDJFM El-Nino years minus La-Nina years%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5'; s2='(b) C384AM4'; s3='(c) (b) minus (a)';
+lm=v2.lm; cs=[-0.06 0.06]; cs1=[-0.06 0.06]; sea='NDJFM'; 
+vname='enso'; str=strcat(sea,', El-Nino minus La-Nina'); 
+x1=v2.lon; y1=v2.lat; x0=vo.lon; y0=vo.lat;
+[id_obs id_mod]=get_id_ENSO(1979,2014,0.8,'neg',sea);%La-Nina
+z1=get_arfq_spec(v2.freq_ar,id_mod); 
+z0=get_arfq_spec(vo.freq_ar,id_obs);  z0=interp_grid(z0,x1,y1,x0,y0); 
+[id_obs id_mod]=get_id_ENSO(1979,2014,0.8,'pos',sea);%El-Nino
+z1x=get_arfq_spec(v2.freq_ar,id_mod); 
+z0x=get_arfq_spec(vo.freq_ar,id_obs); z0x=interp_grid(z0x,x1,y1,x0,y0); 
+plot_arfqbias(x1,y1,z0x-z0,z1x-z1,lm,cs,cs1,s1,s2,s3,vname,str,v2.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot ENSO SST anomalies
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+expn ='c384L33_am4p0_spearhi_peff_l_d_9e_5_rthresh10';
+fn=strcat('./',expn,'_enso_index.mat'); disp(fn); load(fn); g.obs=y; g.tsurf=v.sfc.tsurf.all;
+a=g.tsurf; [nyr,nmon,nlat,nlon]=size(a);
+clm=mean(a,1); b=repmat(clm,[nyr 1 1 1]); ssta=a-b;
+a=ssta; a=permute(a,[2 1 3 4]); ssta=reshape(a,[nyr*nmon,nlat,nlon]); 
+id=g.obs.el.id; a=ssta(id,:,:); sstm_e=squeeze(mean(a,1)); figure; pcolor(sstm_e); shading flat; colorbar; colormap(jet);
+id=g.obs.la.id; a=ssta(id,:,:); sstm_l=squeeze(mean(a,1)); figure; pcolor(sstm_l); shading flat; colorbar; colormap(jet);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot ENSO AR anomalies for NDJFM
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5'; s2='(b) SPEAR-Hi-8'; s3='(c) (b) minus (a)';
+x0=g.lon; y0=g.lat; lm=g.lm'; cs=[-0.06 0.06]; cs1=[-0.06 0.06];
+mod='spearhi8'; sea='NDJFM'; vname=strcat(mod,'_ELmLA_test',sea); str=strcat(sea,', El-Nino minus La-Nina'); 
+v=g.obs; y=get_id_ENSO_spearhi8(v.ssti,v.yr1,v.yr2,1,5); id=y.id_pos_NDJFM; z0e=get_arfq_spec(v0.freq_ar,id);
+v=g.obs; y=get_id_ENSO_spearhi8(v.ssti,v.yr1,v.yr2,1,5); id=y.id_neg_NDJFM; z0l=get_arfq_spec(v0.freq_ar,id); z0=z0e-z0l;
+v=g.a13; y=get_id_ENSO_spearhi8(v.ssti,v.yr1,v.yr2,1,5); id=y.id_pos_NDJFM; z1e=get_arfq_spec(v2.freq_ar,id);
+v=g.a13; y=get_id_ENSO_spearhi8(v.ssti,v.yr1,v.yr2,1,5); id=y.id_neg_NDJFM; z1l=get_arfq_spec(v2.freq_ar,id); z1=z1e-z1l;
+plot_arfqbias(x0,y0,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+
+
+figure; pcolor(g.lon,g.lat,z1-z0); shading flat; colorbar; hold on; contour(g.lon,g.lat,g.lm'/50,'k'); caxis([-0.01 0.01]); colormap(jet)
+
+plot_arfqbias(x,y,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+
+s2='(b) C384AM4';    vname='c384am4x_arfq_ndjfm'; plot_arfqbias(lon,lat,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+
+
+s1='(a) ERA5; s2='(b) C192AM4'; s3='(c) SPEAR-Hi-8';
+lm=v2.lm; cs=[-0.06 0.06]; cs1=[-0.06 0.06]; sea='NDJFM'; 
+vname='ELmLA'; str=strcat(sea,', El-Nino minus La-Nina'); 
+x1=v2.lon; y1=v2.lat; x0=vo.lon; y0=vo.lat;
+id=g.a13.el.id; z1=get_arfq_spec(v2.freq_ar,id); 
+id=g.a13.la.id; z2=get_arfq_spec(v2.freq_ar,id); 
+id=g.a13.id_pos_NDJFM; z1=get_arfq_spec(v2.freq_ar,id); 
+id=g.a13.id_neg_NDJFM; z2=get_arfq_spec(v2.freq_ar,id); 
+figure; pcolor(g.lon,g.lat,z1-z2); shading flat; colorbar; hold on; contour(g.lon,g.lat,g.lm'/50,'k'); caxis([-0.01 0.01]); colormap(jet)
+
+z0=get_arfq_spec(vo.freq_ar,id_obs);  z0=interp_grid(z0,x1,y1,x0,y0); 
+[id_obs id_mod]=get_id_ENSO(1979,2014,0.8,'pos',sea);%El-Nino
+z1x=get_arfq_spec(v2.freq_ar,id_mod); 
+z0x=get_arfq_spec(vo.freq_ar,id_obs); z0x=interp_grid(z0x,x1,y1,x0,y0); 
+plot_arfqbias(x1,y1,z0x-z0,z1x-z1,lm,cs,cs1,s1,s2,s3,vname,str,v2.aa)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR BASIC CHARACTERISTICS........................................
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1a: PDF of length/width ratio
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=1; bin=[2:bins:20 20+bins:4*bins:50]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;
+x=v0.ar.leng./v0.ar.widt; v0.rat=findpdf(x,bin);
+x=v1.ar.leng./v1.ar.widt; v1.rat=findpdf(x,bin);
+x=v2.ar.leng./v2.ar.widt; v2.rat=findpdf(x,bin);
+x=vx.ar.leng./vx.ar.widt; vx.rat=findpdf(x,bin);
+vname='rat'; xmin=2; xmax=30; xy=[xmin xmax 0 0.12];  xy1=[xmin xmax -200 200]; 
+x=v0.rat.binc; y0=v0.rat.pdf; y1=v1.rat.pdf; y2=v2.rat.pdf; yx=vx.rat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='length-width ratio'; yl='probability density';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,so,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1b: PDF of the length
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=450; bin=[2000:bins:8000 8000+bins:3*bins:50000];
+x=v0.ar.leng; v0.len=findpdf(x,bin); %v0.ar_no=length(x)/v0.nyr;%s2=sprintf('%s (%7.1f)',s2,v2.ar_no);
+x=v1.ar.leng; v1.len=findpdf(x,bin); %v1.ar_no=length(x)/v1.nyr;%s2=sprintf('%s (%7.1f)',s2,v2.ar_no);
+x=v2.ar.leng; v2.len=findpdf(x,bin); %v2.ar_no=length(x)/v2.nyr;%s2=sprintf('%s (%7.1f)',s2,v2.ar_no);
+x=vx.ar.leng; vx.len=findpdf(x,bin); %vo.ar_no=length(x)/vo.nyr;%s1=sprintf('%s (%7.1f)',s1,vo.ar_no);
+vname='len'; xmin=2000; xmax=16000; xy=[xmin xmax 0 0.00045]; xy1=[xmin xmax -50 50]; 
+x=v0.len.binc; y0=v0.len.pdf; y1=v1.len.pdf; y2=v2.len.pdf; yx=vx.len.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='length (km)'; yl='probability density (km^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,so,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1c: PDF of the width
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=50; bin=[100:bins:800 800+bins:3*bins:5000];
+x=v0.ar.widt; v0.wid=findpdf(x,bin);
+x=v1.ar.widt; v1.wid=findpdf(x,bin);
+x=v2.ar.widt; v2.wid=findpdf(x,bin);
+x=vx.ar.widt; vx.wid=findpdf(x,bin);
+vname='wid'; xmin=100; xmax=2000; xy=[xmin xmax 0 0.0025];  xy1=[xmin xmax -50 50]; 
+x =v0.wid.binc; y0=v0.wid.pdf; y1=v1.wid.pdf; y2=v2.wid.pdf; yx=vx.wid.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='width (km)'; yl='probability density (km^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,so,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1d: PDF of the center of latitude
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=2; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
+x=v0.ar.clat; v0.clat=findpdf(x,bin);
+x=v1.ar.clat; v1.clat=findpdf(x,bin);
+x=v2.ar.clat; v2.clat=findpdf(x,bin);
+x=vx.ar.clat; vx.clat=findpdf(x,bin);
+vname='clat'; xmin=-90; xmax=90; xy=[xmin xmax 0 0.025];  xy1=[xmin xmax -50 50];
+x =v0.clat.binc; y0=v0.clat.pdf; y1=v1.clat.pdf; y2=v2.clat.pdf; yx=vx.clat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='latitude of AR centeroid (degree)'; yl='probability density (degree^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,sx,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1e: PDF of the equaorward extent of latitude
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=4; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
+bins=6; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
+x=v0.ar.elat; v0.elat=findpdf(x,bin);
+x=v1.ar.elat; v1.elat=findpdf(x,bin);
+x=v2.ar.elat; v2.elat=findpdf(x,bin);
+vname='elat'; xmin=-90; xmax=90; xy=[xmin xmax 0 0.025];  xy1=[xmin xmax -50 50];
+x =v0.elat.binc; y0=v0.elat.pdf; y1=v1.elat.pdf; y2=v2.elat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='latitude of AR maximum equatorward extent (degree)'; yl='probability density (degree^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,sx,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1f: PDF of the poleward extent of latitude
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=4; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
+bins=6; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
+x=v0.ar.plat; v0.plat=findpdf(x,bin);
+x=v1.ar.plat; v1.plat=findpdf(x,bin);
+x=v2.ar.plat; v2.plat=findpdf(x,bin);
+vname='plat'; xmin=-90; xmax=90; xy=[xmin xmax 0 0.025];  xy1=[xmin xmax -50 50];
+x =v0.plat.binc; y0=v0.plat.pdf; y1=v1.plat.pdf; y2=v2.plat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='latitude of AR maximum poleward extent (degree)'; yl='probability density (degree^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,sx,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR PDF of the landfall latitude
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=4; bin=[-90 :bins: 90];
+x= v0.ar.llat; v0.llat=findpdf(x,bin);
+x= v1.ar.llat; v1.llat=findpdf(x,bin);
+x= v2.ar.llat; v2.llat=findpdf(x,bin);
+x=-vx.ar.llat; vx.llat=findpdf(x,bin);
+vname='llat_pdf'; xmin=-90; xmax=90; xy=[xmin xmax 0 0.025];  xy1=[xmin xmax -300 300];
+x =v0.llat.binc;  y0=v0.llat.pdf; y1=v1.llat.pdf; y2=v2.llat.pdf; yx=vx.llat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='latitude of AR landfall location (degree)'; yl='probability density (degree^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,so,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1g: PDF of the magnitude of mean IVT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=20; bin=[0 :bins:1200]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
+x=sqrt(v0.ar.ivtz.^2+v0.ar.ivtm.^2); v0.ivt=findpdf(x,bin);
+x=sqrt(v1.ar.ivtz.^2+v1.ar.ivtm.^2); v1.ivt=findpdf(x,bin);
+x=sqrt(v2.ar.ivtz.^2+v2.ar.ivtm.^2); v2.ivt=findpdf(x,bin);
+x=sqrt(vx.ar.ivtz.^2+vx.ar.ivtm.^2); vx.ivt=findpdf(x,bin);
+vname='ivt'; xmin=0; xmax=1000; xy=[xmin xmax 0 0.003];  xy1=[xmin xmax -100 100];
+x =v0.ivt.binc; y0=v0.ivt.pdf; y1=v1.ivt.pdf; y2=v2.ivt.pdf; yx=vx.ivt.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='magnitude of mean IVT (kg m^{-1}s^{-1})'; yl='probability density (ms kg^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,so,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1h: PDF of the zonal IVT strength
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=20; bin=[-1000:5*bins:0 0+bins:bins:700 700+bins:5*bins:1200]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
+x=v0.ar.ivtz; v0.ivtz=findpdf(x,bin);
+x=v1.ar.ivtz; v1.ivtz=findpdf(x,bin);
+x=v2.ar.ivtz; v2.ivtz=findpdf(x,bin);
+vname='ivtz'; xmin=-800; xmax=1000; xy=[xmin xmax 0 0.003];  xy1=[xmin xmax -100 100];
+x =v0.ivtz.binc; y0=v0.ivtz.pdf; y1=v1.ivtz.pdf; y2=v2.ivtz.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='zonal IVT (kg m^{-1}s^{-1})'; yl='probability density (ms kg^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,sx,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1i: PDF of the meridional IVT strength
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=20; bin=[-1200:100:-700 -700+bins:bins:700-bins 700:100:1200]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
+x=v0.ar.ivtm; v0.ivtm=findpdf(x,bin);
+x=v1.ar.ivtm; v1.ivtm=findpdf(x,bin);
+x=v2.ar.ivtm; v2.ivtm=findpdf(x,bin);
+vname='ivtm'; xmin=-700; xmax=700; xy=[xmin xmax 0 0.003];  xy1=[xmin xmax -100 100];
+x =v0.ivtm.binc; y0=v0.ivtm.pdf; y1=v1.ivtm.pdf; y2=v2.ivtm.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='meridional IVT (kg m^{-1}s^{-1})'; yl='probability density (ms kg^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,sx,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1j: PDF of the direction of mean IVT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=1; bin=[0 :bins:360]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
+x=v0.ar.ivtd; v0.ivtd=findpdf(x,bin);
+x=v1.ar.ivtd; v1.ivtd=findpdf(x,bin);
+x=v2.ar.ivtd; v2.ivtd=findpdf(x,bin); %x=wm.ar.ivtd; wm.ivtd=findpdf(x,bin);
+vname='ivtd'; xmin=0; xmax=360; xy=[xmin xmax 0 0.015]; xy1=[xmin xmax -100 100];
+x =v0.ivtd.binc; y0=v0.ivtd.pdf; y1=v1.ivtd.pdf; y2=v2.ivtd.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xl='direction of mean IVT (degree)'; yl='probability density (degree^{-1})';
+plot_arpdf_spearhi8(x,y0,y1,y2,dy,xy,xy1,xl,yl,so,s0,s1,s2,vname,mylab)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig1k: AR PDF of the direction of mean IVT in polar coordinate
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s0='ERA5'; s1='C384AM4'; s2='SPEAR-Hi-8'; sx='ERAI'; mylab='';
+bins=1; bin=[0 :bins:360]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
+x=v0.ar.ivtd; v0.ivtd=findpdf(x,bin);
+x=v1.ar.ivtd; v1.ivtd=findpdf(x,bin);
+x=v2.ar.ivtd; v2.ivtd=findpdf(x,bin); %x=wm.ar.ivtd; wm.ivtd=findpdf(x,bin);
+x =v0.ivtd.binc; y0=v0.ivtd.pdf; y1=v1.ivtd.pdf; y2=v2.ivtd.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
+xx=x*2*pi/360; vname='ivtd_polar'
+pms=[ 0, 0, 1200, 800]*0.6; fsize=20; lw=2; msize=4; %msize=4;
+handle = figure('Position', pms,'visible','on');
+polar(xx,y0,'k-'); hold on; text( 0.006,0.005,'NH','FontSize',fsize);
+polar(xx,y1,'b-');          text(-0.007,0.005,'SH','FontSize',fsize);
+polar(xx,y2,'r-');      
+view([90 -90]); legend(s0,s1,s2); legend('boxoff');
+set(gca,'FontSize',fsize); text(0.015,0.015,mylab,'FontSize',fsize);
+visfig='off'; figpath='./fig_spearhi/'; expn='spearhi8'; 
+printit(visfig,figpath,expn,vname);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper Fig2: zonal scale
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.s1='ERA5'; p.s2='C384AM4'; p.s3='SPEAR-Hi-8';
+p.vname='zscale'; x0=v0.lat; p.xl='latitude'; p.ms=5; p.ls='-'; p.x=g.lat;
+xmin=-83; xmax=83; p.xy=[xmin xmax 0 0.16]; p.xy1=[xmin xmax -1. 1.];
+a=v0.ar_zscale; a=squeeze(nanmean(nanmean(a,2),1)); p.y0=interp1(x0,a,p.x,'linear');
+a=v1.ar_zscale; a=squeeze(nanmean(nanmean(a,2),1)); p.y1=a; 
+a=v2.ar_zscale; a=squeeze(nanmean(nanmean(a,2),1)); p.y2=interp1(x0,a,p.x,'linear');
+a=(p.y1-p.y0)./p.y0*100; p.dy=a; p.dy(1:30)=NaN; %p.dy=mizsmooth(a,3);
+p.yl1='AR fractional zonal circumference'; p.unit1='percent difference (%)';
+%p.y0=p.y0; p.y1=p.y1; %p1=p;
+%lat0=80; id=(v2.lat>lat0)|(v2.lat<-lat0);p.y0(id)=NaN; p.y1(id)=NaN;
+%plot_1d_diff(p)
+b=576*g.dx(:,1); %b:total length in m at each latitude
+p.vname='ratio_ivty_ann_climo_lat'; x0=g.lat; p.xl='latitude'; p.x=g.lat;
+xmin=-90; xmax=90; p.xy1=[xmin xmax -2 2]; p.xy1=[xmin xmax -1 1];
+a=v0.ivty_av_clm.ann; a=mean(a,2); p.Z0=a.*b;
+a=v0.ivty_ar_clm.ann; a=mean(a,2); p.z0=a.*b; p.z0=p.z0./p.Z0;
+a=v1.ivty_av_clm.ann; a=mean(a,2); p.Z1=a.*b;
+a=v1.ivty_ar_clm.ann; a=mean(a,2); p.z1=a.*b; p.z1=p.z1./p.Z1;
+a=v2.ivty_av_clm.ann; a=mean(a,2); p.Z2=a.*b;
+a=v2.ivty_ar_clm.ann; a=mean(a,2); p.z2=a.*b; p.z2=p.z2./p.Z2;
+p.ms=1; p.ls='-'; a=(p.y1-p.y0); p.dy=a; %p.dy=mizsmooth(a,3);
+lat0=30; id1=(g.lat>-lat0)&(g.lat<lat0);
+lat0=83; id2=(g.lat<-lat0)|(g.lat>lat0); id=id1|id2; 
+p.z0(id)=NaN; p.z0(id)=NaN;
+p.z1(id)=NaN; p.z1(id)=NaN;
+p.z2(id)=NaN; p.z2(id)=NaN;
+p.yl2='AR fractional meridional water transport'; 
+p.vname='ar_zscale'; p.fmt='png'; plot_1d_zscale_spearhi8(p);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%frequency of occurrence MAP (annual climatology).............
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='ERA5'; s2='SPEAR-Hi-8'; s3='';lm=v2.lm; cs=[0 0.12]; cs1=[-0.03 0.03];
+vname='arfq_ann_climo'; str='ANN'; vbin=[0:0.01:0.1]; dbin=[-0.02:0.001:0.02]; 
+z0=v0.freq_ar_clm.ann; x0=v0.lon; y0=v0.lat;
+z1=v2.freq_ar_clm.ann; x1=v2.lon; y1=v2.lat;    
+%z0=interp_grid(z0,x1,y1,x0,y0); %zx=interp_grid(z1,x0,y0,x1,y1); 
+plot_arfqbias(g.lon,g.lat,z0,z1,g.lm',cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper: AR frequency (NDJFM)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5';  s3='(c) (b) minus (a)'; 
+lm=v2.lm; cs=[0 0.12]; cs1=[-0.03 0.03]; 
+str='NDJFM'; vbin=[0:0.01:0.1]; dbin=[-0.02:0.001:0.02];
+lon=g.lon; lat=g.lat; lm=g.lm'; p.fmt='png';
+v=v0; z0=v.freq_ar_clm.ndjfm; x0=v.lon; y0=v.lat;
+v=v1; z1=v.freq_ar_clm.ndjfm; x1=v.lon; y1=v.lat;
+v=v2; z2=v.freq_ar_clm.ndjfm; x2=v.lon; y2=v.lat;
+s2='(b) C384AM4';    vname='c384am4x_arfq_ndjfm'; plot_arfqbias(lon,lat,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+s2='(b) SPEAR-Hi-8'; vname='spearhi8_arfq_ndjfm'; plot_arfqbias(lon,lat,z0,z2,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper: AR frequency (MJJAS)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5';  s3='(c) (b) minus (a)'; 
+lm=v2.lm; cs=[0 0.12]; cs1=[-0.03 0.03]; 
+str='MJJAS'; vbin=[0:0.01:0.1]; dbin=[-0.02:0.001:0.02];
+lon=g.lon; lat=g.lat; lm=g.lm'; p.fmt='png';
+v=v0; z0=v.freq_ar_clm.mjjas; x0=v.lon; y0=v.lat;
+v=v1; z1=v.freq_ar_clm.mjjas; x1=v.lon; y1=v.lat;
+v=v2; z2=v.freq_ar_clm.mjjas; x2=v.lon; y2=v.lat;
+s2='(b) C384AM4';    vname='c384am4x_arfq_mjjas'; plot_arfqbias(lon,lat,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+s2='(b) SPEAR-Hi-8'; vname='spearhi8_arfq_mjjas'; plot_arfqbias(lon,lat,z0,z2,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper: AR frequency (NDJFM minus ANN)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5';  s3='(c) (b) minus (a)'; 
+lm=v2.lm; cs=[-0.06 0.06]; cs1=[-0.03 0.03]; 
+str='NDJFM minus ANN'; vbin=[0:0.01:0.1]; dbin=[-0.02:0.001:0.02]; 
+lon=g.lon; lat=g.lat; lm=g.lm'; p.fmt='png';
+v=v0; z0=v.freq_ar_clm.ndjfm-v.freq_ar_clm.ann;; x0=v.lon; y0=v.lat;
+v=v1; z1=v.freq_ar_clm.ndjfm-v.freq_ar_clm.ann; x1=v.lon; y1=v.lat;
+v=v2; z2=v.freq_ar_clm.ndjfm-v.freq_ar_clm.ann; x2=v.lon; y2=v.lat;
+s2='(b) C384AM4';    vname='c384am4x_arfq_ndjfm_anom'; plot_arfqbias(lon,lat,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+s2='(b) SPEAR-Hi-8'; vname='spearhi8_arfq_ndjfm_anom'; plot_arfqbias(lon,lat,z0,z2,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AR paper: AR frequency (MJJAS minus ANN)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5';  s3='(c) (b) minus (a)'; 
+lm=v2.lm; cs=[-0.06 0.06]; cs1=[-0.03 0.03]; 
+str='MJJAS minus ANN'; vbin=[0:0.01:0.1]; dbin=[-0.02:0.001:0.02]; 
+lon=g.lon; lat=g.lat; lm=g.lm'; p.fmt='png';
+v=v0; z0=v.freq_ar_clm.mjjas-v.freq_ar_clm.ann;; x0=v.lon; y0=v.lat;
+v=v1; z1=v.freq_ar_clm.mjjas-v.freq_ar_clm.ann; x1=v.lon; y1=v.lat;
+v=v2; z2=v.freq_ar_clm.mjjas-v.freq_ar_clm.ann; x2=v.lon; y2=v.lat;
+s2='(b) C384AM4';    vname='c384am4x_arfq_mjjas_anom'; plot_arfqbias(lon,lat,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+s2='(b) SPEAR-Hi-8'; vname='spearhi8_arfq_mjjas_anom'; plot_arfqbias(lon,lat,z0,z2,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot ENSO AR anomalies for all seasons (C384AM4)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5'; s2='(b) C384AM4'; s3='(c) (b) minus (a)'; 
+x=g.lon; y=g.lat; lm=g.lm'; cs=[-0.06 0.06]; cs1=[-0.06 0.06];
+mod='C384am4x'; sea='ALL'; vname=strcat(mod,'_ELmLA_',sea); str=strcat(sea,', El-Nino minus La-Nina'); 
+v=g.obs; id=v.el.id; z0e=get_arfq_spec(v0.freq_ar,id);
+v=g.obs; id=v.la.id; z0l=get_arfq_spec(v0.freq_ar,id); z0=z0e-z0l;
+v=g.obs; id=v.el.id; z1e=get_arfq_spec(v1.freq_ar,id);
+v=g.obs; id=v.la.id; z1l=get_arfq_spec(v1.freq_ar,id); z1=z1e-z1l;
+plot_arfqbias(x,y,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot ENSO AR anomalies for NDJFM (C384AM4)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5'; s2='(b) C384AM4'; s3='(c) (b) minus (a)'; 
+x=g.lon; y=g.lat; lm=g.lm'; cs=[-0.06 0.06]; cs1=[-0.06 0.06]; 
+mod='C384am4x'; sea='NDJFM'; vname=strcat(mod,'_ELmLA_',sea); str=strcat(sea,', El-Nino minus La-Nina'); 
+v=g.obs; id=v.id_pos_NDJFM; z0e=get_arfq_spec(v0.freq_ar,id);
+v=g.obs; id=v.id_neg_NDJFM; z0l=get_arfq_spec(v0.freq_ar,id); z0=z0e-z0l;
+v=g.obs; id=v.id_pos_NDJFM; z1e=get_arfq_spec(v1.freq_ar,id);
+v=g.obs; id=v.id_neg_NDJFM; z1l=get_arfq_spec(v1.freq_ar,id); z1=z1e-z1l;
+plot_arfqbias(x,y,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot ENSO AR anomalies for MJJAS (C384AM4)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5'; s2='(b) C384AM4'; s3='(c) (b) minus (a)'; 
+x=g.lon; y=g.lat; lm=g.lm'; cs=[-0.06 0.06]; cs1=[-0.06 0.06];
+mod='C384am4x'; sea='MJJAS'; vname=strcat(mod,'_ELmLA_',sea); str=strcat(sea,', El-Nino minus La-Nina'); 
+v=g.obs; id=v.id_pos_MJJAS; z0e=get_arfq_spec(v0.freq_ar,id);
+v=g.obs; id=v.id_neg_MJJAS; z0l=get_arfq_spec(v0.freq_ar,id); z0=z0e-z0l;
+v=g.obs; id=v.id_pos_MJJAS; z1e=get_arfq_spec(v1.freq_ar,id);
+v=g.obs; id=v.id_neg_MJJAS; z1l=get_arfq_spec(v1.freq_ar,id); z1=z1e-z1l;
+plot_arfqbias(x,y,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot ENSO AR anomalies for all seasons (SPEAR-Hi-8)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5'; s2='(b) SPEAR-Hi-8'; s3='(c) (b) minus (a)';
+x=g.lon; y=g.lat; lm=g.lm'; cs=[-0.06 0.06]; cs1=[-0.06 0.06]; sea='ALL'; 
+mod='spearhi8'; sea='ALL'; vname=strcat(mod,'_ELmLA_',sea); str=strcat(sea,', El-Nino minus La-Nina'); 
+v=g.obs; id=v.el.id; z0e=get_arfq_spec(v0.freq_ar,id);
+v=g.obs; id=v.la.id; z0l=get_arfq_spec(v0.freq_ar,id); z0=z0e-z0l;
+v=g.a13; id=v.el.id; z1e=get_arfq_spec(v2.freq_ar,id);
+v=g.a13; id=v.la.id; z1l=get_arfq_spec(v2.freq_ar,id); z1=z1e-z1l;
+plot_arfqbias(x,y,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot ENSO AR anomalies for NDJFM
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5'; s2='(b) SPEAR-Hi-8'; s3='(c) (b) minus (a)';
+x=g.lon; y=g.lat; lm=g.lm'; cs=[-0.06 0.06]; cs1=[-0.06 0.06];
+mod='spearhi8'; sea='NDJFM'; vname=strcat(mod,'_ELmLA_',sea); str=strcat(sea,', El-Nino minus La-Nina'); 
+v=g.obs; id=v.id_pos_NDJFM; z0e=get_arfq_spec(v0.freq_ar,id);
+v=g.obs; id=v.id_neg_NDJFM; z0l=get_arfq_spec(v0.freq_ar,id); z0=z0e-z0l;
+v=g.a13; id=v.id_pos_NDJFM; z1e=get_arfq_spec(v2.freq_ar,id);
+v=g.a13; id=v.id_neg_NDJFM; z1l=get_arfq_spec(v2.freq_ar,id); z1=z1e-z1l;
+plot_arfqbias(x,y,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot ENSO AR anomalies for MJJAS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+s1='(a) ERA5'; s2='(b) SPEAR-Hi-8'; s3='(c) (b) minus (a)';
+x=g.lon; y=g.lat; lm=g.lm'; cs=[-0.06 0.06]; cs1=[-0.06 0.06]; sea='MJJAS'; 
+mod='spearhi8'; sea='MJJAS'; vname=strcat(mod,'_ELmLA_',sea); str=strcat(sea,', El-Nino minus La-Nina'); 
+v=g.obs; id=v.id_pos_MJJAS; z0e=get_arfq_spec(v0.freq_ar,id);
+v=g.obs; id=v.id_neg_MJJAS; z0l=get_arfq_spec(v0.freq_ar,id); z0=z0e-z0l;
+v=g.a13; id=v.id_pos_MJJAS; z1e=get_arfq_spec(v2.freq_ar,id);
+v=g.a13; id=v.id_neg_MJJAS; z1l=get_arfq_spec(v2.freq_ar,id); z1=z1e-z1l;
+plot_arfqbias(x,y,z0,z1,lm,cs,cs1,s1,s2,s3,vname,str,g.aa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Above is new %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1256,179 +1766,6 @@ plot_2d_diff(p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR BASIC CHARACTERISTICS........................................
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1a: PDF of length/width ratio
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-I'; s2='PRESENT'; s3='C192AM4-WARMING'; mylab='(a)';
-bins=1; bin=[2:bins:20 20+bins:4*bins:50]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;
-x=vo.ar.leng./vo.ar.widt; vo.rat=findpdf(x,bin);
-x=vm.ar.leng./vm.ar.widt; vm.rat=findpdf(x,bin);
-vname='rat'; xmin=2; xmax=30; xy=[xmin xmax 0 0.17];  xy1=[xmin xmax -200 200]; 
-x =vo.rat.binc; y0=vo.rat.pdf; y1=vm.rat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='length-width ratio'; yl='probability density';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1b: PDF of the length
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-Future'; mylab='(b)';
-bins=450; bin=[2000:bins:8000 8000+bins:3*bins:50000];
-x=vo.ar.leng; vo.len=findpdf(x,bin); vo.ar_no=length(x)/vo.nyr;%s1=sprintf('%s (%7.1f)',s1,vo.ar_no);
-x=vm.ar.leng; vm.len=findpdf(x,bin); vm.ar_no=length(x)/vm.nyr;%s2=sprintf('%s (%7.1f)',s2,vm.ar_no);
-vname='len'; xmin=2000; xmax=16000; xy=[xmin xmax 0 0.00045]; xy1=[xmin xmax -50 50]; 
-x=vo.len.binc; y0=vo.len.pdf; y1=vm.len.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='length (km)'; yl='probability density (km^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1c: PDF of the width
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-Future'; mylab='(c)';
-bins=50; bin=[100:bins:800 800+bins:3*bins:5000];
-x=vo.ar.widt; vo.wid=findpdf(x,bin);
-x=vm.ar.widt; vm.wid=findpdf(x,bin);
-vname='wid'; xmin=100; xmax=2000; xy=[xmin xmax 0 0.0025];  xy1=[xmin xmax -50 50]; 
-x =vo.wid.binc; y0=vo.wid.pdf; y1=vm.wid.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='width (km)'; yl='probability density (km^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1d: PDF of the center of latitude
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='(d)';
-bins=2; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
-x=vo.ar.clat; vo.clat=findpdf(x,bin);
-x=vm.ar.clat; vm.clat=findpdf(x,bin);
-vname='clat'; xmin=-90; xmax=90; xy=[xmin xmax 0 0.025];  xy1=[xmin xmax -50 50];
-x =vo.clat.binc; y0=vo.clat.pdf; y1=vm.clat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='latitude of AR centeroid (degree)'; yl='probability density (degree^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1e: PDF of the equaorward extent of latitude
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='(e)';
-bins=4; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
-bins=6; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
-x=vo.ar.elat; vo.elat=findpdf(x,bin);
-x=vm.ar.elat; vm.elat=findpdf(x,bin);
-vname='elat'; xmin=-90; xmax=90; xy=[xmin xmax 0 0.025];  xy1=[xmin xmax -50 50];
-x =vo.elat.binc; y0=vo.elat.pdf; y1=vm.elat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='latitude of AR maximum equatorward extent (degree)'; yl='probability density (degree^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1f: PDF of the poleward extent of latitude
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='(f)';
-bins=4; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
-bins=6; bin=[-90 -82 :2*bins:-60 -60+bins:bins:-20 -15 -5 5 15 20:bins:60 60+bins:2*bins:82 90];
-x=vo.ar.plat; vo.plat=findpdf(x,bin);
-x=vm.ar.plat; vm.plat=findpdf(x,bin);
-vname='plat'; xmin=-90; xmax=90; xy=[xmin xmax 0 0.025];  xy1=[xmin xmax -50 50];
-x =vo.plat.binc; y0=vo.plat.pdf; y1=vm.plat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='latitude of AR maximum poleward extent (degree)'; yl='probability density (degree^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR PDF of the landfall latitude
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='';
-bins=4; bin=[-90 :bins: 90];
-x=-vo.ar.llat; vo.llat=findpdf(x,bin);
-x= vm.ar.llat; vm.llat=findpdf(x,bin);
-vname='llat_pdf'; xmin=-90; xmax=90; xy=[xmin xmax 0 0.025];  xy1=[xmin xmax -300 300];
-x =vo.llat.binc; y0=vo.llat.pdf; y1=vm.llat.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='latitude of AR landfall location (degree)'; yl='probability density (degree^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1g: PDF of the magnitude of mean IVT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='(g)';
-bins=20; bin=[0 :bins:1200]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
-x=sqrt(vo.ar.ivtz.^2+vo.ar.ivtm.^2); vo.ivt=findpdf(x,bin);
-x=sqrt(vm.ar.ivtz.^2+vm.ar.ivtm.^2); vm.ivt=findpdf(x,bin);
-vname='ivt'; xmin=0; xmax=1000; xy=[xmin xmax 0 0.003];  xy1=[xmin xmax -100 100];
-x =vo.ivt.binc; y0=vo.ivt.pdf; y1=vm.ivt.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='magnitude of mean IVT (kg m^{-1}s^{-1})'; yl='probability density (ms kg^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1h: PDF of the zonal IVT strength
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='(h)';
-bins=20; bin=[-1000:5*bins:0 0+bins:bins:700 700+bins:5*bins:1200]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
-x=vo.ar.ivtz; vo.ivtz=findpdf(x,bin);
-x=vm.ar.ivtz; vm.ivtz=findpdf(x,bin); %x=wm.ar.ivtz; wm.ivtz=findpdf(x,bin);
-vname='ivtz'; xmin=-800; xmax=1000; xy=[xmin xmax 0 0.003];  xy1=[xmin xmax -100 100];
-x =vo.ivtz.binc; y0=vo.ivtz.pdf; y1=vm.ivtz.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='zonal IVT (kg m^{-1}s^{-1})'; yl='probability density (ms kg^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1i: PDF of the meridional IVT strength
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='(i)';
-bins=20; bin=[-1200:100:-700 -700+bins:bins:700-bins 700:100:1200]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
-x=vo.ar.ivtm; vo.ivtm=findpdf(x,bin);
-x=vm.ar.ivtm; vm.ivtm=findpdf(x,bin); %x=wm.ar.ivtm; wm.ivtm=findpdf(x,bin);
-vname='ivtm'; xmin=-700; xmax=700; xy=[xmin xmax 0 0.003];  xy1=[xmin xmax -100 100];
-x =vo.ivtm.binc; y0=vo.ivtm.pdf; y1=vm.ivtm.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='meridional IVT (kg m^{-1}s^{-1})'; yl='probability density (ms kg^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1j: PDF of the direction of mean IVT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='(j)';
-bins=1; bin=[0 :bins:360]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
-x=vo.ar.ivtd; vo.ivtd=findpdf(x,bin);
-x=vm.ar.ivtd; vm.ivtd=findpdf(x,bin); %x=wm.ar.ivtd; wm.ivtd=findpdf(x,bin);
-vname='ivtd'; xmin=0; xmax=360; xy=[xmin xmax 0 0.015]; xy1=[xmin xmax -100 100];
-x =vo.ivtd.binc; y0=vo.ivtd.pdf; y1=vm.ivtd.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xl='direction of mean IVT (degree)'; yl='probability density (degree^{-1})';
-plot_pdfbias(x,y0,y1,dy,xy,xy1,xl,yl,s1,s2,vname,mylab)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%AR paper Fig1k: AR PDF of the direction of mean IVT in polar coordinate
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-s1='ERA-Interim'; s2='C192AM4-PD'; s3='C192AM4-WARMING'; mylab='(k)';
-bins=1; bin=[0 :bins:360]; dbin=diff(bin); binc=(bin(1:end-1)+bin(2:end))/2;%dbin=1;
-x=vo.ar.ivtd; vo.ivtd=findpdf(x,bin);
-x=vm.ar.ivtd; vm.ivtd=findpdf(x,bin); %x=wm.ar.ivtd; wm.ivtd=findpdf(x,bin);
-x =vo.ivtd.binc; y0=vo.ivtd.pdf; y1=vm.ivtd.pdf; dy=(y1-y0)./y0*100; dy=mizsmooth(dy,3);
-xx=x*2*pi/360; vname='ivtd_polar'
-pms=[ 0, 0, 1200, 800]*0.6; fsize=20; lw=2; msize=4; %msize=4;
-handle = figure('Position', pms,'visible','on');
-polar(xx,y0,'k-'); hold on; text( 0.006,0.005,'NH','FontSize',fsize);
-polar(xx,y1,'b-');          text(-0.007,0.005,'SH','FontSize',fsize);
-view([90 -90]);
-set(gca,'FontSize',fsize); text(0.015,0.015,mylab,'FontSize',fsize);
-visfig='off'; figpath='./fig_spearhi/'; expn='spearhi'; 
-printit(visfig,figpath,expn,vname);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %AR paper Fig1l: PDF of the coherence of IVT direction

@@ -76,6 +76,7 @@ expn='c192L33_am4p0_amip_HIRESMIP_HX7'; ardir='AR_climlmt';yr1=2001;yr2=2020;pct
 tpath='/archive/Ming.Zhao/awg/2023.04/'; diag=2; 
 expn='c192L33_CM4X_amip';     ardir='AR_climlmt';yr1=2001;yr2=2020;pct=[99 99.9];
 expn='c192L33_CM4X_amip_p2K'; ardir='AR_climlmt';yr1=2001;yr2=2020;pct=[99 99.9];
+expn='c192L33_CM4X_amip_19'; ardir='AR_climlmt';yr1=2001;yr2=2020;pct=[99 99.9];
 opt='MC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 opt='AL';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 opt='AR';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
@@ -113,6 +114,24 @@ fext=strcat(yrs,'PD',  diag, s); fn=strcat(tpath,expn,fext); load(fn);ob.pd=v;
 %fext=strcat(yrs,'P01', diag, s); fn=strcat(tpath,expn,fext); load(fn);ob.p1=v;
 %fext=strcat(yrs,'P00', diag, s); fn=strcat(tpath,expn,fext); load(fn);ob.p0=v;
 %fext=strcat(yrs,'PA',  diag, s); fn=strcat(tpath,expn,fext); load(fn);ob.pa=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%CM4X analysis
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/work/miz/mat_hiresmip_cre/'; s='_readartcmcs_day_cre_newer1.mat';
+expn='c192L33_CM4X_amip'; yrs='_2001_2020_'; diag='_diag2';
+fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.mc=v;
+fext=strcat(yrs,'AL',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.al=v;
+fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.ar=v;
+fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.tc=v;
+fext=strcat(yrs,'PR01',diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pr=v;
+fext=strcat(yrs,'P02', diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.p2=v;
+fext=strcat(yrs,'PB',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pb=v;
+fext=strcat(yrs,'PC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pc=v;
+fext=strcat(yrs,'PD',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pd=v;
+% $$$ fext=strcat(yrs,'P01', diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.p1=v;
+% $$$ fext=strcat(yrs,'P00', diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.p0=v;
+% $$$ fext=strcat(yrs,'PA',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pa=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ve=do_ensemble;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -377,11 +396,11 @@ p.z1=zx/dtas; p.Z1=pd/dtas; p.z1_avg=(a2av-a1av)/dtas; p.Z1_avg=p.z1_avg/a1av*10
 v=vm.pc; a1=squeeze(v.prday_idavg); s1=squeeze(v.prday_idstd); n1=squeeze(v.id_sum);
 v=vx.pc; a2=squeeze(v.prday_idavg); s2=squeeze(v.prday_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
-p.z3=zx/dtas; p.Z3=pd/dtas; p.z3_avg=(a2av-a1av)/dtas; p.Z3_avg=p.z7_avg/a1av*100;
+p.z3=zx/dtas; p.Z3=pd/dtas; p.z3_avg=(a2av-a1av)/dtas; p.Z3_avg=p.z3_avg/a1av*100;
 v=vm.pr; a1=squeeze(v.prday_idavg); s1=squeeze(v.prday_idstd); n1=squeeze(v.id_sum);
 v=vx.pr; a2=squeeze(v.prday_idavg); s2=squeeze(v.prday_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
-p.z5=zx/dtas; p.Z5=pd/dtas; p.z5_avg=(a2av-a1av)/dtas; p.Z5_avg=p.z7_avg/a1av*100;
+p.z5=zx/dtas; p.Z5=pd/dtas; p.z5_avg=(a2av-a1av)/dtas; p.Z5_avg=p.z5_avg/a1av*100;
 v=vm.al; a1=squeeze(v.prday_idavg); s1=squeeze(v.prday_idstd); n1=squeeze(v.id_sum);
 v=vx.al; a2=squeeze(v.prday_idavg); s2=squeeze(v.prday_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
@@ -419,7 +438,7 @@ p.s2='(e) Pr avg, AR days';
 p.s4='(f) Pr avg, TS days'; 
 p.s6='(g) Pr avg, MCS days';
 p.s8='(h) Pr avg, wet non-storm days'; 
-a=[c1 c2]; p.c1=a; p.c3=a; p.fsize=8; p.optit=9; p.opt=5; p.nn=256;
+a=[c1 c2]; p.c1=a; p.c3=a; p.fsize=8; p.optit=10; p.opt=5; p.nn=256;
 a=[c3 c4]; p.c2=a; p.c4=a; p.c5=a; p.c6=a; p.c7=a; p.c8=a; 
 p.fmt='eps'; plot_2d_8panel_revision(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -445,11 +464,11 @@ p.z1=zx/dtas; p.Z1=pd/dtas; p.z1_avg=(a2av-a1av)/dtas; p.Z1_avg=p.z1_avg/a1av*10
 v=vm.pc; a1=squeeze(v.lwcf_idavg); s1=squeeze(v.lwcf_idstd); n1=squeeze(v.id_sum);
 v=vx.pc; a2=squeeze(v.lwcf_idavg); s2=squeeze(v.lwcf_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
-p.z3=zx/dtas; p.Z3=pd/dtas; p.z3_avg=(a2av-a1av)/dtas; p.Z3_avg=p.z7_avg/a1av*100;
+p.z3=zx/dtas; p.Z3=pd/dtas; p.z3_avg=(a2av-a1av)/dtas; p.Z3_avg=p.z3_avg/a1av*100;
 v=vm.pr; a1=squeeze(v.lwcf_idavg); s1=squeeze(v.lwcf_idstd); n1=squeeze(v.id_sum);
 v=vx.pr; a2=squeeze(v.lwcf_idavg); s2=squeeze(v.lwcf_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
-p.z5=zx/dtas; p.Z5=pd/dtas; p.z5_avg=(a2av-a1av)/dtas; p.Z5_avg=p.z7_avg/a1av*100;
+p.z5=zx/dtas; p.Z5=pd/dtas; p.z5_avg=(a2av-a1av)/dtas; p.Z5_avg=p.z5_avg/a1av*100;
 v=vm.al; a1=squeeze(v.lwcf_idavg); s1=squeeze(v.lwcf_idstd); n1=squeeze(v.id_sum);
 v=vx.al; a2=squeeze(v.lwcf_idavg); s2=squeeze(v.lwcf_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
@@ -487,7 +506,7 @@ p.s2='(e) LW CRE avg, AR days';
 p.s4='(f) LW CRE avg, TS days'; 
 p.s6='(g) LW CRE avg, MCS days';
 p.s8='(h) LW CRE avg, wet non-storm days'; 
-a=[c1 c2]; p.c1=a; p.c3=a; p.fsize=8; p.optit=9; p.opt=5; p.nn=256;
+a=[c1 c2]; p.c1=a; p.c3=a; p.fsize=8; p.optit=10; p.opt=5; p.nn=256;
 a=[c3 c4]; p.c2=a; p.c4=a; p.c5=a; p.c6=a; p.c7=a; p.c8=a; 
 p.fmt='eps'; plot_2d_8panel_revision(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -503,7 +522,7 @@ lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
 p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_swcf_idavg'; vm=v;
-vx=v0; p.vn='mod_m_obs_swcf_idavg'; p.dtas=1;c1=-30;c2=30;c3=-30;c4=30;p.un='$~~\rm{W\,m^{-2}}$';
+vx=v0; p.vn='mod_m_obs_swcf_idavg'; p.dtas=1;c1=-50;c2=50;c3=-50;c4=50;p.un='$~~\rm{W\,m^{-2}}$';
 %vx=ve; p.vn='ens_m_obs_swcf_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
 %vx=v1; p.vn='ng1_m_obs_swcf_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
 %vx=w1; p.vn='p2k_m_ctl_swcf_idavg'; vm=v1; p.dtas=2.27;c1=-1;c2=1;c3=-1;c4=1;p.un='mm/day/K';
@@ -515,11 +534,11 @@ p.z1=zx/dtas; p.Z1=pd/dtas; p.z1_avg=(a2av-a1av)/dtas; p.Z1_avg=p.z1_avg/a1av*10
 v=vm.pc; a1=squeeze(v.swcf_idavg); s1=squeeze(v.swcf_idstd); n1=squeeze(v.id_sum);
 v=vx.pc; a2=squeeze(v.swcf_idavg); s2=squeeze(v.swcf_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
-p.z3=zx/dtas; p.Z3=pd/dtas; p.z3_avg=(a2av-a1av)/dtas; p.Z3_avg=p.z7_avg/a1av*100;
+p.z3=zx/dtas; p.Z3=pd/dtas; p.z3_avg=(a2av-a1av)/dtas; p.Z3_avg=p.z3_avg/a1av*100;
 v=vm.pr; a1=squeeze(v.swcf_idavg); s1=squeeze(v.swcf_idstd); n1=squeeze(v.id_sum);
 v=vx.pr; a2=squeeze(v.swcf_idavg); s2=squeeze(v.swcf_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
-p.z5=zx/dtas; p.Z5=pd/dtas; p.z5_avg=(a2av-a1av)/dtas; p.Z5_avg=p.z7_avg/a1av*100;
+p.z5=zx/dtas; p.Z5=pd/dtas; p.z5_avg=(a2av-a1av)/dtas; p.Z5_avg=p.z5_avg/a1av*100;
 v=vm.al; a1=squeeze(v.swcf_idavg); s1=squeeze(v.swcf_idstd); n1=squeeze(v.id_sum);
 v=vx.al; a2=squeeze(v.swcf_idavg); s2=squeeze(v.swcf_idstd); n2=squeeze(v.id_sum);
 [zx,ex,pd,a1av,a2av]=compute_diff(a1,s1,n1,a2,s2,n2,no,nyr1,nyr2,aa,mskopt);
@@ -557,8 +576,113 @@ p.s2='(e) SW CRE avg, AR days';
 p.s4='(f) SW CRE avg, TS days'; 
 p.s6='(g) SW CRE avg, MCS days';
 p.s8='(h) SW CRE avg, wet non-storm days'; 
-a=[c1 c2]; p.c1=a; p.c3=a; p.fsize=8; p.optit=9; p.opt=5; p.nn=256;
+a=[c1 c2]; p.c1=a; p.c3=a; p.fsize=8; p.optit=10; p.opt=5; p.nn=256;
 a=[c3 c4]; p.c2=a; p.c4=a; p.c5=a; p.c6=a; p.c7=a; p.c8=a; 
+p.fmt='eps'; plot_2d_8panel_revision(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%FigA4n: annual mean NETRAD contributed from AR/TS/MSC %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v=ob.ar; %all time mean prday from each weather type
+p.lm=v.lm; p.x=v.lon; p.y=v.lat; p.xy=[0 360 -90 90];p.expn='c192';
+lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
+p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
+p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
+v =ob; p.vn='obs_netrad_idwei';
+vx=v0; p.vn='mod_m_obs_netrad_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='W/m2';
+%vx=w1; p.vn='p2k_m_ctl_netrad_idwei';v=v1; p.dtas=2.27;c1=-4;c2=4;c3=-2;c4=2;p.un='W/m2/K';
+p.z1=squeeze(vx.ar.netrad_av   -v.ar.netrad_av)   /p.dtas;   
+p.z3=squeeze((vx.p2.netrad_idwei-vx.pr.netrad_idwei)-(v.p2.netrad_idwei-v.pr.netrad_idwei))/p.dtas;   
+p.z5=squeeze(vx.pr.netrad_idwei-v.pr.netrad_idwei)/p.dtas; 
+p.z7=squeeze(vx.al.netrad_idwei-v.al.netrad_idwei)/p.dtas;
+p.z2=squeeze(vx.ar.netrad_idwei-v.ar.netrad_idwei)/p.dtas;    
+p.z4=squeeze(vx.tc.netrad_idwei-v.tc.netrad_idwei)/p.dtas;    
+p.z6=squeeze(vx.mc.netrad_idwei-v.mc.netrad_idwei)/p.dtas;    
+%p.z8=squeeze(vx.pb.netrad_idwei-v.pb.netrad_idwei)/p.dtas;
+a=1; if a; p.z8=p.z5-p.z7; end; %a=1 take care MC period mismatch when comparing with OBS
+%p=smoothp(p,1,1,'omitnan','shrink');
+p.s1='(a) annual mean NETRAD';
+p.s3='(b) NETRAD; drizzle days'; 
+p.s5='(c) NETRAD; wet days';
+p.s7='(d) NETRAD; storm (AR+TS+MCS) days';
+p.s2='(e) NETRAD; AR days'; 
+p.s4='(f) NETRAD; TS days';
+p.s6='(g) NETRAD; MCS days'; 
+p.s8='(h) NETRAD; wet non-storm days';
+a=[c1 c2]; p.c1=a; p.fsize=7; p.optit=4; p.opt=5; p.nn=256;
+a=[c1 c2]; p.c3=a; p.c5=a; p.c7=a; p.c8=a;
+a=[c3 c4]; p.c2=a; p.c4=a; p.c6=a;
+p.fmt='eps'; plot_2d_8panel_revision(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%FigA5n: annual mean LWNET contributed from AR/TS/MSC %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v=ob.ar; %all time mean prday from each weather type
+p.lm=v.lm; p.x=v.lon; p.y=v.lat; p.xy=[0 360 -90 90];p.expn='c192';
+lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
+p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
+p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
+v =ob; p.vn='obs_rlut_idwei';
+vx=v0; p.vn='mod_m_obs_rlut_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='W/m2';
+%vx=w1; p.vn='p2k_m_ctl_rlut_idwei';v=v1; p.dtas=2.27;c1=-4;c2=4;c3=-2;c4=2;p.un='W/m2/K';
+p.z1=squeeze(vx.ar.rlut_av   -v.ar.rlut_av)   /p.dtas;   
+p.z3=squeeze((vx.p2.rlut_idwei-vx.pr.rlut_idwei)-(v.p2.rlut_idwei-v.pr.rlut_idwei))/p.dtas;   
+p.z5=squeeze(vx.pr.rlut_idwei-v.pr.rlut_idwei)/p.dtas; 
+p.z7=squeeze(vx.al.rlut_idwei-v.al.rlut_idwei)/p.dtas;
+p.z2=squeeze(vx.ar.rlut_idwei-v.ar.rlut_idwei)/p.dtas;    
+p.z4=squeeze(vx.tc.rlut_idwei-v.tc.rlut_idwei)/p.dtas;    
+p.z6=squeeze(vx.mc.rlut_idwei-v.mc.rlut_idwei)/p.dtas;    
+%p.z8=squeeze(vx.pb.rlut_idwei-v.pb.rlut_idwei)/p.dtas;
+a=1; if a; p.z8=p.z5-p.z7; end; %a=1 take care MC period mismatch when comparing with OBS
+%p=smoothp(p,1,1,'omitnan','shrink');
+p.s1='(a) annual mean LWNET';
+p.s3='(b) LWNET; drizzle days'; 
+p.s5='(c) LWNET; wet days';
+p.s7='(d) LWNET; storm (AR+TS+MCS) days';
+p.s2='(e) LWNET; AR days'; 
+p.s4='(f) LWNET; TS days';
+p.s6='(g) LWNET; MCS days'; 
+p.s8='(h) LWNET; wet non-storm days';
+a=[c1 c2]; p.c1=a; p.fsize=7; p.optit=4; p.opt=5; p.nn=256;
+a=[c1 c2]; p.c3=a; p.c5=a; p.c7=a; p.c8=a;
+a=[c3 c4]; p.c2=a; p.c4=a; p.c6=a;
+p.fmt='eps'; plot_2d_8panel_revision(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%FigA6n: annual mean SWNET contributed from AR/TS/MSC %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v=ob.ar; %all time mean prday from each weather type
+p.lm=v.lm; p.x=v.lon; p.y=v.lat; p.xy=[0 360 -90 90];p.expn='c192';
+lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
+p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
+p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
+v =ob; p.vn='obs_swabs_idwei';
+vx=v0; p.vn='mod_m_obs_swabs_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='W/m2';
+%vx=w1; p.vn='p2k_m_ctl_swabs_idwei';v=v1; p.dtas=2.27;c1=-4;c2=4;c3=-2;c4=2;p.un='W/m2/K';
+p.z1=squeeze(vx.ar.swabs_av   -v.ar.swabs_av)   /p.dtas;   
+p.z3=squeeze((vx.p2.swabs_idwei-vx.pr.swabs_idwei)-(v.p2.swabs_idwei-v.pr.swabs_idwei))/p.dtas;   
+p.z5=squeeze(vx.pr.swabs_idwei-v.pr.swabs_idwei)/p.dtas; 
+p.z7=squeeze(vx.al.swabs_idwei-v.al.swabs_idwei)/p.dtas;
+p.z2=squeeze(vx.ar.swabs_idwei-v.ar.swabs_idwei)/p.dtas;    
+p.z4=squeeze(vx.tc.swabs_idwei-v.tc.swabs_idwei)/p.dtas;    
+p.z6=squeeze(vx.mc.swabs_idwei-v.mc.swabs_idwei)/p.dtas;    
+%p.z8=squeeze(vx.pb.swabs_idwei-v.pb.swabs_idwei)/p.dtas;
+a=1; if a; p.z8=p.z5-p.z7; end; %a=1 take care MC period mismatch when comparing with OBS
+%p=smoothp(p,1,1,'omitnan','shrink');
+p.s1='(a) annual mean SW NET';
+p.s3='(b) SW NET; drizzle days'; 
+p.s5='(c) SW NET; wet days';
+p.s7='(d) SW NET; storm (AR+TS+MCS) days';
+p.s2='(e) SW NET; AR days'; 
+p.s4='(f) SW NET; TS days';
+p.s6='(g) SW NET; MCS days'; 
+p.s8='(h) SW NET; wet non-storm days';
+a=[c1 c2]; p.c1=a; p.fsize=7; p.optit=4; p.opt=5; p.nn=256;
+a=[c1 c2]; p.c3=a; p.c5=a; p.c7=a; p.c8=a;
+a=[c3 c4]; p.c2=a; p.c4=a; p.c6=a;
 p.fmt='eps'; plot_2d_8panel_revision(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

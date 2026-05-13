@@ -72,14 +72,14 @@ elseif (p.optit==3)
   s7=sprintf('%s (mean:%5.3f%%)',s7,z7_mean/z1_mean*100); 
   s8=sprintf('%s (mean:%5.3f%%)',s8,z8_mean/z2_mean*100); 
 elseif (p.optit==4)
-  s1=sprintf('%s (%5.3f%s)',s1,z1_mean,p.un);
-  s2=sprintf('%s (%5.3f%s)',s2,z2_mean,p.un);
-  s3=sprintf('%s (%5.3f%s)',s3,z3_mean,p.un); 
-  s4=sprintf('%s (%5.3f%s)',s4,z4_mean,p.un);
-  s5=sprintf('%s (%5.3f%s)',s5,z5_mean,p.un); 
-  s6=sprintf('%s (%5.3f%s)',s6,z6_mean,p.un); 
-  s7=sprintf('%s (%5.3f%s)',s7,z7_mean,p.un); 
-  s8=sprintf('%s (%5.3f%s)',s8,z8_mean,p.un); 
+  s1=sprintf('%s (%5.3f)',s1,z1_mean);
+  s2=sprintf('%s (%5.3f)',s2,z2_mean);
+  s3=sprintf('%s (%5.3f)',s3,z3_mean); 
+  s4=sprintf('%s (%5.3f)',s4,z4_mean);
+  s5=sprintf('%s (%5.3f)',s5,z5_mean); 
+  s6=sprintf('%s (%5.3f)',s6,z6_mean); 
+  s7=sprintf('%s (%5.3f)',s7,z7_mean); 
+  s8=sprintf('%s (%5.3f)',s8,z8_mean); 
 elseif (p.optit==5)
   s1=sprintf('%s (%5.2f %s)',s1,z1_mean,p.un);
   a=corrcoef(z2,z1); s2=sprintf('%s (avg=%5.2f; r=%5.2f)',s2,z2_mean,a(1,2));
@@ -135,6 +135,15 @@ elseif (p.optit==9)
   s6=sprintf('%s (avg=%5.2f %s)',s6,p.z6_avg,p.un); 
   s7=sprintf('%s (avg=%5.2f %s)',s7,p.z7_avg,p.un); 
   s8=sprintf('%s (avg=%5.2f %s)',s8,p.z8_avg,p.un); 
+elseif (p.optit==10)
+  s1=sprintf('%s (avg=%5.2f)',s1,p.z1_avg);
+  s2=sprintf('%s (avg=%5.2f)',s2,p.z2_avg);
+  s3=sprintf('%s (avg=%5.2f)',s3,p.z3_avg); 
+  s4=sprintf('%s (avg=%5.2f)',s4,p.z4_avg);
+  s5=sprintf('%s (avg=%5.2f)',s5,p.z5_avg); 
+  s6=sprintf('%s (avg=%5.2f)',s6,p.z6_avg); 
+  s7=sprintf('%s (avg=%5.2f)',s7,p.z7_avg); 
+  s8=sprintf('%s (avg=%5.2f)',s8,p.z8_avg); 
 else
   disp('no title');
 end

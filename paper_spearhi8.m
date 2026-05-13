@@ -11,11 +11,11 @@ fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c96.mat'); load(fn); o.mod='
 %fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c192do_erai_3d_1.mat'); load(fn); o.mod='c192';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
-p.do_trend=1; p.do_trend_obs=0; p.do_scalar=0; p.myr=5; p.opt=1; p.do_3d_atm=1; p.do_all=1;
+p.do_trend=0; p.do_trend_obs=0; p.do_scalar=0; p.myr=5; p.opt=0; p.do_3d_atm=0; p.do_all=1;
 tpath='/archive/Ming.Zhao/spear_hi_8_dev/';
 
-p.yr1='0101'; p.yr2='0200'; p.syr=1;  
-p.nyr=100; p.y1=0001; p.y2=0100; p.expn='SPEAR_c384_OM4p08_Control_1990_A13';   v=tsana_hiresmip_new(o,tpath,p);
+p.yr1='0301'; p.yr2='0400'; p.syr=1;  
+p.nyr=100; p.y1=0301; p.y2=0400; p.expn='SPEAR_c384_OM4p08_Control_1990_A13';   v=tsana_hiresmip_new(o,tpath,p);
 
 p.yr1='1991'; p.yr2='2100'; p.syr=1; 
 p.nyr=110; p.y1=1991; p.y2=2100; p.expn='SPEAR_c384_OM4p08_Hist_SSP245_IC1991_A13'; v=tsana_hiresmip_new(o,tpath,p);
@@ -40,9 +40,10 @@ p.expn='SPEAR_c384_OM4p25_pres_SST_HIST_AllForc_IC1971_R47'; v=tsana_hiresmip_ne
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
-p.do_trend=0; p.do_scalar=0; p.myr=1; p.opt=1; p.do_3d_atm=0; p.do_all=1;
-p.yr1='1980'; p.yr2='2020'; p.syr=2; p.nyr=40; p.y1=1981; p.y2=2020; 
+p.do_trend=0; p.do_trend_obs=0; p.do_scalar=0; p.myr=1; p.opt=1; p.do_3d_atm=0; p.do_all=1;
+p.yr1='1979'; p.yr2='2020'; p.syr=1; p.nyr=42; p.y1=1979; p.y2=2020; 
 tpath='/archive/Ming.Zhao/awg/2023.04/';
+p.expn='c384L33_am4p0_spearhi_peff_l_d_9e_5_rthresh10'; v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c384L33_am4p0_spearhi_peff_l_d_9e_5';        v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c384L33_am4p0_spearhi_peff_l_d_9e_5_tuned';  v=tsana_hiresmip_new(o,tpath,p);
 
@@ -96,10 +97,46 @@ e='SPEAR_c384_OM4p25_Control_1990_R93';  n=strcat(ph,e,'/',e,f);                
 %e='SPEAR_c384_OM4p25_Control_1990_R61_CAmer_2Xghprime';  n=strcat(ph,e,'/',e,f); load(n);z.w2e=v; 
 
 ph='/archive/Ming.Zhao/spear_hi_8_dev/';
-f='_global_opt1.c96_tsana_hiresmip_new_1-100_0101-0200_do_3d_atm_0_do_all_1.mat';
+f='_global_opt1.c96_tsana_hiresmip_new_1-100_0101-0200_do_3d_atm_1_do_trend_1.mat';
 e='SPEAR_c384_OM4p08_Control_1990_A13';               n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
 f='_global_opt1.c96_tsana_hiresmip_new_1-100_0001-0100_do_3d_atm_0_do_all_1.mat';
 e='SPEAR_c384_OM4p08_Ctrl_1990_A13_IC0101_1PctTo2X';  n=strcat(ph,e,'/',e,f); load(n);z.w1a=v; 
+
+v=z.v0b; ssti=z.v0b.sfc.sst_nino3.al0; yr1=1981; yr2=2020; thresh=0.5; minlen=5;
+y=get_id_ENSO_spearhi8(ssti,yr1,yr2,thresh,minlen);
+x=y.time; figure; plot(x,y.ssti,'-k*'); hold on; plot(x,y.el.id,'-rs'); plot(x,-y.la.id,'-bs');
+
+v=z.v0a; ssti=v.sfc.sst_nino3.al0; yr1=v.t1; yr2=v.t2-1; thresh=0.5; minlen=5;
+y=get_id_ENSO_spearhi8(ssti,yr1,yr2,thresh,minlen);
+fn=strcat('./',v.expn,'_enso_index.mat'); disp(fn); save(fn,'y','-v7.3'); %save very large files
+
+v=z.v0b; ssti=v.sfc.sst_nino3.al0; yr1=v.t1; yr2=v.t2-1; thresh=0.5; minlen=5;
+y=get_id_ENSO_spearhi8(ssti,yr1,yr2,thresh,minlen);
+fn=strcat('./',v.expn,'_enso_index.mat'); disp(fn); save(fn,'y','-v7.3'); %save very large files
+
+x=y.time; figure; plot(x,y.ssti,'-k*'); hold on; plot(x,y.el.id,'-rs'); plot(x,-y.la.id,'-bs');
+
+vx=z.v0b;
+v=vx.s; nlat=v.nlat; nlon=v.nlon;
+v=vx.sfc; a=v.tsurf.all; clm=mean(a,1); b=repmat(clm,[nyr 1 1 1]); ssta=a-b;
+
+a=ssta; a=permute(a,[2 1 3 4]); ssta=reshape(a,[nyr*nmon,nlat,nlon]); 
+
+id=y.el.id; ssta_e=ssta(id,:,:); sstm_e=squeeze(mean(ssta_e,1)); figure; pcolor(sstm_e); shading flat; colorbar; colormap(jet);
+
+a=permute(a,[2 1]); a=reshape(a,nyr*nmon,1); sst_nino3=a; sst_nino3_anom=a-mean(a); figure; plot(sst_nino3_anom);
+
+
+
+vx=z.v0b;
+v=vx.s; nlat=v.nlat; nlon=v.nlon;
+v=vx.sfc; a=v.sst_nino3.al0; [nyr,nmon]=size(a); b=squeeze(mean(a,1)); b=repmat(b,[nyr 1]); a=a-b;
+a=permute(a,[2 1]); a=reshape(a,nyr*nmon,1); sst_nino3=a; sst_nino3_anom=a-mean(a); figure; plot(sst_nino3_anom);
+
+v=vx.sfc; a=v.tsurf.all; clm=mean(a,1); b=repmat(clm,[nyr 1 1 1]); ssta=a-b;
+
+a=ssta; a=permute(a,[2 1 3 4]); ssta=reshape(a,[nyr*nmon,nlat,nlon]); 
+id=(sst_nino3_anom>1); ssta_e=ssta(id,:,:); sstm_e=squeeze(mean(ssta_e,1)); figure; pcolor(sstm_e); shading flat; colorbar; colormap(jet);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

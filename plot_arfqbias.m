@@ -19,18 +19,20 @@ c=corrcoef(zz1,zz0); corr=c(1,2); [z0_mean z1_mean rmse bias corr]
 
 e=z1-z0;
 str=strcat(' (',str,')'); s1=strcat(s1,str); s2=strcat(s2,str); 
-fsize=12; lw=2; row=3; col=1;
+fsize=12; lw=2; row=3; col=1; 
 handle = figure('Position', pms,'visible','on');
 subplot(row,col,1); xl='longitude'; yl='latitude';
 pcolor(x1,y1,z0); hold on; shading flat; colorbar; caxis([cs]); 
-contourf(x1,y1,lm/10,'k'); axis(xy); %plot([0 360],[0 0],'w-','LineWidth',3);
+contour(x1,y1,lm,'k'); axis(xy);
+nn=256; cmap=bluewhitered_miz(nn); colormap(cmap); 
+%plot([0 360],[0 0],'w-','LineWidth',3);
 ylabel(yl,'FontSize',fsize); set(gca,'FontSize',fsize);
 %s1=sprintf('%s (mean:%5.4f)',s1,z0_mean); 
 title(s1,'FontSize',fsize); 
 
 subplot(row,col,2);
 pcolor(x1,y1,z1); hold on; shading flat; colorbar; caxis([cs]); 
-contourf(x1,y1,lm/10,'k'); axis(xy); %plot([0 360],[0 0],'w-','LineWidth',3);
+contour(x1,y1,lm,'k'); axis(xy); colormap(cmap); %plot([0 360],[0 0],'w-','LineWidth',3);
 ylabel(yl,'FontSize',fsize); set(gca,'FontSize',fsize); 
 title(s2,'FontSize',fsize); 
 %s2=sprintf('%s (mean:%5.4f)',s2,z1_mean); 
@@ -38,7 +40,7 @@ title(s2,'FontSize',fsize);
 
 subplot(row,col,3); %a=vm.aa;
 pcolor(x1,y1,e); hold on; shading flat; colorbar; caxis([cs1]);
-contourf(x1,y1,lm/10,'k'); axis(xy); %plot([0 360],[0 0],'w-','LineWidth',3);
+contour(x1,y1,lm,'k'); axis(xy); colormap(cmap); %plot([0 360],[0 0],'w-','LineWidth',3);
 xlabel(xl,'FontSize',fsize); ylabel(yl,'FontSize',fsize);
 set(gca,'FontSize',fsize); 
 s=sprintf('%s (RMSE=%5.3f; CORR=%4.2f)',s3,rmse,corr);
@@ -49,5 +51,5 @@ title(s,'FontSize',fsize);
 %xlabel(xl,'FontSize',fsize); %ylabel(yl,'FontSize',fsize);
 %contourf(x1,y1,lm,'w'); 
 %set(gca,'FontSize',fsize);
-visfig='off'; figpath='./fig_AR/'; expn='hiresmip'; 
-printit(visfig,figpath,expn,vname);
+visfig='off'; figpath='./fig_spearhi/'; expn='spearhi8'; fmt='png';
+printnew(visfig,figpath,expn,vname,fmt)

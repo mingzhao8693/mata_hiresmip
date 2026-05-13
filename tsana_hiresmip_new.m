@@ -33,7 +33,8 @@ lonx=o.lon; latx =o.lat;
 pp='/ts_all/'; fext =strcat('atmos.',yr1,'01-',yr2,'12.');
 varn='t_surf'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 
-a=[210 270  -5  5];  v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg0=v.sst;
+a=[190 240  -5  5];  v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg_nino34=v.sst;
+a=[210 270  -5  5];  v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg_nino3 =v.sst;
 a=[140 215  25  45]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg1=v.sst; %NPAC for TPI
 a=[170 270 -10  10]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg2=v.sst; %EPAC for TPI
 a=[150 200 -50 -15]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg3=v.sst; %SPAC for TPI
@@ -46,7 +47,10 @@ v=readts_grid_2d(tpath,expn,fname, latlon, p.mod);
 v.ts=(syr-1)*12+1; v.te=v.ts+nyr*12-1; v.expn=expn; v.p=p;
 v.nt=v.te-v.ts+1; t1=str2num(yr1)+syr-1; t2=t1+nyr; v.time=[t1+1/24:1/12:t2]; v
 xx=repmat(v.aa,[1 1 v.nt]); v.aa0=v.aa; v.aa=shiftdim(xx,2); v.mod=mod;
-v.sfc.sst_nino3=reg0; v.missing_value=-1.e+10; v.t1=t1; v.t2=t2;
+v.missing_value=-1.e+10; v.t1=t1; v.t2=t2;
+
+v.sfc.sst_nino34=reg_nino34;
+v.sfc.sst_nino3 =reg_nino3; 
 v.sfc.sst_reg1=reg1;
 v.sfc.sst_reg2=reg2;
 v.sfc.sst_reg3=reg3;
