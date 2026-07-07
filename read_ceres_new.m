@@ -212,6 +212,12 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.swdnsfc_clm=squeeze(mean(tmp,2));
 v.swdnsfc_ann=squeeze(mean(v.swdnsfc_clm,1));
 v.swdnsfc_sea=get4season(v.swdnsfc_clm);
+o.sfc.swdn.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.swdn.al0 o.sfc.swdn.ts.ann]=getts0(o.sfc.swdn.all,s);
+
+interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+%o.toa.swcf.al0=getts(o.toa.swcf.all,s)
+[o.toa.swcf.al0 o.toa.swcf.ts.ann]=getts0(o.toa.swcf.all,s);
 
 varn='sfc_sw_up_all_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -221,6 +227,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.swupsfc_clm=squeeze(mean(tmp,2));
 v.swupsfc_ann=squeeze(mean(v.swupsfc_clm,1));
 v.swupsfc_sea=get4season(v.swupsfc_clm);
+o.sfc.swup.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.swup.al0 o.sfc.swup.ts.ann]=getts0(o.sfc.swup.all,s);
 
 varn='sfc_lw_down_all_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -230,6 +238,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.lwdnsfc_clm=squeeze(mean(tmp,2));
 v.lwdnsfc_ann=squeeze(mean(v.lwdnsfc_clm,1));
 v.lwdnsfc_sea=get4season(v.lwdnsfc_clm);
+o.sfc.lwdn.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.lwdn.al0 o.sfc.lwdn.ts.ann]=getts0(o.sfc.lwdn.all,s);
 
 varn='sfc_lw_up_all_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -239,6 +249,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.lwupsfc_clm=squeeze(mean(tmp,2));
 v.lwupsfc_ann=squeeze(mean(v.lwupsfc_clm,1));
 v.lwupsfc_sea=get4season(v.lwupsfc_clm);
+o.sfc.lwup.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.lwup.al0 o.sfc.lwup.ts.ann]=getts0(o.sfc.lwdn.all,s);
 
 varn='sfc_net_sw_all_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -248,6 +260,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.swnetsfc_clm=squeeze(mean(tmp,2));
 v.swnetsfc_ann=squeeze(mean(v.swnetsfc_clm,1));
 v.swnetsfc_sea=get4season(v.swnetsfc_clm);
+o.sfc.swnet.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.swnet.al0 o.sfc.swnet.ts.ann]=getts0(o.sfc.swnet.all,s);
 
 varn='sfc_net_sw_clr_t_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -257,6 +271,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.swclrsfc_clm=squeeze(mean(tmp,2));
 v.swclrsfc_ann=squeeze(mean(v.swclrsfc_clm,1));
 v.swclrsfc_sea=get4season(v.swclrsfc_clm);
+o.sfc.swnet_clr.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.swnet_clr.al0 o.sfc.swnet_clr.ts.ann]=getts0(o.sfc.swnet_clr.all,s);
 
 varn='sfc_net_lw_all_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -266,6 +282,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.lwnetsfc_clm=squeeze(mean(tmp,2));
 v.lwnetsfc_ann=squeeze(mean(v.lwnetsfc_clm,1));
 v.lwnetsfc_sea=get4season(v.lwnetsfc_clm);
+o.sfc.lwnet.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.lwnet.al0 o.sfc.lwnet.ts.ann]=getts0(o.sfc.lwnet.all,s);
 
 varn='sfc_net_lw_clr_t_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -275,6 +293,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.lwclrsfc_clm=squeeze(mean(tmp,2));
 v.lwclrsfc_ann=squeeze(mean(v.lwclrsfc_clm,1));
 v.lwclrsfc_sea=get4season(v.lwclrsfc_clm);
+o.sfc.lwnet_clr.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.lwnet_clr.al0 o.sfc.lwnet_clr.ts.ann]=getts0(o.sfc.lwnet_clr.all,s);
 
 varn='sfc_net_tot_all_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -284,6 +304,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.netradsfc_clm=squeeze(mean(tmp,2));
 v.netradsfc_ann=squeeze(mean(v.netradsfc_clm,1));
 v.netradsfc_sea=get4season(v.netradsfc_clm);
+o.sfc.netrad.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.netrad.al0 o.sfc.netrad.ts.ann]=getts0(o.sfc.netrad.all,s);
 
 varn='sfc_net_tot_clr_t_mon';
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
@@ -293,6 +315,8 @@ tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 v.netradsfc_clr_clm=squeeze(mean(tmp,2));
 v.netradsfc_clr_ann=squeeze(mean(v.netradsfc_clr_clm,1));
 v.netradsfc_clr_sea=get4season(v.netradsfc_clr_clm);
+o.sfc.netrad_clr.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
+[o.sfc.netrad_clr.al0 o.sfc.netrad_clr.ts.ann]=getts0(o.sfc.netrad_clr.all,s);
 
 v.lwcfsfc_clm=v.lwnetsfc_clm-v.lwclrsfc_clm;
 v.lwcfsfc_ann=v.lwnetsfc_ann-v.lwclrsfc_ann;

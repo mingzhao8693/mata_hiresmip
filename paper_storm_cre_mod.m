@@ -23,7 +23,7 @@ opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; 
 expn='c192L33_am4p0_amip_HIRESMIP_HX05_p2K'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_amip'; ardir='AR_climlmt'; 
+expn='c192L33_CM4X_amip_21'; ardir='AR_climlmt'; 
 %expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_30min_p2K'; ardir='AR_climlmt'; 
 %expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_skip_bot_v6'; ardir='AR_climlmt'; 
 %expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_1951_2020'; ardir='AR_climlmt'; 
@@ -34,7 +34,7 @@ expn='c192L33_CM4X_amip'; ardir='AR_climlmt';
 %expn='c192L33_am4p0_amip_HIRESMIP_HX'; ardir='AR_climlmt'; 
 %yr1=1951; yr2=1978; pct=[99 99.9]; use_obs_tc=0;
 %opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-yr1=1970; yr2=2020; pct=[99 99.9]; use_obs_tc=0;
+yr1=2014; yr2=2020; pct=[99 99.9]; use_obs_tc=0;
 opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,7 +76,7 @@ expn='c192L33_am4p0_amip_HIRESMIP_HX7'; ardir='AR_climlmt';yr1=2001;yr2=2020;pct
 tpath='/archive/Ming.Zhao/awg/2023.04/'; diag=2; 
 expn='c192L33_CM4X_amip';     ardir='AR_climlmt';yr1=2001;yr2=2020;pct=[99 99.9];
 expn='c192L33_CM4X_amip_p2K'; ardir='AR_climlmt';yr1=2001;yr2=2020;pct=[99 99.9];
-expn='c192L33_CM4X_amip_19'; ardir='AR_climlmt';yr1=2001;yr2=2020;pct=[99 99.9];
+expn='c192L33_CM4X_amip_20';  ardir='AR_climlmt';yr1=2001;yr2=2020;pct=[99 99.9];
 opt='MC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 opt='AL';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 opt='AR';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
@@ -133,7 +133,7 @@ fext=strcat(yrs,'PD',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pd=v;
 % $$$ fext=strcat(yrs,'PA',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.pa=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ve=do_ensemble;
+ve=do_ensemble_cm4x;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/work/miz/mat_hiresmip_cre/'; s='_readartcmcs_day_cre_new.mat';
 expn='c192L33_am4p0_amip_HIRESMIP_HX'; yrs='_2001_2020_'; diag='_diag3';
@@ -228,9 +228,6 @@ fext=strcat(yrs,'PB',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v3.pb=v;
 % $$$ fext=strcat(yrs,'PD',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v3.pd=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-p.dtas=2.27; %dTAS between c192L33_am4p0_amip_HIRESMIP_HX_p2K and c192L33_am4p0_amip_HIRESMIP_HX
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %===Fig1n===: annual frequency of P-days %%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -241,7 +238,7 @@ p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_frqday';
 vx=v0; p.vn='mod_m_obs_frqday'; p.dtas=1; c1=-20; c2=20; c3=-10; c4=10; p.un='\%';
-%vx=ve; p.vn='ens_m_obs_frqday'; p.dtas=1; c1=-10; c2=10; c3=-10; c4=10;p.un='\%';
+vx=ve; p.vn='ens_m_obs_frqday'; p.dtas=1; c1=-20; c2=20; c3=-10; c4=10; p.un='\%';
 %vx=v1; p.vn='ng1_m_obs_frqday'; p.dtas=1; c1=-10; c2=10; c3=-10; c4=10;
 %vx=w1; p.vn='p2k_m_ctl_frqday'; v=v1; p.dtas=2.27; c1=-2;  c2=2;c3=-1; c4=1;p.un='\%/K';
 p.z1=squeeze(vx.p2.frqday-v.p2.frqday)*100/p.dtas;
@@ -277,7 +274,7 @@ p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_prday_idwei';
 vx=v0; p.vn='mod_m_obs_prday_idwei'; p.dtas=1;c1=-3;c2=3;c3=-3;c4=3;p.un='$~~\rm{mm\,day^{-1}}$';
-%vx=ve; p.vn='ens_m_obs_prday_idwei'; p.dtas=1;c1=-4;c2=4;c3=-2;c4=2;p.un='mm/day';
+vx=ve; p.vn='ens_m_obs_prday_idwei'; p.dtas=1;c1=-3;c2=3;c3=-3;c4=3;p.un='$~~\rm{mm\,day^{-1}}$';
 %vx=v1; p.vn='ng1_m_obs_prday_idwei'; p.dtas=1;c1=-4;c2=4;c3=-2;c4=2;p.un='mm/day';
 %vx=w1; p.vn='p2k_m_ctl_prday_idwei';v=v1; p.dtas=2.27;c1=-0.4;c2=0.4;c3=-0.2;c4=0.2;p.un='mm/day/K';
 p.z1=squeeze(vx.ar.prday_av   -v.ar.prday_av)   /p.dtas;   
@@ -314,7 +311,7 @@ p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_lwcf_idwei';
 vx=v0; p.vn='mod_m_obs_lwcf_idwei'; p.dtas=1;c1=-20;c2=20;c3=-10;c4=10;p.un='$~~\rm{W\,m^{-2}}$';
-%vx=ve; p.vn='ens_m_obs_lwcf_idwei'; p.dtas=1;c1=-20;c2=20;c3=-10;c4=10;p.un='W/m2';
+vx=ve; p.vn='ens_m_obs_lwcf_idwei'; p.dtas=1;c1=-20;c2=20;c3=-10;c4=10;p.un='$~~\rm{W\,m^{-2}}$';
 %vx=v1; p.vn='ng1_m_obs_lwcf_idwei'; p.dtas=1;c1=-35;c2=35;c3=-10;c4=10;p.un='W/m2';
 %vx=w1; p.vn='p2k_m_ctl_lwcf_idwei';v=v1; p.dtas=2.27;c1=-4;c2=4;c3=-2;c4=2;p.un='W/m2/K';
 p.z1=squeeze(vx.ar.lwcf_av   -v.ar.lwcf_av)   /p.dtas;
@@ -350,7 +347,7 @@ p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_swcf_idwei';
 vx=v0; p.vn='mod_m_obs_swcf_idwei'; p.dtas=1;c1=-20;c2=20;c3=-10;c4=10;p.un='$~~\rm{W\,m^{-2}}$';
-%vx=ve; p.vn='ens_m_obs_swcf_idwei'; p.dtas=1;c1=-20;c2=20;c3=-10;c4=10;p.un='W/m2';
+vx=ve; p.vn='ens_m_obs_swcf_idwei'; p.dtas=1;c1=-20;c2=20;c3=-10;c4=10;p.un='$~~\rm{W\,m^{-2}}$';
 %vx=w1; p.vn='p2k_m_ctl_swcf_idwei'; v=v1; p.dtas=2.27;c1=-4;c2=4;c3=-2;c4=2;p.un='W/m2/K';
 p.z1=squeeze(vx.ar.swcf_av   -v.ar.swcf_av)   /p.dtas;
 p.z3=squeeze((vx.p2.swcf_idwei-vx.pr.swcf_idwei)-(v.p2.swcf_idwei-v.pr.swcf_idwei))/p.dtas;   
@@ -384,8 +381,8 @@ lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
 p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_prday_idavg'; vm=v;
-vx=v0; p.vn='mod_m_obs_prday_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
-%vx=ve; p.vn='ens_m_obs_prday_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
+vx=v0; p.vn='mod_m_obs_prday_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='$~~\rm{mm\,day^{-1}}$';
+vx=ve; p.vn='ens_m_obs_prday_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='$~~\rm{mm\,day^{-1}}$';
 %vx=v1; p.vn='ng1_m_obs_prday_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
 %vx=w1; p.vn='p2k_m_ctl_prday_idavg'; vm=v1; p.dtas=2.27;c1=-1;c2=1;c3=-1;c4=1;p.un='mm/day/K';
 nyr1=vm.ar.nyr; nyr2=vx.ar.nyr; aa=p.aa; dtas=p.dtas; mskopt=1; no=30;
@@ -453,7 +450,7 @@ p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_lwcf_idavg'; vm=v;
 vx=v0; p.vn='mod_m_obs_lwcf_idavg'; p.dtas=1;c1=-30;c2=30;c3=-30;c4=30;p.un='$~~\rm{W\,m^{-2}}$';
-%vx=ve; p.vn='ens_m_obs_lwcf_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
+vx=ve; p.vn='ens_m_obs_lwcf_idavg'; p.dtas=1;c1=-30;c2=30;c3=-30;c4=30;p.un='$~~\rm{W\,m^{-2}}$';
 %vx=v1; p.vn='ng1_m_obs_lwcf_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
 %vx=w1; p.vn='p2k_m_ctl_lwcf_idavg'; vm=v1; p.dtas=2.27;c1=-1;c2=1;c3=-1;c4=1;p.un='mm/day/K';
 nyr1=vm.ar.nyr; nyr2=vx.ar.nyr; aa=p.aa; dtas=p.dtas; mskopt=1; no=30;
@@ -523,7 +520,7 @@ p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_swcf_idavg'; vm=v;
 vx=v0; p.vn='mod_m_obs_swcf_idavg'; p.dtas=1;c1=-50;c2=50;c3=-50;c4=50;p.un='$~~\rm{W\,m^{-2}}$';
-%vx=ve; p.vn='ens_m_obs_swcf_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
+vx=ve; p.vn='ens_m_obs_swcf_idavg'; p.dtas=1;c1=-50;c2=50;c3=-50;c4=50;p.un='$~~\rm{W\,m^{-2}}$';
 %vx=v1; p.vn='ng1_m_obs_swcf_idavg'; p.dtas=1;c1=-0.5;c2=0.5;c3=-5;c4=5;p.un='mm/day';
 %vx=w1; p.vn='p2k_m_ctl_swcf_idavg'; vm=v1; p.dtas=2.27;c1=-1;c2=1;c3=-1;c4=1;p.un='mm/day/K';
 nyr1=vm.ar.nyr; nyr2=vx.ar.nyr; aa=p.aa; dtas=p.dtas; mskopt=1; no=30;
@@ -590,8 +587,8 @@ lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
 p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_netrad_idwei';
-vx=v0; p.vn='mod_m_obs_netrad_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='W/m2';
-%vx=w1; p.vn='p2k_m_ctl_netrad_idwei';v=v1; p.dtas=2.27;c1=-4;c2=4;c3=-2;c4=2;p.un='W/m2/K';
+vx=v0; p.vn='mod_m_obs_netrad_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='$~~\rm{W\,m^{-2}}$';
+vx=ve; p.vn='ens_m_obs_netrad_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='$~~\rm{W\,m^{-2}}$';
 p.z1=squeeze(vx.ar.netrad_av   -v.ar.netrad_av)   /p.dtas;   
 p.z3=squeeze((vx.p2.netrad_idwei-vx.pr.netrad_idwei)-(v.p2.netrad_idwei-v.pr.netrad_idwei))/p.dtas;   
 p.z5=squeeze(vx.pr.netrad_idwei-v.pr.netrad_idwei)/p.dtas; 
@@ -625,8 +622,8 @@ lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
 p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_rlut_idwei';
-vx=v0; p.vn='mod_m_obs_rlut_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='W/m2';
-%vx=w1; p.vn='p2k_m_ctl_rlut_idwei';v=v1; p.dtas=2.27;c1=-4;c2=4;c3=-2;c4=2;p.un='W/m2/K';
+vx=v0; p.vn='mod_m_obs_rlut_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='$~~\rm{W\,m^{-2}}$';
+vx=vx; p.vn='ens_m_obs_rlut_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='$~~\rm{W\,m^{-2}}$';
 p.z1=squeeze(vx.ar.rlut_av   -v.ar.rlut_av)   /p.dtas;   
 p.z3=squeeze((vx.p2.rlut_idwei-vx.pr.rlut_idwei)-(v.p2.rlut_idwei-v.pr.rlut_idwei))/p.dtas;   
 p.z5=squeeze(vx.pr.rlut_idwei-v.pr.rlut_idwei)/p.dtas; 
@@ -660,8 +657,8 @@ lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
 p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_swabs_idwei';
-vx=v0; p.vn='mod_m_obs_swabs_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='W/m2';
-%vx=w1; p.vn='p2k_m_ctl_swabs_idwei';v=v1; p.dtas=2.27;c1=-4;c2=4;c3=-2;c4=2;p.un='W/m2/K';
+vx=v0; p.vn='mod_m_obs_swabs_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='$~~\rm{W\,m^{-2}}$';
+vx=ve; p.vn='ens_m_obs_swabs_idwei';vm=vx;p.dtas=1;c1=-30;c2=30;c3=-15;c4=15;p.un='$~~\rm{W\,m^{-2}}$';
 p.z1=squeeze(vx.ar.swabs_av   -v.ar.swabs_av)   /p.dtas;   
 p.z3=squeeze((vx.p2.swabs_idwei-vx.pr.swabs_idwei)-(v.p2.swabs_idwei-v.pr.swabs_idwei))/p.dtas;   
 p.z5=squeeze(vx.pr.swabs_idwei-v.pr.swabs_idwei)/p.dtas; 
@@ -686,8 +683,7 @@ a=[c3 c4]; p.c2=a; p.c4=a; p.c6=a;
 p.fmt='eps'; plot_2d_8panel_revision(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Above is the new figures%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %===Fig2===: LWCF averaged over storm days %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -698,8 +694,8 @@ lat0=-30; p.j1=max(find(v.lat<-lat0)); p.j2=min(find(v.lat>lat0));
 p.aa=squeeze(v.aa); p.id=~isnan(p.aa); p.id(p.j1:p.j2,:)=0; id=p.id;
 p.cm=[0 0.0005 0.001 0.002 0.01:0.02:0.08 0.1:0.05:1]; p.c='k'; p.rescale=false;
 v =ob; p.vn='obs_lwcf_idavg'; vm=v;
-%vx=v0; p.vn='mod_m_obs_lwcf_idavg'; p.dtas=1;c1=-30;c2=30;c3=-30;c4=30;p.un='W/m2';
-vx=ve; p.vn='ens_m_obs_lwcf_idavg'; p.dtas=1;c1=-30;c2=30;c3=-30;c4=30;p.un='W/m2';
+vx=v0; p.vn='mod_m_obs_lwcf_idavg'; p.dtas=1;c1=-30;c2=30;c3=-30;c4=30;p.un='W/m2';
+%vx=ve; p.vn='ens_m_obs_lwcf_idavg'; p.dtas=1;c1=-30;c2=30;c3=-30;c4=30;p.un='W/m2';
 %vx=w1; p.vn='p2k_m_ctl_lwcf_idavg'; vm=v1; p.dtas=2.27;c1=-4;c2=4;c3=-4;c4=4;p.un='W/m2/K';
 nyr1=vm.ar.nyr; nyr2=vx.ar.nyr; aa=p.aa; dtas=p.dtas; mskopt=1; no=30;
 v=vm.pd; a1=squeeze(v.lwcf_idavg); s1=squeeze(v.lwcf_idstd); n1=squeeze(v.id_sum);

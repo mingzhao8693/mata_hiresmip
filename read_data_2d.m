@@ -23,14 +23,19 @@ lonx=s.lon; latx =s.lat; aa=s.aa;
 a=ncread(fn,varn,[1 1 1],[Inf Inf Inf]);
 a=a(v.xs:v.xe,v.ys:v.ye,t1:t2); %1959JAN-2021DEC;63yr
 a=permute(a,[3 2 1]);
+
+if isfield(s, 'opt')
+  if (s.opt==1); a=-a; end;
+end
+
 if ~exist('timname'); v.time=[1:length(a(:,1,1))]; end
 v.nt=length(v.time); v.ts=1; v.te=v.nt;
 
 tmp=reshape(a,12,v.nt/12,v.nlat,v.nlon);
 lonx=s.lon; latx =s.lat; aa=s.aa;
 
-clm=squeeze(mean(tmp,2));
-ann=squeeze(mean(clm,1));
+clm=squeeze(mean(tmp,2));size(tmp)
+ann=squeeze(mean(clm,1));v
 
 v.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
 v.al0=getts(v.all,s)

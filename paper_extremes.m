@@ -345,7 +345,7 @@ plot_pattern_effect_Fig_extremes(p)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%percentile changes in TAS, VPD, TWB, and RH at 2m%
+%Fig 1: percentile changes in TAS, VPD, TWB, and RH at 2m%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
@@ -368,11 +368,11 @@ p.unit7 ='$\rm{KK^{-1}}$';      p.unit7_bar ='\rm{KK^{-1}}';
 p.unit9 ='$\rm{\%}$';           p.unit9_bar ='\rm{%}'; 
 p.unit10='$\rm{\%K^{-1}}$';     p.unit10_bar='\rm{%K^{-1}}';
 
-p.cmin0= 0.0; p.cmax0=35;  p.cmin1 =-3.5;  p.cmax1 =3.5;
-p.cmin3= 0.0; p.cmax3=35;  p.cmin4 =-3.5;  p.cmax4 =3.5;
-p.cmin6= 0.0; p.cmax6=35;  p.cmin7 =-3.5;  p.cmax7 =3.5;
-p.cmin9= 0.0; p.cmax9=100; p.cmin10=-3.5;  p.cmax10=3.5;
-p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=1;
+p.cmin0= 0.0; p.cmax0=40;  p.cmin1 =-5.0;  p.cmax1 =5.0;
+p.cmin3= 0.0; p.cmax3=50;  p.cmin4 =-10.;  p.cmax4 =10.;
+p.cmin6= 0.0; p.cmax6=35;  p.cmin7 =-3.0;  p.cmax7 =3.0;
+p.cmin9= 0.0; p.cmax9=100; p.cmin10=-10.;  p.cmax10=10.;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=0;
 p.dT1=1.22; p.dT2=1.24;
 
 v=z.v0;
@@ -442,8 +442,7 @@ a=id; a(:,:)=0;
 p.isig1=a; p.isig2=a; p.isig4 =a; p.isig5 =a; 
 p.isig7=a; p.isig8=a; p.isig10=a; p.isig11=a;
 
-p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
-plot_pattern_effect_Fig_extremes(p)
+p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %changes in percentiles for FWI, BUI, ISI, and DSR%
@@ -479,7 +478,7 @@ p.cmin3= 0.0; p.cmax3=500;   p.cmin4 =-50;   p.cmax4 =50;
 p.cmin6= 0.0; p.cmax6=40;    p.cmin7 =-4;    p.cmax7 =4;
 p.cmin9= 0.0; p.cmax9=50;    p.cmin10=-5;    p.cmax10=5;
 
-p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=1;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=0;
 p.dT1=1.22; p.dT2=1.24; 
 
 v=z.v0;
@@ -546,8 +545,7 @@ a=id; a(:,:)=0;
 p.isig1=a; p.isig2=a; p.isig4 =a; p.isig5 =a; 
 p.isig7=a; p.isig8=a; p.isig10=a; p.isig11=a;
 
-p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
-plot_pattern_effect_Fig_extremes(p)
+p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes(p)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -579,10 +577,10 @@ p.unit7 ='$\rm{K^{-1}}$';    p.unit7_bar ='\rm{K^{-1}}';
 p.unit9 ='$\rm{}$';          p.unit9_bar ='\rm{}'; 
 p.unit10='$\rm{K^{-1}}$';    p.unit10_bar='\rm{K^{-1}}';
 
-p.cmin0= 0.0; p.cmax0=80;    p.cmin1 =-8;    p.cmax1 =8;
-p.cmin3= 0.0; p.cmax3=500;   p.cmin4 =-50;   p.cmax4 =50;
-p.cmin6= 0.0; p.cmax6=40;    p.cmin7 =-4;    p.cmax7 =4;
-p.cmin9= 0.0; p.cmax9=50;    p.cmin10=-5;    p.cmax10=5;
+p.cmin0= 0.0; p.cmax0=80;    p.cmin1 =-16;   p.cmax1 =16;
+p.cmin3= 0.0; p.cmax3=500;   p.cmin4 =-100;  p.cmax4 =100;
+p.cmin6= 0.0; p.cmax6=40;    p.cmin7 =-8;    p.cmax7 =8;
+p.cmin9= 0.0; p.cmax9=50;    p.cmin10=-10;   p.cmax10=10;
 
 p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=0;
 p.dT1=1.22; p.dT2=1.24; 
@@ -655,8 +653,7 @@ a=id; a(:,:)=0;
 p.isig1=a; p.isig2=a; p.isig4 =a; p.isig5 =a; 
 p.isig7=a; p.isig8=a; p.isig10=a; p.isig11=a;
 
-p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
-plot_pattern_effect_Fig_extremes_16panel_Transposed(p)
+p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes_16panel_Transposed(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

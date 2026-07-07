@@ -1,4 +1,4 @@
-function plot_pattern_effect_Fig_atm_20panel_transposed(p)
+function plot_pattern_effect_Fig_atm_20panel_transposed_scalar(p)
 % Reordered so that (a,b,c,d) = (TAS, VPD, TWB, RH) - Top Row
 %let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
 %     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
@@ -38,7 +38,7 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	  maxwind_d=findmaxmag(p.u1,p.v1,p.u2,p.v2,p.u2-p.u1,p.v2-p.v1);
           if     r==1;
 	    a=p.Z0; b=p.dZ0; sx=let(idx)+p.S0; cax=[p.cmin0 p.cmax0];
-	    add.z=p.Z0; add.u=p.U0; add.v=p.V0; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
+	    add.z=p.Z0; add.u=p.U0; add.v=p.V0; add.zbin=p.z0_bin; add.ubin=p.u0_bin; add.u200=p.u200_era;
             %quiver(lon(1:n:end),lat(1:n:end),p.u1(1:n:end,1:n:end),p.v1(1:n:end,1:n:end),cfact,'y');
             %pcolor(lon,lat,p.tas1); caxis([-3 3]); shading flat; colorbar;
             %[phi psi] = flowfun(lon,lat,p.u1',p.v1'); %contour(lon,lat,psi',20,'k'); hold on; 
@@ -46,14 +46,14 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
             %contour(lon,lat,phi',-p.phi_bin,p.phi_co,'Linestyle','--','showtext','off');
 	  elseif r==2;
 	    a=p.z0; b=p.dz0; sx=let(idx)+p.s0; cax=[p.cmin0 p.cmax0];
-	    add.z=p.z0; add.u=p.u0; add.v=p.v0; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
+	    add.z=p.z0; add.u=p.u0; add.v=p.v0; add.zbin=p.z0_bin; add.ubin=p.u0_bin; add.u200=p.u200_mod;
 	    if (p.do_bias); a=p.z0-p.Z0; b=p.dz0-p.dZ0; add.u=p.u0-p.U0; add.v=p.v0-p.V0; cax=[p.cmin1 p.cmax1]; end;
           elseif r==3;
 	    a=p.z1; b=p.dz1; sx=let(idx)+p.s1; cax=[p.cmin1 p.cmax1];
-	    add.u=p.u0; add.v=p.v0; add.du=p.u1; add.dv=p.v1; add.z=p.z1; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
+	    add.u=p.u0; add.v=p.v0; add.du=p.u1; add.dv=p.v1; add.z=p.z1; add.zbin=p.z0_bin; add.ubin=p.u0_bin; add.u200=p.u200_mod;
           elseif r==4;
 	    a=p.z2; b=p.dz2; sx=let(idx)+p.s2; cax=[p.cmin1 p.cmax1];
-	    add.u=p.u0; add.v=p.v0; add.du=p.u2; add.dv=p.v2; add.z=p.z2; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
+	    add.u=p.u0; add.v=p.v0; add.du=p.u2; add.dv=p.v2; add.z=p.z2; add.zbin=p.z0_bin; add.ubin=p.u0_bin; add.u200=p.u200_mod;
           else;
 	    a=p.z2-p.z1; b=p.dz2-p.dz1; sx=let(idx)+'(m) minus (i)'; cax=[p.cmin1 p.cmax1];
  	    add.u=p.u0; add.v=p.v0; add.du=p.u2-p.u1; add.dv=p.v2-p.v1; add.z=p.z2-p.z1; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
@@ -61,33 +61,34 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
           unit_val = p.unit1; unit_str = p.unit1_bar; % Shared for TAS
           if r==1 | r==2; unit_val = p.unit0; unit_str = p.unit0_bar; end
             
-        elseif c == 2 % Z200, U200, V200 (shading U200)
+        elseif c == 2 % Z200, U200, V200 (shading Z200)
           if     r==1; %ERA5: p.Z3, p.U3, p.V3
-	    a=p.U3; b=p.dU3; sx=let(idx)+p.S3; cax=[p.cmin3 p.cmax3];
-%	    a=p.Z3; b=p.dZ3; sx=let(idx)+p.S3; cax=[p.cmin3 p.cmax3];
+%	    a=p.U3; b=p.dU3; sx=let(idx)+p.S3; cax=[p.cmin3 p.cmax3];
+	    a=p.Z3; b=p.dZ3; sx=let(idx)+p.S3; cax=[p.cmin3 p.cmax3];
 	    add.z=p.Z3; add.u=p.U3; add.v=p.V3; add.zbin=p.z3_bin; add.ubin=p.u3_bin;
             %  [phi psi] = flowfun(lon,lat,p.u6',p.v6'); %contour(lon,lat,psi',20,'k'); hold on; 
             %  contour(lon,lat,phi', p.phi_bin,p.phi_co,'Linestyle','-', 'showtext','off'); hold on;
             %  contour(lon,lat,phi',-p.phi_bin,p.phi_co,'Linestyle','--','showtext','off');
 	  elseif r==2; %control: p.z3, p.u3, p.v3
-	    a=p.u3; b=p.du3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
-%	    a=p.z3; b=p.dz3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
+%	    a=p.u3; b=p.du3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
+	    a=p.z3; b=p.dz3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
 	    add.z=p.z3; add.u=p.u3; add.v=p.v3; add.zbin=p.z3_bin; add.ubin=p.u3_bin;
-	    if (p.do_bias); a=p.u3-p.U3; b=p.du3-p.dU3; add.u=p.u3-p.U3; add.v=p.v3-p.V3; cax=[p.cmin4 p.cmax4]; end;
+	    if (p.do_bias); a=p.z3-p.Z3; b=p.dz2-p.dZ3; add.u=p.u3-p.U3; add.v=p.v3-p.V3; cax=[p.cmin4 p.cmax4]; end;
+%	    if (p.do_bias); a=p.u3-p.U3; b=p.du3-p.dU3; add.u=p.u3-p.U3; add.v=p.v3-p.V3; cax=[p.cmin4 p.cmax4]; end;
             %  [phi psi] = flowfun(lon,lat,p.u6',p.v6'); %contour(lon,lat,psi',20,'k'); hold on; 
             %  contour(lon,lat,phi', p.phi_bin,p.phi_co,'Linestyle','-', 'showtext','off'); hold on;
             %  contour(lon,lat,phi',-p.phi_bin,p.phi_co,'Linestyle','--','showtext','off');
           elseif r==3; %SPEAR-pattern minus control:    p.z4, p.u4, p.v4
-	    a=p.u4; b=p.du4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
-%	    a=p.z4; b=p.dz4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
+%	    a=p.u4; b=p.du4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
+	    a=p.z4; b=p.dz4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
 	    add.u=p.u3; add.v=p.v3; add.du=p.u4; add.dv=p.v4; add.dz=p.z4; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
           elseif r==4; %observed-pattern minus control: p.z5, p.u5, p.v5
-	    a=p.u5; b=p.du5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
-%	    a=p.z5; b=p.dz5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
+%	    a=p.u5; b=p.du5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
+	    a=p.z5; b=p.dz5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
 	    add.u=p.u3; add.v=p.v3; add.du=p.u5; add.dv=p.v5; add.dz=p.z5; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
           else;
-	    a=p.u5-p.u4;  b=p.du5-p.du4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
-%	    a=p.z5-p.z4;  b=p.dz5-p.dz4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
+%	    a=p.u5-p.u4;  b=p.du5-p.du4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
+	    a=p.z5-p.z4;  b=p.dz5-p.dz4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
 	    add.u=p.u3; add.v=p.v3; add.du=p.u5-p.u4; add.dv=p.v5-p.v4; add.dz=p.z5-p.z4; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
           end;
           unit_val = p.unit4; unit_str = p.unit4_bar;
@@ -100,7 +101,8 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	  elseif r==2;
 	    a=p.z6; b=p.dz6; sx=let(idx)+p.s6; cax=[p.cmin6 p.cmax6];
  	    add.u=p.u6; add.v=p.v6; add.z=p.z6; add.zbin=p.z6_bin; add.ubin=p.u6_bin; 
-	    if (p.do_bias); a=p.u6-p.U6; b=p.du6-p.dU6; add.u=p.u6-p.U6; add.v=p.v6-p.V6; cax=[p.cmin7 p.cmax7]; end;
+	    if (p.do_bias); a=p.z6-p.Z6; b=p.dz6-p.dZ6; add.u=p.u6-p.U6; add.v=p.v6-p.V6; cax=[p.cmin7 p.cmax7]; end;
+%	    if (p.do_bias); a=p.u6-p.U6; b=p.du6-p.dU6; add.u=p.u6-p.U6; add.v=p.v6-p.V6; cax=[p.cmin7 p.cmax7]; end;
          elseif r==3;
 	    a=p.z7; b=p.dz7; sx=let(idx)+p.s7; cax=[p.cmin7 p.cmax7];
  	    add.u=p.u6; add.v=p.v6; add.du=p.u7; add.dv=p.v7; add.dz=p.z7; add.zbin=p.z6_bin; add.ubin=p.u6_bin; 
@@ -114,7 +116,7 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
           unit_val = p.unit7; unit_str = p.unit7_bar;
           if r==1 | r==2; unit_val = p.unit6; unit_str = p.unit6_bar; end
 
-        elseif c == 4 % SLP
+        elseif c == 4 % IVT
           if     r==1;
 	    a=p.Z9; b=p.dZ9; sx=let(idx)+p.S9; cax=[p.cmin9 p.cmax9];
 	    add.u=p.U9; add.v=p.V9; add.z=p.Z9; add.zbin=p.z9_bin; add.ubin=p.u9_bin;
@@ -138,21 +140,57 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
         
         % Plotting  a(~p.id) = NaN;
         pcolor(p.lon, p.lat, a); shading flat; caxis(cax);
+        contour(p.lon, p.lat, p.lm, 1, co); axis(p.xy);
 	if p.do_add;
-	  contour(lon,lat,add.u, add.ubin,'color',p.z1_co,'Linestyle','-', 'showtext',p.show);
-	  contour(lon,lat,add.u,-add.ubin,'color',p.z1_co,'Linestyle','--','showtext',p.show);
-	  scale_c = 0.5;
-          scale_d = 5.0;
+	  if c==4;
+	    scale_c = 0.05; scale_d = 4.0*scale_c; ref=200; ref1=50; vunit='kg/m/s';
+	  else;
+	    scale_c = 1;    scale_d = 4.0*scale_c; ref=10;  ref1=2.5; vunit='m/s';
+	  end;
+	  if r==1 | r==2;
+	    add.u200_bin=[15:5:50]; p.u200_co=[0.5 0.5 0.5];
+	    contour(lon,lat,add.u200, add.u200_bin,'color',p.u200_co,'Linestyle','-', 'showtext',p.show);
+	    contour(lon,lat,add.u200,-add.u200_bin,'color',p.u200_co,'Linestyle','--','showtext',p.show);
+	  elseif r==3
+	    add.u200_bin=[15:5:50];
+	    contour(lon,lat,add.u200, add.u200_bin,'color',p.u200_co,'Linestyle','-', 'showtext',p.show);
+	    contour(lon,lat,add.u200,-add.u200_bin,'color',p.u200_co,'Linestyle','--','showtext',p.show);
+	    a=p.u200_spp; bin=add.u200_bin;%pcolor(lon,lat,du200); shading flat; colorbar; caxis([-10 10]);
+	    contour(lon,lat,a, bin,'color','y','Linestyle','-', 'showtext',p.show);
+	    contour(lon,lat,a,-bin,'color','y','Linestyle','--','showtext',p.show);
+	  elseif r==4
+	    add.u200_bin=[15:5:50];
+	    contour(lon,lat,add.u200, add.u200_bin,'color',p.u200_co,'Linestyle','-', 'showtext',p.show);
+	    contour(lon,lat,add.u200,-add.u200_bin,'color',p.u200_co,'Linestyle','--','showtext',p.show);
+	    a=p.u200_obp; bin=add.u200_bin;%pcolor(lon,lat,du200); shading flat; colorbar; caxis([-10 10]);
+	    contour(lon,lat,a, bin,'color','y','Linestyle','-', 'showtext',p.show);
+	    contour(lon,lat,a,-bin,'color','y','Linestyle','--','showtext',p.show);
+	  elseif r==5
+	    add.u200_bin=[15:5:50]; add.u200=p.u200_spp;
+	    contour(lon,lat,add.u200, add.u200_bin,'color','c','Linestyle','-', 'showtext',p.show);
+	    contour(lon,lat,add.u200,-add.u200_bin,'color','y','Linestyle','--','showtext',p.show);
+	    a=p.u200_obp; bin=add.u200_bin;%pcolor(lon,lat,du200); shading flat; colorbar; caxis([-10 10]);
+	    contour(lon,lat,a, bin,'color','y','Linestyle','-', 'showtext',p.show);
+	    contour(lon,lat,a,-bin,'color','y','Linestyle','--','showtext',p.show);
+	  end
 	  if p.do_bias & r==2;
-	    q=quiver(lon(1:n:end),lat(1:n:end),add.u(1:n:end,1:n:end)*scale_c,add.v(1:n:end,1:n:end)*scale_c*5,0,'k');
+	    q=quiver(lon(1:n:end),lat(1:n:end),add.u(1:n:end,1:n:end)*scale_c,add.v(1:n:end,1:n:end)*scale_c,0,'k');
 	  else
 	    q=quiver(lon(1:n:end),lat(1:n:end),add.u(1:n:end,1:n:end)*scale_c,add.v(1:n:end,1:n:end)*scale_c,0,'k');
 	  end
           if (r == 3 || r == 4 || r==5)
-	    quiver(lon(1:n:end),lat(1:n:end),add.du(1:n:end,1:n:end)*scale_d,add.dv(1:n:end,1:n:end)*scale_d,0,'y');
+	    color = [0.90 0.85 0.00];
+	    quiver(lon(1:n:end),lat(1:n:end),add.du(1:n:end,1:n:end)*scale_d,add.dv(1:n:end,1:n:end)*scale_d,0,'Color',color);
+	    x0=178; y0=77;  % m/s reference vector
+	    text(x0-1,y0+6,strcat(num2str(ref1),vunit),'FontSize',fsize,'Color',color,'BackgroundColor','w')
+	    quiver(x0,y0,ref1*scale_d,0,0,'Color','w',  'LineWidth',3,'MaxHeadSize',2)
+	    quiver(x0,y0,ref1*scale_d,0,0,'Color',color,'LineWidth',1,'MaxHeadSize',2)
 	  end
-	end
-        contour(p.lon, p.lat, p.lm, 1, co); axis(p.xy);
+	  x0=105; y0=77;   % m/s reference vector
+	  text(x0-2,y0+6,strcat(num2str(ref),vunit),'FontSize',fsize,'Color','k','BackgroundColor', 'w')
+	  quiver(x0,y0,ref*scale_c,0,0,'w','LineWidth',3,'MaxHeadSize',2)
+	  quiver(x0,y0,ref*scale_c,0,0,'k','LineWidth',1,'MaxHeadSize',2)
+ 	end
         %for k=1:length(us.lon); plot(us.lon{k},us.lat{k},us.co,'LineWidth',lw); end;
         
         % Stippling (Significance) - Only for SPEAR and Observed rows
@@ -166,13 +204,13 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
         title(s, 'FontSize', fsize, 'Interpreter', 'latex');
         
         % Colorbar Logic: Place bar for Row 1 and Row 4 of each column
-        if r == 1
+        if r == 2
             cb = colorbar('FontSize', fsize, 'Location', 'northoutside');
-            set(cb, 'Position', [0.13 + (c-1)*0.21, 0.95, 0.15, 0.01]); % Adjust positions
+            set(cb, 'Position', [0.129 + (c-1)*0.21, 0.95, 0.15, 0.01]); % Adjust positions
             set(get(cb,'title'),'string',unit_str);
         elseif r == 4
             cb = colorbar('FontSize', fsize, 'Location', 'southoutside');
-            set(cb, 'Position', [0.13 + (c-1)*0.21, 0.05, 0.15, 0.01]);
+            set(cb, 'Position', [0.129 + (c-1)*0.21, 0.05, 0.15, 0.01]);
             set(get(cb,'title'),'string',unit_str);
         end
     end

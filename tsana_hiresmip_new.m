@@ -25,7 +25,7 @@ expn=p.expn; latlon=p.latlon; region=p.region; mod=p.mod; opt=p.opt;
 mext=strcat(num2str(y1),'-',num2str(y2),'_',num2str(yr1),'-',num2str(yr2));
 mext=strcat(mext,'_do_3d_atm_',num2str(p.do_3d_atm));mext
 mext=strcat(mext,'_do_trend_',num2str(p.do_trend));mext
-mext=strcat(o.mod,'_tsana_hiresmip_new_',mext,'.mat');
+mext=strcat(o.mod,'_tsana_hiresmip_new_ivt_',mext,'.mat');
 
 mpath=strcat(tpath,expn,'/');%mpath='/work/miz/mat_hiresmip/';
 lonx=o.lon; latx =o.lat;
@@ -185,6 +185,27 @@ if (exist(fname,'file') == 2)
 %  v.sfc.shflx.al0=getts(v.sfc.shflx.all,o);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='ivtx'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  shflx=tmp;
+  v.atm.ivtx=extracts(tmp,v,o.sfc.shflx,myr,1); 
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='ivty'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  shflx=tmp;
+  v.atm.ivty=extracts(tmp,v,o.sfc.shflx,myr,1); 
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+varn='ivtdiv'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
+if (exist(fname,'file') == 2)
+  a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
+  tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  shflx=tmp;
+  v.atm.ivtdiv=extracts(tmp,v,o.sfc.shflx,myr,1); 
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='tau_x'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
@@ -226,13 +247,13 @@ if p.do_trend
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%land_cmip mrsos: moisture in upper soil analysis%%%%%%%%%%%%%%%%
+%land_cmip mrsos: moisture in upper (0.1m) soil analysis%%%%%%%%%
 fext_land =strcat('land_cmip.',yr1,'01-',yr2,'12.'); 
 varn='mrsos'; fname=strcat(tpath,expn,pp,fext_land,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  v.sfc.mrsos=extracts(tmp,v,o.dummy,myr,1);
+  v.sfc.mrsos=extracts(tmp,v,o.dummy,myr,1); %unit: kg/m2
 %  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon); 
 %  v.sfc.mrsos.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
 %  v.sfc.mrsos.al0=getts(v.sfc.mrsos.all,o);

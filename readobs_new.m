@@ -1,50 +1,181 @@
-function o=readobs(latlon,region,mod,do_erai_3d)
-%latlon=[0 360 -90 90]; region='global'; mod='c96'; do_erai_3d=false;
+function o=readobs_new(latlon,region,mod,do_ecmwf)
+%latlon=[0 360 -90 90]; region='global'; mod='c48'; do_ecmwf='era5';
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 fn=strcat('./atmos.static_',mod,'.nc');
-o=readgrid_static(fn,latlon); o.do_erai_3d=do_erai_3d;
+o=readgrid_static(fn,latlon); o.do_ecmwf=do_ecmwf;
 
 tpath='/archive/Ming.Zhao/obs_for_am4p0_paper/';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%ERA-INTERIM 3D field%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%ERA-INTERIM or ERA5 3D field%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if strcmp(do_ec3d,'interim')
+if strcmp(do_ecmwf,'interim')
   %Jan1980 - Dec2014
   %t1=13; t2=432; v=read_erainterim_tqzuv_new(tpath,latlon,o,t1,t2); o.atm=v;
   %t1=13; t2=432; v=read_erainterim_tqzuv_new(tpath,latlon,o,t1,t2); o.atm1=v;
-   t1=13; t2=432; v=read_erainterim_3d_new(tpath,latlon,o,t1,t2); o.atm=v;
-   do_erai_3d_flag = 1;
-elseif strcmp(do_ec3d,'era5')
+  t1=13; t2=432; v=read_erainterim_3d_new(tpath,latlon,o,t1,t2); o.atm=v; do_erai_3d = 1;
   
-   do_era5_3d_flag = 1;
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fn=strcat(tpath,'ERA_interim/monthly/era_interim_monthly_197901_201512.nc')
-t1=13; t2=432;  %Jan1980 - Dec2014
-[sfc toa atm]=read_erainterim_new(fn,latlon,t1,t2,o); 
-o.sfc=sfc; o.fn.ERA_INTERIM_2Dfield=sfc.fn;
-o.sfc.pcp_era      =sfc.pcp; 
-o.sfc.swnet_era    =sfc.swnet;
-o.sfc.lwnet_era    =sfc.lwnet;
-o.sfc.swnet_clr_era=sfc.swnet_clr;
-o.sfc.lwnet_clr_era=sfc.lwnet_clr;
-o.sfc.lwdn_era     =sfc.lwdn;
-o.sfc.netrad_era   =sfc.netrad;
-o.sfc.netflx_era   =sfc.netflx;
-%o.sfc.tsurf7915    =tsurf7915;  o.sfc.tref7915=tref7915;
-if do_erai_3d
-  o.atm.lwnet_era    =atm.lwnet;
-  o.atm.swnet_era    =atm.swnet;
-  o.atm.netrad_era   =atm.netrad;
-  o.atm.lwp=atm.lwp; o.atm.iwp=atm.iwp;  o.atm.wvp=atm.wvp;
-  o.atm.qal=atm.qal; o.atm.qam=atm.qam;  o.atm.qah=atm.qah; 
-  o.atm.cape=atm.cape;
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  fn=strcat(tpath,'ERA_interim/monthly/era_interim_monthly_197901_201512.nc')
+  t1=13; t2=432;  %Jan1980 - Dec2014
+  [sfc toa atm]=read_erainterim_new(fn,latlon,t1,t2,o); 
+  o.sfc=sfc; o.fn.ERA_INTERIM_2Dfield=sfc.fn;
+  o.sfc.pcp_era      =sfc.pcp; 
+  o.sfc.swnet_era    =sfc.swnet;
+  o.sfc.lwnet_era    =sfc.lwnet;
+  o.sfc.swnet_clr_era=sfc.swnet_clr;
+  o.sfc.lwnet_clr_era=sfc.lwnet_clr;
+  o.sfc.lwdn_era     =sfc.lwdn;
+  o.sfc.netrad_era   =sfc.netrad;
+  o.sfc.netflx_era   =sfc.netflx;
+  %o.sfc.tsurf7915    =tsurf7915;  o.sfc.tref7915=tref7915;
+  if do_erai_3d
+    o.atm.lwnet_era    =atm.lwnet;
+    o.atm.swnet_era    =atm.swnet;
+    o.atm.netrad_era   =atm.netrad;
+    o.atm.lwp=atm.lwp; o.atm.iwp=atm.iwp;  o.atm.wvp=atm.wvp;
+    o.atm.qal=atm.qal; o.atm.qam=atm.qam;  o.atm.qah=atm.qah; 
+    o.atm.cape=atm.cape;
+  end
+elseif strcmp(do_ecmwf,'era5')
+%read in 3D variables%%%%%%%%%%%%%%%
+  t1=1; t2=504; %197901-202012
+  v=read_era5_3d(tpath,latlon,o,t1,t2); o.atm=v; do_era5_3d_flag = 1;
+%read in some 2D variables
+%  latname='latitude'; lonname='longitude'; time0='1900-01-01 0:0:0';
+%  path_era5='ERA5/monthly/ERA5_194001-202407.';
+%  t1=469;  t2=972;	time0='1900-01-01 0:0:0'; %1979Jan-2020Dec;
+%  varn='tp'; fn=strcat(tpath,path_era5,varn,'.nc')
+%  o.sfc.era5.pcp_1979_2020=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname,'time',time0,24);
+%  path_era5='ERA5/monthly/ERA5_195901-202112_';
+%  t1=241; t2=744; latname='latitude'; lonname='longitude'; %1959Jan-2021Dec; 63yrs
+%  varn='mslhf'; fn=strcat(tpath,path_era5,varn,'.nc')
+%  o.sfc.era5.mslhf=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+%  varn='msshf'; fn=strcat(tpath,path_era5,varn,'.nc')
+%  o.sfc.era5.msshf=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+%  varn='metss'; fn=strcat(tpath,path_era5,varn,'.nc')
+%  o.sfc.era5.metss=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+%  varn='mntss'; fn=strcat(tpath,path_era5,varn,'.nc')
+%  o.sfc.era5.mntss=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+%read in 2D variables%%%%%%%%%%%%%%%%
+  latname='lat'; lonname='lon'; time0='1900-01-01 0:0:0';
+  path_era5='ERA5/monthly/2dvar_1979_2020/ERA5_195901-202012.';
+  t1=241; t2=744; %1979Jan-2020Dec; 63yrs
+  varn='ivtx';   fn=strcat(tpath,path_era5,varn,'.nc')
+  o.atm.ivtx  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='ivty';   fn=strcat(tpath,path_era5,varn,'.nc')
+  o.atm.ivty  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='ivtdiv'; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.atm.ivtdiv=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
 
+  latname='latitude'; lonname='longitude'; time0='1900-01-01 0:0:0';
+  t1=1; t2=504; %197901-202012
+  path_era5='ERA5/monthly/2dvar_1979_2020/ERA5_197901-202012.';
+
+  varn='swvl1'; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.atm.mrsos     =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%upper (0.07m) soil volumetric water m^3m^-3
+  varn='tcw';   fn=strcat(tpath,path_era5,varn,'.nc')
+  o.atm.twp       =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%kg/m2
+  varn='tp';    fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.pcp  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%m
+
+  varn='avg_ishf'; o.opt=1;  fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.shflx  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%W/m2(positive upward)
+  varn='avg_slhtf'; o.opt=1; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.evap   =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%W/m2(positive upward)
+
+  a=o.sfc.shflx.all+o.sfc.evap.all; o.sfc.tshflx=derive2d(a,o); %W/m2(positive upward)
+
+  varn='avg_tnswrf'; o.opt=0; fn=strcat(tpath,path_era5,varn,'.nc')
+  toa.swnet_ec  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%downward positive
+  varn='avg_tnlwrf'; o.opt=1; fn=strcat(tpath,path_era5,varn,'.nc')
+  toa.lwnet_ec  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%upward positive
+
+  varn='avg_tnswrfcs'; o.opt=0; fn=strcat(tpath,path_era5,varn,'.nc')
+  toa.swnet_clr_ec  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%downward positive
+  varn='avg_tnlwrfcs'; o.opt=1; fn=strcat(tpath,path_era5,varn,'.nc')
+  toa.lwnet_clr_ec  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%upward positive
+
+  a=toa.swnet_ec.all    -toa.lwnet_ec.all;     toa.netrad_ec    =derive2d(a,o); %W/m2(downward positive)
+  a=toa.swnet_clr_ec.all-toa.lwnet_clr_ec.all; toa.netrad_clr_ec=derive2d(a,o); %W/m2(downward positive)
+  
+  varn='avg_snswrf'; o.opt=0; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.swnet_ec  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%downward positive
+  varn='avg_snlwrf'; o.opt=1; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.lwnet_ec  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%upward positive
+
+  varn='avg_snswrfcs'; o.opt=0; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.swnet_clr_ec  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%downward positive
+  varn='avg_snlwrfcs'; o.opt=1; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.lwnet_clr_ec  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%upward positive
+
+  a=o.sfc.swnet_ec.all    -o.sfc.lwnet_ec.all;      o.sfc.netrad_ec    =derive2d(a,o); %downward positive
+  a=o.sfc.swnet_clr_ec.all-o.sfc.lwnet_clr_ec.all;  o.sfc.netrad_clr_ec=derive2d(a,o); %downward positive
+  a=o.sfc.netrad_ec.all   -o.sfc.tshflx.all;        o.sfc.netflx_ec    =derive2d(a,o); %downward positive
+
+  varn='avg_iews'; o.opt=0; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.taux   =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='avg_inss';   fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.tauy   =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+
+  varn='u10'; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.u10=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='v10'; fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.v10=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+
+  varn='msl';  fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.slp =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='sp';   fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.sp  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='skt';  fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.skt =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='t2m';  fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.t2m =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='d2m';  fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.era5.d2m =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+%compute RH at 2m%%%%%%%%%%%%%%%%%%%%%%%%%%
+  t2m=o.sfc.era5.t2m.all-273.15;
+  d2m=o.sfc.era5.d2m.all-273.15;
+  tmp=exp(17.625*d2m./(243.04+d2m))./exp(17.625*t2m./(243.04+t2m));
+  clear t2m v;
+  v.all=tmp;
+  v.al0=getts(tmp,o);
+  v.clm=squeeze(mean(tmp,2));
+  v.ann=squeeze(mean(v.clm,1));
+  v.sea=get4season(v.clm); 
+  v.clm0=mean(v.al0,1);
+  v.ts0 =mean(v.al0,2)';
+  v.ann0=mean(v.ts0);
+  o.sfc.era5.rh2m=v;
+%compute 2m vapor pressure and specific humidity%%%%%%%
+  vp  = 6.112*exp(17.625*d2m./(d2m+243.04)); clear d2m v; %vapor pressure
+  tmp = o.sfc.era5.sp.all;          %surface pressure
+  tmp = EPS*vp./(tmp -vp);          %2m mixing ratio
+  qref= tmp./(1.+tmp);              %2m specific humidity 
+  tmp = vp;   clear vp;             %2m vapor pressure
+  v.all=tmp;
+  v.al0=getts(tmp,o);
+  v.clm=squeeze(mean(tmp,2));
+  v.ann=squeeze(mean(v.clm,1));
+  v.sea=get4season(v.clm); 
+  v.clm0=mean(v.al0,1);
+  v.ts0 =mean(v.al0,2)';
+  v.ann0=mean(v.ts0);
+  o.sfc.era5.vpref=v;
+  tmp = qref; clear qref; %2m specific humidity
+  v.all=tmp;
+  v.al0=getts(tmp,o);
+  v.clm=squeeze(mean(tmp,2));
+  v.ann=squeeze(mean(v.clm,1));
+  v.sea=get4season(v.clm); 
+  v.clm0=mean(v.al0,1);
+  v.ts0 =mean(v.al0,2)';
+  v.ann0=mean(v.ts0);
+  o.sfc.era5.qref=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 path_hadisst='HADISST/monthly/hadisst_186912-202012_';
 t1=2; t2=1825;  %1870Jan-2020Dec; 152yrs
 varn='sst'; fn=strcat(tpath,path_hadisst,varn,'.nc')
@@ -113,84 +244,6 @@ v.sea=get4season(v.clm);
 o.sfc.pcp_gpcc=v; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-path_era5='ERA5/ERA5_194001-202407.';
-t1=1;  t2=1008;	time0='1900-01-01 0:0:0'; %1940Jan-2023Dec; 
-varn='tp'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.pcp_era5=read_data_2d(fn,latlon,t1,t2,o,varn,'latitude','longitude','time',time0,24);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-path_era5='ERA5/ERA5_195901-202112_';
-t1=1; t2=756; latname='latitude'; lonname='longitude'; %1959Jan-2021Dec; 63yrs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='sp';  fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.sp_era5 =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-varn='t2m'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.t2m_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-varn='d2m'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.d2m_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname); 
-%compute RH at 2m%%%%%%
-t2m=o.sfc.t2m_era5.all-273.15;
-d2m=o.sfc.d2m_era5.all-273.15;
-tmp=exp(17.625*d2m./(243.04+d2m))./exp(17.625*t2m./(243.04+t2m));
-clear t2m v;
-v.all=tmp;
-v.al0=getts(tmp,o);
-v.clm=squeeze(mean(tmp,2));
-v.ann=squeeze(mean(v.clm,1));
-v.sea=get4season(v.clm); 
-v.clm0=mean(v.al0,1);
-v.ts0 =mean(v.al0,2)';
-v.ann0=mean(v.ts0);
-o.sfc.rh2m_era5=v;
-%compute 2m vapor pressure and specific humidity%%%%%%%
-vp  = 6.112*exp(17.625*d2m./(d2m+243.04)); clear d2m v; %vapor pressure
-tmp = o.sfc.sp_era5.all;          %surface pressure
-tmp = EPS*vp./(tmp -vp);          %2m mixing ratio
-qref= tmp./(1.+tmp);              %2m specific humidity 
-tmp = vp;   clear vp;             %2m vapor pressure
-v.all=tmp;
-v.al0=getts(tmp,o);
-v.clm=squeeze(mean(tmp,2));
-v.ann=squeeze(mean(v.clm,1));
-v.sea=get4season(v.clm); 
-v.clm0=mean(v.al0,1);
-v.ts0 =mean(v.al0,2)';
-v.ann0=mean(v.ts0);
-o.sfc.vpref_era5=v;
-tmp = qref; clear qref; %2m specific humidity
-v.all=tmp;
-v.al0=getts(tmp,o);
-v.clm=squeeze(mean(tmp,2));
-v.ann=squeeze(mean(v.clm,1));
-v.sea=get4season(v.clm); 
-v.clm0=mean(v.al0,1);
-v.ts0 =mean(v.al0,2)';
-v.ann0=mean(v.ts0);
-o.sfc.qref_era5=v;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='msl';   fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.slp_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-varn='skt';   fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.skt_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-varn='mslhf'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.mslhf_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-varn='msshf'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.msshf_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-varn='metss';  fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.metss_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-varn='mntss';  fn=strcat(tpath,path_era5,varn,'.nc')
-o.sfc.mntss_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-
-varn='z200'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.atm.z200_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname); 
-varn='z500'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.atm.z500_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
-varn='z700'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.atm.z700_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname); 
-varn='z850'; fn=strcat(tpath,path_era5,varn,'.nc')
-o.atm.z850_era5=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname); 
-%%%%%%%%%%%%%%%%%%%%%%
 
 % $$$ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % $$$ %This is old CERES data used in AM4 paper
@@ -235,18 +288,23 @@ o.atm.lwcf         =v.atm.lwcf;
 o.atm.swcf         =v.atm.swcf;
 o.atm.ttcf         =v.atm.ttcf;
 
-o.toa.netrad_era   =toa.netrad;
-o.toa.swnet_era    =toa.swnet;    
-o.toa.lwnet_era    =toa.lwnet;
-o.toa.swnet_clr_era=toa.swnet_clr;
-o.toa.lwnet_clr_era=toa.lwnet_clr;
-o.sfc.netflx.clm   =o.sfc.netrad.clm-o.sfc.tshflx.clm;
-o.sfc.netflx.ann   =o.sfc.netrad.ann-o.sfc.tshflx.ann;
-o.sfc.netflx.sea   =o.sfc.netrad.sea-o.sfc.tshflx.sea;
-%net MSE input in atm column, balanced by atm transport in steady state
-o.atm.netflx.clm   =-(o.sfc.netflx.clm-o.toa.netrad.clm);
-o.atm.netflx.ann   =-(o.sfc.netflx.ann-o.toa.netrad.ann);
-o.atm.netflx.sea   =-(o.sfc.netflx.sea-o.toa.netrad.sea);
+o.toa.netrad_ec    =toa.netrad_ec;
+o.toa.swnet_ec     =toa.swnet_ec;    
+o.toa.lwnet_ec     =toa.lwnet_ec;
+o.toa.swnet_clr_ec =toa.swnet_clr_ec;
+o.toa.lwnet_clr_ec =toa.lwnet_clr_ec;
+
+%combine CERES surface radiation with ECMWF senisble and latent heat flux for surface energy flux
+o.sfc.netflx.clm   =o.sfc.netrad.clm -o.sfc.tshflx.clm;
+o.sfc.netflx.ann   =o.sfc.netrad.ann -o.sfc.tshflx.ann;
+o.sfc.netflx.sea   =o.sfc.netrad.sea -o.sfc.tshflx.sea;
+%combine CERES radiation with ECMWF sensible and latent heat flux for atmospheric energy flux
+o.atm.netflx.clm   =-(o.sfc.netflx.clm   -o.toa.netrad.clm);
+o.atm.netflx.ann   =-(o.sfc.netflx.ann   -o.toa.netrad.ann);
+o.atm.netflx.sea   =-(o.sfc.netflx.sea   -o.toa.netrad.sea);
+
+%ECMWF atmospheric net radiative cooling rate
+a=-(o.sfc.netflx_ec.all-o.toa.netrad_ec.all); o.atm.netflx_ec=derive2d(a,o);
 
 fn=strcat(tpath,'WOA05/monthly/WOA05_pottemp_salt.nc')
 v=read_woa05_simple(fn,latlon,o); o.fn.WOA05=fn;
@@ -348,7 +406,8 @@ end
 o.ceres_ts_global=compute_ceres_glob_mean_ts();
 
 tpath='/work/miz/mat_hiresmip/'; expn='obs';
-fn=strcat(tpath,expn,'_',region,'_to_',mod,'do_erai_3d_',num2str(do_erai_3d_flag),'.mat')
+fn=strcat(tpath,expn,'_',region,'_to_',mod,'_',do_ecmwf,'.mat')
+%fn=strcat(tpath,expn,'_',region,'_to_',mod,'do_erai_3d_',num2str(do_erai_3d_flag),'.mat')
 save(fn,'o','-v7.3'); %save(fn,'o');
 return
 

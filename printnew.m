@@ -1,7 +1,7 @@
 function printnew(visfig,figpath,expn,vname,fmt)
 if strcmp(fmt,'eps');
   fmt='-depsc2'; %fmt='-dpdf';
-else strcmp(fmt,'png')
+else strcmp(fmt,'png');
   fmt='-dpng';
 end
 
@@ -13,7 +13,7 @@ if strcmp(visfig,'off')
   elseif strcmp(fmt,'-dpng')
     ext='.png';
   end
-  figname=strcat(figpath, expn, '_', vname, ext);figname
+  figname=strcat(figpath, expn, '_', vname, ext); disp(figname);
   %figname=strcat(figpath, vname, ext);figname
   %set(gcf,'PaperPositionMode','auto'); 
   %print(gcf, fmt, figname, '-r120');

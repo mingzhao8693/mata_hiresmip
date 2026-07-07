@@ -17,7 +17,7 @@ v.lat=f{latname}(v.ys:v.ye); v.lon=f{lonname}(v.xs:v.xe);
 v.nlat=length(v.lat); v.nlon=length(v.lon); v.ngrid=v.nlat*v.nlon;
 %v.pf=f{'pfull'}(:); v.nz=min(find(v.pf<70));
 %v.zs=1; v.ze=v.nz;
-v.lm0=f{'land_mask'}(v.ys:v.ye,v.xs:v.xe);
+v.lm0=f{'land_mask'}(v.ys:v.ye,v.xs:v.xe); v.lm=v.lm0;
 %v.im0=f{'ice_mask'} (v.ys:v.ye,v.xs:v.xe);
 close(f); v.latlon=latlon; v.f=0;
 
