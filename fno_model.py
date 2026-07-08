@@ -107,7 +107,7 @@ class AreaWeightedRelativeL2Loss(object):
 # =====================================================================
 #   4. MAIN OPTIMIZED TRAINING WRAPPER ROUTINE
 # =====================================================================
-def run_toolbox_fno(ssta, z500, lat, lon, sea):
+def run_toolbox_fno(ssta, vara, lat, lon, varn,sea):
     torch.manual_seed(42)
     np.random.seed(42)
 
@@ -123,7 +123,7 @@ def run_toolbox_fno(ssta, z500, lat, lon, sea):
     X_data[:, :, :, 1] = np.repeat(lat_norm[np.newaxis, :, :], num_samples, axis=0)
     X_data[:, :, :, 2] = np.repeat(lon_norm[np.newaxis, :, :], num_samples, axis=0)
 
-    Y_data = np.moveaxis(z500, -1, 0)[:, :, :, np.newaxis].astype(np.float32)
+    Y_data = np.moveaxis(vara, -1, 0)[:, :, :, np.newaxis].astype(np.float32)
 
     X_tensor = torch.from_numpy(X_data)
     Y_tensor = torch.from_numpy(Y_data)
@@ -136,7 +136,7 @@ def run_toolbox_fno(ssta, z500, lat, lon, sea):
     model = FNOClimate2d(modes1=modes, modes2=modes, width=width).to(device)
 
     lr = 0.01
-    epochs = 150
+    epochs = 100; #150
     batch_size = 16
     
     optimizer = optim.Adam(model.parameters(), lr=lr)
@@ -194,7 +194,7 @@ def run_toolbox_fno(ssta, z500, lat, lon, sea):
     if best_model_weights is not None:
         model.load_state_dict(best_model_weights)
 
-    fn = f"fno_toolbox_weights_{sea}.pt"
+    fn = f"/work/miz/mat_hiresmip/fno_gf/fno_toolbox_weights_{varn}_{sea}.pt"; print(fn)
     torch.save(model.to('cpu').state_dict(), fn)
     print(f"Best weights (Loss: {best_loss:.4f}) saved successfully to {fn}\nTraining complete!")    
     

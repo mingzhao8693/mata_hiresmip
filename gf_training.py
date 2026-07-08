@@ -1,3 +1,4 @@
+import sys
 import os
 import torch
 import torch.nn as nn
@@ -7,6 +8,15 @@ from scipy.io import loadmat
 import matplotlib.pyplot as plt  # New import for plotting
 from fno_model import run_toolbox_fno
 
+varn   = sys.argv[1]
+season = sys.argv[2]
+
+sea = ['ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'] #isea=2; season = sea[isea];
+isea = sea.index(season)
+
+print("Variable:", varn)
+print("isea=", isea, "for", season)
+
 mat = loadmat('/work/miz/mat_gf/gf_data.mat')
 z = mat['z']
 
@@ -15,11 +25,38 @@ lon   = z['lon'][0, 0].squeeze()
 lm    = z['lm'] [0, 0]
 im    = z['im'] [0, 0]
 tsfca = z['tsfca'][0, 0]
-za500 = z['za500'][0, 0]
 
-sea = ['ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS']
-isea = 4  # Selects JJA (Summer)
-season = sea[isea]
+if varn == 'z500':
+    varna = z['za500'][0, 0];
+elif varn == 'z850':
+    varna = z['za850'][0, 0];
+elif varn == 'z200':
+    varna = z['za200'][0, 0];
+elif varn == 'u500':    
+    varna = z['ua500'][0, 0];
+elif varn == 'u850':
+    varna = z['ua850'][0, 0];
+elif varn == 'u200':
+    varna = z['ua200'][0, 0];
+elif varn == 'v500':    
+    varna = z['va500'][0, 0];
+elif varn == 'v850':
+    varna = z['va850'][0, 0];
+elif varn == 'v200':
+    varna = z['va200'][0, 0];
+elif varn == 'prec':
+    varna = z['preca'][0, 0];
+elif varn == 'om500':
+    varna = z['om500'][0, 0];
+elif varn == 'netrad':
+    varna = z['nrada'][0, 0];
+elif varn == 'lwcf':
+    varna = z['lwcfa'][0, 0];
+elif varn == 'swcf':
+    varna = z['swcfa'][0, 0];
+
+#varn = varn.upper()
+print("\nDo GF training using FNO for", varn, season,"season");
 
 im_2d = np.squeeze(im[isea, :, :])
 
@@ -29,12 +66,19 @@ ssta = np.transpose(a, (2, 3, 1, 0))
 mask2d = (lm > 0.01) | (im_2d > 0.01)
 ssta = np.where(mask2d[:, :, None, None], 0.0, ssta)
 
-# Process Z500 Anomalies
-a_za = za500[:, isea, :, :]
-z500 = np.transpose(a_za, (1, 2, 0))
+# Process Variable Anomalies
+a_za = varna[:, isea, :, :]; 
+
+vara = np.transpose(a_za, (1, 2, 0))
 
 # Run Model Training Pipeline
-model = run_toolbox_fno(ssta, z500, lat, lon, season)
+model = run_toolbox_fno(ssta, vara, lat, lon, varn, season)
+
+#print("Finished."); sys.exit()
+
+##############################################################
+# Below is for verfication purpose only#######################
+##############################################################
 
 # =====================================================================
 #   6. VISUALIZATION BLOCK: SIDE-BY-SIDE VERIFICATION PLOT
@@ -46,7 +90,7 @@ model.to(device)
 model.eval()
 
 # Select exactly 1 experiment index out of your 153 runs to verify (e.g., experiment index 0)
-exp_idx = 0 
+exp_idx = 39 
     
 # Re-build normalized mesh coordinates
 lon_grid, lat_grid = np.meshgrid(lon, lat)
@@ -64,35 +108,35 @@ X_tensor_single = torch.from_numpy(X_single).to(device)
 with torch.no_grad():
     pred_tensor = model(X_tensor_single)
     # Squeeze out batch and channel dimensions to get a 2D spatial grid [Lat, Lon]
-    z500_ml_pred = pred_tensor.cpu().numpy()[0, :, :, 0]
+    vara_ml_pred = pred_tensor.cpu().numpy()[0, :, :, 0]
 
     # Extract the original true experiment target [Lat, Lon]
-    z500_true_original = z500[:, :, exp_idx]
+    vara_true_original = vara[:, :, exp_idx]
 
     # Initialize a 1-row, 2-column side-by-side subplot canvas
     fig, axes = plt.subplots(1, 2, figsize=(15, 6), sharex=True, sharey=True)
 
     # Determine common dynamic contour limits based on true experiment bounds
-    vmin, vmax = np.min(z500_true_original), np.max(z500_true_original)
+    vmin, vmax = np.min(vara_true_original), np.max(vara_true_original)
 
     # Plot 1: Original Simulation Ground Truth
-    im1 = axes[0].pcolormesh(lon, lat, z500_true_original, cmap='RdBu_r', vmin=vmin, vmax=vmax, shading='auto')
-    axes[0].set_title(f"Original Perturbation Experiment (Index {exp_idx})", fontsize=12, fontweight='bold')
+    im1 = axes[0].pcolormesh(lon, lat, vara_true_original, cmap='RdBu_r', vmin=vmin, vmax=vmax, shading='auto')
+    axes[0].set_title(f"Original Perturbation Experiment (Patch {exp_idx})", fontsize=12, fontweight='bold')
     axes[0].set_ylabel("Latitude", fontsize=10)
     axes[0].set_xlabel("Longitude", fontsize=10)
     axes[0].grid(True, linestyle='--', alpha=0.5)
 
     # Plot 2: Trained FNO Model Forecast
-    im2 = axes[1].pcolormesh(lon, lat, z500_ml_pred, cmap='RdBu_r', vmin=vmin, vmax=vmax, shading='auto')
+    im2 = axes[1].pcolormesh(lon, lat, vara_ml_pred, cmap='RdBu_r', vmin=vmin, vmax=vmax, shading='auto')
     axes[1].set_title("Machine Learning (FNO) Prediction", fontsize=12, fontweight='bold')
     axes[1].set_xlabel("Longitude", fontsize=10)
     axes[1].grid(True, linestyle='--', alpha=0.5)
 
     # Append a unified vertical colorbar scale to the right side of the layout
     cbar = fig.colorbar(im2, ax=axes.ravel().tolist(), orientation='vertical', pad=0.03, shrink=0.8)
-    cbar.set_label("Z500 Anomalies (m)", fontsize=11)
+    cbar.set_label("Anomalies", fontsize=11)
 
-    plt.suptitle(f"Global Z500 Response Comparison ({season} Season)", fontsize=14, y=0.98, fontweight='bold')
+    plt.suptitle(f"Global {varn} Response Comparison ({season} Season)", fontsize=14, y=0.98, fontweight='bold')
     
     # Save the output figure directly to disk
     output_png = f"fno_verification_comparison_{season}.png"

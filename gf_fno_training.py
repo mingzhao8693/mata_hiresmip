@@ -216,7 +216,7 @@ if __name__ == "__main__":
     za500 = z['za500'][0, 0]
 
     sea = ['ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS']
-    isea = 2  # Selects JJA (Summer)
+    isea = 4  # Selects JJA (Summer)
     season = sea[isea]
 
     im_2d = np.squeeze(im[isea, :, :])
