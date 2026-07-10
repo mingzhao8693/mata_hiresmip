@@ -9,22 +9,20 @@ tpath='/archive/Ming.Zhao/obs_for_am4p0_paper/';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA-INTERIM 3D field%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if strcmp(do_ec3d,'interim')
+if do_erai_3d
   %Jan1980 - Dec2014
   %t1=13; t2=432; v=read_erainterim_tqzuv_new(tpath,latlon,o,t1,t2); o.atm=v;
   %t1=13; t2=432; v=read_erainterim_tqzuv_new(tpath,latlon,o,t1,t2); o.atm1=v;
    t1=13; t2=432; v=read_erainterim_3d_new(tpath,latlon,o,t1,t2); o.atm=v;
    do_erai_3d_flag = 1;
-elseif strcmp(do_ec3d,'era5')
-  
-   do_era5_3d_flag = 1;
 end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fn=strcat(tpath,'ERA_interim/monthly/era_interim_monthly_197901_201512.nc')
 t1=13; t2=432;  %Jan1980 - Dec2014
 [sfc toa atm]=read_erainterim_new(fn,latlon,t1,t2,o); 
-o.sfc=sfc; o.fn.ERA_INTERIM_2Dfield=sfc.fn;
+o.sfc=sfc; o.fn.ERA_INTERIM_2Dfield=sfc.fn; 
 o.sfc.pcp_era      =sfc.pcp; 
 o.sfc.swnet_era    =sfc.swnet;
 o.sfc.lwnet_era    =sfc.lwnet;
@@ -113,14 +111,14 @@ v.sea=get4season(v.clm);
 o.sfc.pcp_gpcc=v; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-path_era5='ERA5/ERA5_194001-202407.';
+path_era5='ERA5/monthly/ERA5_194001-202407.';
 t1=1;  t2=1008;	time0='1900-01-01 0:0:0'; %1940Jan-2023Dec; 
 varn='tp'; fn=strcat(tpath,path_era5,varn,'.nc')
 o.sfc.pcp_era5=read_data_2d(fn,latlon,t1,t2,o,varn,'latitude','longitude','time',time0,24);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-path_era5='ERA5/ERA5_195901-202112_';
+path_era5='ERA5/monthly/ERA5_195901-202112_';
 t1=1; t2=756; latname='latitude'; lonname='longitude'; %1959Jan-2021Dec; 63yrs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='sp';  fn=strcat(tpath,path_era5,varn,'.nc')

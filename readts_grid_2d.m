@@ -13,7 +13,7 @@ function v=readts_grid_2d(tpath, expn, fname, latlon, mod)
 %lat1=-25; lat2=10; lon1=275;  lon2=330;    %amazon
 lat1=latlon(3); lat2=latlon(4); lon1=latlon(1); lon2=latlon(2);
 
-fn=fname;
+fn=fname; fn
 v.lon=ncread(fn,'lon'); v.lat=ncread(fn,'lat'); %v.time=ncread(fn,'time');
 v.ys  =min(find(v.lat(:)>=lat1)); v.ye  =max(find(v.lat(:)<= lat2));
 v.xs  =min(find(v.lon(:)>=lon1)); v.xe  =max(find(v.lon(:)<= lon2));

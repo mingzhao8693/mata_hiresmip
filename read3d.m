@@ -7,7 +7,7 @@ for i=1:length(p.lev)
   a=ncread(fname,varn,[1 1 k 1 ],[Inf Inf 1 Inf]); a=squeeze(a);
   a=permute(a,[3 2 1]); 
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  varx=extracts(tmp,v,obs(i),myr,0);
+  varx=extracts(tmp,v,obs(i),myr,p.opt3d);
   varx.plev=p.plev(i); %varx.all=tmp;
   var(i)=varx;
 end

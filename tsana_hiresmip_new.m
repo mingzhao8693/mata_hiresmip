@@ -57,6 +57,7 @@ v.sfc.sst_reg3=reg3;
 v.sfc.sst_pmm =reg4;
 v.sfc.sst_amm =reg5;
 
+clear a1 a2 a3;
 a=reg1.al0; for m=1:12; a1(:,m)=a(:,m)-mean(a(:,m));end;
 a=reg2.al0; for m=1:12; a2(:,m)=a(:,m)-mean(a(:,m));end;
 a=reg3.al0; for m=1:12; a3(:,m)=a(:,m)-mean(a(:,m));end;
@@ -896,13 +897,20 @@ if (opt==1); save_matfile(v,mpath,expn,region,mext,opt); return; end
 % $$$   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
 % $$$   v.atm.z500=extracts(tmp,v,o.dummy,myr,0);
 % $$$ end
-if p.do_3d_atm
+if p.do_3d_atm==1
   p.lev =[1,   2,   3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14,15];
   p.plev=[1000, 925, 850,775,700,600,500,400,300,250,200,150,100,70,50];
+  p.opt3d = 0
+elseif p.do_3d_atm==2
+  p.lev =[3,  5,  7,  9,  11 ];
+  p.plev=[850,700,500,300,200];
+  p.opt3d = 1;
 else
   p.lev =[7];
   p.plev=[500];
+  p.opt3d = 1;
 end
+
 varn='omega'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   v.atm.om=read3d(fname,varn,v,o.atm.om,myr,p);
@@ -961,7 +969,7 @@ if (exist(fname,'file') == 2)
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %k=1-15:1000,925,850,775,700,600,500,400,300,250,200,150,100,70,50hPa
-if p.do_3d_atm
+if p.do_3d_atm > 0
   for k=1:length(p.lev)
     ta=v.atm.ta(k).clm;
     zz=v.atm.za(k).clm;

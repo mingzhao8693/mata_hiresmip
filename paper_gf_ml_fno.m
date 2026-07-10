@@ -100,15 +100,6 @@ for ipat=1:153;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 1. Point MATLAB to your active 'dev' environment Python executable
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-pyenv('Version', '/nbhome/ogrp/python/envs/dev/bin/python');
-
-% 2. Append your custom target package path and script directories 
-py.importlib.import_module('sys');
-py.sys.path.append('/work/miz/python_packages');
-py.sys.path.append('/work/miz/your_script_directory/'); 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Training FNO with Deep Learning Toolbox using Fourier Neural Operator (FNO)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -122,21 +113,106 @@ a=squeeze(vm.pcp.var   (:,:,:,:));    a=get4season_all(a); z.preca=a;
 a=squeeze(vm.netrad.var(:,:,:,:));    a=get4season_all(a); z.nrada=a;
 a=squeeze(vm.lwcf.var(:,:,:,:));      a=get4season_all(a); z.lwcfa=a;
 a=squeeze(vm.swcf.var(:,:,:,:));      a=get4season_all(a); z.swcfa=a;
-k=3; a=squeeze(vm.om.var(:,k,:,:,:)); a=get4season_all(a); z.om500=a;
-k=3; a=squeeze(vm.za.var(:,k,:,:,:)); a=get4season_all(a); z.za500=a;
-k=1; a=squeeze(vm.za.var(:,k,:,:,:)); a=get4season_all(a); z.za850=a;
-k=5; a=squeeze(vm.za.var(:,k,:,:,:)); a=get4season_all(a); z.za200=a;
-k=3; a=squeeze(vm.ua.var(:,k,:,:,:)); a=get4season_all(a); z.ua500=a;
-k=1; a=squeeze(vm.ua.var(:,k,:,:,:)); a=get4season_all(a); z.ua850=a;
-k=5; a=squeeze(vm.ua.var(:,k,:,:,:)); a=get4season_all(a); z.ua200=a;
-k=3; a=squeeze(vm.va.var(:,k,:,:,:)); a=get4season_all(a); z.va500=a;
-k=1; a=squeeze(vm.va.var(:,k,:,:,:)); a=get4season_all(a); z.va850=a;
-k=5; a=squeeze(vm.va.var(:,k,:,:,:)); a=get4season_all(a); z.va200=a;
-z.lat=v0.lat; z.lon=v0.lon; z.nlat=v0.nlat; z.nlon=v0.nlon; z.lm=v0.lm0; z.im=get4season_all(v0.imk_clm);z
-fn='/work/miz/mat_gf/gf_data.mat'; save(fn,'z');
+k=3;
+a=squeeze(vm.za.var(:,k,:,:,:)); a=get4season_all(a); z.za500=a;
+a=squeeze(vm.ua.var(:,k,:,:,:)); a=get4season_all(a); z.ua500=a;
+a=squeeze(vm.va.var(:,k,:,:,:)); a=get4season_all(a); z.va500=a;
+a=squeeze(vm.om.var(:,k,:,:,:)); a=get4season_all(a); z.om500=a;
+k=1;
+a=squeeze(vm.za.var(:,k,:,:,:)); a=get4season_all(a); z.za850=a;
+a=squeeze(vm.ua.var(:,k,:,:,:)); a=get4season_all(a); z.ua850=a;
+a=squeeze(vm.va.var(:,k,:,:,:)); a=get4season_all(a); z.va850=a;
+a=squeeze(vm.om.var(:,k,:,:,:)); a=get4season_all(a); z.om850=a;
+k=5;
+a=squeeze(vm.za.var(:,k,:,:,:)); a=get4season_all(a); z.za200=a;
+a=squeeze(vm.ua.var(:,k,:,:,:)); a=get4season_all(a); z.ua200=a;
+a=squeeze(vm.va.var(:,k,:,:,:)); a=get4season_all(a); z.va200=a;
+a=squeeze(vm.om.var(:,k,:,:,:)); a=get4season_all(a); z.om200=a;
+%get climatology%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+z.clm=process_array(v0,0);
+%save z%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn='/work/miz/mat_gf/gf_data.mat'; save(fn, 'z');
+%load z%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn='/work/miz/mat_gf/gf_data.mat'; load(fn);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn='/work/miz/mat_gf/ss_pattern_data.mat'; load(fn); %v.ctl v.spp v.obp
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%add anomalies from pattern experiments to the z structure for verification
+nyr=2 %a=v.tsurf; a0=repmat(reshape(a,1,size(a)),nyr, 1, 1, 1);
+s='tsurf'; a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.tsfca(end+1:end+nyr,:,:,:)=a;
+s='pcp';   a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.preca(end+1:end+nyr,:,:,:)=a; 
+s='netrad';a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.nrada(end+1:end+nyr,:,:,:)=a; 
+s='lwcf';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.lwcfa(end+1:end+nyr,:,:,:)=a; 
+s='swcf';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.swcfa(end+1:end+nyr,:,:,:)=a;
+s='z500';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.za500(end+1:end+nyr,:,:,:)=a; 
+s='u500';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.ua500(end+1:end+nyr,:,:,:)=a; 
+s='v500';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.va500(end+1:end+nyr,:,:,:)=a; 
+s='om500'; a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.om500(end+1:end+nyr,:,:,:)=a; 
+s='z850';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.za850(end+1:end+nyr,:,:,:)=a; 
+s='u850';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.ua850(end+1:end+nyr,:,:,:)=a; 
+s='v850';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.va850(end+1:end+nyr,:,:,:)=a; 
+s='om850'; a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.om850(end+1:end+nyr,:,:,:)=a; 
+s='z200';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.za200(end+1:end+nyr,:,:,:)=a; 
+s='u200';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.ua200(end+1:end+nyr,:,:,:)=a; 
+s='v200';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.va200(end+1:end+nyr,:,:,:)=a; 
+s='om200'; a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.om200(end+1:end+nyr,:,:,:)=a; 
+z.ctl=v.ctl; z.note='1:153 contains GF exp with clm ref; 154:155 contains spear and observed pattern exp with ctl ref';
+%save z%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn='/work/miz/mat_gf/gf_data_new.mat'; save(fn, 'z');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%add anomalies from AMIP to z structure for verification
+load('/archive/Ming.Zhao/awg/warsaw/c96L33_am4p0_longamip_1850rad/c96L33_am4p0_longamip_1850rad_global_opt2.c48_tsana_hiresmip_new_ivt_1979-2014_1870-2014_do_3d_atm_2_do_trend_0.mat')
+nyr=145; %a=v.tsurf; a0=repmat(reshape(a,1,size(a)),nyr, 1, 1, 1);
+a=squeeze(v.sfc.tsurf.all(:,:,:,:));    a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.tsfca(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.sfc.pcp.all  (:,:,:,:));    a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.preca(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.toa.netrad.all  (:,:,:,:)); a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.nrada(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.toa.lwcf.all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.lwcfa(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.toa.swcf.all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.swcfa(end:end+nyr-1,:,:,:)=a;
+k=3; %500hPa
+a=squeeze(v.atm.za(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.za500(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.ua(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.ua500(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.va(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.va500(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.om(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.om500(end:end+nyr-1,:,:,:)=a; 
+k=1; %850hPa
+a=squeeze(v.atm.za(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.za850(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.ua(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.ua850(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.va(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.va850(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.om(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.om850(end:end+nyr-1,:,:,:)=a; 
+k=5; %200hPa
+a=squeeze(v.atm.za(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.za200(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.ua(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.ua200(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.va(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.va200(end:end+nyr-1,:,:,:)=a; 
+a=squeeze(v.atm.om(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
+a=get4season_all(a); z.om200(end:end+nyr-1,:,:,:)=a; 
+fn='/work/miz/mat_gf/gf_data_more.mat'; save(fn, 'z', 'z0', '-v7.3');
 
 fn='/work/miz/mat_gf/gf_data.mat'; load(fn);
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Below is python script doing training and prediction
+%in
+%module unload python
+%module load conda
+%conda activate /nbhome/ogrp/python/envs/dev
+%python gf_training.py z500  JJA 0.15
+%python gf_
+%python 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; lm=z.lm;
 isea=3; season=sea{isea};   %1=ANN; 2=MAM; 3=JJA; 4=SON; 5=DJF; 6=NDJFM; 7=MJJAS
 im=squeeze(z.im(isea,:,:)); %figure; pcolor(im); shading flat;

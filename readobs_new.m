@@ -76,7 +76,7 @@ elseif strcmp(do_ecmwf,'era5')
   varn='tcw';   fn=strcat(tpath,path_era5,varn,'.nc')
   o.atm.twp       =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%kg/m2
   varn='tp';    fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.pcp  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%m
+  o.sfc.pcp_ec    =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%m
 
   varn='avg_ishf'; o.opt=1;  fn=strcat(tpath,path_era5,varn,'.nc')
   o.sfc.shflx  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%W/m2(positive upward)
@@ -113,28 +113,28 @@ elseif strcmp(do_ecmwf,'era5')
   a=o.sfc.netrad_ec.all   -o.sfc.tshflx.all;        o.sfc.netflx_ec    =derive2d(a,o); %downward positive
 
   varn='avg_iews'; o.opt=0; fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.taux   =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.taux   =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='avg_inss';   fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.tauy   =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.tauy   =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
 
   varn='u10'; fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.u10=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.uref=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='v10'; fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.v10=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.vref=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
 
   varn='msl';  fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.slp =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.slp =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='sp';   fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.sp  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.sp  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='skt';  fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.skt =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.tsurf =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='t2m';  fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.t2m =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.tref  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='d2m';  fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.era5.d2m =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.d2m =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
 %compute RH at 2m%%%%%%%%%%%%%%%%%%%%%%%%%%
-  t2m=o.sfc.era5.t2m.all-273.15;
-  d2m=o.sfc.era5.d2m.all-273.15;
+  t2m=o.sfc.tref.all-273.15;
+  d2m=o.sfc.d2m.all-273.15;
   tmp=exp(17.625*d2m./(243.04+d2m))./exp(17.625*t2m./(243.04+t2m));
   clear t2m v;
   v.all=tmp;
@@ -145,10 +145,10 @@ elseif strcmp(do_ecmwf,'era5')
   v.clm0=mean(v.al0,1);
   v.ts0 =mean(v.al0,2)';
   v.ann0=mean(v.ts0);
-  o.sfc.era5.rh2m=v;
+  o.sfc.rhref=v;
 %compute 2m vapor pressure and specific humidity%%%%%%%
   vp  = 6.112*exp(17.625*d2m./(d2m+243.04)); clear d2m v; %vapor pressure
-  tmp = o.sfc.era5.sp.all;          %surface pressure
+  tmp = o.sfc.sp.all;          %surface pressure
   tmp = EPS*vp./(tmp -vp);          %2m mixing ratio
   qref= tmp./(1.+tmp);              %2m specific humidity 
   tmp = vp;   clear vp;             %2m vapor pressure
@@ -160,7 +160,7 @@ elseif strcmp(do_ecmwf,'era5')
   v.clm0=mean(v.al0,1);
   v.ts0 =mean(v.al0,2)';
   v.ann0=mean(v.ts0);
-  o.sfc.era5.vpref=v;
+  o.sfc.vpref=v;
   tmp = qref; clear qref; %2m specific humidity
   v.all=tmp;
   v.al0=getts(tmp,o);
@@ -170,7 +170,7 @@ elseif strcmp(do_ecmwf,'era5')
   v.clm0=mean(v.al0,1);
   v.ts0 =mean(v.al0,2)';
   v.ann0=mean(v.ts0);
-  o.sfc.era5.qref=v;
+  o.sfc.qref=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

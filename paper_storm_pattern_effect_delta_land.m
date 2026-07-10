@@ -111,14 +111,22 @@ opt='AL';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 latlon=[0 360 -90 90];region='global';
+o=readobs_new(latlon,region,'c48','era5');
 %o=readobs_new(latlon,region,'c96','era5');
 %o=readobs(latlon,region,'c192',true);
 %o=readobs(latlon,region,'c192',false);
 %o=readobs(latlon,region,'c96',true);
-%o=readobs(latlon,region,'c48',false);
+%o=readobs(latlon,region,'c48',true);
 %fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c48.mat'); load(fn); o.mod='c48';
+fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c48_era5.mat'); load(fn); o.mod='c48';
 fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c96.mat'); load(fn); o.mod='c96'; %z.V0=o;
-fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c192do_erai_3d_1.mat'); load(fn); o.mod='c192';
+%fn=strcat('/work/miz/mat_hiresmip/obs_',region,'_to_c192do_erai_3d_1.mat'); load(fn); o.mod='c192';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
+p.do_trend=0; p.do_trend_obs=0; p.do_scalar=0; p.myr=1; p.opt=2; p.do_3d_atm=2; p.do_all=1;
+p.yr1='1870'; p.yr2='2014'; p.syr=1; p.nyr=145; p.y1=1979; p.y2=2014; 
+tpath='/archive/Ming.Zhao/awg/warsaw/';
+p.expn='c96L33_am4p0_longamip_1850rad';   v=tsana_hiresmip_new(o,tpath,p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
 p.do_trend=0; p.do_trend_obs=0; p.do_scalar=0; p.myr=1; p.opt=2; p.do_3d_atm=1; p.do_all=1;
@@ -262,7 +270,7 @@ fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1D.tc=v;
 %Load ts_ana%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_1_do_all_1.mat';
+%ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_1_do_all_1.mat';
 ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_ivt_2-101_0002-0101_do_3d_atm_1_do_trend_0.mat';
 %ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c192_tsana_hiresmip_new_2-101_0002-0101_do_3d_atm_0_do_all_1.mat';
 %e='c192L33_am4p0_2010climo_old';                    n=strcat(ph,e,'/',e,f); load(n);z.v0a=v; 
@@ -274,6 +282,11 @@ e='c192L33_am4p0_2010climo_trend_1979_2020_spear';  n=strcat(ph,e,'/',e,f); load
 e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(ph,e,'/',e,f); load(n);z.w2=v;
 fn=strcat('/work/miz/mat_hiresmip/obs_global','_to_c96_era5.mat'); load(fn); o.mod='c96'; z.V0=o;
 fn=strcat('/work/miz/mat_hiresmip/obs_global','_to_c96.mat'); load(fn); o.mod='c96'; z.V0=o;
+
+v.ctl=process_array(z.v0,0);
+v.spp=process_array(z.w1,0);
+v.obp=process_array(z.w2,0);
+fn='/work/miz/mat_gf/ss_pattern_data.mat'; save(fn, 'v');
 
 ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_1980-2020_1950-2020.mat';
 e='c192L33_CM4X_amip';  n=strcat(ph,e,'/',e,f); load(n);z.v0_amip=v;
