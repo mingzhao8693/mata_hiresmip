@@ -1,0 +1,269 @@
+import os
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+from scipy.io import loadmat
+import matplotlib.pyplot as plt
+
+# =====================================================================
+#   1. FNO COMPLEX SPECTRAL MULTIPLICATION LAYER
+# =====================================================================
+class SpectralConv2d(nn.Module):
+    def __init__(self, in_channels, out_channels, modes1, modes2):
+        super(SpectralConv2d, self).__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.modes1 = modes1
+        self.modes2 = modes2
+
+        scale = 1.0 / (in_channels * out_channels)
+        self.weights1 = nn.Parameter(scale * torch.randn(in_channels, out_channels, self.modes1, self.modes2, dtype=torch.complex64))
+        self.weights2 = nn.Parameter(scale * torch.randn(in_channels, out_channels, self.modes1, self.modes2, dtype=torch.complex64))
+
+    def forward(self, x):
+        batchsize = x.shape[0]
+        x_ft = torch.fft.rfft2(x)
+
+        out_ft = torch.zeros(batchsize, self.out_channels, x.size(-2), x.size(-1)//2 + 1, dtype=torch.complex64, device=x.device)
+        
+        out_ft[:, :, :self.modes1, :self.modes2] = torch.einsum(
+            "bixy,ioxy->boxy", x_ft[:, :, :self.modes1, :self.modes2], self.weights1
+        )
+        out_ft[:, :, -self.modes1:, :self.modes2] = torch.einsum(
+            "bixy,ioxy->boxy", x_ft[:, :, -self.modes1:, :self.modes2], self.weights2
+        )
+
+        x = torch.fft.irfft2(out_ft, s=(x.size(-2), x.size(-1)))
+        return x
+
+
+# =====================================================================
+#   2. DEEP FOURIER NEURAL OPERATOR (FNO) WITH SPHERICAL PADDING
+# =====================================================================
+class FNOClimate2d(nn.Module):
+    def __init__(self, modes1, modes2, width):
+        super(FNOClimate2d, self).__init__()
+        self.modes1 = modes1
+        self.modes2 = modes2
+        self.width = width
+        self.padding = 4
+
+        self.lifting = nn.Linear(3, self.width)
+        
+        self.conv0 = SpectralConv2d(self.width, self.width, self.modes1, self.modes2)
+        self.conv1 = SpectralConv2d(self.width, self.width, self.modes1, self.modes2)
+        self.conv2 = SpectralConv2d(self.width, self.width, self.modes1, self.modes2)
+        self.conv3 = SpectralConv2d(self.width, self.width, self.modes1, self.modes2)
+        
+        self.w0 = nn.Conv2d(self.width, self.width, 1)
+        self.w1 = nn.Conv2d(self.width, self.width, 1)
+        self.w2 = nn.Conv2d(self.width, self.width, 1)
+        self.w3 = nn.Conv2d(self.width, self.width, 1)
+        
+        self.gelu = nn.GELU()
+        self.projection = nn.Linear(self.width, 1)
+
+    def forward(self, x):
+        x = self.lifting(x) 
+        x = x.permute(0, 3, 1, 2)  # [Batch, Width, Lat, Lon]
+        
+        x = nn.functional.pad(x, [self.padding, self.padding, 0, 0], mode='circular')
+        x = nn.functional.pad(x, [0, 0, self.padding, self.padding], mode='replicate')
+
+        x = self.gelu(self.conv0(x) + self.w0(x))
+        x = self.gelu(self.conv1(x) + self.w1(x))
+        x = self.gelu(self.conv2(x) + self.w2(x))
+        x = self.gelu(self.conv3(x) + self.w3(x))
+
+        x = x[:, :, self.padding:-self.padding, self.padding:-self.padding]
+        
+        x = x.permute(0, 2, 3, 1) 
+        x = self.projection(x)    
+        return x
+
+
+# =====================================================================
+#   3. AREA-WEIGHTED LOSS FUNCTION (STABILIZED FOR ANOMALIES)
+# =====================================================================
+class AreaWeightedRelativeL2Loss(object):
+    def __init__(self, lat_coordinates, eps=1e-3):
+        w_lat = np.cos(np.radians(lat_coordinates))
+        self.w_grid = torch.from_numpy(w_lat).float() 
+        self.eps = eps 
+
+    def __call__(self, y_pred, y_true):
+        w_expanded = self.w_grid.to(y_pred.device).view(1, -1, 1, 1)
+        
+        diff_sq = (y_pred - y_true) ** 2 * w_expanded
+        true_sq = y_true ** 2 * w_expanded
+        
+        diff_norm = torch.sqrt(torch.sum(diff_sq, dim=(1, 2, 3)))
+        true_norm = torch.sqrt(torch.sum(true_sq, dim=(1, 2, 3)))
+        
+        return torch.mean(diff_norm / (true_norm + self.eps))
+
+
+# =====================================================================
+#   4. MAIN OPTIMIZED TRAINING WRAPPER ROUTINE (WITH DYNAMIC SPLIT)
+# =====================================================================
+def run_toolbox_fno(ssta, vara, lat, lon, varn, sea, val_split_pct=0.15, val_idx_list=None):
+    torch.manual_seed(42)
+    np.random.seed(42)
+
+    nlat, nlon, _, num_samples = ssta.shape
+
+    lon_grid, lat_grid = np.meshgrid(lon, lat)
+    lat_norm = 2 * (lat_grid - lat_grid.min()) / (lat_grid.max() - lat_grid.min()) - 1
+    lon_norm = 2 * (lon_grid - lon_grid.min()) / (lon_grid.max() - lon_grid.min()) - 1
+
+    X_data = np.zeros((num_samples, nlat, nlon, 3), dtype=np.float32)
+    X_data[:, :, :, 0] = np.moveaxis(ssta, -1, 0).squeeze(-1)
+    X_data[:, :, :, 1] = np.repeat(lat_norm[np.newaxis, :, :], num_samples, axis=0)
+    X_data[:, :, :, 2] = np.repeat(lon_norm[np.newaxis, :, :], num_samples, axis=0)
+
+    Y_data = np.moveaxis(vara, -1, 0)[:, :, :, np.newaxis].astype(np.float32)
+
+    X_tensor = torch.from_numpy(X_data)
+    Y_tensor = torch.from_numpy(Y_data)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"--> Execution Pipeline Configured on Device Target: {device}")
+
+    width = 64
+    modes = 24
+    model = FNOClimate2d(modes1=modes, modes2=modes, width=width).to(device)
+
+    lr = 0.01
+    epochs = 100
+    batch_size = 16
+    
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.5)
+    criterion = AreaWeightedRelativeL2Loss(lat, eps=1e-3)
+    
+# =====================================================================
+    #   FLEXIBLE TRAIN / VERIFICATION DATA SPLIT IMPLEMENTATION
+    # =====================================================================
+    full_dataset = torch.utils.data.TensorDataset(X_tensor, Y_tensor)
+    
+    # CASE A: Explicit Hand-Picked Validation Indices
+    if val_idx_list is not None and len(val_idx_list) > 0:
+        val_indices = list(val_idx_list)
+        train_indices = [i for i in range(num_samples) if i not in val_indices]
+        
+        train_dataset = torch.utils.data.Subset(full_dataset, train_indices)
+        val_dataset = torch.utils.data.Subset(full_dataset, val_indices)
+        num_val = len(val_indices)
+        num_train = len(train_indices)
+        print(f"--> Using CUSTOM hand-picked verification index list (Count: {num_val})")
+
+    # CASE B: Fallback to Automatic Random Percentage Split
+    elif val_split_pct > 0.0:
+        num_val = int(num_samples * val_split_pct)
+        num_train = num_samples - num_val
+        
+        train_dataset, val_dataset = torch.utils.data.random_split(
+            full_dataset, [num_train, num_val], 
+            generator=torch.Generator().manual_seed(42)
+        )
+        # Extract the randomized index mappings for logging
+        train_indices = train_dataset.indices
+        val_indices = val_dataset.indices
+        print(f"--> Using AUTOMATIC random split with {val_split_pct*100}% validation allocation")
+
+    # CASE C: No Split (Train on full dataset)
+    else:
+        num_val = 0
+        num_train = num_samples
+        print(f"Running on FULL dataset: {num_train} Training samples | 0 Validation samples")
+
+    # Save tracking indices to files if a verification split is active
+    if num_val > 0:
+        log_dir = "/work/miz/mat_hiresmip/fno_gf/"
+        os.makedirs(log_dir, exist_ok=True)
+        
+        train_log_path = os.path.join(log_dir, f"fno_indices_train_{varn}_{sea}.txt")
+        val_log_path = os.path.join(log_dir, f"fno_indices_val_{varn}_{sea}.txt")
+        
+        np.savetxt(train_log_path, train_indices, fmt='%d', delimiter=',')
+        np.savetxt(val_log_path, val_indices, fmt='%d', delimiter=',')
+        
+        print(f"--> Saved experiment tracking indices to: {log_dir}")
+        
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    else:
+        train_loader = torch.utils.data.DataLoader(full_dataset, batch_size=batch_size, shuffle=True)
+
+    patience = 15  
+    patience_counter = 0
+    best_target_loss = float('inf')
+    best_model_weights = None
+    
+    for epoch in range(1, epochs + 1):
+        # --- 1. TRAINING LOOP PHASE ---
+        model.train()
+        epoch_train_loss = 0.0
+        
+        for X_batch, Y_batch in train_loader:
+            X_batch, Y_batch = X_batch.to(device), Y_batch.to(device)
+            optimizer.zero_grad()
+            output = model(X_batch)
+            loss = criterion(output, Y_batch)
+            loss.backward()
+            optimizer.step()
+            epoch_train_loss += loss.item()
+        
+        avg_train_loss = epoch_train_loss / len(train_loader)
+
+ # --- 2. VERIFICATION LOOP PHASE (With ZeroDivision Safety) ---
+        model.eval()
+        
+        if num_val > 0:
+            epoch_val_loss = 0.0
+            with torch.no_grad():
+                for X_batch, Y_batch in val_loader:
+                    X_batch, Y_batch = X_batch.to(device), Y_batch.to(device)
+                    output = model(X_batch)
+                    val_loss = criterion(output, Y_batch)
+                    epoch_val_loss += val_loss.item()
+                    
+            avg_val_loss = epoch_val_loss / len(val_loader)
+            
+            # CHANGE HERE: Force early stopping to monitor training loss, 
+            # while still printing the AMIP Verification Loss to screen
+            current_target_loss = avg_train_loss 
+            print(f"Epoch {epoch:03d}/{epochs} | Train Loss: {avg_train_loss:.4f} | AMIP Verification Loss: {avg_val_loss:.4f}")
+        else:
+            current_target_loss = avg_train_loss
+            print(f"Epoch {epoch:03d}/{epochs} | Train Loss: {avg_train_loss:.4f}")
+
+        # --- 3. COMPACT EARLY STOPPING MANAGEMENT ---
+        if current_target_loss < best_target_loss:
+            best_target_loss = current_target_loss
+            best_model_weights = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+            patience_counter = 0  
+        else:
+            patience_counter += 1
+
+        current_lr = optimizer.param_groups[0]['lr']
+        scheduler.step()
+        if optimizer.param_groups[0]['lr'] < current_lr:
+            print(f"--> Learning rate decayed to: {optimizer.param_groups[0]['lr']}")
+
+        if patience_counter >= patience:
+            print(f"--> Early stopping triggered at epoch {epoch}! Monitored loss hasn't improved for {patience} epochs.")
+            break
+
+    if best_model_weights is not None:
+        model.load_state_dict(best_model_weights)
+        
+    valpct = str(val_split_pct);
+    
+    fn = f"/work/miz/mat_hiresmip/fno_gf/fno_toolbox_weights_{varn}_{sea}_{valpct}.pt"
+    torch.save(model.to('cpu').state_dict(), fn)
+    print(f"\nBest model weights (Loss: {best_target_loss:.4f}) saved successfully to {fn}")
+    
+    return model
+

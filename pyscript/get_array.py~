@@ -1,0 +1,14 @@
+import numpy as np
+
+def get_array(obj, name):
+    """Return variable or struct field as a NumPy array."""
+    # h5py group
+    if hasattr(obj, "keys"):
+        arr = np.array(obj[name])
+    # loadmat dictionary
+    elif isinstance(obj, dict):
+        arr = np.array(obj[name])
+    else:
+        raise TypeError("Unsupported object type")
+
+    return np.squeeze(arr)
