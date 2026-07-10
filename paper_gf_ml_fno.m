@@ -107,7 +107,8 @@ end
 %% 1. Load GF Data
 fn = '/work/miz/mat_gf/dvar_final_new_20250111.mat'; 
 if ~exist(fn, 'file'); error('Data file not found at: %s. Please check your path.', fn); end
-load(fn); 
+load(fn); s=v0.s; clear z
+z.lat=s.lat; z.lon=s.lon; z.nlat=s.nlat; z.nlon=s.nlon; z.lm=s.lm0; z.aa=s.aa; z.im=get4season_all(s.im); 
 a=squeeze(vm.tsurf.var (:,:,:,:));    a=get4season_all(a); z.tsfca=a;
 a=squeeze(vm.pcp.var   (:,:,:,:));    a=get4season_all(a); z.preca=a;
 a=squeeze(vm.netrad.var(:,:,:,:));    a=get4season_all(a); z.nrada=a;
@@ -133,7 +134,32 @@ z.clm=process_array(v0,0);
 %save z%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fn='/work/miz/mat_gf/gf_data.mat'; save(fn, 'z');
 %load z%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fn='/work/miz/mat_gf/gf_data.mat'; load(fn);
+%fn='/work/miz/mat_gf/gf_data.mat'; load(fn);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn='/work/miz/mat_gf/amip_1850rad.mat'; load(fn);
+nyr=length(z1.tsurf(:,1,1,1));
+z.tsfca(end+1:end+nyr,:,:,:)=z1.tsurf;
+z.preca(end+1:end+nyr,:,:,:)=z1.pcp; 
+z.nrada(end+1:end+nyr,:,:,:)=z1.netrad; 
+z.lwcfa(end+1:end+nyr,:,:,:)=z1.lwcf; 
+z.swcfa(end+1:end+nyr,:,:,:)=z1.swcf;
+z.za500(end+1:end+nyr,:,:,:)=z1.z500; 
+z.ua500(end+1:end+nyr,:,:,:)=z1.u500; 
+z.va500(end+1:end+nyr,:,:,:)=z1.v500; 
+z.om500(end+1:end+nyr,:,:,:)=z1.om500; 
+z.za850(end+1:end+nyr,:,:,:)=z1.z850; 
+z.ua850(end+1:end+nyr,:,:,:)=z1.u850; 
+z.va850(end+1:end+nyr,:,:,:)=z1.v850; 
+z.om850(end+1:end+nyr,:,:,:)=z1.om850; 
+z.za200(end+1:end+nyr,:,:,:)=z1.z200; 
+z.ua200(end+1:end+nyr,:,:,:)=z1.u200; 
+z.va200(end+1:end+nyr,:,:,:)=z1.v200; 
+z.om200(end+1:end+nyr,:,:,:)=z1.om200; 
+z.amip_clm = z1.clm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fn='/work/miz/mat_gf/gf_data_more.mat'; save(fn, 'z', 'z0', '-v7.3');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fn='/work/miz/mat_gf/ss_pattern_data.mat'; load(fn); %v.ctl v.spp v.obp
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -158,48 +184,30 @@ s='v200';  a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]
 s='om200'; a=v.ctl.(s); a=cat(4,v.spp.(s)-a, v.obp.(s)-a); a=permute(a,[4,1,2,3]); z.om200(end+1:end+nyr,:,:,:)=a; 
 z.ctl=v.ctl; z.note='1:153 contains GF exp with clm ref; 154:155 contains spear and observed pattern exp with ctl ref';
 %save z%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fn='/work/miz/mat_gf/gf_data_new.mat'; save(fn, 'z');
+fn='/work/miz/mat_gf/gf_data_new.mat'; save(fn, 'z', 'z0', '-v7.3'); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %add anomalies from AMIP to z structure for verification
 load('/archive/Ming.Zhao/awg/warsaw/c96L33_am4p0_longamip_1850rad/c96L33_am4p0_longamip_1850rad_global_opt2.c48_tsana_hiresmip_new_ivt_1979-2014_1870-2014_do_3d_atm_2_do_trend_0.mat')
-nyr=145; %a=v.tsurf; a0=repmat(reshape(a,1,size(a)),nyr, 1, 1, 1);
-a=squeeze(v.sfc.tsurf.all(:,:,:,:));    a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.tsfca(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.sfc.pcp.all  (:,:,:,:));    a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.preca(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.toa.netrad.all  (:,:,:,:)); a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.nrada(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.toa.lwcf.all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.lwcfa(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.toa.swcf.all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.swcfa(end:end+nyr-1,:,:,:)=a;
-k=3; %500hPa
-a=squeeze(v.atm.za(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.za500(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.ua(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.ua500(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.va(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.va500(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.om(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.om500(end:end+nyr-1,:,:,:)=a; 
-k=1; %850hPa
-a=squeeze(v.atm.za(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.za850(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.ua(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.ua850(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.va(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.va850(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.om(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.om850(end:end+nyr-1,:,:,:)=a; 
-k=5; %200hPa
-a=squeeze(v.atm.za(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.za200(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.ua(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.ua200(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.va(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.va200(end:end+nyr-1,:,:,:)=a; 
-a=squeeze(v.atm.om(k).all  (:,:,:,:));   a0=squeeze(mean(a,1)); a0=repmat(reshape(a0,[1,size(a0)]),[nyr,1,1,1]); a=a-a0;
-a=get4season_all(a); z.om200(end:end+nyr-1,:,:,:)=a; 
+z1=process_array_amip(v,2); fn='/work/miz/mat_gf/amip_1850rad.mat'; save(fn, 'z1');
+nyr=length(z1.tsurf(:,1,1,1));
+z.tsfca(end+1:end+nyr,:,:,:)=z1.tsurf;
+z.preca(end+1:end+nyr,:,:,:)=z1.pcp; 
+z.nrada(end+1:end+nyr,:,:,:)=z1.netrad; 
+z.lwcfa(end+1:end+nyr,:,:,:)=z1.lwcf; 
+z.swcfa(end+1:end+nyr,:,:,:)=z1.swcf;
+z.za500(end+1:end+nyr,:,:,:)=z1.z500; 
+z.ua500(end+1:end+nyr,:,:,:)=z1.u500; 
+z.va500(end+1:end+nyr,:,:,:)=z1.v500; 
+z.om500(end+1:end+nyr,:,:,:)=z1.om500; 
+z.za850(end+1:end+nyr,:,:,:)=z1.z850; 
+z.ua850(end+1:end+nyr,:,:,:)=z1.u850; 
+z.va850(end+1:end+nyr,:,:,:)=z1.v850; 
+z.om850(end+1:end+nyr,:,:,:)=z1.om850; 
+z.za200(end+1:end+nyr,:,:,:)=z1.z200; 
+z.ua200(end+1:end+nyr,:,:,:)=z1.u200; 
+z.va200(end+1:end+nyr,:,:,:)=z1.v200; 
+z.om200(end+1:end+nyr,:,:,:)=z1.om200; 
+z.amip_clm = z1.clm
 fn='/work/miz/mat_gf/gf_data_more.mat'; save(fn, 'z', 'z0', '-v7.3');
 
 fn='/work/miz/mat_gf/gf_data.mat'; load(fn);
