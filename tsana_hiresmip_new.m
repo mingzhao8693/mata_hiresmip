@@ -88,6 +88,7 @@ varn='ice_mask'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe); 
+  if ~isfield(o.sfc, 'ice'); o.sfc.ice=o.dummy; end;
   v.sfc.ice=extracts(tmp,v,o.sfc.ice,myr,1);
 %  tmp=reshape(tmp,12,v.nt/12,v.nlat,v.nlon);
 %  v.sfc.ice.all=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
@@ -190,20 +191,23 @@ varn='ivtx'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  shflx=tmp;
-  v.atm.ivtx=extracts(tmp,v,o.sfc.shflx,myr,1); 
+  if ~isfield(o.atm, 'ivtx'); o.atm.ivtx=o.dummy; end;
+  v.atm.ivtx=extracts(tmp,v,o.atm.ivtx,myr,1); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='ivty'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  shflx=tmp;
-  v.atm.ivty=extracts(tmp,v,o.sfc.shflx,myr,1); 
+  if ~isfield(o.atm, 'ivty'); o.atm.ivty=o.dummy; end;
+  v.atm.ivty=extracts(tmp,v,o.atm.ivty,myr,1); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='ivtdiv'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  shflx=tmp;
+  if ~isfield(o.atm, 'ivtdiv'); o.atm.ivtdiv=o.dummy; end;
   v.atm.ivtdiv=extracts(tmp,v,o.sfc.shflx,myr,1); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,6 +243,7 @@ varn='wind_ref'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);  
+  if ~isfield(o.sfc, 'wref'); o.sfc.wref=o.dummy; end;
   v.sfc.wref=extracts(tmp,v,o.sfc.wref,myr,0);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -611,6 +616,7 @@ varn='ps'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
+  if ~isfield(o.sfc, 'ps'); o.sfc.ps=o.dummy; end;
   v.sfc.ps=extracts(tmp,v,o.sfc.ps,myr,1); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -618,30 +624,35 @@ varn='prec_ls'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
-  v.sfc.prec_ls=extracts(tmp,v,o.sfc.pcp,myr,0); 
+  if ~isfield(o.sfc, 'prec_ls'); o.sfc.prec_ls=o.dummy; end;
+  v.sfc.prec_ls=extracts(tmp,v,o.sfc.prec_ls,myr,0); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='prec_conv'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;
-  v.sfc.prec_cv=extracts(tmp,v,o.sfc.pcp,myr,0); 
+  if ~isfield(o.sfc, 'prec_cv'); o.sfc.prec_cv=o.dummy; end;
+  v.sfc.prec_cv=extracts(tmp,v,o.sfc.prec_cv,myr,0); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='snow_conv'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;  snow_cv=tmp;
-  v.sfc.snow_cv=extracts(tmp,v,o.sfc.pcp,myr,1);
+  if ~isfield(o.sfc, 'snow_cv'); o.sfc.snow_cv=o.dummy; end;
+  v.sfc.snow_cv=extracts(tmp,v,o.sfc.snow_cv,myr,1);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='snow_ls'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe)*86400;  snow_ls=tmp;
-  v.sfc.snow_ls=extracts(tmp,v,o.sfc.pcp,myr,1);
+  if ~isfield(o.sfc, 'snow_ls'); o.sfc.snow_ls=o.dummy; end;
+  v.sfc.snow_ls=extracts(tmp,v,o.sfc.snow_ls,myr,1);
   snow=snow_cv+snow_ls; clear snow_cv snow_ls;
-  v.sfc.snow=extracts(snow,v,o.sfc.pcp,myr,1);
+  if ~isfield(o.sfc, 'snow'); o.sfc.snow=o.dummy; end;
+  v.sfc.snow=extracts(snow,v,o.sfc.snow,myr,1);
 end
 varn='olr'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
@@ -823,49 +834,56 @@ varn='WVP'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  v.atm.wvp=extracts(tmp,v,o.dummy,myr,1); 
+  if ~isfield(o.atm, 'wvp'); o.atm.wvp=o.dummy; end;
+  v.atm.wvp=extracts(tmp,v,o.atm.wvp,myr,1); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='LWP'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  v.atm.lwp=extracts(tmp,v,o.dummy,myr,1); 
+  if ~isfield(o.atm, 'lwp'); o.atm.lwp=o.dummy; end;
+  v.atm.lwp=extracts(tmp,v,o.atm.lwp,myr,1); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='IWP'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  v.atm.iwp=extracts(tmp,v,o.dummy,myr,1);
+  if ~isfield(o.atm, 'iwp'); o.atm.iwp=o.dummy; end;
+  v.atm.iwp=extracts(tmp,v,o.atm.iwp,myr,1);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='low_cld_amt'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  v.atm.qal=extracts(tmp,v,o.dummy,myr,1); 
+  if ~isfield(o.atm, 'qal'); o.atm.qal=o.dummy; end;
+  v.atm.qal=extracts(tmp,v,o.atm.qal,myr,1); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='mid_cld_amt'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  v.atm.qam=extracts(tmp,v,o.dummy,myr,1); 
+  if ~isfield(o.atm, 'qam'); o.atm.qam=o.dummy; end;
+  v.atm.qam=extracts(tmp,v,o.atm.qam,myr,1); 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='high_cld_amt'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  v.atm.qah=extracts(tmp,v,o.dummy,myr,1);
+  if ~isfield(o.atm, 'qah'); o.atm.qah=o.dummy; end;
+  v.atm.qah=extracts(tmp,v,o.atm.qah,myr,1);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='crh_uwc'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 if (exist(fname,'file') == 2)
   a=ncread(fname,varn,[1 1 1],[Inf Inf Inf]); a=permute(a,[3 2 1]);
   tmp=a(v.ts:v.te,v.ys:v.ye,v.xs:v.xe);
-  v.atm.crh=extracts(tmp,v,o.dummy,myr,0);
+  if ~isfield(o.atm, 'crh'); o.atm.crh=o.dummy; end;
+  v.atm.crh=extracts(tmp,v,o.atm.crh,myr,0);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if (opt==1); save_matfile(v,mpath,expn,region,mext,opt); return; end

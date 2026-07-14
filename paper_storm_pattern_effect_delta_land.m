@@ -111,7 +111,7 @@ opt='AL';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 latlon=[0 360 -90 90];region='global';
-o=readobs_new(latlon,region,'c48','era5');
+%o=readobs_new(latlon,region,'c48','era5');
 %o=readobs_new(latlon,region,'c96','era5');
 %o=readobs(latlon,region,'c192',true);
 %o=readobs(latlon,region,'c192',false);
@@ -129,11 +129,16 @@ tpath='/archive/Ming.Zhao/awg/warsaw/';
 p.expn='c96L33_am4p0_longamip_1850rad';   v=tsana_hiresmip_new(o,tpath,p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
-p.do_trend=0; p.do_trend_obs=0; p.do_scalar=0; p.myr=1; p.opt=2; p.do_3d_atm=1; p.do_all=1;
-p.yr1='1950'; p.yr2='2020'; p.syr=30; p.nyr=42; p.y1=1979; p.y2=2020; 
+p.do_trend=0; p.do_trend_obs=0; p.do_scalar=0; p.myr=1; p.opt=2; p.do_3d_atm=2; p.do_all=1;
+p.yr1='1950'; p.yr2='2020'; p.syr=1; p.nyr=71; p.y1=1979; p.y2=2020; 
 tpath='/archive/Ming.Zhao/awg/2023.04/';
-p.expn='c192L33_CM4X_amip';   v=tsana_hiresmip_new(o,tpath,p);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.expn='c192L33_CM4X_amip';     v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_CM4X_amip_02';  v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_CM4X_amip_03';  v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_CM4X_amip_04';  v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_CM4X_amip_05';  v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_CM4X_amip_06';  v=tsana_hiresmip_new(o,tpath,p);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
 p.do_trend=0; p.do_trend_obs=0; p.do_scalar=0; p.myr=1; p.opt=2; p.do_3d_atm=1; p.do_all=1;
 p.yr1='0002'; p.yr2='0101'; p.syr=1; p.nyr=100; p.y1=0002; p.y2=0101; 

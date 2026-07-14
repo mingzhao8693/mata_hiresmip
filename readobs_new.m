@@ -121,11 +121,13 @@ elseif strcmp(do_ecmwf,'era5')
   o.sfc.uref=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='v10'; fn=strcat(tpath,path_era5,varn,'.nc')
   o.sfc.vref=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  varn='si10';fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.wref=read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
 
   varn='msl';  fn=strcat(tpath,path_era5,varn,'.nc')
   o.sfc.slp =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='sp';   fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.sp  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
+  o.sfc.ps  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='skt';  fn=strcat(tpath,path_era5,varn,'.nc')
   o.sfc.tsurf =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);
   varn='t2m';  fn=strcat(tpath,path_era5,varn,'.nc')
@@ -148,7 +150,7 @@ elseif strcmp(do_ecmwf,'era5')
   o.sfc.rhref=v;
 %compute 2m vapor pressure and specific humidity%%%%%%%
   vp  = 6.112*exp(17.625*d2m./(d2m+243.04)); clear d2m v; %vapor pressure
-  tmp = o.sfc.sp.all;          %surface pressure
+  tmp = o.sfc.ps.all;               %surface pressure
   tmp = EPS*vp./(tmp -vp);          %2m mixing ratio
   qref= tmp./(1.+tmp);              %2m specific humidity 
   tmp = vp;   clear vp;             %2m vapor pressure
