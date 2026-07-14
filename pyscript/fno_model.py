@@ -84,7 +84,7 @@ class FNOClimate2d(nn.Module):
 
 
 # =====================================================================
-#   3. AREA-WEIGHTED LOSS FUNCTION (STABILIZED FOR ANOMALIES)
+#   3a. AREA-WEIGHTED LOSS FUNCTION (STABILIZED FOR ANOMALIES)
 # =====================================================================
 class AreaWeightedRelativeL2Loss(object):
     def __init__(self, lat_coordinates, eps=1e-3):
@@ -103,11 +103,47 @@ class AreaWeightedRelativeL2Loss(object):
         
         return torch.mean(diff_norm / (true_norm + self.eps))
 
+# =====================================================================
+#   3b. AREA-WEIGHTED SPATIAL PATTERN CORRELATION METRIC
+# =====================================================================
+class AreaWeightedPatternCorrelation(object):
+    def __init__(self, lat_coordinates):
+        w_lat = np.cos(np.radians(lat_coordinates))
+        self.w_grid = torch.from_numpy(w_lat).float()
+
+    def __call__(self, y_pred, y_true):
+        device = y_pred.device
+        w = self.w_grid.to(device).view(1, -1, 1, 1)
+        
+        # Flatten the spatial dimensions to easily compute global statistics per batch item
+        # Shape becomes [Batch, Lat * Lon * Channels]
+        p = y_pred.reshape(y_pred.shape[0], -1)
+        t = y_true.reshape(y_true.shape[0], -1)
+        w_flat = torch.broadcast_to(w, y_pred.shape).reshape(y_pred.shape[0], -1)
+        
+        # Compute area-weighted means
+        mean_p = torch.sum(p * w_flat, dim=1, keepdim=True) / torch.sum(w_flat, dim=1, keepdim=True)
+        mean_t = torch.sum(t * w_flat, dim=1, keepdim=True) / torch.sum(w_flat, dim=1, keepdim=True)
+        
+        # Compute anomalies from the weighted mean
+        p_ano = p - mean_p
+        t_ano = t - mean_t
+        
+        # Compute weighted covariance and variances
+        cov = torch.sum(p_ano * t_ano * w_flat, dim=1)
+        var_p = torch.sum(p_ano ** 2 * w_flat, dim=1)
+        var_t = torch.sum(t_ano ** 2 * w_flat, dim=1)
+        
+        # Pearson correlation per sample in batch
+        corr = cov / (torch.sqrt(var_p * var_t) + 1e-8)
+        
+        # Return the mean spatial correlation across the entire evaluation batch
+        return torch.mean(corr)
 
 # =====================================================================
 #   4. MAIN OPTIMIZED TRAINING WRAPPER ROUTINE (WITH DYNAMIC SPLIT)
 # =====================================================================
-def run_toolbox_fno(ssta, vara, lat, lon, varn, sea, val_split_pct=0.15, val_idx_list=None):
+def run_toolbox_fno(ssta, vara, lat, lon, varn, sea, val_split_pct=0.15, val_idx_list=None, optimize_for_pattern=False):
     torch.manual_seed(42)
     np.random.seed(42)
 
@@ -130,8 +166,8 @@ def run_toolbox_fno(ssta, vara, lat, lon, varn, sea, val_split_pct=0.15, val_idx
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"--> Execution Pipeline Configured on Device Target: {device}")
 
-    width = 64
-    modes = 24
+    width = 32 #64
+    modes = 12 #24
     model = FNOClimate2d(modes1=modes, modes2=modes, width=width).to(device)
 
     lr = 0.01
@@ -140,7 +176,10 @@ def run_toolbox_fno(ssta, vara, lat, lon, varn, sea, val_split_pct=0.15, val_idx
     
     optimizer = optim.Adam(model.parameters(), lr=lr)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.5)
-    criterion = AreaWeightedRelativeL2Loss(lat, eps=1e-3)
+    criterion_l2 = AreaWeightedRelativeL2Loss(lat, eps=1e-3)
+    corr_metric = AreaWeightedPatternCorrelation(lat)
+   # Choose which loss function drives backpropagation based on your flag
+    criterion = criterion_l2 if not optimize_for_pattern else lambda pred, true: 1.0 - corr_metric(pred, true)
     
 # =====================================================================
     #   FLEXIBLE TRAIN / VERIFICATION DATA SPLIT IMPLEMENTATION
@@ -219,25 +258,31 @@ def run_toolbox_fno(ssta, vara, lat, lon, varn, sea, val_split_pct=0.15, val_idx
 
  # --- 2. VERIFICATION LOOP PHASE (With ZeroDivision Safety) ---
         model.eval()
-        
         if num_val > 0:
             epoch_val_loss = 0.0
+            epoch_val_corr = 0.0
             with torch.no_grad():
                 for X_batch, Y_batch in val_loader:
                     X_batch, Y_batch = X_batch.to(device), Y_batch.to(device)
                     output = model(X_batch)
-                    val_loss = criterion(output, Y_batch)
+                    
+                    # Compute both metrics for diagnostic clarity
+                    val_loss = criterion_l2(output, Y_batch)
+                    val_corr = corr_metric(output, Y_batch)
+                    
                     epoch_val_loss += val_loss.item()
+                    epoch_val_corr += val_corr.item()
                     
             avg_val_loss = epoch_val_loss / len(val_loader)
+            avg_val_corr = epoch_val_corr / len(val_loader)
             
-            # CHANGE HERE: Force early stopping to monitor training loss, 
-            # while still printing the AMIP Verification Loss to screen
-            current_target_loss = avg_train_loss 
-            print(f"Epoch {epoch:03d}/{epochs} | Train Loss: {avg_train_loss:.4f} | AMIP Verification Loss: {avg_val_loss:.4f}")
+            # Early stopping follows your training progress to maximize feature extraction
+            current_target_loss = avg_train_loss
+            print(f"Epoch {epoch:03d}/{epochs} | Train Loss: {avg_train_loss:.4f} | Verifcation L2 Loss: {avg_val_loss:.4f} | Spatial Correlation (ACC): {avg_val_corr:.4f}")
         else:
             current_target_loss = avg_train_loss
             print(f"Epoch {epoch:03d}/{epochs} | Train Loss: {avg_train_loss:.4f}")
+            
 
         # --- 3. COMPACT EARLY STOPPING MANAGEMENT ---
         if current_target_loss < best_target_loss:
@@ -259,7 +304,7 @@ def run_toolbox_fno(ssta, vara, lat, lon, varn, sea, val_split_pct=0.15, val_idx
     if best_model_weights is not None:
         model.load_state_dict(best_model_weights)
         
-    valpct = str(val_split_pct);
+    valpct = str(val_split_pct)
     
     fn = f"/work/miz/mat_hiresmip/fno_gf/fno_toolbox_weights_{varn}_{sea}_{valpct}.pt"
     torch.save(model.to('cpu').state_dict(), fn)

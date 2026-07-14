@@ -14,15 +14,16 @@ varn   = sys.argv[1]
 season = sys.argv[2]
 val_split_pct = float(sys.argv[3])
 
-varn ='za500'; season='JJA'
+#varn ='za500'; season='JJA'; val_split_pct=0; 
 sea = ['ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'] #isea=2; season = sea[isea];
 isea = sea.index(season)
 
 print('Variable=',varn,'Season=',season,'isea=',isea,'val_split_pct',val_split_pct)
 
-#fn='/work/miz/mat_gf/gf_data.mat';      f = loadmat(fn);        z = f['z']
-fn='/work/miz/mat_gf/gf_data_more.mat'; f = h5py.File(fn, 'r'); z = f['z']
+#fn='/work/miz/mat_gf/gf_data.mat';      f=loadmat(fn);        z = f['z'];
+fn='/work/miz/mat_gf/gf_data_new.mat'; f=h5py.File(fn, 'r'); z = f['z']
 
+print("load...",fn)
 lat   = get_array(z,'lat')
 lon   = get_array(z,'lon')
 lm    = get_array(z,'lm')
@@ -46,12 +47,20 @@ a_za = varna[:, isea, :, :];
 
 vara = np.transpose(a_za, (1, 2, 0))
 
+#opt_pat = True
+opt_pat = False
+
 # Run Model Training Pipeline
+print("ssta:",ssta.shape,"vara:",vara.shape)
+print("lat:", lat.shape)
+print("lon:", lon.shape)
+print("lm:",  lm.shape)
 print('val_split_pct=',val_split_pct)
+
 if val_split_pct == 0:
-    val_exp = np.arange(273,297)
+    val_exp = np.arange(298,300)
     print('Validation experiments=',val_exp)
-    model = run_toolbox_fno(ssta, vara, lat, lon, varn, season, val_split_pct=0.0, val_idx_list=val_exp)
+    model = run_toolbox_fno(ssta, vara, lat, lon, varn, season, val_split_pct=0.0, val_idx_list=val_exp, optimize_for_pattern=opt_pat)
 else:
     model = run_toolbox_fno(ssta, vara, lat, lon, varn, season, val_split_pct)
 
@@ -71,7 +80,7 @@ model.to(device)
 model.eval()
 
 # Select exactly 1 experiment index out of your 153 runs to verify (e.g., experiment index 0)
-exp_idx = 39 
+exp_idx = 298 
     
 # Re-build normalized mesh coordinates
 lon_grid, lat_grid = np.meshgrid(lon, lat)
