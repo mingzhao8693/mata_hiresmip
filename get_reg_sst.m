@@ -1,4 +1,4 @@
-function v=get_reg_sst(tpath,expn,fname,varn,latlon,syr,nyr)
+function v=get_reg_sst(tpath,expn,fname,varn,latlon,syr,nyr,p)
 %latlon=[210 270 -5 5]; %NINO3
 v=readts_grid_2d(tpath,expn,fname, latlon); 
 v.ts=(syr-1)*12+1; v.te=v.ts+nyr*12-1;
@@ -19,8 +19,12 @@ end
 v.sst.clm=squeeze(mean(v.sst.all,1));
 
 pp='/ts_all/'; fext =strcat('atmos.','static');
-varn='land_mask'; fname=strcat(tpath,expn,pp,fext,'.nc')
-a=ncread(fname,varn,[1 1],[Inf Inf]); a=permute(a,[2 1]);
+fn=strcat(tpath,expn,pp,fext,'.nc')
+if ~(exist(fn,'file') == 2)
+  fn=strcat('./atmos.static_',p.mod,'.nc')
+end
+varn='land_mask';
+a=ncread(fn,varn,[1 1],[Inf Inf]); a=permute(a,[2 1]);
 v.lm=a(v.ys:v.ye,v.xs:v.xe);
 
 v.sst.al0=getts(v.sst.all,v);

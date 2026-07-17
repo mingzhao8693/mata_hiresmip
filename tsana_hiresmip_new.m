@@ -33,13 +33,13 @@ lonx=o.lon; latx =o.lat;
 pp='/ts_all/'; fext =strcat('atmos.',yr1,'01-',yr2,'12.');
 varn='t_surf'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
 
-a=[190 240  -5  5];  v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg_nino34=v.sst;
-a=[210 270  -5  5];  v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg_nino3 =v.sst;
-a=[140 215  25  45]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg1=v.sst; %NPAC for TPI
-a=[170 270 -10  10]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg2=v.sst; %EPAC for TPI
-a=[150 200 -50 -15]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg3=v.sst; %SPAC for TPI
-a=[200 250  10  25]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg4=v.sst; %NEPACfor PMM
-a=[300 340  10  20]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr); reg5=v.sst; %NATL for AMM
+a=[190 240  -5  5];  v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr,p); reg_nino34=v.sst;
+a=[210 270  -5  5];  v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr,p); reg_nino3 =v.sst;
+a=[140 215  25  45]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr,p); reg1=v.sst; %NPAC for TPI
+a=[170 270 -10  10]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr,p); reg2=v.sst; %EPAC for TPI
+a=[150 200 -50 -15]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr,p); reg3=v.sst; %SPAC for TPI
+a=[200 250  10  25]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr,p); reg4=v.sst; %NEPACfor PMM
+a=[300 340  10  20]; v=get_reg_sst(tpath,expn,fname,varn,a,syr,nyr,p); reg5=v.sst; %NATL for AMM
 
 pp='/ts_all/'; fext =strcat('atmos.',yr1,'01-',yr2,'12.');
 varn='t_surf'; fname=strcat(tpath,expn,pp,fext,varn,'.nc')
@@ -72,7 +72,9 @@ o.dummy.clm(:,:,:)=0; o.dummy.sea(:,:,:)=0; o.dummy.ann(:,:)=0;
 
 pp='/ts_all/'; fext =strcat('atmos.','static');
 varn='land_mask'; fname=strcat(tpath,expn,pp,fext,'.nc')
-%fname=strcat('./atmos.static.',p.mod,'.nc'); fname
+if ~(exist(fname,'file') == 2)
+  fname=strcat('./atmos.static_',p.mod,'.nc')
+end
 a=ncread(fname,varn,[1 1],[Inf Inf]); a=permute(a,[2 1]);
 v.lm0=a(v.ys:v.ye,v.xs:v.xe); 
 

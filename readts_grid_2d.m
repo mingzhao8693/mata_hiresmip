@@ -36,7 +36,9 @@ v.aa = v.aa0/amean;
 
 if exist('mod','var')
   fn=strcat(tpath,expn,'/ts_all/atmos.static.nc')
-  %fn=strcat('./atmos.static.',mod,'.nc')
+  if ~(exist(fn,'file') == 2)
+    fn=strcat('./atmos.static_',mod,'.nc')
+  end
   a=ncread(fn,'land_mask',[1 1],[Inf Inf]);
   a=permute(a,[2 1]); v.lmg=a;
   v.lm0=a(v.ys:v.ye,v.xs:v.xe);

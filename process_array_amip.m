@@ -1,9 +1,11 @@
 function z0=process_array_amip(v,opt)
-  %load('/archive/Ming.Zhao/awg/warsaw/c96L33_am4p0_longamip_1850rad/c96L33_am4p0_longamip_1850rad_global_opt2.c48_tsana_hiresmip_new_ivt_1979-2014_1870-2014_do_3d_atm_2_do_trend_0.mat');
+%load('/archive/Ming.Zhao/awg/warsaw/c96L33_am4p0_longamip_1850rad/c96L33_am4p0_longamip_1850rad_global_opt2.c48_tsana_hiresmip_new_ivt_1979-2014_1870-2014_do_3d_atm_2_do_trend_0.mat');
+  z0.expn=v.expn; z0.yr1=v.t1; z0.yr2=v.t2-1;
   z0.sea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; s=v.s;
   z0.lat=s.lat; z0.lon=s.lon; z0.nlat=s.nlat; z0.nlon=s.nlon; z0.lm=s.lm0; z0.aa=s.aa; z0.im=get4season_all(s.im); 
   
   a=squeeze(v.sfc.tsurf.all (:,:,:,:)); a=get4season_all(a); z0.tsurf =a; c.tsurf =squeeze(mean(a,1));
+  a=squeeze(v.sfc.ice.all   (:,:,:,:)); a=get4season_all(a); z0.ice   =a; c.ice   =squeeze(mean(a,1));
   a=squeeze(v.sfc.pcp.all   (:,:,:,:)); a=get4season_all(a); z0.pcp   =a; c.pcp   =squeeze(mean(a,1));
   a=squeeze(v.toa.netrad.all(:,:,:,:)); a=get4season_all(a); z0.netrad=a; c.netrad=squeeze(mean(a,1));
   a=squeeze(v.toa.lwcf.all  (:,:,:,:)); a=get4season_all(a); z0.lwcf  =a; c.lwcf  =squeeze(mean(a,1));
@@ -31,7 +33,7 @@ function z0=process_array_amip(v,opt)
     [latx,lonx]=loadlatlon('c48');
     z0=interp_miz(z0,lonx,latx);
   elseif opt==2;
-    z0=obtain_anom(z0)
+    z0=obtain_anom(z0);
   end
   
   return
