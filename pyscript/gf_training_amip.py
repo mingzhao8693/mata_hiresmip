@@ -38,7 +38,7 @@ if __name__ == "__main__":
     print('Variable=', varn, 'Season=', season, 'isea=', isea, 'val_split_pct=',val_split_pct,
           'use_memory=',use_memory,'sub_ens_size=',sub_ens_size,'num_draws=',num_draws,
           'lat_min=',lat_min,'lat_max=',lat_max)
-    
+
     fn = '/work/miz/mat_ml/c192L33_CM4X_amip_en.mat'
     f = h5py.File(fn, 'r')
     z = f['zx']
@@ -387,6 +387,59 @@ if __name__ == "__main__":
     print(f"   --> Mean Absolute Error (RMSE):    {mean_ens_rmse:.4f}")
     print("==================================================================\n")
 
+    # =====================================================================
+    #   7. NEW: CHRONOLOGICAL YEAR-BY-YEAR ACC & RMSE TABLE FOR ALL 71 YEARS
+    # =====================================================================
+    print("\n=====================================================================")
+    print("    CHRONOLOGICAL ENSEMBLE MEAN EVALUATION (1950 - 2020)")
+    print("=====================================================================")
+    print(f" {'YEAR':<6} | {'PERIOD':<12} | {'SPATIAL ACC (r)':<15} | {'RMSE (gpm)':<11}")
+    print("-" * 56)
+
+    full_ssta_4d = ssta_detrended  # (90, 144, num_ch, n_members, 71)
+    full_vara_4d = vara_detrended  # (90, 144, n_members, 71)
+
+    full_ssta_ens_mean = np.mean(full_ssta_4d, axis=3)  # (90, 144, num_ch, 71)
+    full_vara_ens_mean = np.mean(full_vara_4d, axis=2)  # (90, 144, 71)
+
+    for year_idx in range(n_years):
+        calendar_year = 1950 + year_idx
+        period_label = "Training" if calendar_year <= 2005 else "Verification"
+
+        sst_anomaly_slice = full_ssta_ens_mean[:, :, :, year_idx]
+        vara_true_original = full_vara_ens_mean[:, :, year_idx]
+
+        # Format input tensor
+        X_single = np.zeros((1, ssta.shape[0], ssta.shape[1], num_ch + 2), dtype=np.float32)
+        X_single[0, :, :, :num_ch] = sst_anomaly_slice
+        X_single[0, :, :, num_ch] = lat_norm
+        X_single[0, :, :, num_ch + 1] = lon_norm
+        X_tensor_single = torch.from_numpy(X_single).to(device)
+
+        with torch.no_grad():
+            pred_tensor_std = model(X_tensor_single, target_std=vara_std)
+            vara_ml_pred_std = pred_tensor_std.cpu().numpy()[0, :, :, 0]
+            vara_ml_pred = (vara_ml_pred_std * vara_std) + vara_mean
+
+        # Crop output vectors if a lat band focus is requested
+        if metrics_lat_band == 1:
+            v_true = vara_true_original[target_lat_indices, :].ravel()
+            v_pred = vara_ml_pred[target_lat_indices, :].ravel()
+        else:
+            v_true = vara_true_original.ravel()
+            v_pred = vara_ml_pred.ravel()
+
+        y_rmse = np.sqrt(np.mean((v_true - v_pred) ** 2))
+        y_acc = np.corrcoef(v_true, v_pred)[0, 1]
+
+        # Highlight separation between periods visually
+        if calendar_year == 2006:
+            print("-" * 56)
+
+        print(f" {calendar_year:<6} | {period_label:<12} | {y_acc:<15.4f} | {y_rmse:<11.4f}")
+
+    print("=====================================================================\n")
+
     # -----------------------------------------------------------------
     #   PLOT ENSEMBLE MEAN FOR THE FIRST & LAST VALIDATION YEARS (2006 & 2020)
     # -----------------------------------------------------------------
@@ -412,7 +465,7 @@ if __name__ == "__main__":
             vara_ml_pred_std = pred_tensor_std.cpu().numpy()[0, :, :, 0]
             vara_ml_pred = (vara_ml_pred_std * vara_std) + vara_mean
 
-        # Always print the plotted panel's local spatial metrics (matching chosen filter boundary)
+        # Match panel text metrics to your targeted latitude band choice
         if metrics_lat_band == 1:
             p_true = vara_true_original[target_lat_indices, :]
             p_pred = vara_ml_pred[target_lat_indices, :]

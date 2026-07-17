@@ -207,7 +207,7 @@ def run_toolbox_fno(ssta, vara, lat, lon, varn, sea, val_split_pct=0.15,
         print("--> [COLD START] Initializing network weights with normal distribution.")
         lr = 0.001    # Keep 1e-3 as the default starting learning rate for cold start
         
-    epochs = 30
+    epochs = 5
     batch_size = 16
     
     #optimizer = optim.Adam(model.parameters(), lr=lr)
