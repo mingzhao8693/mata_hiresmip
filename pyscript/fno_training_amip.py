@@ -9,24 +9,28 @@ from get_array import get_array
 from fno_model import run_toolbox_fno  # Clean import of the original FNO pipeline
 
 if __name__ == "__main__":
-#ex: python gf_training_amip.py z500 JJA val_split_pct use_memory(0) sub_ens_size(5) num_draws (8) lat_min(15.0) lat_max(75.0)
-#ex: python gf_training_amip.py z500 JJA 0             0             5             8               15.0          75.0
+#ex: python fno_training_amip.py z500 JJA  dataset  val_split_pct use_memory(0) sub_ens_size(5) num_draws (8) lat_min(15.0) lat_max(75.0)
+#ex: python fno_training_amip.py z500 JJA  0        0             0             5               8             15.0          75.0         
     varn   = sys.argv[1]
     season = sys.argv[2]
-    val_split_pct = float(sys.argv[3])  # This parameter is bypassed when val_split_pct = 0
+    # Read the 3rd arguments for dataset choice
+    dataset = int(sys.argv[3]) if len(sys.argv) > 3 else 0
+    # Read the 4th argument for percentage for splitting data into training vs verfication set
+    val_split_pct = float(sys.argv[4])  # This parameter is bypassed when val_split_pct = 0
     
-    # Read the 4th argument: 0 for Single Season, 1 for Multi-Season Memory (defaults to 0 if omitted)
-    use_memory = int(sys.argv[4]) if len(sys.argv) > 4 else 0
+    # Read the 5th argument: 0 for Single Season, 1 for Multi-Season Memory (defaults to 0 if omitted)
+    use_memory = int(sys.argv[5]) if len(sys.argv) > 5 else 0
 
-    # Read the 5th argument: Size of sub-ensemble groups to average (defaults to 1 = individual members)
-    sub_ens_size = int(sys.argv[5]) if len(sys.argv) > 5 else 1
+    # Read the 6th argument: Size of sub-ensemble groups to average (defaults to 1 = individual members)
+    sub_ens_size = int(sys.argv[6]) if len(sys.argv) > 6 else 1
 
-    # Read the 6th argument: Number of unique random combinations to draw per year (defaults to 1)
-    num_draws = int(sys.argv[6]) if len(sys.argv) > 6 else 1
+    # Read the 7th argument: Number of unique random combinations to draw per year (defaults to 1)
+    num_draws = int(sys.argv[7]) if len(sys.argv) > 7 else 1
 
-    # Read the 7th and 8th arguments for dynamic latitude band focusing (defaults to full global grid)
-    lat_min = float(sys.argv[7]) if len(sys.argv) > 7 else -90.0
-    lat_max = float(sys.argv[8]) if len(sys.argv) > 8 else 90.0
+    # Read the 8th and 9th arguments for dynamic latitude band focusing (defaults to full global grid)
+    lat_min = float(sys.argv[8]) if len(sys.argv) > 8 else -90.0
+    lat_max = float(sys.argv[9]) if len(sys.argv) > 9 else 90.0
+    
     
     # Determine if a targeted sub-region configuration is requested
     metrics_lat_band = 1 if ((lat_min > -90.0) or (lat_max < 90.0)) else 0
@@ -35,15 +39,27 @@ if __name__ == "__main__":
     sea = ['ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'] 
     isea = sea.index(season)
 
-    print('Variable=', varn, 'Season=', season, 'isea=', isea, 'val_split_pct=',val_split_pct,
-          'use_memory=',use_memory,'sub_ens_size=',sub_ens_size,'num_draws=',num_draws,
-          'lat_min=',lat_min,'lat_max=',lat_max)
+    print(f"--> Variable={varn}, Season={season}, isea={isea}, val_split_pct={val_split_pct},"
+          f" use_memory={use_memory}, sub_ens_size={sub_ens_size}, num_draws={num_draws},"
+          f" lat_min={lat_min}, lat_max={lat_max}")
 
-    fn = '/work/miz/mat_ml/c192L33_CM4X_amip_en.mat'
+    if dataset == 0:
+        # 25 member ensemble C192L33_CM4X_amip_en simulations, each from 1950 to 2020 inclusive
+        n_members = 25; n_years = 71;  yearlst=np.arange(1950, 2021); fn='/work/miz/mat_ml/c192L33_CM4X_amip_en.mat'
+    elif dataset == 1:
+        # 11 member ensemble of c96L33_am4p0_longamip_en simulations from 1870 to 2014 inclusive
+        n_members = 11; n_years = 145; yearlst=np.arange(1870, 2015); fn='/work/miz/mat_ml/c96L33_am4p0_longamip_en.mat'
+    elif dataset == 2:
+        # 153 member ensemble of c96L33_am4p0_2010climo_GF_en simulations from 1 to 30 inclusive
+        n_members = 30; n_years = 153; yearlst=np.arange(1, 31);      fn='/work/miz/mat_ml/c96L33_am4p0_2010climo_GF_en_rot.mat'
+    elif dataset == 3:
+        # 100 member ensemble of c192L33_am4p0_2010climo_trend_en simulations from 1 to 30 inclusive
+        n_members = 100; n_years = 12; yearlst=np.arange(1, 100);     fn='/work/miz/mat_ml/c192L33_am4p0_2010climo_trend_en.mat'
+    
     f = h5py.File(fn, 'r')
     z = f['zx']
 
-    print("Loading file...", fn)
+    print(f"--> Loading and analyzing file = {fn}")
     lat   = get_array(z, 'lat')
     lon   = get_array(z, 'lon')
     lm    = get_array(z, 'lm')
@@ -52,7 +68,8 @@ if __name__ == "__main__":
     ice   = get_array(z, 'ice')
     varna = get_array(z, varn)
 
-    print(f"\nDo AMIP Multi-Member Ensemble training using FNO for {varn} {season} season")
+    print(f"--> Multi-Member Ensemble training for {varn} {season} season; Data: n_members={n_members}; n_years={n_years};")
+    print(f"--> n_members={n_members}; n_years={n_years}; year_start={yearlst[0]}; year_end={yearlst[-1]}")
 
     im_2d = np.squeeze(im[isea, :, :])
 
@@ -89,10 +106,7 @@ if __name__ == "__main__":
     a = ice[:, input_seasons, :, :]  
     ice_all = np.transpose(a, (2, 3, 1, 0))    # (90, 144, num_ch, 355)
 
-    # Let's reshape this to: (lat, lon, members, years) -> (90, 144, 20, 71)
-    # We know 20 members * 71 years = 1240 slices. Let's make sure the array dimensions match.
-    n_members = 25
-    n_years = 71  # 1950 to 2020 inclusive
+    # Let's reshape this to: (lat, lon, n_members, n_years) e.g., (90, 144, 25, 71)
     
     amip_ssta_slice = ssta_all[:, :, :, :]
     amip_icem_slice = ice_all[:, :, :, :]
@@ -128,22 +142,22 @@ if __name__ == "__main__":
         vara_detrended[:, :, m, :] = amip_vara[:, :, m, :] - vara_trend
 
     # Mask land values post-detrending to clean numerical anomalies
-    land_mask = (lm > 0.01)
+    land_mask = (lm > 0)
     lnd_mask = land_mask[:, :, None, None, None]
-    ice_mask = amip_icem > 0.01
+    ice_mask = amip_icem > 0
     combined_mask = lnd_mask | ice_mask
     mask_option = 1
     if mask_option == 1:
-        print("mask both land and ice covered regions")
+        print(f"--> Mask both land and ice covered regions")
         ssta_detrended = np.where(combined_mask, 0.0, ssta_detrended)
     elif mask_option == 2:
-        print("mask land region only")
+        print(f"--> Mask land region only")
         ssta_detrended = np.where(lnd_mask, 0.0, ssta_detrended)
     elif mask_option == 3:
-        print("mask ice covered region only")
+        print(f"--> Mask ice covered region only")
         ssta_detrended = np.where(ice_mask, 0.0, ssta_detrended)
     else:
-        print("no masking is performed for surface temperature")
+        print(f"--> No masking is performed for surface temperature")
 
     # =====================================================================
     #   2b. OPTIONAL SUB-ENSEMBLE AVERAGING / NOISE REDUCTION / COMBINATORIAL AUGMENTATION
@@ -199,10 +213,12 @@ if __name__ == "__main__":
     #   3. CHRONOLOGICAL SPLIT (Years 1950-2005 vs 2006-2020)
     # =====================================================================
     # 1950 to 2005 is 56 years. Remaining 15 years are used for out-of-sample validation.
-    train_year_cutoff = 56 
+    train_year_cutoff = int(0.85 * n_years)
     val_year_count = n_years - train_year_cutoff  # 15 years
     
-    print(f"--> Splitting chronological blocks: Training (1-{train_year_cutoff} yrs) | Validation ({train_year_cutoff+1}-{n_years} yrs)")
+    print(f"--> Splitting chronological blocks:" 
+          f" Training: (1-{train_year_cutoff} yrs = {yearlst[0]}-{yearlst[train_year_cutoff-1]});"
+          f" Validation: ({train_year_cutoff+1}-{n_years} yrs = {yearlst[train_year_cutoff]}-{yearlst[-1]})")
     
     ssta_train_block = ssta_detrended[:, :, :, :, :train_year_cutoff]  # (90, 144, num_ch, n_members, 56)
     ssta_val_block   = ssta_detrended[:, :, :, :, train_year_cutoff:]  # (90, 144, num_ch, n_members, 15)
@@ -227,7 +243,7 @@ if __name__ == "__main__":
     vara = np.concatenate([vara_train, vara_val], axis=-1)  # (90, 144, total_samples)
 
     print(f"--> Dataset shapes structured for FNO:")
-    print(f"    SSTA: {ssta.shape} | VARA: {vara.shape}")
+    print(f"--> SSTA: {ssta.shape} | VARA: {vara.shape}")
 
     # =====================================================================
     #   5. ESTABLISH EXPLICIT BOUNDARY INDICES & LOSS PROFILE MASK GENERATION
@@ -238,28 +254,43 @@ if __name__ == "__main__":
     print(f"--> Custom training samples count: {len(train_idx_list)}")
     print(f"--> Custom verification samples count: {len(val_idx_list)}")
 
-    opt_pat = False
+    opt_pat = True
+    print(f"--> opt_pat = {opt_pat}")
 
     # Dynamically generate 2D spatial weight mask to restrict backpropagation based on user inputs
     loss_weight_mask = None
     if metrics_lat_band == 1:
         # Resolve target grid row indicators matching bounds parameters
-        print("latitude band =", lat_min, lat_max);
+        print(f"--> Latitude band = {lat_min} - {lat_max}");
         target_lat_indices = np.where((lat >= lat_min) & (lat <= lat_max))[0]
         loss_weight_mask = np.zeros((90, 144), dtype=np.float32)
         loss_weight_mask[target_lat_indices, :] = 1.0
+        
+    # Define foundation weight file path
+    # Construct a fully unique foundation checkpoint path encoding variable, season, years, and latitude domain
+    #foundation_ckpt_path = f"/work/miz/mat_hiresmip/fno_gf/fno_pretrained_{n_years}yr_{varn}_{season}_lat{int(lat_min)}to{int(lat_max)}.pt"
+    foundation_ckpt_path = f"/work/miz/mat_hiresmip/fno_gf/fno_pretrained_145yr_{varn}_{season}_lat{int(lat_min)}to{int(lat_max)}.pt"
+
+    # --- WARM START / COLD START TOGGLE ---
+    # Automatically warm start if pre-trained weights exist and we are training on a sub-dataset (e.g., dataset 0)
+    ckpt_to_load = foundation_ckpt_path if (dataset != 1 and os.path.exists(foundation_ckpt_path)) else None
 
     # Execute FNO training using the custom signature parameters setup
     model = run_toolbox_fno(ssta, vara, lat, lon, varn, season, val_split_pct=0.0,
                             val_idx_list=val_idx_list, train_idx_list=train_idx_list,
-                            optimize_for_pattern=opt_pat, checkpoint_path=None,
-                            loss_weight_mask=loss_weight_mask)
-
+                            optimize_for_pattern=opt_pat, checkpoint_path=ckpt_to_load,
+                            loss_weight_mask=loss_weight_mask, epochs=10)
+    
+    # Save foundation weights specifically when running on the 145-year dataset (dataset == 1)
+    if dataset == 1:
+        torch.save(model.to('cpu').state_dict(), foundation_ckpt_path)
+        print(f"--> [FOUNDATION MODEL] Saved {n_years}-year pre-trained weights to: {foundation_ckpt_path}")
+        
     # =====================================================================
     #   6. DUAL-MODE VERIFICATION AND VISUALIZATION BLOCK
     # =====================================================================
     print("\n=====================================================================")
-    print("    RUNNING DETAILED OUT-OF-SAMPLE VERIFICATION (2006-2020)")
+    print("    RUNNING DETAILED OUT-OF-SAMPLE VERIFICATION (yearlst[val_year_count]-yearlst[-1])")
     print("=====================================================================")
         
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -273,6 +304,9 @@ if __name__ == "__main__":
     # Standard scale targets strictly on training bounds parameters
     vara_mean = vara_train.mean()
     vara_std = vara_train.std() + 1e-8
+
+    # Calculate standard deviation of the training ensemble mean (for proper ensemble-mean scaling)
+    vara_train_ens_std = np.mean(vara_train_block, axis=2).std() + 1e-8
 
     # Configure lat band index filters if option is activated
     if metrics_lat_band == 1:
@@ -344,9 +378,9 @@ if __name__ == "__main__":
         X_tensor_single = torch.from_numpy(X_single).to(device)
 
         with torch.no_grad():
-            pred_tensor_std = model(X_tensor_single, target_std=vara_std)
+            pred_tensor_std = model(X_tensor_single, target_std=vara_train_ens_std)
             vara_ml_pred_std = pred_tensor_std.cpu().numpy()[0, :, :, 0]
-            vara_ml_pred = (vara_ml_pred_std * vara_std) + vara_mean
+            vara_ml_pred = (vara_ml_pred_std * vara_train_ens_std) + vara_mean
 
         # Conditionally restrict metrics vectors to specified latitude band
         if metrics_lat_band == 1:
@@ -370,7 +404,7 @@ if __name__ == "__main__":
     # -----------------------------------------------------------------
     print("\n================ VERIFICATION PERFORMANCE SUMMARY ================")
     print(f"Variable: {varn} | Season: {season}")
-    print(f"Validation Period: 2006-2020 ({val_year_count} Years)")
+    print(f"Validation Period: {val_year_count} Years)")
     if sub_ens_size > 1 and num_draws > 1:
         print(f"Ensemble Configuration: Combinatorial Augmentation ({num_draws} Draws of size {sub_ens_size} per year)")
     else:
@@ -390,26 +424,27 @@ if __name__ == "__main__":
     # =====================================================================
     #   7. NEW: CHRONOLOGICAL YEAR-BY-YEAR ACC & RMSE TABLE FOR ALL 71 YEARS
     # =====================================================================
-    print("\n=====================================================================")
-    print("    CHRONOLOGICAL ENSEMBLE MEAN EVALUATION (1950 - 2020)")
-    print("=====================================================================")
-    print(f" {'YEAR':<6} | {'PERIOD':<12} | {'SPATIAL ACC (r)':<15} | {'RMSE (gpm)':<11}")
-    print("-" * 56)
+    print("\n====================================================================================================")
+    print("    CHRONOLOGICAL ENSEMBLE MEAN EVALUATION (1950 - 2020) WITH AMIP SUB-ENSEMBLE BASELINE")
+    print("====================================================================================================")
+    print(f" {'YEAR':<6} | {'PERIOD':<12} | {'ML ACC (r)':<12} | {'ML RMSE':<10} | {'SUB-ENS ACC (r)':<15} | {'SUB-ENS RMSE':<12}")
+    print("-" * 88)
 
     full_ssta_4d = ssta_detrended  # (90, 144, num_ch, n_members, 71)
     full_vara_4d = vara_detrended  # (90, 144, n_members, 71)
 
+    # Compute full ensemble mean across all members to serve as the ground truth target
     full_ssta_ens_mean = np.mean(full_ssta_4d, axis=3)  # (90, 144, num_ch, 71)
     full_vara_ens_mean = np.mean(full_vara_4d, axis=2)  # (90, 144, 71)
 
     for year_idx in range(n_years):
-        calendar_year = 1950 + year_idx
-        period_label = "Training" if calendar_year <= 2005 else "Verification"
+        calendar_year = yearlst[0] + year_idx
+        period_label = "Training" if calendar_year <= yearlst[train_year_cutoff-1] else "Verification"
 
         sst_anomaly_slice = full_ssta_ens_mean[:, :, :, year_idx]
         vara_true_original = full_vara_ens_mean[:, :, year_idx]
 
-        # Format input tensor
+        # Format input tensor for ML model
         X_single = np.zeros((1, ssta.shape[0], ssta.shape[1], num_ch + 2), dtype=np.float32)
         X_single[0, :, :, :num_ch] = sst_anomaly_slice
         X_single[0, :, :, num_ch] = lat_norm
@@ -417,11 +452,35 @@ if __name__ == "__main__":
         X_tensor_single = torch.from_numpy(X_single).to(device)
 
         with torch.no_grad():
-            pred_tensor_std = model(X_tensor_single, target_std=vara_std)
+            pred_tensor_std = model(X_tensor_single, target_std=vara_train_ens_std)
             vara_ml_pred_std = pred_tensor_std.cpu().numpy()[0, :, :, 0]
-            vara_ml_pred = (vara_ml_pred_std * vara_std) + vara_mean
+            vara_ml_pred = (vara_ml_pred_std * vara_train_ens_std) + vara_mean
 
-        # Crop output vectors if a lat band focus is requested
+        # --- COMPUTE EACH DRAWN SUB-ENSEMBLE'S SKILL AGAINST THE FULL ENSEMBLE TARGET ---
+        sub_acc_list = []
+        sub_rmse_list = []
+
+        for m_idx in range(n_members):  # Iterate through every drawn sub-ensemble slice for this year
+            sub_vara_slice = full_vara_4d[:, :, m_idx, year_idx]
+
+            if metrics_lat_band == 1:
+                v_true_sub = vara_true_original[target_lat_indices, :].ravel()
+                v_sub = sub_vara_slice[target_lat_indices, :].ravel()
+            else:
+                v_true_sub = vara_true_original.ravel()
+                v_sub = sub_vara_slice.ravel()
+
+            s_rmse = np.sqrt(np.mean((v_true_sub - v_sub) ** 2))
+            s_acc  = np.corrcoef(v_true_sub, v_sub)[0, 1]
+
+            sub_acc_list.append(s_acc)
+            sub_rmse_list.append(s_rmse)
+
+        # Average the skill scores across all drawn sub-ensembles for this year
+        sub_acc = np.mean(sub_acc_list)
+        sub_rmse = np.mean(sub_rmse_list)
+
+        # Crop ML output vectors if a lat band focus is requested
         if metrics_lat_band == 1:
             v_true = vara_true_original[target_lat_indices, :].ravel()
             v_pred = vara_ml_pred[target_lat_indices, :].ravel()
@@ -429,30 +488,48 @@ if __name__ == "__main__":
             v_true = vara_true_original.ravel()
             v_pred = vara_ml_pred.ravel()
 
+        # ML model skill
         y_rmse = np.sqrt(np.mean((v_true - v_pred) ** 2))
         y_acc = np.corrcoef(v_true, v_pred)[0, 1]
 
         # Highlight separation between periods visually
-        if calendar_year == 2006:
-            print("-" * 56)
+        if calendar_year == yearlst[train_year_cutoff]:
+            print("-" * 88)
 
-        print(f" {calendar_year:<6} | {period_label:<12} | {y_acc:<15.4f} | {y_rmse:<11.4f}")
+        print(f" {calendar_year:<6} | {period_label:<12} | {y_acc:<12.4f} | {y_rmse:<10.4f} | {sub_acc:<15.4f} | {sub_rmse:<12.4f}")
 
-    print("=====================================================================\n")
+    print("====================================================================================================\n")
 
     # -----------------------------------------------------------------
-    #   PLOT ENSEMBLE MEAN FOR THE FIRST & LAST VALIDATION YEARS (2006 & 2020)
+    #   PLOT ENSEMBLE MEAN FOR 1 TRAINING YEAR & 2 VALIDATION YEARS
     # -----------------------------------------------------------------
-    verify_years = [0, val_year_count - 1]
-    actual_calendar_years = [2006, 2020]
+    # Select 1 strong training year (e.g., year index train_year_cutoff - 10) 
+    # plus the first & last out-of-sample verification years
+    train_sample_yr_idx = max(0, train_year_cutoff - 10) # Representative training year
+    
+    # Global 4D ensemble mean arrays across the entire dataset timeline
+    full_ssta_4d = ssta_detrended
+    full_vara_4d = vara_detrended
+    full_ssta_ens_mean = np.mean(full_ssta_4d, axis=3) # (90, 144, num_ch, n_years)
+    full_vara_ens_mean = np.mean(full_vara_4d, axis=2) # (90, 144, n_years)
 
-    fig, axes = plt.subplots(2, 3, figsize=(22, 10), sharex=True, sharey=True)
+    # Define indices in the full timeline: [Training Year, First Val Year, Last Val Year]
+    target_year_indices = [train_sample_yr_idx, train_year_cutoff, n_years - 1]
+    actual_calendar_years = [yearlst[idx] for idx in target_year_indices]
+    period_types = ["Training", "Verification (Start)", "Verification (End)"]
+    
+    print(f"--> Target Plotting Year Indices: {target_year_indices}")
+    print(f"--> Target Plotting Calendar Years: {actual_calendar_years}")
+    
+    # Expand canvas from 2x3 to 3x3 layout to accommodate the training year row
+    fig, axes = plt.subplots(3, 3, figsize=(22, 14), sharex=True, sharey=True)
 
-    for row_idx, year_idx in enumerate(verify_years):
+    for row_idx, global_year_idx in enumerate(target_year_indices):
         calendar_year = actual_calendar_years[row_idx]
+        period_label = period_types[row_idx]
 
-        sst_anomaly_slice = val_ssta_ens_mean[:, :, :, year_idx]
-        vara_true_original = val_vara_ens_mean[:, :, year_idx]
+        sst_anomaly_slice = full_ssta_ens_mean[:, :, :, global_year_idx]
+        vara_true_original = full_vara_ens_mean[:, :, global_year_idx]
 
         X_single = np.zeros((1, ssta.shape[0], ssta.shape[1], num_ch + 2), dtype=np.float32)
         X_single[0, :, :, :num_ch] = sst_anomaly_slice
@@ -461,11 +538,11 @@ if __name__ == "__main__":
         X_tensor_single = torch.from_numpy(X_single).to(device)
 
         with torch.no_grad():
-            pred_tensor_std = model(X_tensor_single, target_std=vara_std)
+            pred_tensor_std = model(X_tensor_single, target_std=vara_train_ens_std)
             vara_ml_pred_std = pred_tensor_std.cpu().numpy()[0, :, :, 0]
-            vara_ml_pred = (vara_ml_pred_std * vara_std) + vara_mean
+            vara_ml_pred = (vara_ml_pred_std * vara_train_ens_std) + vara_mean
 
-        # Match panel text metrics to your targeted latitude band choice
+        # Match panel text metrics to targeted latitude band choice
         if metrics_lat_band == 1:
             p_true = vara_true_original[target_lat_indices, :]
             p_pred = vara_ml_pred[target_lat_indices, :]
@@ -484,34 +561,34 @@ if __name__ == "__main__":
 
         vmin_target, vmax_target = np.min(vara_true_original), np.max(vara_true_original)
 
-        # Panel 1: Input SST Anomaly Forcing (Ensemble Mean - Target Season)
+        # Panel 1: Input SST Anomaly Forcing
         im1 = axes[row_idx, 0].pcolormesh(lon, lat, sst_plot_slice, cmap='RdBu_r', vmin=vmin_sst, vmax=vmax_sst, shading='auto')
-        axes[row_idx, 0].set_title(f"Year {calendar_year}: ENS-MEAN Input SST Anomaly ({season})", fontsize=11, fontweight='bold')
+        axes[row_idx, 0].set_title(f"[{period_label}] Year {calendar_year}: SST Anomaly", fontsize=11, fontweight='bold')
         axes[row_idx, 0].set_ylabel("Latitude", fontsize=10)
-        if row_idx == 1: axes[row_idx, 0].set_xlabel("Longitude", fontsize=10)
+        if row_idx == 2: axes[row_idx, 0].set_xlabel("Longitude", fontsize=10)
         axes[row_idx, 0].grid(True, linestyle='--', alpha=0.5)
         cbar1 = fig.colorbar(im1, ax=axes[row_idx, 0], orientation='horizontal', pad=0.12, shrink=0.75)
         cbar1.set_label("SST Anomaly (°C)", fontsize=9)
 
-        # Panel 2: Ground Truth Physical Response (Ensemble Mean)
+        # Panel 2: Ground Truth Physical Response
         im2 = axes[row_idx, 1].pcolormesh(lon, lat, vara_true_original, cmap='RdBu_r', vmin=vmin_target, vmax=vmax_target, shading='auto')
-        axes[row_idx, 1].set_title(f"Year {calendar_year}: True ENS-MEAN response ({varn})", fontsize=11, fontweight='bold')
-        if row_idx == 1: axes[row_idx, 1].set_xlabel("Longitude", fontsize=10)
+        axes[row_idx, 1].set_title(f"Year {calendar_year}: True Response ({varn})", fontsize=11, fontweight='bold')
+        if row_idx == 2: axes[row_idx, 1].set_xlabel("Longitude", fontsize=10)
         axes[row_idx, 1].grid(True, linestyle='--', alpha=0.5)
         cbar2 = fig.colorbar(im2, ax=axes[row_idx, 1], orientation='horizontal', pad=0.12, shrink=0.75)
         cbar2.set_label("Physical Units", fontsize=9)
 
-        # Panel 3: Model Spatial Prediction Output with metrics
+        # Panel 3: Model Spatial Prediction
         im3 = axes[row_idx, 2].pcolormesh(lon, lat, vara_ml_pred, cmap='RdBu_r', vmin=vmin_target, vmax=vmax_target, shading='auto')
-        axes[row_idx, 2].set_title(f"RMSE: {rmse_plot:.3f} | Spatial Corr (r): {correlation_plot:.3f}", fontsize=11, fontweight='bold', color='darkred')
-        if row_idx == 1: axes[row_idx, 2].set_xlabel("Longitude", fontsize=10)
+        axes[row_idx, 2].set_title(f"RMSE: {rmse_plot:.3f} | ACC (r): {correlation_plot:.3f}", fontsize=11, fontweight='bold', color='darkred')
+        if row_idx == 2: axes[row_idx, 2].set_xlabel("Longitude", fontsize=10)
         axes[row_idx, 2].grid(True, linestyle='--', alpha=0.5)
         cbar3 = fig.colorbar(im3, ax=axes[row_idx, 2], orientation='horizontal', pad=0.12, shrink=0.75)
         cbar3.set_label("Physical Units", fontsize=9)
 
-    plt.suptitle(f"Global {varn} Response Out-of-Sample ENSEMBLE-MEAN Verification ({season} Season)", fontsize=15, y=0.98, fontweight='bold')
+    plt.suptitle(f"Global {varn} Response: In-Sample Training vs Out-of-Sample Verification ({season}); FNO", fontsize=15, y=0.99, fontweight='bold')
 
-    output_png = f"fno_verification_comparison_6panel_ensmean_{season}.png"
+    output_png = f"fno_verification_comparison_9panel_train_val_{season}.png"
     plt.savefig(output_png, dpi=300, bbox_inches='tight')
-    print(f"--> Ensemble-mean verification comparison plot saved to: {output_png}")
+    print(f"--> Training vs. Validation ensemble-mean plot saved to: {output_png}")
     plt.show()
