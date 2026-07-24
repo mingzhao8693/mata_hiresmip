@@ -29,6 +29,7 @@ function z0=process_array_amip(v,opt)
   a=v.atm.om(k).all; a=get4season_all(a); z0.om200=a; c.om200=squeeze(mean(a,1)); 
 
   z0.clm=c;
+  
   if opt==1; %c48
     [latx,lonx]=loadlatlon('c48');
     z0=interp_miz(z0,lonx,latx);
@@ -37,3 +38,5 @@ function z0=process_array_amip(v,opt)
   end
   
   return
+
+  

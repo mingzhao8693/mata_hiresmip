@@ -34,7 +34,7 @@ tpath='/archive/Ming.Zhao/awg/2023.04/';
 %expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2_p2K'; ardir='AR_climlmt';
 %expn='c192L33_CM4X_amip_p2K'; ardir='AR_climlmt'; 
 %expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_amip_24'; ardir='AR_climlmt'; 
+expn='c192L33_CM4X_amip_25'; ardir='AR_climlmt'; 
 yr1=1950; yr2=2020; pct=[99 99.9]; use_obs_tc=0;
 opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
