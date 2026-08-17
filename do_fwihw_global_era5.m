@@ -9,6 +9,8 @@ function [v]=do_fwihw_global_era5(tpath,expn,yr1,yr2,do_trend)
 %expn ='c192L33_CM4X_amip';                              yr1=1979; yr2=2020;
 
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
+fext=strcat('_',num2str(1979),'_',num2str(2020))
+ 
 fn=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correct.mat')
 if (exist(fn,'file') == 2)
   disp('load in file...'); load(fn); thresh=v.thresh; v

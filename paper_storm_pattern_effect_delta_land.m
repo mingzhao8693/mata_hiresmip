@@ -34,7 +34,7 @@ tpath='/archive/Ming.Zhao/awg/2023.04/';
 %expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2_p2K'; ardir='AR_climlmt';
 %expn='c192L33_CM4X_amip_p2K'; ardir='AR_climlmt'; 
 %expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_amip_25'; ardir='AR_climlmt'; 
+expn='c192L33_CM4X_amip_26'; ardir='AR_climlmt'; 
 yr1=1950; yr2=2020; pct=[99 99.9]; use_obs_tc=0;
 opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -344,7 +344,7 @@ p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
 A0='ERA5; '; a0='Control; '; a1='SPEAR-pattern M; '; a2='Observed-pattern; '; a3='Uniform';
 nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=3; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
-p.vname='atm_pcp_evap_pme_om500'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
+p.vname='atm_pcp_evap_pme_mrsos'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
 del=' $\Delta$'; s0='PREC'; s1='EVAP'; s2='PME'; s3='MRSOS'; p.flipcmap=0; p.do_bias=0;
 p.S0=strcat(A0,'~(',p.sea,')~',s0);
 p.s0=strcat(a0,'~(',p.sea,')~',s0);
@@ -357,15 +357,13 @@ p.S3=strcat(A0,'~(',p.sea,')~',s1); p.s3=strcat(a0,'~(',p.sea,')~',s1); p.s4 =st
 p.S6=strcat(A0,'~(',p.sea,')~',s2); p.s6=strcat(a0,'~(',p.sea,')~',s2); p.s7 =strcat(a1,del,s2); p.s8 =strcat(a2,del,s2); 
 p.S9=strcat(A0,'~(',p.sea,')~',s3); p.s9=strcat(a0,'~(',p.sea,')~',s3); p.s10=strcat(a1,del,s3); p.s11=strcat(a2,del,s3); 
 p.unit0 ='mm day^{-1}';          p.unit0_bar =p.unit0;
-p.unit1 ='mm day^{-1}';          p.unit1_bar =p.unit1;
+p.unit1 ='mm day^{-1} K^{-1}';   p.unit1_bar =p.unit1;
 p.unit3 ='mm day^{-1}';          p.unit3_bar =p.unit3;
-p.unit4 ='mm day^{-1}';          p.unit4_bar =p.unit4;
+p.unit4 ='mm day^{-1} K^{-1}';   p.unit4_bar =p.unit4;
 p.unit6 ='mm day^{-1}';          p.unit6_bar =p.unit6;
-p.unit7 ='mm day^{-1}';          p.unit7_bar =p.unit7;
-p.unit9 ='hPa day^{-1}';         p.unit9_bar =p.unit9;
-p.unit10='hPa day^{-1}';         p.unit10_bar=p.unit10;
+p.unit7 ='mm day^{-1} K^{-1}';   p.unit7_bar =p.unit7;
 p.unit9 ='kg m^{-2}';            p.unit9_bar =p.unit9;
-p.unit10='kg m^{-2}';            p.unit10_bar=p.unit10;
+p.unit10='kg m^{-2} K^{-1}';     p.unit10_bar=p.unit10;
 
 p.cmin0=    0.0; p.cmax0=15;  p.cmin1 =-2;  p.cmax1 =2;
 p.cmin3=    0.0; p.cmax3=10;  p.cmin4 =-2;  p.cmax4 =2;
@@ -388,7 +386,7 @@ p.xs=min(find(s.lon(:)>=lon1)); p.xe=max(find(s.lon(:)<=lon2));
 a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=a; %id=id.*a; 
 id=(id==1); aa=aa0(id); aa=aa/mean(aa); nlon=length(p.lon); %figure; pcolor(id); shading flat; colorbar;
 %colume 1
-v=-z.V0.sfc.pcp.sea; a=v; A0=squeeze(a(isea,:,:)); 
+v=z.V0.sfc.pcp_ec.sea;  a=v; A0=squeeze(a(isea,:,:))*86400; 
 v=z.v0.sfc.pcp.sea;  a=v; a0=squeeze(a(isea,:,:)); 
 v=z.w1.sfc.pcp.sea;  a=v; a1=squeeze(a(isea,:,:)); 
 v=z.w2.sfc.pcp.sea;  a=v; a2=squeeze(a(isea,:,:)); 
@@ -406,7 +404,7 @@ a=a0;            p.z3 =a; p.dz3 =mean(a(id).*aa); p.z3_bin=[0:50:150];
 a=(a1-a0)/p.dT1; p.z4 =a; p.dz4 =mean(a(id).*aa); 
 a=(a2-a0)/p.dT2; p.z5 =a; p.dz5 =mean(a(id).*aa);
 %column 3
-v=-z.V0.sfc.pcp.sea-z.V0.sfc.evap.sea/LV0*86400; a=v; A0=squeeze(a(isea,:,:)); 
+v=z.V0.sfc.pcp_ec.sea*86400-z.V0.sfc.evap.sea/LV0*86400; a=v; A0=squeeze(a(isea,:,:)); 
 v=z.v0.sfc.pcp.sea-z.v0.sfc.evap.sea/LV0*86400;  a=v; a0=squeeze(a(isea,:,:)); 
 v=z.w1.sfc.pcp.sea-z.w1.sfc.evap.sea/LV0*86400;  a=v; a1=squeeze(a(isea,:,:)); 
 v=z.w2.sfc.pcp.sea-z.w2.sfc.evap.sea/LV0*86400;  a=v; a2=squeeze(a(isea,:,:)); 
@@ -416,26 +414,27 @@ a=(a1-a0)/p.dT1; p.z7=a; p.dz7=mean(a(id).*aa);
 a=(a2-a0)/p.dT2; p.z8=a; p.dz8=mean(a(id).*aa);
 %column 4
 k=11; k1=7; s3='OM200'; %200hPa omega
-k=7;  k1=5; s3='OM500'; %500hPa omega
-v=z.V0.atm.om(k1); a=v.sea; A0=squeeze(a(isea,:,:)); 
-v=z.v0.atm.om(k);  a=v.sea; a0=squeeze(a(isea,:,:))*864; 
-v=z.w1.atm.om(k);  a=v.sea; a1=squeeze(a(isea,:,:))*864; 
-v=z.w2.atm.om(k);  a=v.sea; a2=squeeze(a(isea,:,:))*864;
+%k=7;  k1=5; s3='OM500'; %500hPa omega
+%v=z.V0.atm.om(k1); a=v.sea; A0=squeeze(a(isea,:,:)); 
+%v=z.v0.atm.om(k);  a=v.sea; a0=squeeze(a(isea,:,:))*864; 
+%v=z.w1.atm.om(k);  a=v.sea; a1=squeeze(a(isea,:,:))*864; 
+%v=z.w2.atm.om(k);  a=v.sea; a2=squeeze(a(isea,:,:))*864;
 %a=z.V0.atm.twp.sea;                           A0=squeeze(a(isea,:,:)); 
 %v=z.v0.atm; a=v.wvp.sea+v.lwp.sea+v.iwp.sea;  a0=squeeze(a(isea,:,:)); 
 %v=z.w1.atm; a=v.wvp.sea+v.lwp.sea+v.iwp.sea;  a1=squeeze(a(isea,:,:)); 
 %v=z.w2.atm; a=v.wvp.sea+v.lwp.sea+v.iwp.sea;  a2=squeeze(a(isea,:,:)); 
 %v=z.V0.atm.twp.sea;   a=v; A0=squeeze(a(isea,:,:)); 
-%v=z.v0.sfc.mrsos.sea; a=v; a0=squeeze(a(isea,:,:)); 
-%v=z.w1.sfc.mrsos.sea; a=v; a1=squeeze(a(isea,:,:)); 
-%v=z.w2.sfc.mrsos.sea; a=v; a2=squeeze(a(isea,:,:)); 
+v=z.V0.sfc.mrsos.sea; a=v; A0=squeeze(a(isea,:,:))*0.10*1000; %convert unit from m3/m3 to kg/m2
+v=z.v0.sfc.mrsos.sea; a=v; a0=squeeze(a(isea,:,:));           %kg/m2
+v=z.w1.sfc.mrsos.sea; a=v; a1=squeeze(a(isea,:,:)); 
+v=z.w2.sfc.mrsos.sea; a=v; a2=squeeze(a(isea,:,:)); 
 a=A0;            p.Z9 =a; p.dZ9 =mean(a(id).*aa); 
 a=a0;            p.z9 =a; p.dz9 =mean(a(id).*aa); p.z9_bin=[980:5:1020];
 a=(a1-a0)/p.dT1; p.z10=a; p.dz10=mean(a(id).*aa); p.isig10=id;
 a=(a2-a0)/p.dT2; p.z11=a; p.dz11=mean(a(id).*aa); p.isig11=id;
 p.cfact=2; p.phi_bin=[0:50:300]; p.phi_co='r';
 
-p.fmt='eps'; p.fmt='png';
+p.fmt='eps'; %p.fmt='png';
 p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed_scalar(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -447,9 +446,9 @@ p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed_scalar(p)
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
 A0='ERA5; '; a0='Control; '; a1='SPEAR-pattern M; '; a2='Observed-pattern; '; a3='Uniform';
-nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
-p.vname='atm_500_200_850_ivt'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea}; p.u200_bin=[25 30];
-del=' $\Delta$'; s0='Z500'''; s1='Z200'''; s2='Z850'''; s3='IWTCON'; p.flipcmap=0; p.do_bias=1;
+nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=3; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
+p.vname='atm_500_200_850_ivt'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea}; p.u200_bin=[15 20];
+del=' $\Delta$'; s0='Z500'''; s1='Z200'''; s2='Z850'''; s3='IWTCON'; p.flipcmap=0; p.do_bias=0;
 p.S0=strcat(A0,'~(',p.sea,')~',s0);
 p.s0=strcat(a0,'~(',p.sea,')~',s0);
 p.s1 =strcat(a1,'~',del,s0);
@@ -460,14 +459,14 @@ p.s2 =strcat(a2,'~',del,s0);
 p.S3=strcat(A0,'~(',p.sea,')~',s1); p.s3=strcat(a0,'~(',p.sea,')~',s1); p.s4 =strcat(a1,del,s1); p.s5 =strcat(a2,del,s1); 
 p.S6=strcat(A0,'~(',p.sea,')~',s2); p.s6=strcat(a0,'~(',p.sea,')~',s2); p.s7 =strcat(a1,del,s2); p.s8 =strcat(a2,del,s2); 
 p.S9=strcat(A0,'~(',p.sea,')~',s3); p.s9=strcat(a0,'~(',p.sea,')~',s3); p.s10=strcat(a1,del,s3); p.s11=strcat(a2,del,s3); 
-p.unit0 ='GPM';          p.unit0_bar =p.unit0;
-p.unit1 ='GPM';          p.unit1_bar =p.unit1;
-p.unit3 ='GPM';          p.unit3_bar =p.unit3;
-p.unit4 ='GPM';          p.unit4_bar =p.unit4;
-p.unit6 ='GPM';          p.unit6_bar =p.unit6;
-p.unit7 ='GPM';          p.unit7_bar =p.unit7;
-p.unit9 ='mm day^{-1}';  p.unit9_bar =p.unit9;
-p.unit10='mm day^{-1}';  p.unit10_bar=p.unit10;
+p.unit0 ='GPM';                 p.unit0_bar =p.unit0;
+p.unit1 ='GPM K^{-1}';          p.unit1_bar =p.unit1;
+p.unit3 ='GPM';                 p.unit3_bar =p.unit3;
+p.unit4 ='GPM K^{-1}';          p.unit4_bar =p.unit4;
+p.unit6 ='GPM';                 p.unit6_bar =p.unit6;
+p.unit7 ='GPM K^{-1}';          p.unit7_bar =p.unit7;
+p.unit9 ='mm day^{-1}';         p.unit9_bar =p.unit9;
+p.unit10='mm day^{-1} K^{-1}';  p.unit10_bar=p.unit10;
 
 p.cmin0= -100.0; p.cmax0=100;  p.cmin1 =-15;  p.cmax1 =15.;
 p.cmin3= -150.0; p.cmax3=150;  p.cmin4 =-20;  p.cmax4 =20;
@@ -618,8 +617,7 @@ p.cfact=2; p.phi_bin=[0:50:300]; p.phi_co='r';
 
 p.fmt='eps'; p.vname=strcat(p.vname,'_glb');p.xy=[0 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed_new(p)
 
-p.fmt='eps'; %p.fmt='png';
-p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed_new(p)
+p.fmt='eps'; p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed_new(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %OLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

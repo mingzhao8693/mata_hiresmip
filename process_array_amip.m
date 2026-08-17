@@ -11,22 +11,28 @@ function z0=process_array_amip(v,opt)
   a=squeeze(v.toa.lwcf.all  (:,:,:,:)); a=get4season_all(a); z0.lwcf  =a; c.lwcf  =squeeze(mean(a,1));
   a=squeeze(v.toa.swcf.all  (:,:,:,:)); a=get4season_all(a); z0.swcf  =a; c.swcf  =squeeze(mean(a,1));
   
-%klev=[3, 5, 7, 9, 11]; %selected vertical levels 850, 700, 500, 300, 200hPa
-  k=3; %500hPa
-  a=v.atm.za(k).all; a=get4season_all(a); z0.z500 =a; c.z500 =squeeze(mean(a,1));
-  a=v.atm.ua(k).all; a=get4season_all(a); z0.u500 =a; c.u500 =squeeze(mean(a,1));
-  a=v.atm.va(k).all; a=get4season_all(a); z0.v500 =a; c.v500 =squeeze(mean(a,1));
-  a=v.atm.om(k).all; a=get4season_all(a); z0.om500=a; c.om500=squeeze(mean(a,1));
+%klev=[1, 2, 3, 4, 5]; %selected vertical levels for 850, 700, 500, 300, 200hPa
   k=1; %850hPa
   a=v.atm.za(k).all; a=get4season_all(a); z0.z850 =a; c.z850 =squeeze(mean(a,1));
   a=v.atm.ua(k).all; a=get4season_all(a); z0.u850 =a; c.u850 =squeeze(mean(a,1));
   a=v.atm.va(k).all; a=get4season_all(a); z0.v850 =a; c.v850 =squeeze(mean(a,1));
-  a=v.atm.om(k).all; a=get4season_all(a); z0.om850=a; c.om850=squeeze(mean(a,1));
-  k=1; %200hPa
+  if isfield(v.atm, 'om') 
+    a=v.atm.om(k).all; a=get4season_all(a); z0.om850=a; c.om850=squeeze(mean(a,1));
+  end
+  k=3; %500hPa
+  a=v.atm.za(k).all; a=get4season_all(a); z0.z500 =a; c.z500 =squeeze(mean(a,1));
+  a=v.atm.ua(k).all; a=get4season_all(a); z0.u500 =a; c.u500 =squeeze(mean(a,1));
+  a=v.atm.va(k).all; a=get4season_all(a); z0.v500 =a; c.v500 =squeeze(mean(a,1));
+  if isfield(v.atm, 'om') 
+    a=v.atm.om(k).all; a=get4season_all(a); z0.om500=a; c.om500=squeeze(mean(a,1));
+  end
+  k=5; %200hPa
   a=v.atm.za(k).all; a=get4season_all(a); z0.z200 =a; c.z200 =squeeze(mean(a,1));
   a=v.atm.ua(k).all; a=get4season_all(a); z0.u200 =a; c.u200 =squeeze(mean(a,1));
   a=v.atm.va(k).all; a=get4season_all(a); z0.v200 =a; c.v200 =squeeze(mean(a,1));
-  a=v.atm.om(k).all; a=get4season_all(a); z0.om200=a; c.om200=squeeze(mean(a,1)); 
+  if isfield(v.atm, 'om') 
+    a=v.atm.om(k).all; a=get4season_all(a); z0.om200=a; c.om200=squeeze(mean(a,1));
+  end
 
   z0.clm=c;
   

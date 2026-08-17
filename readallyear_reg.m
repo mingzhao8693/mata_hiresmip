@@ -2,7 +2,7 @@ function [var,time]=readallyear_reg(v,exd,varn,exf1,exf2,exf3,opt,lev)
 % this is smart file reading script to allow for
 % regional, seasonal, and years selections
 
-tpath=v.tpath; expn=v.expn; yr1=v.yr1; yr2=v.yr2; nyr=v.nyr;
+tpath=v.tpath; expn=v.expn; yr1=v.yr1; yr2=v.yr2; nyr=v.nyr; 
 
 dbeg=v.d_beg(1); dend=v.d_end(end); no=length(v.d_beg);
 
@@ -47,7 +47,7 @@ for t=1:nyr
     time=ncread(fn,'time',tbeg,tcon); %b=ncread(fn,'lat');
     a=ncread(fn,varn,[1 1 tbeg],[Inf Inf tcon]);
   else
-    time=[tbeg:tcon];
+    time=[tbeg:tcon]; var=[]; time=[];
     disp('file not exist!!!!!!!!!!!!!!!!!!!!!!!!!'); return
   end
 

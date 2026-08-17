@@ -68,26 +68,31 @@ nbin=[];
 %Land daily soil moisture%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='mrsos'; ff='day'; exd='/atmos_data/daily_land_cmip/'; exf1='land_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
-thresh=[]; v.mrsosday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
+if ~isempty(var)
+  for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
+  thresh=[]; v.mrsosday=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Land daily total runoff%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='runf_soil'; ff='day'; exd='/atmos_data/daily_land/'; exf1='land.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
-thresh=[0.2 1 5 10 50 100 200 400 500];
-v.runfday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+if ~isempty(var)
+  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
+  for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
+  thresh=[0.2 1 5 10 50 100 200 400 500];
+  v.runfday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Daily river flow%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='rv_o_h2o'; ff='day'; exd='/atmos_data/daily_river/'; exf1='river.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a*86400; end; %og.rvfday=var; %kg/m2/s
-thresh=[0.2 1 5 10 50 100 200 400 500];
-v.rvfday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-
+if ~isempty(var)
+  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
+  for k=1:length(var); var(k).a=var(k).a*86400; end; %og.rvfday=var; %kg/m2/s
+  thresh=[0.2 1 5 10 50 100 200 400 500];
+  v.rvfday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %atmospheric variables;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

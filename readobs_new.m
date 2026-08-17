@@ -72,11 +72,13 @@ elseif strcmp(do_ecmwf,'era5')
   path_era5='ERA5/monthly/2dvar_1979_2020/ERA5_197901-202012.';
 
   varn='swvl1'; fn=strcat(tpath,path_era5,varn,'.nc')
-  o.atm.mrsos     =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%upper (0.07m) soil volumetric water m^3m^-3
+  o.sfc.mrsos     =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%upper (0.07m) soil volumetric water m^3m^-3
   varn='tcw';   fn=strcat(tpath,path_era5,varn,'.nc')
   o.atm.twp       =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%kg/m2
   varn='tp';    fn=strcat(tpath,path_era5,varn,'.nc')
-  o.sfc.pcp_ec    =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%m
+  o.sfc.tp_ec     =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%m
+  varn='mtpr';  fn=strcat(tpath,path_era5,varn,'.nc')
+  o.sfc.pcp_ec    =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%kg/m2/s
 
   varn='avg_ishf'; o.opt=1;  fn=strcat(tpath,path_era5,varn,'.nc')
   o.sfc.shflx  =read_data_2d(fn,latlon,t1,t2,o,varn,latname,lonname);%W/m2(positive upward)

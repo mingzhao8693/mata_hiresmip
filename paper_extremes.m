@@ -44,8 +44,8 @@ dmget $epath/daily_land/*runf_soil.nc
 %step 1: compute model daily climo and climo biases
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0;
-pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[0 360 -90 90]; yr1=1979; yr2=2020; do_trend=1;
-%pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[0 360 -90 90]; yr1=1979; yr2=1979; do_trend=0;
+pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[0 360 -90 90]; yr1=1979; yr2=2014; do_trend=1;
+pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[0 360 -90 90]; yr1=1950; yr2=2020; do_trend=1;
 expn='c192_obs';             read_daily_obs  (tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 expn='c192L33_CM4X_amip';    read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 expn='c192L33_CM4X_amip_02'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
@@ -62,12 +62,24 @@ expn='c192L33_CM4X_amip_12'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,
 expn='c192L33_CM4X_amip_13'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 expn='c192L33_CM4X_amip_14'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 expn='c192L33_CM4X_amip_15'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_16'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_17'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_18'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_19'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_20'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_21'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_22'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_23'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_24'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_25'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_26'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_27'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %step 2: compute heatwave threshold used for HW analysis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/'; pct=[90 95 99]; latlon=[0 360 -90 90]; 
-expn='c192_obs';              yr1=1979; yr2=2020; v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,0)
-expn='c192L33_CM4X_amip';     yr1=1979; yr2=2020; v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
+tpath='/archive/Ming.Zhao/awg/2023.04/'; pct=[90 95 99]; latlon=[0 360 -90 90]; yr1=1950; yr2=2020;
+expn='c192_obs';              v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,0)
+expn='c192L33_CM4X_amip';     v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
 expn='c192L33_CM4X_amip_02';  yr1=1979; yr2=2020; v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
 expn='c192L33_CM4X_amip_03';  yr1=1979; yr2=2020; v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
 expn='c192L33_CM4X_amip_04';  yr1=1979; yr2=2020; v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
@@ -86,9 +98,9 @@ expn='c192L33_CM4X_amip_16';  yr1=1979; yr2=2020; v=compute_hw_thresh(tpath,expn
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %step 3: compute HW analysis and FWI
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/'; do_trend=0;
-expn='c192_obs';              yr1=1979; yr2=2020; v=do_fwihw_global_era5(tpath,expn,yr1,yr2,do_trend)
-expn='c192L33_CM4X_amip';     yr1=1979; yr2=2020; v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
+tpath='/archive/Ming.Zhao/awg/2023.04/'; do_trend=0;  yr1=1950; yr2=1978;
+expn='c192_obs';              v=do_fwihw_global_era5(tpath,expn,yr1,yr2,do_trend)
+expn='c192L33_CM4X_amip';     v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
 expn='c192L33_CM4X_amip_02';  yr1=1979; yr2=2020; v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
 expn='c192L33_CM4X_amip_03';  yr1=1979; yr2=2020; v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
 expn='c192L33_CM4X_amip_04';  yr1=1979; yr2=2020; v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
@@ -110,11 +122,31 @@ expn='c192L33_CM4X_amip_18';  yr1=1979; yr2=2020; v=do_fwihw_global     (tpath,e
 %step 4: US extremes analysis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0; diag=0; do_trend=0; do_part=3;%1:do_yea=1; 2:do_hyr=1; 3:do_sea=1; 4:do_mon=1;
-pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[190 304 16 75]; %latlon=[0 360 -90 90];
+pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[190 304 16 75]; yr1=1979; yr2=2020; %latlon=[0 360 -90 90];
 yr1=2; yr2=101; %yr1=2001; yr2=2020;
+expn='c192_obs'; yr1=1979; yr2=2014; opt=0;             v=read_daily_namerica_obs(tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192_obs'; yr1=1979; yr2=2020; opt=0;             v=read_daily_namerica_obs(tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_CM4X_amip';                               v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_CM4X_amip_02';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_03';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_04';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_05';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_06';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_07';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_08';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_09';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_10';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_11';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_12';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_13';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_14';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_15';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_16';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_17';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_18';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_19';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_20';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+expn='c192L33_CM4X_amip_21';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_p4K';                     v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_old';                     v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_newctl';                  v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
@@ -141,10 +173,12 @@ e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(ph,e,f); load(n);z.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0; diag=0; f='_2_101_opt0_diag0_read_daily_namerica.mat';
+%e='c192L33_CM4X_amip'; f='_1979_2020_opt0_diag0_read_daily_namerica.mat'; n=strcat(tpath,e,'/',e,f); load(n);z.vx=v;
 e='c192L33_am4p0_2010climo_newctl';                 n=strcat(tpath,e,'/',e,f); load(n);z.v0=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear';  n=strcat(tpath,e,'/',e,f); load(n);z.w1=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(tpath,e,'/',e,f); load(n);z.w2=v;
-e='c192_obs'; f='_1979_2020_opt0_diag0_read_daily_namerica.mat'; n=strcat(tpath,e,'/',e,f); load(n);z.vo=v;
+e='c192_obs'; f='_1979_2014_opt0_diag0_read_daily_namerica.mat'; n=strcat(tpath,e,'/',e,f); load(n);z.vo=v;
+%e='c192_obs'; f='_1979_2020_opt0_diag0_read_daily_namerica.mat'; n=strcat(tpath,e,'/',e,f); load(n);z.vo=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %HeatWave statistics%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -245,7 +279,7 @@ p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
 plot_pattern_effect_Fig_extremes(p)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%HeatWave statistics: HWF and HWI Intensity%%%%%%%%
+%Fig2: HeatWave statistics: HWF and HWI Intensity%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
@@ -271,7 +305,7 @@ p.cmin0= 0.0; p.cmax0=4;  p.cmin1 =-20;  p.cmax1 =20;
 p.cmin3= 0.0; p.cmax3=4;  p.cmin4 =-20;  p.cmax4 =20;
 p.cmin6= 0.0; p.cmax6=40; p.cmin7 =-2;   p.cmax7 =2;
 p.cmin9= 0.0; p.cmax9=40; p.cmin10=-2;   p.cmax10=2;
-p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=1;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=0;
 p.dT1=1.22; p.dT2=1.24;
 
 v=z.v0;
@@ -340,8 +374,8 @@ a=id; a(:,:)=0;
 p.isig1=a; p.isig2=a; p.isig4 =a; p.isig5 =a; 
 p.isig7=a; p.isig8=a; p.isig10=a; p.isig11=a;
 
-p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
-plot_pattern_effect_Fig_extremes(p)
+p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p)
+%plot_pattern_effect_Fig_extremes(p)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -350,7 +384,9 @@ plot_pattern_effect_Fig_extremes(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-nsea={'DJF','MAM','JJA','SON'}; isea=3; m=isea; ipct=9; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9];
+nsea={'DJF','MAM','JJA','SON'}; isea=3; m=isea;
+ipct=9;  iipct=3; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; %95th 5th
+%ipct=10; iipct=2; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; %99th 1th
 A0='ERA5'; a0='Control'; a1='SPEAR-pattern M;~'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
 p.vname='tas_vpd_twb_rh'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
 del=' $\Delta$'; s0='TAS;'; s1='VPD; '; s2='TWB; '; s3='RH; ';
@@ -388,7 +424,7 @@ a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a;
 id=(id==1); aa=p.aa(id); aa=aa/mean(aa); p.id=id; 
 
 v=z.v0; 
-pct_th=v.pct; spct=sprintf( '%4.2fth',pct_th(ipct));  iipct=3; ispct=sprintf( '%4.2fth',pct_th(iipct));
+pct_th=v.pct; spct=sprintf( '%4.2fth',pct_th(ipct));  ispct=sprintf( '%4.2fth',pct_th(iipct));
 p.S0=strcat(p.S0,'~',spct);p.S3=strcat(p.S3,'~',spct);p.S6=strcat(p.S6,'~',spct);p.S9=strcat(p.S9,'~',ispct);
 p.s0=strcat(p.s0,'~',spct);p.s3=strcat(p.s3,'~',spct);p.s6=strcat(p.s6,'~',spct);p.s9=strcat(p.s9,'~',ispct);
 p.vname=strcat(p.vname,'_ipct_',num2str(ipct))
@@ -427,7 +463,6 @@ a=(a1-a0)/p.dT1; p.v7=a; p.dv7=mean(a(id).*aa);
 a=(a2-a0)/p.dT2; p.v8=a; p.dv8=mean(a(id).*aa);
 
 %RHday
-iipct=3;
 v=z.vo.rhday; A0=squeeze(v.pct(m,iipct,:,:));
 v=z.v0.rhday; a0=squeeze(v.pct(m,iipct,:,:));
 v=z.w1.rhday; a1=squeeze(v.pct(m,iipct,:,:));
@@ -442,10 +477,10 @@ a=id; a(:,:)=0;
 p.isig1=a; p.isig2=a; p.isig4 =a; p.isig5 =a; 
 p.isig7=a; p.isig8=a; p.isig10=a; p.isig11=a;
 
-p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes(p)
+p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%changes in percentiles for FWI, BUI, ISI, and DSR%
+%FigS2: changes in percentiles for FWI, BUI, ISI, and DSR%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
@@ -549,7 +584,7 @@ p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_patte
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%changes in percentiles for bias-corrected FWI, BUI, ISI, and DSR%
+%Fig3: changes in percentiles for bias-corrected FWI, BUI, ISI, and DSR%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
@@ -653,7 +688,7 @@ a=id; a(:,:)=0;
 p.isig1=a; p.isig2=a; p.isig4 =a; p.isig5 =a; 
 p.isig7=a; p.isig8=a; p.isig10=a; p.isig11=a;
 
-p.fmt='png'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes_16panel_Transposed(p)
+p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes_16panel_Transposed(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,4 +1,4 @@
-function plot_pattern_effect_Fig_atm_20panel_transposed_new(p)
+function plot_fig4(p)
 % Reordered so that (a,b,c,d) = (TAS, VPD, TWB, RH) - Top Row
 %let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
 %     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
@@ -215,11 +215,6 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
     end
 end
 
-expn='pattern_effect_20panel_rotated'; visfig='off'; figpath='./fig_land/';
-vname=p.vname; %vname=strcat(p.vname,'_',num2str(p.do_bias));
-
-printnew(visfig,figpath,expn,vname,p.fmt);
-
-save(strcat(vname,'.mat'), 'p');
+print(p.vname, '-depsc2', '-painters'); 
 
 end
