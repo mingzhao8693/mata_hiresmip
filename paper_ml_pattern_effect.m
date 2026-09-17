@@ -44,6 +44,11 @@ p.expn='c96L33_am4p0_longamip_1850rad_m7';           v=tsana_hiresmip_new(o,tpat
 p.expn='c96L33_am4p0_longamip_1850rad_m8';           v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c96L33_am4p0_longamip_1850rad_m9';           v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c96L33_am4p0_longamip_1850rad_m10';          v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c96L33_am4p0_longamip_1850rad_m11';          v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c96L33_am4p0_longamip_1850rad_m12';          v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c96L33_am4p0_longamip_1850rad_m13';          v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c96L33_am4p0_longamip_1850rad_m14';          v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c96L33_am4p0_longamip_1850rad_m15';          v=tsana_hiresmip_new(o,tpath,p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.latlon=[0 360 -90 90]; p.region='global'; p.mod='c96';
 p.do_trend=0; p.do_trend_obs=0; p.do_scalar=0; p.myr=1; p.opt=2; p.do_3d_atm=2; p.do_all=1;
@@ -88,13 +93,18 @@ p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient';        
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient';          v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';         v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';         v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs'; v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs';         v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_30ns_obs';         v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_20ns_obs';         v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_30ns_obs';          v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_20ns_obs';          v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_25n_70n_obs'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_south_pacific_10s_45s_obs'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_zonal';                     v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';                v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';               v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m17';               v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m26';               v=tsana_hiresmip_new(o,tpath,p);
-p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_zonal';                     v=tsana_hiresmip_new(o,tpath,p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %CM4X AMIP large ensemble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -128,6 +138,7 @@ p.expn='c192L33_CM4X_amip_23';  v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_CM4X_amip_24';  v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_CM4X_amip_25';  v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_CM4X_amip_26';  v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_CM4X_amip_27';  v=tsana_hiresmip_new(o,tpath,p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Further process AM4 long AMIP runs %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,6 +168,11 @@ e='c96L33_am4p0_longamip_1850rad_m7';       n=strcat(ph,e,'/',e,f); load(n); z=p
 e='c96L33_am4p0_longamip_1850rad_m8';       n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,e,'.mat');      save(fn, 'z');
 e='c96L33_am4p0_longamip_1850rad_m9';       n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,e,'.mat');      save(fn, 'z');
 e='c96L33_am4p0_longamip_1850rad_m10';      n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,e,'.mat');      save(fn, 'z');
+e='c96L33_am4p0_longamip_1850rad_m11';      n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,e,'.mat');      save(fn, 'z');
+e='c96L33_am4p0_longamip_1850rad_m12';      n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,e,'.mat');      save(fn, 'z');
+e='c96L33_am4p0_longamip_1850rad_m13';      n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,e,'.mat');      save(fn, 'z');
+e='c96L33_am4p0_longamip_1850rad_m14';      n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,e,'.mat');      save(fn, 'z');
+e='c96L33_am4p0_longamip_1850rad_m15';      n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,e,'.mat');      save(fn, 'z');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Further process CM4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -217,29 +233,45 @@ e='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';n=strcat(ph,
 %Combine AM4 longamip experiments%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 d='/work/miz/mat_ml/'; 
-e='c96L33_am4p0_longamip_1850rad';          fn=strcat(d,e,'.mat'); load(fn); zx=z; 
+e='c96L33_am4p0_longamip_1850rad_m1';       fn=strcat(d,e,'.mat'); load(fn); z=rmfield(z,{'om850','om500','om200'}); zx=z;
+e='c96L33_am4p0_longamip_1850rad_m2';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m3';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m4';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m5';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m6';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m7';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m8';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m9';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m10';      fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m11';      fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m12';      fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m13';      fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m14';      fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_1850rad_m15';      fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_en_new';           fn=strcat(d,e,'.mat'); zx.expn=e; save(fn, 'zx', '-v7.3');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+e='c96L33_am4p0_longamip_1850rad';          fn=strcat(d,e,'.mat'); load(fn); z=rmfield(z,{'om850','om500','om200'}); zx=z;
 e='c96L33_am4p0_longamip_1850rad_novol_m1'; fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
-e='c96L33_am4p0_longamip';                  fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
 e='c96L33_am4p0_longamip_m1';               fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
 e='c96L33_am4p0_longamip_m2';               fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
-e='c96L33_am4p0_longamip_m1_aero';          fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
-e='c96L33_am4p0_longamip_m2_aero';          fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
-e='c96L33_am4p0_longamip_m3_aero';          fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_m3';               fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
 e='c96L33_am4p0_longamip_m1_GHG';           fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
 e='c96L33_am4p0_longamip_m2_GHG';           fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
 e='c96L33_am4p0_longamip_m3_GHG';           fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
-e='c96L33_am4p0_longamip_1850rad_m1';       fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
-e='c96L33_am4p0_longamip_en';               fn=strcat(d,e,'.mat'); zx.expn=e; save(fn, 'zx', '-v7.3');
+e='c96L33_am4p0_longamip_m1_aero';          fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_m2_aero';          fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_m3_aero';          fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_en_old';           fn=strcat(d,e,'.mat'); zx.expn=e; save(fn, 'zx', '-v7.3');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 d='/work/miz/mat_ml/'; 
-e='c96L33_am4p0_longamip_en'; fn=strcat(d,e,'.mat'); load(fn); 
-e='c96L33_am4p0_longamip_1850rad_m1'; fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
-e='c96L33_am4p0_longamip_en'; fn=strcat(d,e,'.mat'); zx.expn=e; save(fn, 'zx', '-v7.3');
+e='c96L33_am4p0_longamip_en_old'; fn=strcat(d,e,'.mat'); load(fn); z=zx; clear zx;
+e='c96L33_am4p0_longamip_en_new'; fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
+e='c96L33_am4p0_longamip_en_all'; fn=strcat(d,e,'.mat'); zx.expn=e; save(fn, 'zx', '-v7.3');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Combine CM4X experiments%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 d='/work/miz/mat_ml/'; 
-e='c192L33_CM4X_amip';    fn=strcat(d,e,'.mat'); load(fn); zx=z; 
+e='c192L33_CM4X_amip_01'; fn=strcat(d,e,'.mat'); load(fn); zx=z; 
 e='c192L33_CM4X_amip_02'; fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
 e='c192L33_CM4X_amip_03'; fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);
 e='c192L33_CM4X_amip_04'; fn=strcat(d,e,'.mat'); load(fn); zx=append_struct(zx,z);

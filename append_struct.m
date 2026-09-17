@@ -7,16 +7,16 @@ function zout = append_struct(z1, z2)
 % concatenated along the first dimension. All other fields are copied
 % from z1.
 
-    zout = z1;
+zout = z1;
 
-    fields = fieldnames(z1);
+fields = fieldnames(z1);
 
-    for i = 1:numel(fields)
-        fld = fields{i};
-
-        if isnumeric(z1.(fld)) && ndims(z1.(fld)) == 4
-            zout.(fld) = cat(1, z1.(fld), z2.(fld));
-        end
-    end
-
+for i = 1:numel(fields)
+  fld = fields{i};
+  %id = strcmp(fld,'om850')|strcmp(fld,'om500')|strcmp(fld,'om200'); id=~id;
+  if isnumeric(z1.(fld)) && ndims(z1.(fld)) == 4
+    zout.(fld) = cat(1, z1.(fld), z2.(fld));
+  end
 end
+
+return

@@ -1,4 +1,4 @@
-function [v]=do_fwihw_global(tpath,expn,yr1,yr2,do_trend)
+function [v]=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %tpath='/archive/Ming.Zhao/awg/2023.04/';
 %expn ='c192L33_am4p0_2010climo_newctl';                 yr1=2;    yr2=101;
@@ -9,7 +9,9 @@ function [v]=do_fwihw_global(tpath,expn,yr1,yr2,do_trend)
 %expn ='c192L33_CM4X_amip';                              yr1=1979; yr2=2020;
 
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-fn=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correct.mat')
+%fn=strcat(tpath,expn,'/fwihw/',expn,fext,'.hw_thresh_original_and_correct.mat')
+expn0='c192L33_am4p0_2010climo_newctl'; fext =strcat('_',num2str(2),'_',num2str(101));
+fn=strcat(tpath,expn0,'/fwihw/',expn0,fext,'.hw_thresh_original_and_correction.mat')
 if (exist(fn,'file') == 2)
   disp('load in file...'); load(fn); thresh=v.thresh; thresh_c=v.thresh_c; v
 else
@@ -22,9 +24,9 @@ end
 %ffmc, dmc and dc calculation require memory of previous state
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-do_continue = false %don't do this unless something broken
+do_continue = true %false %true %false %don't do this unless something broken
 if do_continue
-  exd='/fwihw/'; yr='0015'; fn=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw.nc');disp(fn);
+  exd='/fwihw/'; yr='0075'; fn=strcat(tpath,expn,exd,expn,'_',yr,'.fwihw.nc');disp(fn);
   if (exist(fn,'file') == 2)
     a=ncread(fn,'ffmcday');   a=a(:,:,end); a=permute(a,[3 2 1]); ffmc=a;
     a=ncread(fn,'dmcday');    a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
@@ -34,7 +36,11 @@ if do_continue
     a=ncread(fn,'dmcday_c');  a=a(:,:,end); a=permute(a,[3 2 1]); dmc =a;
     a=ncread(fn,'dcday_c');   a=a(:,:,end); a=permute(a,[3 2 1]); dc  =a;
     init_fwiday_c=[ffmc; dmc; dc;]; clear ffmc dmc dc;
+  else
+    disp(trcat(fn,'not exist')); return
   end
+else
+  init_fwiday=[]; init_fwiday_c=[];
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,9 +58,7 @@ for t=1:nyr; %t=27 corresponds to year 28
     yr=num2str(yrt);
   end
 % read in daily data and compute fwi
-  if t==1
-    init_fwiday=[]; init_fwiday_c=[];
-  end
+%  if t==1; init_fwiday=[]; init_fwiday_c=[]; end
   nbin=[]; pct=[0.01 0.1 99.9];
   v=fwihw_ana(tpath,expn,yrt,yrt,pct,latlon,opt,init_fwiday,init_fwiday_c,true,nbin,do_trend); v
   init_fwiday=v.init_fwiday;

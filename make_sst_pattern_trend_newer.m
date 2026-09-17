@@ -155,6 +155,27 @@ elseif opt==17
   xs=min(find(c.lon(:)>=lon1)); xe=max(find(c.lon(:)<= lon2));
   dsst=dsst1; dsst(xs:xe,ys:ye,:)=dsst2(xs:xe,ys:ye,:);
   fnout=strcat(varn,'_spear_pattern_with_southeast_pacific_obs_normalized_to_0p94K.nc');
+elseif opt==18
+  latlon = [110 280 -30 30]; 
+  lat1=latlon(3); lat2=latlon(4); lon1=latlon(1); lon2=latlon(2);
+  ys=min(find(c.lat(:)>=lat1)); ye=max(find(c.lat(:)<= lat2));
+  xs=min(find(c.lon(:)>=lon1)); xe=max(find(c.lon(:)<= lon2));
+  dsst=dsst1; dsst(xs:xe,ys:ye,:)=dsst2(xs:xe,ys:ye,:);
+  fnout=strcat(varn,'_spear_pattern_with_pacific_30ns_obs_normalized_to_0p94K.nc');
+elseif opt==19
+  latlon = [110 280 -20 20]; 
+  lat1=latlon(3); lat2=latlon(4); lon1=latlon(1); lon2=latlon(2);
+  ys=min(find(c.lat(:)>=lat1)); ye=max(find(c.lat(:)<= lat2));
+  xs=min(find(c.lon(:)>=lon1)); xe=max(find(c.lon(:)<= lon2));
+  dsst=dsst1; dsst(xs:xe,ys:ye,:)=dsst2(xs:xe,ys:ye,:);
+  fnout=strcat(varn,'_spear_pattern_with_pacific_20ns_obs_normalized_to_0p94K.nc');
+elseif opt==20
+  latlon = [110 280 -10 20]; 
+  lat1=latlon(3); lat2=latlon(4); lon1=latlon(1); lon2=latlon(2);
+  ys=min(find(c.lat(:)>=lat1)); ye=max(find(c.lat(:)<= lat2));
+  xs=min(find(c.lon(:)>=lon1)); xe=max(find(c.lon(:)<= lon2));
+  dsst=dsst1; dsst(xs:xe,ys:ye,:)=dsst2(xs:xe,ys:ye,:);
+  fnout=strcat(varn,'_spear_pattern_with_pacific_10s-20n_obs_normalized_to_0p94K.nc');
 end
 if (opt>=5)
   for k=1:5
@@ -387,3 +408,5 @@ varn='sst'; opt=15; make_sst_pattern_trend_newer(varn,opt);
 varn='sst'; opt=16; make_sst_pattern_trend_newer(varn,opt);
 
 varn='sst'; opt=16; make_sst_pattern_trend_newer(varn,opt);
+
+varn='sst'; opt=18; make_sst_pattern_trend_newer(varn,opt);

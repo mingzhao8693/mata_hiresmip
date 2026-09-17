@@ -129,7 +129,6 @@ expn='c192L33_CM4X_amip_23';  v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,
 expn='c192L33_CM4X_amip_24';  v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
 expn='c192L33_CM4X_amip_25';  v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
 expn='c192L33_CM4X_amip_26';  v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
-expn='c192L33_CM4X_amip_27';  v=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %step 3: compute HW analysis and FWI
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,7 +160,6 @@ expn='c192L33_CM4X_amip_23';  v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend
 expn='c192L33_CM4X_amip_24';  v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
 expn='c192L33_CM4X_amip_25';  v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
 expn='c192L33_CM4X_amip_26';  v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
-expn='c192L33_CM4X_amip_27';  v=do_fwihw_global     (tpath,expn,yr1,yr2,do_trend)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; do_trend=0;  yr1=2; yr2=101;
 expn='c192L33_am4p0_2010climo_newctl';                                  v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
@@ -181,10 +179,6 @@ expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs';         
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs'; v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_south_pacific_10s_45s_obs'; v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_30ns_obs';         v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_20ns_obs';         v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_30ns_obs';          v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_20ns_obs';          v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_zonal';                     v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';        v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';       v=do_fwihw_global_ctlthresh(tpath,expn,yr1,yr2,do_trend)
@@ -226,7 +220,6 @@ expn='c192L33_CM4X_amip_23';                            v=read_daily_namerica   
 expn='c192L33_CM4X_amip_24';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_CM4X_amip_25';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_CM4X_amip_26';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_CM4X_amip_27';                            v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %step 4: US extremes analysis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -244,26 +237,11 @@ expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs'; v=read_da
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';    v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs'; v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';    v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs';         v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs'; v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_south_pacific_10s_45s_obs'; v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_30ns_obs';         v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_zonal';                     v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_20ns_obs';         v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_20ns_obs';          v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_30ns_obs';          v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';  v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient'; v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient'; v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m17';      v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';      v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m26';      v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';       v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -290,12 +268,10 @@ tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0; diag=0; f='_2_101_opt0_diag0_rea
 e='c192L33_am4p0_2010climo_newctl';                                  n=strcat(tpath,e,'/',e,f); load(n);z.v0=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear';                   n=strcat(tpath,e,'/',e,f); load(n);z.w1=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';                 n=strcat(tpath,e,'/',e,f); load(n);z.w2=v;
-
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs';  n=strcat(tpath,e,'/',e,f); load(n);z.w1a=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';     n=strcat(tpath,e,'/',e,f); load(n);z.w1b=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs';  n=strcat(tpath,e,'/',e,f); load(n);z.w1c=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';     n=strcat(tpath,e,'/',e,f); load(n);z.w1d=v;
-
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';   n=strcat(tpath,e,'/',e,f); load(n);z.w1A=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient';  n=strcat(tpath,e,'/',e,f); load(n);z.w1B=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient'; n=strcat(tpath,e,'/',e,f); load(n);z.w1C=v;

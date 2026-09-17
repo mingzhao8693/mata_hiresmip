@@ -65,7 +65,7 @@ if (exist(fn,'file') == 2)
   b=mean(a,1); for i=2:v.nlon; b(i,:,:)=b(1,:,:); end; olr_climo=b;
 else
   disp(strcat(fn,'does not exist!!!'));
-  olr_climo(1:nlon,1:nlat)=0; v.nt=1460;
+  olr_climo(1:nlon,1:nlat)=0; v.nt=1460; return
 end
 t=1;
 for t=1:nyr

@@ -11,8 +11,6 @@ opt='obs'; addtc_to_AR_obs(tpath,expn,yr1,yr2,opt,-30);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; 
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_zonal'; ardir='AR_climlmt'; 
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_30ns_obs'; ardir='AR_climlmt'; 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs'; ardir='AR_climlmt'; 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs'; ardir='AR_climlmt'; 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_south_pacific_10s_45s_obs'; ardir='AR_climlmt'; 
@@ -22,24 +20,7 @@ expn='c192L33_am4p0_2010climo_4xCO2_p4K'; ardir='AR_climlmt';
 expn='c192L33_am4p0_2010climo_trend_1979_2020'; ardir='AR_climlmt'; 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear'; ardir='AR_climlmt'; 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010climo'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010GHG'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010GHG_Photo'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010aero'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010VolOzone'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_1850climo_pisst_obs'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_1850climo_pisst_uniform'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_2010climo_p2K'; ardir='AR_climlmt'; 
-yr1=35; yr2=0101; pct=[99 99.9]; use_obs_tc=0;
-opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tpath='/archive/Ming.Zhao/awg/2023.04/'; 
-expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2_p2K'; ardir='AR_climlmt';
-expn='c192L33_CM4X_amip_p2K'; ardir='AR_climlmt'; 
-expn='c192L33_am4p0_amip_HIRESMIP_HX_4xCO2'; ardir='AR_climlmt'; 
-expn='c192L33_CM4X_amip_27'; ardir='AR_climlmt'; 
-yr1=1950; yr2=2020; pct=[99 99.9]; use_obs_tc=0;
+yr1=0002; yr2=0101; pct=[99 99.9]; use_obs_tc=0;
 opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,14 +45,6 @@ opt='PD';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; ardir='AR_climlmt';
 pct=[99 99.9]; use_obs_tc=0; opt='mod';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_20ns_obs';
-yr1=0002; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_20ns_obs';
-yr1=0002; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_30ns_obs';
-yr1=0002; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m17';
 yr1=0047; yr2=0101; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m26';
@@ -109,22 +82,12 @@ ardir='AR_climlmt';yr1=0002;yr2=0101;pct=[99 99.9]; %yr2=0021;
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient';
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';
-
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs';
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_30ns_obs';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_zonal';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs';
-expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_south_pacific_10s_45s_obs';
-
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m17';
-%expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m26';
-
+expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';
+expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';
 opt='MC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 opt='AR';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
 opt='TC';   v=readartcmcs_day_cre_new_mod(tpath,expn,yr1,yr2,pct,opt,diag);
@@ -146,20 +109,19 @@ tpath='/archive/Ming.Zhao/awg/2023.04/';
 p.expn='c192L33_am4p0_2010climo_old';                     v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   v=tsana_hiresmip_new(o,tpath,p);
 p.expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; v=tsana_hiresmip_new(o,tpath,p);
-
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs'; v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';    v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';    v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs'; v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';  v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient'; v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient'; v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';v=tsana_hiresmip_new(o,tpath,p);
- p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';    v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';    v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';  v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient'; v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';v=tsana_hiresmip_new(o,tpath,p);
+p.expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';v=tsana_hiresmip_new(o,tpath,p);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Load AR, TC, MCS analysis for SST pattern paper%%%%%%%%%%%%%%%%%newwwwwwwwwwwwwwwwwwwwww
+%Load AR, TC, MCS analysis for SST pattern effect on storm variability
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -262,7 +224,7 @@ fext=strcat(yrs,'TC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);w1D.tc=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_2_101.mat';
-e='c192L33_am4p0_2010climo_old';                    n=strcat(ph,e,'/',e,f); load(n);z.v0=v;
+e='c192L33_am4p0_2010climo_newctl';                 n=strcat(ph,e,'/',e,f); load(n);z.v0=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_spear';  n=strcat(ph,e,'/',e,f); load(n);z.w1=v;
 e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';n=strcat(ph,e,'/',e,f); load(n);z.w2=v;
 ph='/archive/Ming.Zhao/awg/2023.04/'; f='_global_opt2.c96_tsana_hiresmip_new_2_101.mat';
@@ -1887,6 +1849,7 @@ fext=strcat(yrs,'PD',  diag, s); fn=strcat(tpath,expn,fext); load(fn);ob.pd=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/work/miz/mat_hiresmip_cre/'; s='_readartcmcs_day_cre_newer.mat';
+%expn='c192L33_am4p0_2010climo_newctl'; yrs='_2_101_'; diag='_diag1';
 expn='c192L33_am4p0_2010climo'; yrs='_2_101_'; diag='_diag1';
 fext=strcat(yrs,'MC',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.mc=v;
 fext=strcat(yrs,'AR',  diag,s); fn=strcat(tpath,expn,fext); load(fn);v0.ar=v;

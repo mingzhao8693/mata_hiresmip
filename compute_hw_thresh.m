@@ -8,7 +8,7 @@ function [v]=compute_hw_thresh(tpath,expn,yr1,yr2,pct,latlon,do_bias_correct)
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_spear';   yr1=2;    yr2=101;
 %expn='c192L33_am4p0_2010climo_trend_1979_2020_times_2'; yr1=2;    yr2=101;
 %expn='c192L33_am4p0_amip_HIRESMIP_nudge_wind_30min';    yr1=1951; yr2=2020;
-%expn ='c192L33_CM4X_amip';                               yr1=1979; yr2=2020;
+%expn ='c192L33_CM4X_amip';                              yr1=1979; yr2=2020;
   
 fext =strcat('_',num2str(yr1),'_',num2str(yr2));
 if do_bias_correct
