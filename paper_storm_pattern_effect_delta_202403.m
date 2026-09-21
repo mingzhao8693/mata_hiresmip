@@ -11,6 +11,7 @@ opt='obs'; addtc_to_AR_obs(tpath,expn,yr1,yr2,opt,-30);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tpath='/archive/Ming.Zhao/awg/2023.04/'; 
+expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_30ns_obs'; ardir='AR_climlmt'; 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_zonal'; ardir='AR_climlmt'; 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_30ns_obs'; ardir='AR_climlmt'; 
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_obs'; ardir='AR_climlmt'; 
@@ -30,7 +31,7 @@ expn='c192L33_CM4X_2010VolOzone'; ardir='AR_climlmt';
 expn='c192L33_CM4X_1850climo_pisst_obs'; ardir='AR_climlmt'; 
 expn='c192L33_CM4X_1850climo_pisst_uniform'; ardir='AR_climlmt'; 
 expn='c192L33_CM4X_2010climo_p2K'; ardir='AR_climlmt'; 
-yr1=35; yr2=0101; pct=[99 99.9]; use_obs_tc=0;
+yr1=98; yr2=0101; pct=[99 99.9]; use_obs_tc=0;
 opt='mod'; addtc_to_AR_mod(tpath,expn,yr1,yr2,opt,-30,use_obs_tc);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

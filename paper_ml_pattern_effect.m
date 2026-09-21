@@ -212,23 +212,40 @@ e='c192L33_CM4X_amip_23'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(
 e='c192L33_CM4X_amip_24'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
 e='c192L33_CM4X_amip_25'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
 e='c192L33_CM4X_amip_26'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_CM4X_amip_27'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,2); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Further process C192 AM4 pattern experiments%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ph='/archive/Ming.Zhao/awg/2023.04/'; d='/work/miz/mat_ml/'; 
-f='_global_opt2.c48_tsana_hiresmip_new_ivt_1-100_0002-0101_do_3d_atm_2_do_trend_0.mat'; opt=0;
-e='c192L33_am4p0_2010climo_newctl';                                 n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear';                  n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';                n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';    n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';    n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';  n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
-e='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+ph='/archive/Ming.Zhao/awg/2023.04/'; d='/work/miz/mat_ml/'; f='_global_opt2.c48_tsana_hiresmip_new_ivt_1-100_0002-0101_do_3d_atm_2_do_trend_0.mat'; opt=0;
+e='c192L33_am4p0_2010climo_newctl';                                          n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear';                           n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_times_2';                         n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs';          n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_20ns_obs';          n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_30ns_obs';          n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_30ns_obs';         n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_tropical_20ns_obs';         n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_10n_70n_obs'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_north_pacific_25n_70n_obs'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_south_pacific_10s_45s_obs'; n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs';             n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs';          n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs';             n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_zonal';                     n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_best_wegradient';           n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_2best_wegradient';          n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_2worst_wegradient';         n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient';          n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_middle_wegradient';         n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';                n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';               n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m17';               n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
+e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m26';               n=strcat(ph,e,'/',e,f); load(n); z=process_array_amip(v,opt); fn=strcat(d,z.expn,'.mat'); save(fn, 'z');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Combine AM4 longamip experiments%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
