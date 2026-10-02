@@ -282,7 +282,7 @@ if __name__ == "__main__":
     model = run_toolbox_sfno(ssta, vara, lat, lon, varn, season, val_split_pct=0.0,
                             val_idx_list=val_idx_list, train_idx_list=train_idx_list,
                             optimize_for_pattern=opt_pat, checkpoint_path=ckpt_to_load,
-                            loss_weight_mask=loss_weight_mask, epochs=20)
+                            loss_weight_mask=loss_weight_mask, epochs=50)
     
     # Save foundation weights specifically when running on the 145-year dataset (dataset == 1)
     if dataset == 1:
