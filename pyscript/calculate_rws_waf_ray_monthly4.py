@@ -823,18 +823,7 @@ def stationary_meridional_wavenumber(
         - beta k = 0
 
     This is a cubic equation in l.
-
-    The root closest to the previous meridional wavenumber
-    is selected when possible.
     """
-
-    # Polynomial coefficients for:
-    #
-    # V l^3
-    # + U k l^2
-    # + V k^2 l
-    # + U k^3
-    # - beta k = 0
 
     coeff = [
         v,
@@ -843,11 +832,6 @@ def stationary_meridional_wavenumber(
         u * k * k * k - beta_eff * k
     ]
 
-    # If V is extremely small, the equation reduces to
-    # approximately:
-    #
-    # l^2 = beta/U - k^2
-    #
     if abs(v) < 1.0e-8:
 
         if u <= 0.0:
@@ -878,7 +862,6 @@ def stationary_meridional_wavenumber(
     if len(real_roots) == 0:
         return np.nan
 
-    # Select root according to requested sign.
     signed_roots = [
         r
         for r in real_roots
@@ -911,37 +894,6 @@ def trace_stationary_rossby_wave(
 
     """
     Barotropic stationary Rossby-wave ray tracing.
-
-    This is a local beta-plane approximation expressed in
-    longitude/latitude coordinates.
-
-    Dispersion relation:
-
-        omega = U k + V l
-                - beta k / (k^2 + l^2)
-
-    Stationary wave:
-
-        omega = 0
-
-    Group velocity:
-
-        cg_x =
-            U + beta (k^2 - l^2) / K^4
-
-        cg_y =
-            V + 2 beta k l / K^4
-
-    where
-
-        K^2 = k^2 + l^2.
-
-    The ray position is advanced according to
-
-        d(lambda)/dt = cg_x / (a cos(phi))
-
-        d(phi)/dt = cg_y / a
-
     """
 
     lon = float(source_lon)
@@ -951,10 +903,6 @@ def trace_stationary_rossby_wave(
         lat
     )
 
-    # Convert zonal wavenumber to physical wavenumber.
-    #
-    # k = m / (a cos(phi))
-    #
     k = (
         zonal_wavenumber
         / (
@@ -963,7 +911,6 @@ def trace_stationary_rossby_wave(
         )
     )
 
-    # Initial background state
     u = interpolate_field(
         u_bg,
         lon,
@@ -989,7 +936,6 @@ def trace_stationary_rossby_wave(
         k
     )
 
-    # Output arrays
     lon_out = np.full(
         nsteps + 1,
         np.nan
@@ -1040,7 +986,6 @@ def trace_stationary_rossby_wave(
         np.nan
     )
 
-    # Initial state
     lon_out[0] = lon
     lat_out[0] = lat
     k_out[0] = k
@@ -1055,14 +1000,12 @@ def trace_stationary_rossby_wave(
         nsteps + 1
     ):
 
-        # Stop if latitude leaves allowed range.
         if (
             lat < RAY_LAT_MIN
             or lat > RAY_LAT_MAX
         ):
             break
 
-        # Stop if longitude is outside the data domain.
         lon_min = float(
             u_bg["lon"].min()
         )
@@ -1110,8 +1053,6 @@ def trace_stationary_rossby_wave(
 
         if n > 0:
 
-            # Recalculate stationary meridional
-            # wavenumber using the local background.
             l_new = (
                 stationary_meridional_wavenumber(
                     u,
@@ -1142,10 +1083,6 @@ def trace_stationary_rossby_wave(
         if K2 <= 0.0:
             break
 
-        # ----------------------------------------------------
-        # Group velocity
-        # ----------------------------------------------------
-
         cgx = (
             u
             + beta
@@ -1165,10 +1102,6 @@ def trace_stationary_rossby_wave(
             / K4
         )
 
-        # ----------------------------------------------------
-        # Stationarity check
-        # ----------------------------------------------------
-
         omega = (
             u * k
             + v * l
@@ -1176,10 +1109,6 @@ def trace_stationary_rossby_wave(
             * k
             / K2
         )
-
-        # ----------------------------------------------------
-        # Save
-        # ----------------------------------------------------
 
         lon_out[n] = lon
         lat_out[n] = lat
@@ -1192,13 +1121,8 @@ def trace_stationary_rossby_wave(
         v_out[n] = v
         stationary_out[n] = omega
 
-        # No need to advance after final step.
         if n == nsteps:
             break
-
-        # ----------------------------------------------------
-        # Advance ray position
-        # ----------------------------------------------------
 
         lat_rad = np.deg2rad(
             lat
@@ -1271,11 +1195,6 @@ def find_rws_source(
     longitude/latitude region.
     """
 
-    # --------------------------------------------------------
-    # Make sure coordinates are increasing before slicing.
-    # Model longitude is in the 0-360 degree convention.
-    # --------------------------------------------------------
-
     rws = rws.sortby(
         ["lat", "lon"]
     )
@@ -1296,7 +1215,6 @@ def find_rws_source(
             "RWS source search region is empty."
         )
 
-    # Maximum positive RWS
     flat_index = np.nanargmax(
         sub.values
     )
@@ -1349,21 +1267,12 @@ def calculate_ray_tracing(
 
     """
     Calculate barotropic stationary Rossby-wave rays.
-
-    The default background is the CTL JJA climatology.
-
-    Rays are initialized around the maximum positive
-    EXP-CTL JJA RWS in the western-Pacific source region.
     """
 
     print(
         "\nCalculating barotropic stationary "
         "Rossby-wave ray tracing..."
     )
-
-    # --------------------------------------------------------
-    # Select background state
-    # --------------------------------------------------------
 
     if RAY_BACKGROUND.upper() == "EXP":
 
@@ -1383,10 +1292,6 @@ def calculate_ray_tracing(
             "  Ray-tracing background: CTL JJA"
         )
 
-    # --------------------------------------------------------
-    # Calculate effective beta
-    # --------------------------------------------------------
-
     print(
         "  Calculating meridional gradient of "
         "absolute vorticity..."
@@ -1398,10 +1303,6 @@ def calculate_ray_tracing(
             v_bg
         )
     )
-
-    # --------------------------------------------------------
-    # Find RWS source
-    # --------------------------------------------------------
 
     (
         source_lon,
@@ -1430,10 +1331,6 @@ def calculate_ray_tracing(
     print(
         f"    RWS       = {source_rws:.6e} s^-2"
     )
-
-    # --------------------------------------------------------
-    # Ray starting positions
-    # --------------------------------------------------------
 
     if RAY_N_RAYS == 1:
 
@@ -1488,10 +1385,6 @@ def calculate_ray_tracing(
             if len(start_lons) >= RAY_N_RAYS:
                 break
 
-    # --------------------------------------------------------
-    # Trace each ray
-    # --------------------------------------------------------
-
     rays = []
 
     for iray in range(
@@ -1517,10 +1410,6 @@ def calculate_ray_tracing(
         rays.append(
             ray
         )
-
-    # --------------------------------------------------------
-    # Convert rays to xarray Dataset
-    # --------------------------------------------------------
 
     maxlen = max(
         len(ray["lon"])
@@ -2749,6 +2638,9 @@ rws_jja_out = xr.Dataset(
 
 # ============================================================
 # COMBINE MONTHLY WAF CLIMATOLOGIES
+#
+# NEW:
+# Save the exact Z' fields used in the TN01 WAF calculation.
 # ============================================================
 
 waf_clim_out = xr.Dataset(
@@ -2763,13 +2655,36 @@ waf_clim_out = xr.Dataset(
         "waf_y_diff": waf_y_diff_clim,
 
         "waf_x_response": waf_x_response_clim,
-        "waf_y_response": waf_y_response_clim
+        "waf_y_response": waf_y_response_clim,
+
+        "zprime_exp": ze_prime_clim,
+        "zprime_ctl": zc_prime_clim,
+        "zprime_response": z_response_prime_clim
     }
 )
+
+waf_clim_out["zprime_exp"].attrs["long_name"] = (
+    "EXP zonal geopotential height perturbation"
+)
+
+waf_clim_out["zprime_ctl"].attrs["long_name"] = (
+    "CTL zonal geopotential height perturbation"
+)
+
+waf_clim_out["zprime_response"].attrs["long_name"] = (
+    "EXP minus CTL zonal geopotential height perturbation"
+)
+
+waf_clim_out["zprime_exp"].attrs["units"] = "m"
+waf_clim_out["zprime_ctl"].attrs["units"] = "m"
+waf_clim_out["zprime_response"].attrs["units"] = "m"
 
 
 # ============================================================
 # COMBINE JJA WAF
+#
+# NEW:
+# Save the exact JJA Z' fields used in the TN01 WAF calculation.
 # ============================================================
 
 waf_jja_out = xr.Dataset(
@@ -2784,9 +2699,29 @@ waf_jja_out = xr.Dataset(
         "waf_y_diff": waf_y_diff_jja,
 
         "waf_x_response": waf_x_response_jja,
-        "waf_y_response": waf_y_response_jja
+        "waf_y_response": waf_y_response_jja,
+
+        "zprime_exp": z_exp_jja_prime,
+        "zprime_ctl": z_ctl_jja_prime,
+        "zprime_diff": z_response_jja_prime
     }
 )
+
+waf_jja_out["zprime_exp"].attrs["long_name"] = (
+    "EXP JJA zonal geopotential height perturbation"
+)
+
+waf_jja_out["zprime_ctl"].attrs["long_name"] = (
+    "CTL JJA zonal geopotential height perturbation"
+)
+
+waf_jja_out["zprime_diff"].attrs["long_name"] = (
+    "EXP minus CTL JJA zonal geopotential height perturbation"
+)
+
+waf_jja_out["zprime_exp"].attrs["units"] = "m"
+waf_jja_out["zprime_ctl"].attrs["units"] = "m"
+waf_jja_out["zprime_diff"].attrs["units"] = "m"
 
 
 # ============================================================

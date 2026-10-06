@@ -2763,7 +2763,11 @@ waf_clim_out = xr.Dataset(
         "waf_y_diff": waf_y_diff_clim,
 
         "waf_x_response": waf_x_response_clim,
-        "waf_y_response": waf_y_response_clim
+        "waf_y_response": waf_y_response_clim,
+
+        "zprime_exp": ze_prime_clim,
+        "zprime_ctl": zc_prime_clim,
+        "zprime_response": z_response_prime_clim
     }
 )
 
@@ -2784,7 +2788,11 @@ waf_jja_out = xr.Dataset(
         "waf_y_diff": waf_y_diff_jja,
 
         "waf_x_response": waf_x_response_jja,
-        "waf_y_response": waf_y_response_jja
+        "waf_y_response": waf_y_response_jja,
+
+        "zprime_exp": z_exp_jja_prime,
+        "zprime_ctl": z_ctl_jja_prime,
+        "zprime_response": z_response_jja_prime
     }
 )
 
