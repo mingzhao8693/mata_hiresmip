@@ -1,7 +1,7 @@
 function [v]=read_daily_namerica(tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 %tpath='/archive/Ming.Zhao/awg/2023.04/';
-%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=101; opt=1;
+%expn ='c192L33_am4p0_2010climo_newctl'; yr1=2; yr2=101; opt=1; do_part=3; do_trend=0;
 %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; latlon=[180 340 10 90]; latlon=[190 304 16 75]; diag=0;
 
 atmos_data_dir='atmos_data';
@@ -61,38 +61,38 @@ else
   v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
 end
 %m=0; %read annual data all together; m=1-12 read monthly data one at a time
-nbin=[]; 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%start with some land and river variables;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Land daily soil moisture%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='mrsos'; ff='day'; exd='/atmos_data/daily_land_cmip/'; exf1='land_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-if ~isempty(var)
-  for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
-  thresh=[]; v.mrsosday=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Land daily total runoff%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='runf_soil'; ff='day'; exd='/atmos_data/daily_land/'; exf1='land.'; exf2='0101-'; exf3='1231.';
-if ~isempty(var)
-  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-  for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
-  thresh=[0.2 1 5 10 50 100 200 400 500];
-  v.runfday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Daily river flow%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='rv_o_h2o'; ff='day'; exd='/atmos_data/daily_river/'; exf1='river.'; exf2='0101-'; exf3='1231.';
-if ~isempty(var)
-  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-  for k=1:length(var); var(k).a=var(k).a*86400; end; %og.rvfday=var; %kg/m2/s
-  thresh=[0.2 1 5 10 50 100 200 400 500];
-  v.rvfday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-end
+nbin=[]; bsize=5;
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %start with some land and river variables;
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %Land daily soil moisture%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='mrsos'; ff='day'; exd='/atmos_data/daily_land_cmip/'; exf1='land_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
+%% if ~isempty(var)
+%%   for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
+%%   thresh=[]; v.mrsosday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+%% end
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %Land daily total runoff%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='runf_soil'; ff='day'; exd='/atmos_data/daily_land/'; exf1='land.'; exf2='0101-'; exf3='1231.';
+%% if ~isempty(var)
+%%   var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
+%%   for k=1:length(var); var(k).a=var(k).a*86400; end; %og.runfday=var; %kg/m2/s
+%%   thresh=[0.2 1 5 10 50 100 200 400 500];
+%%   v.runfday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% end
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %Daily river flow%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='rv_o_h2o'; ff='day'; exd='/atmos_data/daily_river/'; exf1='river.'; exf2='0101-'; exf3='1231.';
+%% if ~isempty(var)
+%%   var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
+%%   for k=1:length(var); var(k).a=var(k).a*86400; end; %og.rvfday=var; %kg/m2/s
+%%   thresh=[0.2 1 5 10 50 100 200 400 500];
+%%   v.rvfday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %atmospheric variables;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,20 +102,20 @@ varn='ps'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
 for k=1:length(var); var(k).a=var(k).a*0.01; end; %og.psday=var; %unit:hPa
-thresh=[]; v.psday=extremes_ana(var,pct,thresh,nbin,do_trend,1); %v.psday.var needed for further cal.
+thresh=[]; v.psday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize); %v.psday.var needed for further cal.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='pr'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a*86400; end; %og.prday=var; %unit:mm/day
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.prday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1);
+v.prday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1,bsize);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='tas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a-273.15; end; %og.tasday=var; %unit:C
-thresh=[30 35 40]; v.tasday=extremes_ana(var,pct,thresh,nbin,do_trend,1); %v.tasday.var needed for further cal.
+thresh=[30 35 40]; v.tasday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize); %v.tasday.var needed for further cal.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface saturation vapor pressure vps in unit of hPa
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,32 +123,32 @@ for k=1:length(var); var(k).a=es_t_array(var(k).a+273.15); end;
 %for k=1:length(var); var2(k).a=es_t_array_tetens(var(k).a+273.15); end;
 %for k=1:length(var); var3(k).a=es_t_array_ardenbuck(var(k).a+273.15); end;
 %for k=1:length(var); var3(k).a=es_t_array_goffgratch(var(k).a+273.15); end; %og.vpsday=var;
-thresh=[]; v.vpsday=extremes_ana(var,pct,thresh,nbin,do_trend,1); %v.vpsday.var needed for further cal.
+thresh=[]; v.vpsday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize); %v.vpsday.var needed for further cal.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %surface humidity kg/kg
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='huss'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.qvday=var; %unit:kg/kg
-thresh=[]; v.qvday=extremes_ana(var,pct,thresh,nbin,do_trend,opt) 
+thresh=[]; v.qvday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize) 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface vapor pressure vp (hPa) from surface specific humidity huss
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k=1:length(var); var(k).a=e_qp_array(var(k).a,v.psday.var(k).a); end; %og.vpday=var;
-thresh=[]; v.vpday=extremes_ana(var,pct,thresh,nbin,do_trend,1); %v.psday.var needed for further cal.
+thresh=[]; v.vpday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize); %v.psday.var needed for further cal.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface vapor pressure vp in unit of hPa from surface specific humidity huss
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k=1:length(var); var(k).a=v.vpsday.var(k).a-v.vpday.var(k).a; end;
 for k=1:length(var); id=var(k).a<=0; var(k).a(id)=0;  end; %og.vpdday=var;
-thresh=[]; v.vpdday=extremes_ana(var,pct,thresh,nbin,do_trend,opt); 
+thresh=[]; v.vpdday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface relative humidity based on vapor pressure and saturation vapor pressure
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k=1:length(var); var(k).a=v.vpday.var(k).a./v.vpsday.var(k).a*100; end; 
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
 for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhxday=var; %unit:%
-thresh=[10:10:90]; v.rhxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[10:10:90]; v.rhxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %read in surface relative humidity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,7 +157,7 @@ exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
 for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhday=var; %unit:%
-thresh=[10:10:90]; v.rhday=extremes_ana(var,pct,thresh,nbin,do_trend,1) %r.rhday.var neede for further cal.
+thresh=[10:10:90]; v.rhday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize) %r.rhday.var neede for further cal.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute dewpoint and wet bulb temperatures
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -169,13 +169,13 @@ for k=1:length(var)
   var1(k).a=dewpoint_frostpoint(tas,rhday); %og.tdpday(k)=var(k);
   var2(k).a=wetbulb_vec(tas,rhday,psday);   %og.twbday(k)=var(k);
 end
-thresh=[30 35 40]; v.tdpday=extremes_ana(var1,pct,thresh,nbin,do_trend,opt)
-thresh=[30 35 40]; v.twbday=extremes_ana(var2,pct,thresh,nbin,do_trend,opt)
+thresh=[30 35 40]; v.tdpday=extremes_ana(var1,pct,thresh,nbin,do_trend,opt,bsize)
+thresh=[30 35 40]; v.twbday=extremes_ana(var2,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='sfcWind'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.wsdday=var; %unit:m/s
-thresh=[10 20 30]; v.wsdday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1)
+thresh=[10 20 30]; v.wsdday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % daily max and min
@@ -185,28 +185,28 @@ varn='tasmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a-273.15; end; %og.tasmaxday=var; %unit:C
-thresh=[30 35 40]; v.tasmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%compute heatwave statistics
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='hursmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
-for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhmaxday=var;
-thresh=[10:10:90]; v.rhmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='hursmin'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
-for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhminday=var;
-thresh=[10:10:90]; v.rhminday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='sfcWindmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.wsdmax=var; %unit:m/s
-thresh=[10 20 30]; v.wsdmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1)
+thresh=[30 35 40]; v.tasmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %compute heatwave statistics
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='hursmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
+%% for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
+%% for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhmaxday=var;
+%% thresh=[10:10:90]; v.rhmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='hursmin'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
+%% for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
+%% for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhminday=var;
+%% thresh=[10:10:90]; v.rhminday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='sfcWindmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.wsdmax=var; %unit:m/s
+%% thresh=[10 20 30]; v.wsdmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute or read in FWI
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,28 +236,28 @@ else
   ff='day';  exd=strcat('/fwihw/'); exf1=strcat(expn,'_'); exf2=''; exf3='.fwihw';
   varn='prday_c'; var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
   thresh=[0.2 1 5 10 50 100 200 400 500]; nbin=[];
-  v.prday_c=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  v.prday_c=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
   
   varn='tasmaxday_c';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-  thresh=[30 35 40]; v.tasmaxday_c=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  thresh=[30 35 40]; v.tasmaxday_c=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 
 % hwday1 and hwtmx1: HW calculations without tasmax correction: pct=95;  
   varn='hwday1';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-  thresh=[]; v.hwday1=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  thresh=[]; v.hwday1=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
   varn='hwtmx1';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-  thresh=[]; v.hwtmx1=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  thresh=[]; v.hwtmx1=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
   
 % hwday2 and hwtmx2: HW calculations with tasmax correction: pct=95;  
   varn='hwday2';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-  thresh=[]; v.hwday2=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  thresh=[]; v.hwday2=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
   varn='hwtmx2';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-  thresh=[]; v.hwtmx2=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  thresh=[]; v.hwtmx2=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
   
 % hwday3 and hwtmx3: HW calculations with tasmax correction: pct=99;  
   varn='hwday3';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-  thresh=[]; v.hwday3=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  thresh=[]; v.hwday3=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
   varn='hwtmx3';  var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-  thresh=[]; v.hwtmx3=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+  thresh=[]; v.hwtmx3=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
    
 %  ff='day'; exd=strcat('/fwihw/'); exf1=strcat(expn,'_'); exf2=''; exf3='.fwihw';
 %  fext =strcat('_',num2str(yr1),'_',num2str(yr2)); fext =strcat('_',num2str(yr1),'_101');
@@ -265,94 +265,94 @@ else
 %  g=load(fnmat); a=g.v.thresh; hw_thresh=a(:,v.ys:v.ye,v.xs:v.xe); 
 %  hw_thresh=repmat(hw_thresh,[v.nyr,1,1]);
 %  varn='hwday'; var=readallyear_reg_fwihw(v,exd,varn,exf1,exf2,exf3,ff);
-%  thresh=[0 1]; v.hwday=extremes_ana(var,pct,thresh,nbin,do_trend,1);
+%  thresh=[0 1]; v.hwday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
 %  varn='hwtmx'; var=readallyear_reg_fwihw(v,exd,varn,exf1,exf2,exf3,ff);
-%  thresh=[0 1]; v.hwtmx=extremes_ana(var,pct,thresh,nbin,do_trend,1);
+%  thresh=[0 1]; v.hwtmx=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
 
 %  varn='tasmaxday'; var=readallyear_reg_fwihw(v,exd,varn,exf1,exf2,exf3,ff);
 %  a=var(1).a; id=v.hwday.var(1).a; a(~id)=0; var(1).a=a; %absoluate tasmax over HW days
 %  a=var(1).a; a=a-hw_thresh; id=v.hwday.var(1).a; a(~id)=0; var(1).a=a; %HW intensity=hwtmx
-%  thresh=[0 1]; v.hwtab=extremes_ana(var,pct,thresh,nbin,do_trend,1);
+%  thresh=[0 1]; v.hwtab=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
 
   varn=["ffmcday","dmcday","dcday","isiday","buiday","fwiday","dsrday"];
   var1=readallyear_reg_fwihw_all(v,exd,varn,exf1,exf2,exf3,ff); 
   no=length(var1); 
-  thresh=[10]; for k=1:no; var(k).a=var1(k).ffmc; end; v.fwiday.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).dmc;  end; v.fwiday.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).dc;   end; v.fwiday.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).isi;  end; v.fwiday.isi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).bui;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).fwi;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).dsr;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).ffmc; end; v.fwiday.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).dmc;  end; v.fwiday.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).dc;   end; v.fwiday.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).isi;  end; v.fwiday.isi =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).bui;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).fwi;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).dsr;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
 
   varn=["ffmcday_c","dmcday_c","dcday_c","isiday_c","buiday_c","fwiday_c","dsrday_c"];
   var1=readallyear_reg_fwihw_all(v,exd,varn,exf1,exf2,exf3,ff); 
-  thresh=[10]; for k=1:no; var(k).a=var1(k).ffmc; end; v.fwiday_c.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).dmc;  end; v.fwiday_c.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).dc;   end; v.fwiday_c.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).isi;  end; v.fwiday_c.isi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).bui;  end; v.fwiday_c.bui =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).fwi;  end; v.fwiday_c.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
-  thresh=[10]; for k=1:no; var(k).a=var1(k).dsr;  end; v.fwiday_c.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).ffmc; end; v.fwiday_c.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).dmc;  end; v.fwiday_c.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).dc;   end; v.fwiday_c.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).isi;  end; v.fwiday_c.isi =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).bui;  end; v.fwiday_c.bui =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).fwi;  end; v.fwiday_c.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
+  thresh=[10]; for k=1:no; var(k).a=var1(k).dsr;  end; v.fwiday_c.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize);
 end
 
 if (diag==0)
   varlist={'prday','tasmaxday'};  v=clearvar(v,opt,varlist);
   epath = tpath; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-  fnmat=strcat(epath,expn,'/',expn,fext,'_','opt',num2str(opt),'_diag',num2str(diag),'_read_daily_namerica.mat')
+  fnmat=strcat(epath,expn,'/',expn,fext,'_','opt',num2str(opt),'_diag',num2str(diag),'_read_daily_namerica_new.mat')
   save(fnmat,'v','-v7.3'); %save(fnmat,'v');
   return
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Other variables%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='hfls'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-for k=1:length(var); var(k).a=var(k).a; end; %og.evapday=var; %unit:W/m2
-thresh=[]; v.evapday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='hfss'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.shfxday=var; %unit:W/m2
-thresh=[]; v.shfxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='rsds'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rsdsday=var; %unit:W/m2
-thresh=[]; v.rsdsday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='rsus'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rsusday=var; %unit:W/m2
-thresh=[]; v.rsusday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='rlds'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rldsday=var; %unit:W/m2
-thresh=[]; v.rldsday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='rlus'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rlusday=var; %unit:W/m2
-thresh=[]; v.rlusday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='clt'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.cltday=var; %unit:W/m2
-thresh=[]; v.cltday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='clwvi'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.lwpday=var; %unit:W/m2
-thresh=[]; v.lwpday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-varn='clivi'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
-exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
-var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.iwpday=var; %unit:W/m2
-thresh=[]; v.iwpday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %Other variables%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='hfls'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
+%% for k=1:length(var); var(k).a=var(k).a; end; %og.evapday=var; %unit:W/m2
+%% thresh=[]; v.evapday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='hfss'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.shfxday=var; %unit:W/m2
+%% thresh=[]; v.shfxday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='rsds'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rsdsday=var; %unit:W/m2
+%% thresh=[]; v.rsdsday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='rsus'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rsusday=var; %unit:W/m2
+%% thresh=[]; v.rsusday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='rlds'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rldsday=var; %unit:W/m2
+%% thresh=[]; v.rldsday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='rlus'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.rlusday=var; %unit:W/m2
+%% thresh=[]; v.rlusday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='clt'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.cltday=var; %unit:W/m2
+%% thresh=[]; v.cltday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='clwvi'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.lwpday=var; %unit:W/m2
+%% thresh=[]; v.lwpday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% varn='clivi'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
+%% exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
+%% var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %og.iwpday=var; %unit:W/m2
+%% thresh=[]; v.iwpday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %varn='pr'; ff='3hr'; exd=strcat('/',atmos_data_dir,'/3hr/');
 %exf1='atmos_cmip.'; exf2='010100-'; exf3='123123.';
 %var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 

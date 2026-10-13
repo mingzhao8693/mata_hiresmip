@@ -60,10 +60,10 @@ set epath = $tpath/$expn/atmos_data
 cd $epath/daily
 dmget *ps.nc *pr.nc *tas*.nc *sfcWind*.nc *hurs*.nc *ts.nc *uas.nc *vas.nc *huss.nc &
 cd $epath
-dmget $epath/3hr/*pr.nc
-dmget $epath/daily_river/*rv_o_h2o.nc
-dmget $epath/daily_land_cmip/*mrsos*.nc
-dmget $epath/daily_land/*runf_soil.nc
+dmget $epath/3hr/*pr.nc &
+dmget $epath/daily_river/*rv_o_h2o.nc &
+dmget $epath/daily_land_cmip/*mrsos*.nc &
+dmget $epath/daily_land/*runf_soil.nc &
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %step 1: compute model daily climo and climo biases
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -264,6 +264,23 @@ expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m17';      v=read_da
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m16';      v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m26';      v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
 expn='c192L33_am4p0_2010climo_trend_1979_2020_spear_pattern_m3';       v=read_daily_namerica    (tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%read daily extremes analsyis for AR, TS, MCS trend and interannual varibility
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tpath='/archive/Ming.Zhao/awg/2023.04/'; opt=0; diag=0; do_trend=1; do_part=1;%1:do_yea=1; 2:do_hyr=1; 3:do_sea=1; 4:do_mon=1;
+pct=[1 5 10 25 50 75 90 95 99]; latlon=[0 360 -90 90]; yr1=1950; yr2=2020; %latlon=[0 360 -90 90];
+%yr1=2; yr2=101; %yr1=2001; yr2=2020;
+%expn='c192_obs';            v=read_daily_namerica_obs(tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+%yr1=1950; yr2=1951; do_trend=0;
+for i=21:27
+  mm=sprintf('%02d',i);
+  expn=strcat('c192L33_CM4X_amip_',mm)
+  v=read_daily_extremes(tpath,expn,yr1,yr2,pct,opt,diag,latlon,do_trend,do_part)
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1621,10 +1638,3 @@ a=diff/p.dT2; p.v11=a; p.dv11=mean(a(id).*aa); p.isig11=isig;
 plot_pattern_effect_Fig_land_16panel(p)
 %lat1=16; lat2=75; lon1=190; lon2=304; p.xy=[lon1 lon2 lat1 lat2];
 %plot_pattern_effect_Fig_land_16panel(p);
-
-
-
-
-
-
-

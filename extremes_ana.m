@@ -1,4 +1,4 @@
-function [x]=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+function [x]=extremes_ana(var,pct,thresh,nbin,do_trend,opt,block_size)
 'extremes_ana...' 
 if isempty(thresh); thresh=[0]; end
 if isempty(nbin);   nbin=20;    end
@@ -40,6 +40,13 @@ end
 
 for k=1:length(var)
   var(k).a=single(var(k).a);
+  
+  a=var(k).a; [nt nlat nlon]=size(a); nblock=nyr/block_size; 
+  a=reshape(a,nblock,nt/nblock,nlat,nlon);
+  x.yr_av (k,:,:,:)  =squeeze(nanmean(a,  2)); %all time average
+  x.yr_std(k,:,:,:)  =squeeze(nanstd (a,1,2)); %all time std
+  x.yr_pct(k,:,:,:,:)=prctile(a,pct,2);
+  
   a=var(k).a;
   x.sname(k)=var(k).sname;
   x.av (k,:,:)  =squeeze(nanmean(a, 1)); %all time average

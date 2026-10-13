@@ -11,4 +11,13 @@ s=circshift(a, 31, 1); %s(32,:,:)==a(1,:,:); s(90,:,:)==a(59,:,:); s(1,:,:)==a(3
 djf=squeeze(nanmean(s(1:90,:,:),1));
   
 v.ann=ann; v.mam=mam; v.jja=jja; v.son=son; v.djf=djf;
+
+b=[1  32 60  91 121 152 182 213 244 274 305 335];
+e=[31 59 90 120 151 181 212 243 273 304 334 365];
+for k=1:12
+  n1=b(k); n2=e(k);
+  tmp=a(n1:n2,:,:);
+  v.mon(k,:,:)=nanmean(tmp,1);
+end
+
 return
