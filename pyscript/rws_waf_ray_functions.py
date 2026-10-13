@@ -26,6 +26,7 @@ LAT_MIN_TN01 = 10.0
 
 # Avoid division by very weak background flow
 WIND2_MIN = 1.0e-8
+MIN_BASIC_SPEED = 5.0
 
 FILL_VALUE = -9999.0
 
@@ -315,6 +316,112 @@ def calculate_rws(u, v):
         "rws_advect": rws_advect
     })
 
+def geostrophic_wind_from_height(z):
+    """
+    Calculate geostrophic wind from geopotential height Z.
+
+        ug = -(g/f) * dZ/dy
+        vg =  (g/f) * dZ/dx
+
+    with
+
+        d/dy = (1/a) d/dphi
+        d/dx = (1/(a cos(phi))) d/dlambda
+
+    Z must be geopotential height in meters.
+    """
+
+    z = fix_latitude_order(z)
+
+    lat_deg = z["lat"].values
+    lon_deg = z["lon"].values
+
+    lat_rad = np.deg2rad(lat_deg)
+    lon_rad = np.deg2rad(lon_deg)
+
+    z_rad = z.assign_coords(
+        lat=("lat", lat_rad),
+        lon=("lon", lon_rad)
+    )
+
+    # Coriolis parameter
+    f = xr.DataArray(
+        2.0 * OMEGA * np.sin(lat_rad),
+        coords={"lat": lat_rad},
+        dims=("lat",)
+    )
+
+    cosphi = xr.DataArray(
+        np.cos(lat_rad),
+        coords={"lat": lat_rad},
+        dims=("lat",)
+    )
+
+    # --------------------------------------------------------
+    # Longitude derivative: periodic
+    # --------------------------------------------------------
+
+    dlon = float(lon_rad[1] - lon_rad[0])
+
+    dZ_dlon = (
+        z_rad.roll(lon=-1, roll_coords=False)
+        - z_rad.roll(lon=1, roll_coords=False)
+    ) / (2.0 * dlon)
+
+    # --------------------------------------------------------
+    # Latitude derivative
+    # --------------------------------------------------------
+
+    dZ_dlat = z_rad.differentiate(
+        "lat",
+        edge_order=2
+    )
+
+    # --------------------------------------------------------
+    # Geostrophic wind
+    # --------------------------------------------------------
+
+    ug = (
+        -G
+        / (f * A)
+        * dZ_dlat
+    )
+
+    vg = (
+        G
+        / (f * A * cosphi)
+        * dZ_dlon
+    )
+
+    # Mask low latitudes
+    valid_lat = xr.DataArray(
+        np.abs(lat_deg) >= LAT_MIN_TN01,
+        coords={"lat": lat_rad},
+        dims=("lat",)
+    )
+
+    ug = ug.where(valid_lat)
+    vg = vg.where(valid_lat)
+
+    # Restore degree coordinates
+    ug = ug.assign_coords(
+        lat=("lat", lat_deg),
+        lon=("lon", lon_deg)
+    )
+
+    vg = vg.assign_coords(
+        lat=("lat", lat_deg),
+        lon=("lon", lon_deg)
+    )
+
+    ug.name = "ug"
+    vg.name = "vg"
+
+    ug.attrs["units"] = "m s-1"
+    vg.attrs["units"] = "m s-1"
+
+    return ug, vg
+
 # ============================================================
 # TAKAYA-NAKAMURA WAVE ACTIVITY FLUX
 # ============================================================
@@ -323,7 +430,8 @@ def tn01_waf_2d(
     u_bg,
     v_bg,
     z_prime,
-    print_diagnostics=True
+    print_diagnostics=True,
+    return_diagnostics=False
 ):
 
     """
@@ -591,6 +699,9 @@ def tn01_waf_2d(
         - psi * psi_phiphi
     )
     
+    term_yy_phi2 = psi_phi**2
+    term_yy_curvature = -psi * psi_phiphi
+    
     # --------------------------------------------------------
     # Background wind magnitude
     # --------------------------------------------------------
@@ -693,8 +804,8 @@ def tn01_waf_2d(
     )
 
     valid_wind = (
-        wind2
-        > WIND2_MIN
+        windmag
+        > MIN_BASIC_SPEED
     )
 
     valid = (
@@ -792,7 +903,25 @@ def tn01_waf_2d(
     waf_x.attrs["units"] = "m2 s-2"
     waf_y.attrs["units"] = "m2 s-2"
 
+    if return_diagnostics:
+
+        diagnostics = xr.Dataset({
+            "term_xx": term_xx,
+            "term_xy": term_xy,
+            "term_yy": term_yy,
+            "term_yy_phi2": term_yy_phi2,
+            "term_yy_curvature": term_yy_curvature,
+        })
+
+        diagnostics = diagnostics.assign_coords(
+            lat=("lat", lat_deg_values),
+            lon=("lon", lon_deg_values)
+        )
+
+        return waf_x, waf_y, diagnostics
+    
     return waf_x, waf_y
+
 
 
 # ============================================================

@@ -11,6 +11,7 @@ from rws_waf_ray_functions import (
     zonal_anomaly,
     monthly_climatology,
     calculate_rws,
+    geostrophic_wind_from_height,
     tn01_waf_2d,
     calculate_ray_tracing
 )
@@ -419,22 +420,28 @@ for month in range(1, 13):
         f"  Calculating WAF for month {month:02d}..."
     )
 
-    u_era5_bg = era5_u_clim.sel(
+    # Full monthly climatological geopotential height
+    z_era5_bg = era5_z_clim.sel(
         month=month
     )
 
-    v_era5_bg = era5_v_clim.sel(
-        month=month
+    # Calculate monthly geostrophic background winds
+    ug_era5_bg, vg_era5_bg = (
+        geostrophic_wind_from_height(
+            z_era5_bg
+        )
     )
 
+    # Monthly climatological stationary-wave height anomaly
     zp_era5 = era5_zprime_clim.sel(
         month=month
     )
 
+    # Monthly TN01 WAF
     waf_x_era5, waf_y_era5 = (
         tn01_waf_2d(
-            u_era5_bg,
-            v_era5_bg,
+            ug_era5_bg,
+            vg_era5_bg,
             zp_era5
         )
     )
@@ -446,7 +453,6 @@ for month in range(1, 13):
     waf_y_era5_clim.append(
         waf_y_era5
     )
-
 
 # ============================================================
 # CONVERT WAF LISTS TO XARRAY
@@ -466,23 +472,43 @@ waf_y_era5_clim = xr.concat(
     dim="month"
 )
 
+waf_x_era5_clim = waf_x_era5_clim.assign_coords(
+    month=np.arange(1, 13)
+)
 
+waf_y_era5_clim = waf_y_era5_clim.assign_coords(
+    month=np.arange(1, 13)
+)
 # ============================================================
-# CALCULATE JJA WAF
+# CALCULATE JJA WAF FROM MONTHLY WAF CLIMATOLOGY
 # ============================================================
 
 print(
-    "\nCalculating ERA5 JJA WAF..."
+    "\nCalculating ERA5 JJA WAF "
+    "from June-July-August monthly WAF..."
 )
 
-waf_x_era5_jja, waf_y_era5_jja = (
-    tn01_waf_2d(
-        u_era5_jja,
-        v_era5_jja,
-        z_era5_jja_prime
+waf_x_era5_jja = (
+    waf_x_era5_clim
+    .sel(
+        month=[6, 7, 8]
+    )
+    .mean(
+        dim="month",
+        skipna=True
     )
 )
 
+waf_y_era5_jja = (
+    waf_y_era5_clim
+    .sel(
+        month=[6, 7, 8]
+    )
+    .mean(
+        dim="month",
+        skipna=True
+    )
+)
 
 # ============================================================
 # CALCULATE BAROTROPIC STATIONARY ROSSBY-WAVE RAY TRACING

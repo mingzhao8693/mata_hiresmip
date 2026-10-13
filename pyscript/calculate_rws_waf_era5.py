@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import numpy as np
 import xarray as xr
 
-from rws_waf_functions import (
+from rws_waf_ray_functions import (
     select_level,
     fix_latitude_order,
     zonal_anomaly,
     monthly_climatology,
     calculate_rws,
-    tn01_waf_2d
+    tn01_waf_2d,
+    calculate_ray_tracing
 )
 
 
@@ -23,7 +25,7 @@ if len(sys.argv) != 2:
         "Usage:"
     )
     print(
-        "python calculate_rws_waf_era5.py "
+        "python calculate_rws_waf_ray_era5.py /work/miz/rws_waf_ray_monthly/era5"
         "OUT_DIR"
     )
     sys.exit(1)
@@ -32,9 +34,9 @@ OUT_DIR = sys.argv[1]
 
 ERA5_DIR = "/work/miz/rws_waf_ray_monthly/era5"
 
-ERA5_U_FILE = "ERA5_197901-202012.ucomp_lres.nc"
-ERA5_V_FILE = "ERA5_197901-202012.vcomp_lres.nc"
-ERA5_Z_FILE = "ERA5_197901-202012.hght_lres.nc"
+ERA5_U_FILE = "ERA5_197901-202012.ucomp_lres_smooth9_smooth9.nc"
+ERA5_V_FILE = "ERA5_197901-202012.vcomp_lres_smooth9_smooth9.nc"
+ERA5_Z_FILE = "ERA5_197901-202012.hght_lres_smooth9_smooth9.nc"
 
 TARGET_LEVEL = 200.0
 
@@ -136,6 +138,23 @@ era5_z = select_level(
     TARGET_LEVEL
 )
 
+# ============================================================
+# CONVERT ERA5 GEOPOTENTIAL TO GEOPOTENTIAL HEIGHT
+# ============================================================
+
+print(
+    "\nConverting ERA5 geopotential to geopotential height..."
+)
+
+GRAVITY = 9.80665
+
+era5_z = era5_z / GRAVITY
+
+era5_z.attrs["units"] = "m"
+
+era5_z.attrs["long_name"] = (
+    "Geopotential height"
+)
 
 # ============================================================
 # FIX LATITUDE ORDER
@@ -286,6 +305,10 @@ print()
 # ============================================================
 # CONVERT RWS LIST TO XARRAY
 # ============================================================
+
+print(
+    "\nConverting RWS to xarray..."
+)
 
 rws_era5 = xr.concat(
     rws_era5,
@@ -462,6 +485,23 @@ waf_x_era5_jja, waf_y_era5_jja = (
 
 
 # ============================================================
+# CALCULATE BAROTROPIC STATIONARY ROSSBY-WAVE RAY TRACING
+# ============================================================
+
+print(
+    "\nCalculating ERA5 barotropic stationary "
+    "Rossby-wave ray tracing..."
+)
+
+ray_tracing_era5 = calculate_ray_tracing(
+    u_era5_jja,
+    v_era5_jja,
+    rws_era5_jja["rws"],
+    background_name="ERA5"
+)
+
+
+# ============================================================
 # CREATE OUTPUT DIRECTORY
 # ============================================================
 
@@ -472,146 +512,135 @@ os.makedirs(
 
 
 # ============================================================
-# COMBINE ERA5 MONTHLY RWS
+# COMBINE ERA5 RWS OUTPUT
 # ============================================================
 
-rws_era5_monthly_out = xr.Dataset(
+rws_era5_out = xr.Dataset(
     {
-        "rws": rws_era5["rws"],
-        "rws_stretch": rws_era5["rws_stretch"],
-        "rws_advect": rws_era5["rws_advect"]
+
+        # ----------------------------------------------------
+        # Monthly RWS
+        # ----------------------------------------------------
+
+        "rws_monthly":
+            rws_era5["rws"],
+
+        "rws_stretch_monthly":
+            rws_era5["rws_stretch"],
+
+        "rws_advect_monthly":
+            rws_era5["rws_advect"],
+
+        # ----------------------------------------------------
+        # Monthly RWS climatology
+        # ----------------------------------------------------
+
+        "rws_clim":
+            rws_era5_clim["rws"],
+
+        "rws_stretch_clim":
+            rws_era5_clim["rws_stretch"],
+
+        "rws_advect_clim":
+            rws_era5_clim["rws_advect"],
+
+        # ----------------------------------------------------
+        # JJA RWS
+        # ----------------------------------------------------
+
+        "rws_JJA":
+            rws_era5_jja["rws"],
+
+        "rws_stretch_JJA":
+            rws_era5_jja["rws_stretch"],
+
+        "rws_advect_JJA":
+            rws_era5_jja["rws_advect"]
     }
 )
 
 
 # ============================================================
-# COMBINE ERA5 MONTHLY RWS CLIMATOLOGIES
+# COMBINE ERA5 WAF OUTPUT
 # ============================================================
 
-rws_era5_clim_out = xr.Dataset(
+waf_era5_out = xr.Dataset(
     {
-        "rws": rws_era5_clim["rws"],
-        "rws_stretch": rws_era5_clim["rws_stretch"],
-        "rws_advect": rws_era5_clim["rws_advect"]
+
+        # ----------------------------------------------------
+        # Monthly climatological WAF
+        # ----------------------------------------------------
+
+        "waf_x_clim":
+            waf_x_era5_clim,
+
+        "waf_y_clim":
+            waf_y_era5_clim,
+
+        "zprime_clim":
+            era5_zprime_clim,
+
+        # ----------------------------------------------------
+        # JJA WAF
+        # ----------------------------------------------------
+
+        "waf_x_JJA":
+            waf_x_era5_jja,
+
+        "waf_y_JJA":
+            waf_y_era5_jja,
+
+        "zprime_JJA":
+            z_era5_jja_prime
     }
 )
 
 
 # ============================================================
-# COMBINE ERA5 JJA RWS
-# ============================================================
-
-rws_era5_jja_out = xr.Dataset(
-    {
-        "rws": rws_era5_jja["rws"],
-        "rws_stretch": rws_era5_jja["rws_stretch"],
-        "rws_advect": rws_era5_jja["rws_advect"]
-    }
-)
-
-
-# ============================================================
-# COMBINE ERA5 MONTHLY WAF CLIMATOLOGIES
-# ============================================================
-
-waf_era5_clim_out = xr.Dataset(
-    {
-        "waf_x": waf_x_era5_clim,
-        "waf_y": waf_y_era5_clim,
-        "zprime": era5_zprime_clim
-    }
-)
-
-
-# ============================================================
-# COMBINE ERA5 JJA WAF
-# ============================================================
-
-waf_era5_jja_out = xr.Dataset(
-    {
-        "waf_x": waf_x_era5_jja,
-        "waf_y": waf_y_era5_jja,
-        "zprime": z_era5_jja_prime
-    }
-)
-
-
-# ============================================================
-# SAVE ERA5 MONTHLY RWS
+# SAVE ERA5 RWS
 # ============================================================
 
 print(
-    "\nSaving ERA5 monthly RWS..."
+    "\nSaving ERA5 RWS..."
 )
 
-rws_era5_monthly_out.to_netcdf(
+rws_era5_out.to_netcdf(
     os.path.join(
         OUT_DIR,
-        "rws_ERA5_monthly.nc"
+        "rws_ERA5.nc"
     )
 )
 
 
 # ============================================================
-# SAVE ERA5 MONTHLY RWS CLIMATOLOGIES
+# SAVE ERA5 WAF
 # ============================================================
 
 print(
-    "Saving ERA5 monthly RWS climatologies..."
+    "Saving ERA5 WAF..."
 )
 
-rws_era5_clim_out.to_netcdf(
+waf_era5_out.to_netcdf(
     os.path.join(
         OUT_DIR,
-        "rws_ERA5_clim.nc"
+        "waf_ERA5.nc"
     )
 )
 
 
 # ============================================================
-# SAVE ERA5 JJA RWS
+# SAVE ERA5 RAY TRACING
 # ============================================================
 
 print(
-    "Saving ERA5 JJA RWS..."
+    "Saving ERA5 barotropic stationary "
+    "Rossby-wave ray tracing..."
 )
 
-rws_era5_jja_out.to_netcdf(
+ray_tracing_era5.to_netcdf(
     os.path.join(
         OUT_DIR,
-        "rws_ERA5_JJA.nc"
-    )
-)
-
-
-# ============================================================
-# SAVE ERA5 MONTHLY WAF CLIMATOLOGIES
-# ============================================================
-
-print(
-    "Saving ERA5 monthly WAF climatologies..."
-)
-
-waf_era5_clim_out.to_netcdf(
-    os.path.join(
-        OUT_DIR,
-        "waf_ERA5_clim.nc"
-    )
-)
-
-
-# ============================================================
-# SAVE ERA5 JJA WAF
-# ============================================================
-
-print(
-    "Saving ERA5 JJA WAF..."
-)
-
-waf_era5_jja_out.to_netcdf(
-    os.path.join(
-        OUT_DIR,
-        "waf_ERA5_JJA.nc"
+        "rossby_wave_ray_tracing_ERA5_JJA.nc"
     )
 )
 
@@ -621,8 +650,8 @@ waf_era5_jja_out.to_netcdf(
 # ============================================================
 
 print(
-    "\nAll ERA5 RWS and WAF calculations "
-    "completed successfully."
+    "\nAll ERA5 RWS, WAF, and ray-tracing "
+    "calculations completed successfully."
 )
 
 print(
@@ -636,34 +665,20 @@ print(
 print(
     os.path.join(
         OUT_DIR,
-        "rws_ERA5_monthly.nc"
+        "rws_ERA5.nc"
     )
 )
 
 print(
     os.path.join(
         OUT_DIR,
-        "rws_ERA5_clim.nc"
+        "waf_ERA5.nc"
     )
 )
 
 print(
     os.path.join(
         OUT_DIR,
-        "rws_ERA5_JJA.nc"
-    )
-)
-
-print(
-    os.path.join(
-        OUT_DIR,
-        "waf_ERA5_clim.nc"
-    )
-)
-
-print(
-    os.path.join(
-        OUT_DIR,
-        "waf_ERA5_JJA.nc"
+        "rossby_wave_ray_tracing_ERA5_JJA.nc"
     )
 )
