@@ -49,13 +49,13 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	    add.z=p.z0; add.u=p.u0; add.v=p.v0; add.zbin=p.z0_bin; add.ubin=p.u0_bin; add.u200=p.u200_mod;
 	    if (p.do_bias); a=p.z0-p.Z0; b=p.dz0-p.dZ0; add.u=p.u0-p.U0; add.v=p.v0-p.V0; cax=[p.cmin1 p.cmax1]; end;
           elseif r==3;
-	    a=p.z1; b=p.dz1; sx=let(idx)+p.s1; cax=[p.cmin1 p.cmax1];
+	    a=p.z1; b=p.dz1; sx=let(idx)+p.s1; cax=[p.cmin1 p.cmax1]; isig=p.isig1; isig_av=p.isig1_av;
 	    add.u=p.u0; add.v=p.v0; add.du=p.u1; add.dv=p.v1; add.z=p.z1; add.zbin=p.z0_bin; add.ubin=p.u0_bin; add.u200=p.u200_mod;
           elseif r==4;
-	    a=p.z2; b=p.dz2; sx=let(idx)+p.s2; cax=[p.cmin1 p.cmax1];
+	    a=p.z2; b=p.dz2; sx=let(idx)+p.s2; cax=[p.cmin1 p.cmax1]; isig=p.isig2; isig_av=p.isig2_av;
 	    add.u=p.u0; add.v=p.v0; add.du=p.u2; add.dv=p.v2; add.z=p.z2; add.zbin=p.z0_bin; add.ubin=p.u0_bin; add.u200=p.u200_mod;
           else;
-	    a=p.z2-p.z1; b=p.dz2-p.dz1; sx=let(idx)+'(m) minus (i)'; cax=[p.cmin1 p.cmax1];
+	    a=p.z2-p.z1; b=p.dz2-p.dz1; sx=let(idx)+'(m) minus (i)'; cax=[p.cmin1 p.cmax1]; isig=p.isig2m1; isig_av=p.isig2m1_av;
  	    add.u=p.u0; add.v=p.v0; add.du=p.u2-p.u1; add.dv=p.v2-p.v1; add.z=p.z2-p.z1; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
           end;
           unit_val = p.unit1; unit_str = p.unit1_bar; % Shared for TAS
@@ -71,7 +71,7 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
             %  contour(lon,lat,phi',-p.phi_bin,p.phi_co,'Linestyle','--','showtext','off');
 	  elseif r==2; %control: p.z3, p.u3, p.v3
 %	    a=p.u3; b=p.du3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
-	    a=p.z3; b=p.dz3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
+	    a=p.z3; b=p.dz3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3]; isig=p.isig3; isig_av=p.isig3_av;
 	    add.z=p.z3; add.u=p.u3; add.v=p.v3; add.zbin=p.z3_bin; add.ubin=p.u3_bin;
 	    if (p.do_bias); a=p.z3-p.Z3; b=p.dz2-p.dZ3; add.u=p.u3-p.U3; add.v=p.v3-p.V3; cax=[p.cmin4 p.cmax4]; end;
 %	    if (p.do_bias); a=p.u3-p.U3; b=p.du3-p.dU3; add.u=p.u3-p.U3; add.v=p.v3-p.V3; cax=[p.cmin4 p.cmax4]; end;
@@ -80,15 +80,15 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
             %  contour(lon,lat,phi',-p.phi_bin,p.phi_co,'Linestyle','--','showtext','off');
           elseif r==3; %SPEAR-pattern minus control:    p.z4, p.u4, p.v4
 %	    a=p.u4; b=p.du4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
-	    a=p.z4; b=p.dz4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
+	    a=p.z4; b=p.dz4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4]; isig=p.isig4; isig_av=p.isig4_av;
 	    add.u=p.u3; add.v=p.v3; add.du=p.u4; add.dv=p.v4; add.dz=p.z4; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
           elseif r==4; %observed-pattern minus control: p.z5, p.u5, p.v5
 %	    a=p.u5; b=p.du5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
-	    a=p.z5; b=p.dz5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
+	    a=p.z5; b=p.dz5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4]; isig=p.isig5; isig_av=p.isig5_av;
 	    add.u=p.u3; add.v=p.v3; add.du=p.u5; add.dv=p.v5; add.dz=p.z5; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
           else;
 %	    a=p.u5-p.u4;  b=p.du5-p.du4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
-	    a=p.z5-p.z4;  b=p.dz5-p.dz4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
+	    a=p.z5-p.z4;  b=p.dz5-p.dz4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4]; isig=p.isig5m4; isig_av=p.isig5m4_av;
 	    add.u=p.u3; add.v=p.v3; add.du=p.u5-p.u4; add.dv=p.v5-p.v4; add.dz=p.z5-p.z4; add.zbin=p.z0_bin; add.ubin=p.u0_bin;
           end;
           unit_val = p.unit4; unit_str = p.unit4_bar;
@@ -104,13 +104,13 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	    if (p.do_bias); a=p.z6-p.Z6; b=p.dz6-p.dZ6; add.u=p.u6-p.U6; add.v=p.v6-p.V6; cax=[p.cmin7 p.cmax7]; end;
 %	    if (p.do_bias); a=p.u6-p.U6; b=p.du6-p.dU6; add.u=p.u6-p.U6; add.v=p.v6-p.V6; cax=[p.cmin7 p.cmax7]; end;
          elseif r==3;
-	    a=p.z7; b=p.dz7; sx=let(idx)+p.s7; cax=[p.cmin7 p.cmax7];
+	    a=p.z7; b=p.dz7; sx=let(idx)+p.s7; cax=[p.cmin7 p.cmax7]; isig=p.isig7; isig_av=p.isig7_av;
  	    add.u=p.u6; add.v=p.v6; add.du=p.u7; add.dv=p.v7; add.dz=p.z7; add.zbin=p.z6_bin; add.ubin=p.u6_bin; 
           elseif r==4;
-	    a=p.z8; b=p.dz8; sx=let(idx)+p.s8; cax=[p.cmin7 p.cmax7];
+	    a=p.z8; b=p.dz8; sx=let(idx)+p.s8; cax=[p.cmin7 p.cmax7]; isig=p.isig8; isig_av=p.isig8_av;
 	    add.u=p.u6; add.v=p.v6; add.du=p.u8; add.dv=p.v8; add.dz=p.z8; add.zbin=p.z6_bin; add.ubin=p.u6_bin; 
            else;
-	    a=p.z8-p.z7; b=p.dz8-p.dz7; sx=let(idx)+'(o) minus (k)'; cax=[p.cmin7 p.cmax7];
+	    a=p.z8-p.z7; b=p.dz8-p.dz7; sx=let(idx)+'(o) minus (k)'; cax=[p.cmin7 p.cmax7]; isig=p.isig8m7; isig_av=p.isig8m7_av;
 	    add.u=p.u6; add.v=p.v6; add.du=p.u8-p.u7; add.dv=p.v8-p.v7; add.dz=p.z8-p.z7; add.zbin=p.z6_bin; add.ubin=p.u6_bin; 
           end;
           unit_val = p.unit7; unit_str = p.unit7_bar;
@@ -125,13 +125,13 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	    add.u=p.u9; add.v=p.v9; add.z=p.z9; add.zbin=p.z9_bin; add.ubin=p.u9_bin;
 	    if (p.do_bias); a=p.z9-p.Z9; b=p.dz9-p.dZ9; add.u=p.u9-p.U9; add.v=p.v9-p.V9; cax=[p.cmin10 p.cmax10]; end;
           elseif r==3;
-	    a=p.z10; b=p.dz10; sx=let(idx)+p.s10; cax=[p.cmin10 p.cmax10];
+	    a=p.z10; b=p.dz10; sx=let(idx)+p.s10; cax=[p.cmin10 p.cmax10]; isig=p.isig10; isig_av=p.isig10_av;
  	    add.u=p.u9; add.v=p.v9; add.du=p.u10; add.dv=p.v10; add.dz=p.z10; add.zbin=p.z6_bin; add.ubin=p.u6_bin; 
          elseif r==4;
-	    a=p.z11; b=p.dz11; sx=let(idx)+p.s11; cax=[p.cmin10 p.cmax10];
+	    a=p.z11; b=p.dz11; sx=let(idx)+p.s11; cax=[p.cmin10 p.cmax10]; isig=p.isig11; isig_av=p.isig11_av;
  	    add.u=p.u9; add.v=p.v9; add.du=p.u11; add.dv=p.v11; add.dz=p.z11; add.zbin=p.z6_bin; add.ubin=p.u6_bin; 
           else;
-	    a=p.z11-p.z10;  b=p.dz11-p.dz10; sx=let(idx)+'(p) minus (l)'; cax=[p.cmin10 p.cmax10];
+	    a=p.z11-p.z10;  b=p.dz11-p.dz10; sx=let(idx)+'(p) minus (l)'; cax=[p.cmin10 p.cmax10]; isig=p.isig11m10; isig_av=p.isig11m10_av;
  	    add.u=p.u9; add.v=p.v9; add.du=p.u11-p.u10; add.dv=p.v11-p.v10; add.dz=p.z11-p.z10; add.zbin=p.z6_bin; add.ubin=p.u6_bin; 
           end;
           unit_val = p.unit10; unit_str = p.unit10_bar;
@@ -140,6 +140,20 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
         
         % Plotting  a(~p.id) = NaN;
         pcolor(p.lon, p.lat, a); shading flat; caxis(cax);
+	
+        % Stippling (Significance) - Only for SPEAR and Observed rows
+	p.do_stipple = true;
+	if p.do_stipple
+          if (r == 3 || r == 4 || r == 5)
+            [xx,yy] = meshgrid(lon,lat);
+	    mk='.'; ms=1; mc=0.1*[1 1 1]; ds=100; %isig(~p.id)=0;
+            %stipple(xx,yy,isig,'density',ds,'color',mc,'marker',mk,'markersize',ms);
+	    %[~,h] = contourf(xx,yy,isig,[0.5 0.5], 'LineStyle','none');
+	    % Apply diagonal hatching
+	    hatch_mask(xx,yy,isig,'Spacing',12,'Color',[0.7 0.7 0.7],'LineWidth',0.4);
+          end
+	end
+	
         contour(p.lon, p.lat, p.lm, 1, co); axis(p.xy);
 	if p.do_add;
 	  if c==4;
@@ -172,31 +186,28 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	    contour(lon,lat,a, bin,'color','y','Linestyle','-', 'showtext',p.show);
 	    contour(lon,lat,a,-bin,'color','y','Linestyle','--','showtext',p.show);
 	  end
-	  if p.do_bias & r==2;
-	    q=quiver(lon(1:n:end),lat(1:n:end),add.u(1:n:end,1:n:end)*scale_c,add.v(1:n:end,1:n:end)*scale_c,0,'k');
-	  else
-	    q=quiver(lon(1:n:end),lat(1:n:end),add.u(1:n:end,1:n:end)*scale_c,add.v(1:n:end,1:n:end)*scale_c,0,'k');
+	  p.do_quiver = true;
+	  if p.do_quiver
+	    if p.do_bias & r==2;
+	      q=quiver(lon(1:n:end),lat(1:n:end),add.u(1:n:end,1:n:end)*scale_c,add.v(1:n:end,1:n:end)*scale_c,0,'k');
+	    else
+	      q=quiver(lon(1:n:end),lat(1:n:end),add.u(1:n:end,1:n:end)*scale_c,add.v(1:n:end,1:n:end)*scale_c,0,'k');
+	    end
+            if (r == 3 || r == 4 || r==5)
+	      color = [0.90 0.85 0.00];
+	      quiver(lon(1:n:end),lat(1:n:end),add.du(1:n:end,1:n:end)*scale_d,add.dv(1:n:end,1:n:end)*scale_d,0,'Color',color);
+	      x0=178; y0=77;  % m/s reference vector
+	      text(x0-1,y0+6,strcat(num2str(ref1),vunit),'FontSize',fsize,'Color',color,'BackgroundColor','w')
+	      quiver(x0,y0,ref1*scale_d,0,0,'Color','w',  'LineWidth',3,'MaxHeadSize',2)
+	      quiver(x0,y0,ref1*scale_d,0,0,'Color',color,'LineWidth',1,'MaxHeadSize',2)
+	    end
+	    x0=105; y0=77;   % m/s reference vector
+	    text(x0-2,y0+6,strcat(num2str(ref),vunit),'FontSize',fsize,'Color','k','BackgroundColor', 'w')
+	    quiver(x0,y0,ref*scale_c,0,0,'w','LineWidth',3,'MaxHeadSize',2)
+	    quiver(x0,y0,ref*scale_c,0,0,'k','LineWidth',1,'MaxHeadSize',2)
 	  end
-          if (r == 3 || r == 4 || r==5)
-	    color = [0.90 0.85 0.00];
-	    quiver(lon(1:n:end),lat(1:n:end),add.du(1:n:end,1:n:end)*scale_d,add.dv(1:n:end,1:n:end)*scale_d,0,'Color',color);
-	    x0=178; y0=77;  % m/s reference vector
-	    text(x0-1,y0+6,strcat(num2str(ref1),vunit),'FontSize',fsize,'Color',color,'BackgroundColor','w')
-	    quiver(x0,y0,ref1*scale_d,0,0,'Color','w',  'LineWidth',3,'MaxHeadSize',2)
-	    quiver(x0,y0,ref1*scale_d,0,0,'Color',color,'LineWidth',1,'MaxHeadSize',2)
-	  end
-	  x0=105; y0=77;   % m/s reference vector
-	  text(x0-2,y0+6,strcat(num2str(ref),vunit),'FontSize',fsize,'Color','k','BackgroundColor', 'w')
-	  quiver(x0,y0,ref*scale_c,0,0,'w','LineWidth',3,'MaxHeadSize',2)
-	  quiver(x0,y0,ref*scale_c,0,0,'k','LineWidth',1,'MaxHeadSize',2)
  	end
         %for k=1:length(us.lon); plot(us.lon{k},us.lat{k},us.co,'LineWidth',lw); end;
-        
-        % Stippling (Significance) - Only for SPEAR and Observed rows
-        if (r == 3 || r == 4)
-%            [xx,yy] = meshgrid(lon,lat);
-%            stipple(xx,yy,isig,'density',ds,'color',mc,'marker',mk,'markersize',ms);
-        end
         
 	%s = sprintf('%s (%5.3f%s)', sx, b, unit_val);
         s = sprintf('%s', sx);
@@ -215,10 +226,10 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
     end
 end
 
-expn='pattern_effect_20panel_rotated'; visfig='off'; figpath='./fig_land/';
+expn='plot_pattern_effect_Fig_atm_20panel_transposed_new'; visfig='off'; figpath='./fig_land/';
 vname=p.vname; %vname=strcat(p.vname,'_',num2str(p.do_bias));
 
-printnew(visfig,figpath,expn,vname,p.fmt);
+printnew(visfig,figpath,vname,expn,p.fmt);
 
 save(strcat(vname,'.mat'), 'p');
 

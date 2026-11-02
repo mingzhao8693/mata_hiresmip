@@ -54,7 +54,7 @@ else
   v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
 end
 m=0; %read annual data all together; m=1-12 read monthly data one at a time
-nbin=[]; v.do_trend=do_trend;
+nbin=[]; bsize=1; v.do_trend=do_trend;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,28 +72,28 @@ varn='ps'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
 for k=1:length(var); var(k).a=var(k).a*0.01; end; %og.psday=var; %unit:hPa
-thresh=[]; v.c192am4.ps=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.c192am4.ps=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TASMAX in unit of K
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='tasmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-thresh=[]; v.c192am4.tasmax=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.c192am4.tasmax=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TS in unit of K
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='ts'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-thresh=[]; v.c192am4.ts=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.c192am4.ts=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TAS in unit of K
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='tas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
-thresh=[]; v.c192am4.tas=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.c192am4.tas=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface saturation vapor pressure vps in unit of hPa
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,25 +101,25 @@ for k=1:length(var); var(k).a=es_t_array(var(k).a); end;
 %for k=1:length(var); var2(k).a=es_t_array_tetens(var(k).a); end;
 %for k=1:length(var); var3(k).a=es_t_array_ardenbuck(var(k).a); end;
 %for k=1:length(var); var3(k).a=es_t_array_goffgratch(var(k).a); end;
-thresh=[]; v.c192am4.vps=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.c192am4.vps=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %surface humidity kg/kg
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='huss'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:kg/kg
-thresh=[]; v.c192am4.qv=extremes_ana(var,pct,thresh,nbin,do_trend,opt) 
+thresh=[]; v.c192am4.qv=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize) 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface vapor pressure vp (hPa) from surface specific humidity huss
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k=1:length(var); var(k).a=e_qp_array(var(k).a,v.c192am4.ps.var(k).a); end; 
-thresh=[]; v.c192am4.vp=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.c192am4.vp=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute surface vapor pressure vp in unit of hPa from surface specific humidity huss
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k=1:length(var); var(k).a=v.c192am4.vps.var(k).a-v.c192am4.vp.var(k).a; end;
 for k=1:length(var); id=var(k).a<=0; var(k).a(id)=0;  end; %og.vpdday=var;
-thresh=[]; v.c192am4.vpd=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.c192am4.vpd=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %read in surface relative humidity (%)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -128,7 +128,7 @@ exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
 for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; %og.rhday=var; %unit:%
-thresh=[10:10:90]; v.c192am4.rh=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[10:10:90]; v.c192am4.rh=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='pr'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
@@ -136,22 +136,22 @@ exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a*86400; end; %unit:mm/day
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.c192am4.pr=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+v.c192am4.pr=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='uas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-thresh=[]; v.c192am4.uas=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.c192am4.uas=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='vas'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily/');
 exf1='atmos_cmip.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
-thresh=[]; v.c192am4.vas=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.c192am4.vas=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %compute wind speed %%%%%%%%%%%
 for k=1:length(var); var(k).a=sqrt(v.c192am4.uas.var(k).a.^2+v.c192am4.vas.var(k).a.^2); end;
-thresh=[]; v.c192am4.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.c192am4.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Save model analysis data data%

@@ -30,6 +30,7 @@ if p.flipcmap; colormap(flipud(cmap)); end;
 
 for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
     for c = 1:4 % Cols: TAS, VPD, TWB, RH
+      isig=p.isig_null;
         idx = (r-1)*col + c; % The subplot position (1-16)
         subplot(row, col, idx); hold on;
         % Data Selection Logic
@@ -49,14 +50,14 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	    add.z=p.z0; add.zbin=p.z0_bin; 
 	    if (p.do_bias); a=p.z0-p.Z0; b=p.dz0-p.dZ0; cax=[p.cmin1 p.cmax1]; end;
           elseif r==3;
-	    a=p.z1; b=p.dz1; sx=let(idx)+p.s1; cax=[p.cmin1 p.cmax1];
+	    a=p.z1; b=p.dz1; sx=let(idx)+p.s1; cax=[p.cmin1 p.cmax1]; isig=p.isig1; isig_av=p.isig1_av;
 	    add.z=p.z1; add.zbin=p.z0_bin; 
           elseif r==4;
-	    a=p.z2; b=p.dz2; sx=let(idx)+p.s2; cax=[p.cmin1 p.cmax1];
+	    a=p.z2; b=p.dz2; sx=let(idx)+p.s2; cax=[p.cmin1 p.cmax1]; isig=p.isig2; isig_av=p.isig2_av;
 	    add.z=p.z2; add.zbin=p.z0_bin; 
           else;
 	    a=p.z2-p.z1; b=p.dz2-p.dz1; sx=let(idx)+'(m) minus (i)'; cax=[p.cmin1 p.cmax1];
- 	    add.z=p.z2-p.z1; add.zbin=p.z0_bin;
+ 	    add.z=p.z2-p.z1; add.zbin=p.z0_bin; isig=p.isig2m1; isig_av=p.isig2m1_av;
           end;
           unit_val = p.unit1; unit_str = p.unit1_bar; % Shared for TAS
           if r==1 | r==2; unit_val = p.unit0; unit_str = p.unit0_bar; end
@@ -81,15 +82,15 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
           elseif r==3; %SPEAR-pattern minus control:    p.z4, p.u4, p.v4
 %	    a=p.u4; b=p.du4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
 	    a=p.z4; b=p.dz4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
-	    add.dz=p.z4; add.zbin=p.z0_bin;
+	    add.dz=p.z4; add.zbin=p.z0_bin; isig=p.isig4; isig_av=p.isig4_av;
           elseif r==4; %observed-pattern minus control: p.z5, p.u5, p.v5
 %	    a=p.u5; b=p.du5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
 	    a=p.z5; b=p.dz5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
-	    add.dz=p.z5; add.zbin=p.z0_bin;
+	    add.dz=p.z5; add.zbin=p.z0_bin; isig=p.isig5; isig_av=p.isig5_av;
           else;
 %	    a=p.u5-p.u4;  b=p.du5-p.du4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
 	    a=p.z5-p.z4;  b=p.dz5-p.dz4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
-	    add.dz=p.z5-p.z4; add.zbin=p.z0_bin;
+	    add.dz=p.z5-p.z4; add.zbin=p.z0_bin; isig=p.isig5m4; isig_av=p.isig5m4_av;
           end;
           unit_val = p.unit4; unit_str = p.unit4_bar;
           if r==1 | r==2; unit_val = p.unit3; unit_str = p.unit3_bar; end
@@ -105,13 +106,13 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 %	    if (p.do_bias); a=p.u6-p.U6; b=p.du6-p.dU6; cax=[p.cmin7 p.cmax7]; end;
          elseif r==3;
 	    a=p.z7; b=p.dz7; sx=let(idx)+p.s7; cax=[p.cmin7 p.cmax7];
- 	    add.dz=p.z7; add.zbin=p.z6_bin;  
+ 	    add.dz=p.z7; add.zbin=p.z6_bin; isig=p.isig7; isig_av=p.isig7_av;
           elseif r==4;
 	    a=p.z8; b=p.dz8; sx=let(idx)+p.s8; cax=[p.cmin7 p.cmax7];
-	    add.dz=p.z8; add.zbin=p.z6_bin;  
-           else;
+	    add.dz=p.z8; add.zbin=p.z6_bin; isig=p.isig8; isig_av=p.isig8_av;
+          else;
 	    a=p.z8-p.z7; b=p.dz8-p.dz7; sx=let(idx)+'(o) minus (k)'; cax=[p.cmin7 p.cmax7];
-	    add.dz=p.z8-p.z7; add.zbin=p.z6_bin;  
+	    add.dz=p.z8-p.z7; add.zbin=p.z6_bin; isig=p.isig8m7; isig_av=p.isig8m7_av;
           end;
           unit_val = p.unit7; unit_str = p.unit7_bar;
           if r==1 | r==2; unit_val = p.unit6; unit_str = p.unit6_bar; end
@@ -126,14 +127,15 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	    if (p.do_bias); a=p.z9-p.Z9; b=p.dz9-p.dZ9; cax=[p.cmin10 p.cmax10]; end;
           elseif r==3;
 	    a=p.z10; b=p.dz10; sx=let(idx)+p.s10; cax=[p.cmin10 p.cmax10];
- 	    add.dz=p.z10; add.zbin=p.z6_bin; 
+ 	    add.dz=p.z10; add.zbin=p.z6_bin; isig=p.isig10; isig_av=p.isig10_av;
          elseif r==4;
 	    a=p.z11; b=p.dz11; sx=let(idx)+p.s11; cax=[p.cmin10 p.cmax10];
- 	    add.dz=p.z11; add.zbin=p.z6_bin;  
+ 	    add.dz=p.z11; add.zbin=p.z6_bin; isig=p.isig11; isig_av=p.isig11_av;
           else;
 	    a=p.z11-p.z10;  b=p.dz11-p.dz10; sx=let(idx)+'(p) minus (l)'; cax=[p.cmin10 p.cmax10];
- 	    add.dz=p.z11-p.z10; add.zbin=p.z6_bin;  
+ 	    add.dz=p.z11-p.z10; add.zbin=p.z6_bin; isig=p.isig11m10; isig_av=p.isig11m10_av;
           end;
+	  isig(~p.id_lm)=0;
           unit_val = p.unit10; unit_str = p.unit10_bar;
           if r==1 | r==2; unit_val = p.unit9; unit_str = p.unit9_bar; end
         end
@@ -149,15 +151,19 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
 	  end;
  	end
         %for k=1:length(us.lon); plot(us.lon{k},us.lat{k},us.co,'LineWidth',lw); end;
+
+        s = sprintf('(%5.3f%s)', b, unit_val);
         
         % Stippling (Significance) - Only for SPEAR and Observed rows
-        if (r == 3 || r == 4)
-%            [xx,yy] = meshgrid(lon,lat);
-%            stipple(xx,yy,isig,'density',ds,'color',mc,'marker',mk,'markersize',ms);
-        end
-        
-%	s = sprintf('%s (%5.3f%s)', sx, b, unit_val);
-	s = sprintf('%s', sx);
+	mk='.'; ms=1; mc=0.1*[1 1 1]; ds=100; isig(~p.id)=0;
+        if (r == 3 || r == 4 || r == 5)
+          [xx,yy] = meshgrid(lon,lat);
+          stipple(xx,yy,isig,'density',ds,'color',mc,'marker',mk,'markersize',ms);
+	  if (isig_av==0); s=regexprep(s, '\(([^()]*)\)', '({\\bf $1})'); end;
+         end
+%	s = sprintf('%s (%5.3f%s)', sx, b, unit_val); disp(s);
+%	s = sprintf('%s', sx);
+        s = sprintf('%s %s)', sx, s);
         title(s, 'FontSize', fsize, 'Interpreter', 'latex');
         
         % Colorbar Logic: Place bar for Row 1 and Row 4 of each column
@@ -173,8 +179,8 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
     end
 end
 
-expn='pattern_effect_20panel_rotated'; visfig='off'; figpath='./fig_land/';
+expn='plot_pattern_effect_Fig_atm_20panel_transposed_scalar'; visfig='off'; figpath='./fig_land/';
 vname=p.vname; %vname=strcat(p.vname,'_',num2str(p.do_bias));
 
-printnew(visfig,figpath,expn,vname,p.fmt);
+printnew(visfig,figpath,vname,expn,p.fmt);
 end

@@ -30,6 +30,9 @@ set expn  = c192L33_am4p0_2010climo_trend_1979_2020_times_2
 set expn  = c192L33_am4p0_2010climo_p4K
 set expn  = c192L33_am4p0_2010climo_old
 set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs
+set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_20ns_obs
+set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_30ns_obs
+set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear_tropics_30ns_obs
 set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear_ipwp_30ns_obs
 set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear_atlantic_mdr_obs
 set expn  = c192L33_am4p0_2010climo_trend_1979_2020_spear_so_45_75s_obs
@@ -98,6 +101,9 @@ expn='c192L33_CM4X_amip_24'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,
 expn='c192L33_CM4X_amip_25'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 expn='c192L33_CM4X_amip_26'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 expn='c192L33_CM4X_amip_27'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_28'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_29'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+expn='c192L33_CM4X_amip_30'; read_daily_model(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %step 2: compute heatwave threshold used for HW analysis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

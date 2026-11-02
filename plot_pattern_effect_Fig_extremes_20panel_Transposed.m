@@ -27,45 +27,45 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
         
         idx = (r-1)*col + c; % The subplot position (1-16)
         subplot(row, col, idx);
-        hold on;
+        hold on; isig_av=1;
         
         % Data Selection Logic
         if c == 1 % TAS Column
           if     r==1; a=p.V0; b=p.dV0; sx=let(idx)+p.S0; cax=[p.cmin0 p.cmax0];
-	  elseif r==2; a=p.v0; b=p.dv0; isig=p.isig0; sx=let(idx)+p.s0; cax=[p.cmin0 p.cmax0];
-          elseif r==3; a=p.v1; b=p.dv1; isig=p.isig1; sx=let(idx)+p.s1; cax=[p.cmin1 p.cmax1];
-          elseif r==4; a=p.v2; b=p.dv2; isig=p.isig2; sx=let(idx)+p.s2; cax=[p.cmin1 p.cmax1];
-          else; a=p.v2-p.v1; b=p.dv2-p.dv1; isig=p.isig2m1; sx=let(idx)+'(m) minus (i)'; cax=[p.cmin1 p.cmax1];
+	  elseif r==2; a=p.v0; b=p.dv0; isig=p.isig0; isig_av=p.isig0_av; sx=let(idx)+p.s0; cax=[p.cmin0 p.cmax0];
+          elseif r==3; a=p.v1; b=p.dv1; isig=p.isig1; isig_av=p.isig1_av; sx=let(idx)+p.s1; cax=[p.cmin1 p.cmax1];
+          elseif r==4; a=p.v2; b=p.dv2; isig=p.isig2; isig_av=p.isig2_av; sx=let(idx)+p.s2; cax=[p.cmin1 p.cmax1];
+          else; a=p.v2-p.v1; b=p.dv2-p.dv1; isig=p.isig2m1; isig_av=p.isig2m1_av; sx=let(idx)+'(m) minus (i)'; cax=[p.cmin1 p.cmax1];
           end;
           unit_val = p.unit1; unit_str = p.unit1_bar; % Shared for TAS
           if r==1 | r==2; unit_val = p.unit0; unit_str = p.unit0_bar; end
             
         elseif c == 2 % VPD Column
           if     r==1; a=p.V3; b=p.dV3; sx=let(idx)+p.S3; cax=[p.cmin3 p.cmax3];
-	  elseif r==2; a=p.v3; b=p.dv3; isig=p.isig3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
-          elseif r==3; a=p.v4; b=p.dv4; isig=p.isig4; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
-          elseif r==4; a=p.v5; b=p.dv5; isig=p.isig5; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
-          else;  a=p.v5-p.v4;  b=p.dv5-p.dv4; isig=p.isig5m4; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
+	  elseif r==2; a=p.v3; b=p.dv3; isig=p.isig3; isig_av=p.isig3_av; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
+          elseif r==3; a=p.v4; b=p.dv4; isig=p.isig4; isig_av=p.isig4_av; sx=let(idx)+p.s4; cax=[p.cmin4 p.cmax4];
+          elseif r==4; a=p.v5; b=p.dv5; isig=p.isig5; isig_av=p.isig5_av; sx=let(idx)+p.s5; cax=[p.cmin4 p.cmax4];
+          else;  a=p.v5-p.v4;  b=p.dv5-p.dv4; isig=p.isig5m4; isig_av=p.isig5m4_av; sx=let(idx)+'(n) minus (j)'; cax=[p.cmin4 p.cmax4];
           end;
           unit_val = p.unit4; unit_str = p.unit4_bar;
           if r==1 | r==2; unit_val = p.unit3; unit_str = p.unit3_bar; end
 
         elseif c == 3 % TWB Column
           if     r==1; a=p.V6; b=p.dV6; sx=let(idx)+p.S6; cax=[p.cmin6 p.cmax6];
-	  elseif r==2; a=p.v6; b=p.dv6; isig=p.isig6; sx=let(idx)+p.s6; cax=[p.cmin6 p.cmax6];
-          elseif r==3; a=p.v7; b=p.dv7; isig=p.isig7; sx=let(idx)+p.s7; cax=[p.cmin7 p.cmax7];
-          elseif r==4; a=p.v8; b=p.dv8; isig=p.isig8; sx=let(idx)+p.s8; cax=[p.cmin7 p.cmax7];
-          else; a=p.v8-p.v7; b=p.dv8-p.dv7; isig=p.isig8m7; sx=let(idx)+'(o) minus (k)'; cax=[p.cmin7 p.cmax7];
+	  elseif r==2; a=p.v6; b=p.dv6; isig=p.isig6; isig_av=p.isig6_av; sx=let(idx)+p.s6; cax=[p.cmin6 p.cmax6];
+          elseif r==3; a=p.v7; b=p.dv7; isig=p.isig7; isig_av=p.isig7_av; sx=let(idx)+p.s7; cax=[p.cmin7 p.cmax7];
+          elseif r==4; a=p.v8; b=p.dv8; isig=p.isig8; isig_av=p.isig8_av; sx=let(idx)+p.s8; cax=[p.cmin7 p.cmax7];
+          else; a=p.v8-p.v7; b=p.dv8-p.dv7; isig=p.isig8m7; isig_av=p.isig8m7_av; sx=let(idx)+'(o) minus (k)'; cax=[p.cmin7 p.cmax7];
           end;
           unit_val = p.unit7; unit_str = p.unit7_bar;
           if r==1 | r==2; unit_val = p.unit6; unit_str = p.unit6_bar; end
 
         elseif c == 4 % RH Column
           if     r==1; a=p.V9;  b=p.dV9; sx=let(idx)+p.S9; cax=[p.cmin9 p.cmax9];
-	  elseif r==2; a=p.v9;  b=p.dv9;  isig=p.isig9;  sx=let(idx)+p.s9; cax=[p.cmin9 p.cmax9];
-          elseif r==3; a=p.v10; b=p.dv10; isig=p.isig10; sx=let(idx)+p.s10; cax=[p.cmin10 p.cmax10];
-          elseif r==4; a=p.v11; b=p.dv11; isig=p.isig11; sx=let(idx)+p.s11; cax=[p.cmin10 p.cmax10];
-          else; a=p.v11-p.v10;  b=p.dv11-p.dv10; isig=p.isig11m10; sx=let(idx)+'(p) minus (l)'; cax=[p.cmin10 p.cmax10];
+	  elseif r==2; a=p.v9;  b=p.dv9;  isig=p.isig9;  isig_av=p.isig9_av;  sx=let(idx)+p.s9; cax=[p.cmin9 p.cmax9];
+          elseif r==3; a=p.v10; b=p.dv10; isig=p.isig10; isig_av=p.isig10_av; sx=let(idx)+p.s10; cax=[p.cmin10 p.cmax10];
+          elseif r==4; a=p.v11; b=p.dv11; isig=p.isig11; isig_av=p.isig11_av; sx=let(idx)+p.s11; cax=[p.cmin10 p.cmax10];
+          else; a=p.v11-p.v10;  b=p.dv11-p.dv10; isig=p.isig11m10; isig_av=p.isig11m10_av; sx=let(idx)+'(p) minus (l)'; cax=[p.cmin10 p.cmax10];
           end;
           unit_val = p.unit10; unit_str = p.unit10_bar;
           if r==1 | r==2; unit_val = p.unit9; unit_str = p.unit9_bar; end
@@ -77,13 +77,16 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
         contour(p.lon, p.lat, p.lm, 1, co); axis(p.xy);
         for k=1:length(us.lon); plot(us.lon{k},us.lat{k},us.co,'LineWidth',lw); end;
         
+        s = sprintf('(%5.3f%s)', b, unit_val);
+	
         % Stippling (Significance) - Only for SPEAR and Observed rows
         if (r == 3 || r == 4 || r==5)
             [xx,yy] = meshgrid(lon,lat); isig(~p.id)=0;
             stipple(xx,yy,isig,'density',ds,'color',mc,'marker',mk,'markersize',ms);
+	    if (isig_av==0); s=regexprep(s, '\(([^()]*)\)', '({\\bf $1})'); end;
         end
-        
-        s = sprintf('%s (%5.3f%s)', sx, b, unit_val);
+	
+        s = sprintf('%s %s)', sx, s);
         title(s, 'FontSize', fsize, 'Interpreter', 'latex');
         
         % Colorbar Logic: Place bar for Row 1 and Row 4 of each column

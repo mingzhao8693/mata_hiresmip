@@ -1,8 +1,8 @@
 function v=read_era5_3d(tpath,latlon,s,t1,t2);
-%mod='c48'; fn=strcat('./atmos.static_',mod,'.nc'); 
-%latlon=[0 360 -90 90]; region='global'; s=readgrid_static(fn,latlon);
-%tpath='/archive/Ming.Zhao/obs_for_am4p0_paper/';
-%t1=1; t2=504;  %Jan1979 - Dec2020
+%% mod='c96'; fn=strcat('./atmos.static_',mod,'.nc'); 
+%% latlon=[0 360 -90 90]; region='global'; s=readgrid_static(fn,latlon);
+%% tpath='/archive/Ming.Zhao/obs_for_am4p0_paper/';
+%% t1=1; t2=504;  %Jan1979 - Dec2020
 
 tpath=strcat(tpath,'ERA5/monthly/')
 
@@ -21,7 +21,9 @@ a=ncread(fn,'valid_time'); v.time=a(t1:t2); v.nt=length(v.time); v.ts=1; v.te=v.
 v.pf=ncread(fn,'pressure_level'); v.nz=length(v.pf); v
 v.nlat=length(v.lat); v.nlon=length(v.lon); v.ngrid=v.nlat*v.nlon;
 lonx=s.lon; latx =s.lat;
-lev =[1:10]; plev=[1000 925 850 700 500 300 200 100 50 10];
+%lev =[1:10]; plev=[1000 925 850 700 500 300 200 100 50 10];
+lev =[3:7 ]; plev=[850,700,500,300,200];
+
 v.lev=lev; v.plev=plev; %afact=0.00213617807865754; offset=248.596641592917;
 varn='t'; fname=strcat(tpath,'ERA5_197901-202012.',varn,'.nc')
 a=ncread(fname,varn,[1 1 1 1 ],[Inf Inf Inf Inf]); a=permute(a,[4 3 2 1]); 
@@ -29,7 +31,7 @@ for k=1:length(lev)
   tmp=a(t1:t2,lev(k),v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
   tmp=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
   tmp=reshape(tmp,12,v.nt/12,s.nlat,s.nlon); tmp=flipdim(tmp,3);
-  v.ta(k).lev =lev(k);  %v.ta(k).all=tmp;
+  v.ta(k).lev =lev(k);  v.ta(k).all=tmp;
   v.ta(k).plev=plev(k); 
   v.ta(k).clm=squeeze(mean(tmp,2));
   v.ta(k).ann=squeeze(mean(v.ta(k).clm,1));
@@ -41,7 +43,7 @@ for k=1:length(lev)
   tmp=a(t1:t2,lev(k),v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
   tmp=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
   tmp=reshape(tmp,12,v.nt/12,s.nlat,s.nlon); tmp=flipdim(tmp,3);
-  v.qv(k).lev =lev(k);  %v.qv(k).all=tmp;
+  v.qv(k).lev =lev(k);  v.qv(k).all=tmp;
   v.qv(k).plev=plev(k); 
   v.qv(k).clm=squeeze(mean(tmp,2));
   v.qv(k).ann=squeeze(mean(v.qv(k).clm,1));
@@ -53,7 +55,7 @@ for k=1:length(lev)
   tmp=a(t1:t2,lev(k),v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
   tmp=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
   tmp=reshape(tmp,12,v.nt/12,s.nlat,s.nlon); tmp=flipdim(tmp,3);
-  v.rh(k).lev =lev(k);  %v.rh(k).all=tmp;
+  v.rh(k).lev =lev(k);  v.rh(k).all=tmp;
   v.rh(k).plev=plev(k);
   v.rh(k).clm=squeeze(mean(tmp,2));
   v.rh(k).ann=squeeze(mean(v.rh(k).clm,1));
@@ -65,7 +67,7 @@ for k=1:length(lev)
   tmp=a(t1:t2,lev(k),v.ys:v.ye,v.xs:v.xe)/G; tmp=squeeze(tmp);
   tmp=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
   tmp=reshape(tmp,12,v.nt/12,s.nlat,s.nlon); tmp=flipdim(tmp,3);
-  v.za(k).lev =lev(k);  %v.za(k).all=tmp;
+  v.za(k).lev =lev(k);  v.za(k).all=tmp;
   v.za(k).plev=plev(k); 
   v.za(k).clm=squeeze(mean(tmp,2));
   v.za(k).ann=squeeze(mean(v.za(k).clm,1));
@@ -77,7 +79,7 @@ for k=1:length(lev)
   tmp=a(t1:t2,lev(k),v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
   tmp=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
   tmp=reshape(tmp,12,v.nt/12,s.nlat,s.nlon); tmp=flipdim(tmp,3);
-  v.ua(k).lev =lev(k);  %v.ua(k).all=tmp;
+  v.ua(k).lev =lev(k);  v.ua(k).all=tmp;
   v.ua(k).plev=plev(k); 
   v.ua(k).clm=squeeze(mean(tmp,2));
   v.ua(k).ann=squeeze(mean(v.ua(k).clm,1));
@@ -89,7 +91,7 @@ for k=1:length(lev)
   tmp=a(t1:t2,lev(k),v.ys:v.ye,v.xs:v.xe); tmp=squeeze(tmp);
   tmp=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
   tmp=reshape(tmp,12,v.nt/12,s.nlat,s.nlon); tmp=flipdim(tmp,3);
-  v.va(k).lev =lev(k);  %v.va(k).all=tmp;
+  v.va(k).lev =lev(k);  v.va(k).all=tmp;
   v.va(k).plev=plev(k); 
   v.va(k).clm=squeeze(mean(tmp,2));
   v.va(k).ann=squeeze(mean(v.va(k).clm,1));
@@ -101,7 +103,7 @@ for k=1:length(lev)
   tmp=a(t1:t2,lev(k),v.ys:v.ye,v.xs:v.xe)*864; tmp=squeeze(tmp);
   tmp=interp_grid(tmp,lonx,latx,v.lon,v.lat,1);
   tmp=reshape(tmp,12,v.nt/12,s.nlat,s.nlon); tmp=flipdim(tmp,3);
-  v.om(k).lev =lev(k);  %v.om(k).all=tmp;
+  v.om(k).lev =lev(k);  v.om(k).all=tmp;
   v.om(k).plev=plev(k); 
   v.om(k).clm=squeeze(mean(tmp,2));
   v.om(k).ann=squeeze(mean(v.om(k).clm,1));
