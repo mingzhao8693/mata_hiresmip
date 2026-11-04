@@ -780,7 +780,7 @@ d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig
 p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes_16panel_Transposed(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%FigRS1: percentile changes in TAS, VPD, TWB, and RH at 2m%
+%FigRS02: percentile changes in TAS, VPD, TWB, and RH at 2m%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
@@ -790,7 +790,7 @@ ipct=10;  iipct=2; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; %95th 5th
 %ipct=10; iipct=2; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; %99th 1th
 A0='ERA5'; a0='Control'; a1='SPEAR-pattern M;~'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
 p.vname='tas_vpd_twb_rh'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-p.vname='FigRS1'; sopt=1; slev=90; sopt=2; slev=95; %sopt=1:z-test; 2 Welch's two-sample t-test; slev=95; 95% confidence
+p.vname='FigRS02'; sopt=1; slev=90; sopt=2; slev=95; %sopt=1:z-test; 2 Welch's two-sample t-test; slev=95; 95% confidence
 del=' $\Delta$'; s0='TAS;'; s1='VPD; '; s2='TWB; '; s3='RH; ';
 A0=strcat(A0,'~(',p.sea,');~'); a0=strcat(a0,'~(',p.sea,');~');;
 p.S0 =strcat(A0,s0); p.s0 =strcat(a0,s0); p.s1 =strcat(a1,del,s0); p.s2 =strcat(a2,del,s0); 
@@ -926,10 +926,120 @@ d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig
 %% a=(a2-a0)/p.dT2; p.v11=a; p.dv11=nanmean(a(id).*aa);
 
 p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%FigRS03: Alternative HeatWave Intensity metrics using TASMAX percentiles
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
+     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
+nsea={'DJF','MAM','JJA','SON'}; isea=3; m=isea;
+ipct8=8; ipct9=9; ipct10=10; ipct11=11; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; %95th 5th
+A0='ERA5'; a0='Control'; a1='SPEAR-pattern M;~'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
+p.vname='tasmax_hwintensity'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
+p.vname='FigRS03'; sopt=1; slev=90; sopt=2; slev=95; %sopt=1:z-test; 2 Welch's two-sample t-test; slev=95; 95% confidence
+del=' $\Delta$'; s0='TASMAX;'; s1='TASMAX; '; s2='TASMAX; '; s3='TASMAX; ';
+A0=strcat(A0,'~(',p.sea,');~'); a0=strcat(a0,'~(',p.sea,');~');;
+p.S0 =strcat(A0,s0); p.s0 =strcat(a0,s0); p.s1 =strcat(a1,del,s0); p.s2 =strcat(a2,del,s0); 
+p.S3 =strcat(A0,s1); p.s3 =strcat(a0,s1); p.s4 =strcat(a1,del,s1); p.s5 =strcat(a2,del,s1); 
+p.S6 =strcat(A0,s2); p.s6 =strcat(a0,s2); p.s7 =strcat(a1,del,s2); p.s8 =strcat(a2,del,s2); 
+p.S9 =strcat(A0,s3); p.s9 =strcat(a0,s3); p.s10=strcat(a1,del,s3); p.s11=strcat(a2,del,s3);
+p.unit0 ='$\rm{^{\circ}C}$';   p.unit0_bar ='\rm{^{\circ}C}';
+p.unit1 ='$\rm{KK^{-1}}$';     p.unit1_bar ='\rm{KK^{-1}}';
+p.unit3 ='$\rm{^{\circ}C}$';   p.unit3_bar ='\rm{^{\circ}C}'; 
+p.unit4 ='$\rm{KK^{-1}}$';     p.unit4_bar ='\rm{KK^{-1}}'; 
+p.unit6 ='$\rm{^{\circ}C}$';   p.unit6_bar ='\rm{^{\circ}C}';
+p.unit7 ='$\rm{KK^{-1}}$';     p.unit7_bar ='\rm{KK^{-1}}';
+p.unit9 ='$\rm{^{\circ}C}$';   p.unit9_bar ='\rm{^{\circ}C}'; 
+p.unit10='$\rm{KK^{-1}}$';     p.unit10_bar='\rm{KK^{-1}}';
 
+p.cmin0= 0.0; p.cmax0=40;  p.cmin1 =-5.0;  p.cmax1 =5.0;
+p.cmin3= 0.0; p.cmax3=40;  p.cmin4 =-5.0;  p.cmax4 =5.0;
+p.cmin6= 0.0; p.cmax6=40;  p.cmin7 =-5.0;  p.cmax7 =5.0;
+p.cmin9= 0.0; p.cmax9=40;  p.cmin10=-5.0;  p.cmax10=5.0;
+p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=0;
+p.dT1=1.22; p.dT2=1.24;
+
+v=z.v0;
+p.lon0=v.lon; p.lat0=v.lat; p.lmg=v.lmg; p.aa=v.aa; p.aa0=v.aa0;
+p.lm=v.lm; p.lon=v.lon; p.lat=v.lat; LV0=2.5E6;
+id=p.lm; id(id<1)=0; id(id>=1)=1; %figure; pcolor(p.lon,p.lat,p.lm); shading flat; colorbar;
+
+lat1=16; lat2=75; lon1=190; lon2=304; p.xy=[lon1 lon2 lat1 lat2];%NAmerica
+%lat1=25; lat2=50; lon1=235; lon2=295; p.xy=[lon1 lon2 lat1 lat2];%USA
+p.ys=min(find(v.lat(:)>=lat1)); p.ye=max(find(v.lat(:)<=lat2));
+p.xs=min(find(v.lon(:)>=lon1)); p.xe=max(find(v.lon(:)<=lon2));
+a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a; 
+id=(id==1); aa=p.aa(id); aa=aa/mean(aa); p.id=id; 
+
+v=z.v0; nb=20; no=14; num=1; mskopt=0;
+pct_th=v.pct;
+spct8 =sprintf( '%4.2fth',pct_th(ipct8));   spct9 =sprintf( '%4.2fth',pct_th(ipct9));
+spct10=sprintf( '%4.2fth',pct_th(ipct10));  spct11=sprintf( '%4.2fth',pct_th(ipct11));
+p.S0=strcat(p.S0,'~',spct8);p.S3=strcat(p.S3,'~',spct9);p.S6=strcat(p.S6,'~',spct10);p.S9=strcat(p.S9,'~',spct11);
+p.s0=strcat(p.s0,'~',spct8);p.s3=strcat(p.s3,'~',spct9);p.s6=strcat(p.s6,'~',spct10);p.s9=strcat(p.s9,'~',spct11);
+
+%tasday 90th percentile ipct=8;
+v=z.vo.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct8,:,:)); A0=a; S0=squeeze(std(a,1,1));
+v=z.v0.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct8,:,:)); a0=a; s0=squeeze(std(a,1,1)); 
+v=z.w1.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct8,:,:)); a1=a; s1=squeeze(std(a,1,1));
+v=z.w2.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct8,:,:)); a2=a; s2=squeeze(std(a,1,1));
+d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
+p.V0=d.a1_avg; p.dV0=d.avg.a1_avg;
+p.v0=d.a2_avg; p.dv0=d.avg.a2_avg; p.isig0=d.idx; p.isig0_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT1; p.v1=d.diff/dT; p.dv1=d.avg.diff/dT; p.isig1=d.idx; p.isig1_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT2; p.v2=d.diff/dT; p.dv2=d.avg.diff/dT; p.isig2=d.idx; p.isig2_av=d.avg.idx;
+d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig2m1=d.idx; p.isig2m1_av=d.avg.idx; pp=p;
+
+%tasday 95th percentile ipct9=9;
+v=z.vo.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct9,:,:)); A0=a; S0=squeeze(std(a,1,1));
+v=z.v0.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct9,:,:)); a0=a; s0=squeeze(std(a,1,1)); 
+v=z.w1.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct9,:,:)); a1=a; s1=squeeze(std(a,1,1));
+v=z.w2.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct9,:,:)); a2=a; s2=squeeze(std(a,1,1));
+d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
+p.V3=d.a1_avg; p.dV3=d.avg.a1_avg;
+p.v3=d.a2_avg; p.dv3=d.avg.a2_avg; p.isig3=d.idx; p.isig3_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT1; p.v4=d.diff/dT; p.dv4=d.avg.diff/dT; p.isig4=d.idx; p.isig4_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT2; p.v5=d.diff/dT; p.dv5=d.avg.diff/dT; p.isig5=d.idx; p.isig5_av=d.avg.idx;
+d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig5m4=d.idx; p.isig5m4_av=d.avg.idx; pp=p;
+
+%tasday 99th percentile ipct10=10;
+v=z.vo.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct10,:,:)); A0=a; S0=squeeze(std(a,1,1));
+v=z.v0.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct10,:,:)); a0=a; s0=squeeze(std(a,1,1)); 
+v=z.w1.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct10,:,:)); a1=a; s1=squeeze(std(a,1,1));
+v=z.w2.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct10,:,:)); a2=a; s2=squeeze(std(a,1,1));
+d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
+p.V6=d.a1_avg; p.dV6=d.avg.a1_avg;
+p.v6=d.a2_avg; p.dv6=d.avg.a2_avg; p.isig6=d.idx; p.isig6_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT1; p.v7=d.diff/dT; p.dv7=d.avg.diff/dT; p.isig7=d.idx; p.isig7_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT2; p.v8=d.diff/dT; p.dv8=d.avg.diff/dT; p.isig8=d.idx; p.isig8_av=d.avg.idx;
+d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig8m7=d.idx; p.isig8m7_av=d.avg.idx; pp=p;
+
+%tasday 99.9th percentile ipct11=11;
+v=z.vo.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct11,:,:)); A0=a; S0=squeeze(std(a,1,1));
+v=z.v0.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct11,:,:)); a0=a; s0=squeeze(std(a,1,1)); 
+v=z.w1.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct11,:,:)); a1=a; s1=squeeze(std(a,1,1));
+v=z.w2.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct11,:,:)); a2=a; s2=squeeze(std(a,1,1));
+d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
+p.V9=d.a1_avg; p.dV9=d.avg.a1_avg;
+p.v9=d.a2_avg; p.dv9=d.avg.a2_avg; p.isig9=d.idx; p.isig9_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT1; p.v10=d.diff/dT; p.dv10=d.avg.diff/dT; p.isig10=d.idx; p.isig10_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT2; p.v11=d.diff/dT; p.dv11=d.avg.diff/dT; p.isig11=d.idx; p.isig11_av=d.avg.idx;
+d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig11m10=d.idx; p.isig11m10_av=d.avg.idx;pp=p;
+
+p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%FigRS2: changes in percentiles for original FWI, BUI, ISI, and DSR%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%FigRS04: changes in percentiles for original FWI, BUI, ISI, and DSR%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
@@ -938,7 +1048,7 @@ nsea={'DJF','MAM','JJA','SON'}; isea=3; m=isea; ipct=9; %pct=[0.1 1 5 10 25 50 7
 A0='ERA5'; a0='Control'; a1='SPEAR-pattern M;~'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
 %a0='Present-day'; a1='SPEAR-pattern M'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
 p.vname='fwi_bui_isi_dsr_corrected'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-p.vname='FigRS2'; sopt=1; slev=90; sopt=2; slev=95; %sopt=1:z-test; 2:Welch's two-sample t-test; slev=95; 95% confidence
+p.vname='FigRS04'; sopt=1; slev=90; sopt=2; slev=95; %sopt=1:z-test; 2:Welch's two-sample t-test; slev=95; 95% confidence
 del=' $\Delta$'; s0='FWI;'; s1='BUI; '; s2='ISI; '; s3='DSR; ';
 A0=strcat(A0,'~(',p.sea,');~'); a0=strcat(a0,'~(',p.sea,');~');;
 p.S0 =strcat(A0,s0); p.s0 =strcat(a0,s0); p.s1 =strcat(a1,del,s0); p.s2 =strcat(a2,del,s0); 
@@ -1084,114 +1194,6 @@ d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig
 p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes_16panel_Transposed(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Alternative HeatWave Intensity metrics using TASMAX percentiles
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
-     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-nsea={'DJF','MAM','JJA','SON'}; isea=3; m=isea;
-ipct8=8; ipct9=9; ipct10=10; ipct11=11; %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9]; %95th 5th
-A0='ERA5'; a0='Control'; a1='SPEAR-pattern M;~'; a2='Observed-pattern'; a3='Uniform-pattern'; p.flipcmap=0;
-p.vname='tasmax_hwintensity'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-p.vname='FigRSxx'; sopt=1; slev=90; sopt=2; slev=95; %sopt=1:z-test; 2 Welch's two-sample t-test; slev=95; 95% confidence
-del=' $\Delta$'; s0='TASMAX;'; s1='TASMAX; '; s2='TASMAX; '; s3='TASMAX; ';
-A0=strcat(A0,'~(',p.sea,');~'); a0=strcat(a0,'~(',p.sea,');~');;
-p.S0 =strcat(A0,s0); p.s0 =strcat(a0,s0); p.s1 =strcat(a1,del,s0); p.s2 =strcat(a2,del,s0); 
-p.S3 =strcat(A0,s1); p.s3 =strcat(a0,s1); p.s4 =strcat(a1,del,s1); p.s5 =strcat(a2,del,s1); 
-p.S6 =strcat(A0,s2); p.s6 =strcat(a0,s2); p.s7 =strcat(a1,del,s2); p.s8 =strcat(a2,del,s2); 
-p.S9 =strcat(A0,s3); p.s9 =strcat(a0,s3); p.s10=strcat(a1,del,s3); p.s11=strcat(a2,del,s3);
-p.unit0 ='$\rm{^{\circ}C}$';   p.unit0_bar ='\rm{^{\circ}C}';
-p.unit1 ='$\rm{KK^{-1}}$';     p.unit1_bar ='\rm{KK^{-1}}';
-p.unit3 ='$\rm{^{\circ}C}$';   p.unit3_bar ='\rm{^{\circ}C}'; 
-p.unit4 ='$\rm{KK^{-1}}$';     p.unit4_bar ='\rm{KK^{-1}}'; 
-p.unit6 ='$\rm{^{\circ}C}$';   p.unit6_bar ='\rm{^{\circ}C}';
-p.unit7 ='$\rm{KK^{-1}}$';     p.unit7_bar ='\rm{KK^{-1}}';
-p.unit9 ='$\rm{^{\circ}C}$';   p.unit9_bar ='\rm{^{\circ}C}'; 
-p.unit10='$\rm{KK^{-1}}$';     p.unit10_bar='\rm{KK^{-1}}';
-
-p.cmin0= 0.0; p.cmax0=40;  p.cmin1 =-5.0;  p.cmax1 =5.0;
-p.cmin3= 0.0; p.cmax3=40;  p.cmin4 =-5.0;  p.cmax4 =5.0;
-p.cmin6= 0.0; p.cmax6=40;  p.cmin7 =-5.0;  p.cmax7 =5.0;
-p.cmin9= 0.0; p.cmax9=40;  p.cmin10=-5.0;  p.cmax10=5.0;
-p.do_add=0; p.show='off'; p.co='k'; p.xy=[190 304 16 75]; p.do_bias=0;
-p.dT1=1.22; p.dT2=1.24;
-
-v=z.v0;
-p.lon0=v.lon; p.lat0=v.lat; p.lmg=v.lmg; p.aa=v.aa; p.aa0=v.aa0;
-p.lm=v.lm; p.lon=v.lon; p.lat=v.lat; LV0=2.5E6;
-id=p.lm; id(id<1)=0; id(id>=1)=1; %figure; pcolor(p.lon,p.lat,p.lm); shading flat; colorbar;
-
-lat1=16; lat2=75; lon1=190; lon2=304; p.xy=[lon1 lon2 lat1 lat2];%NAmerica
-%lat1=25; lat2=50; lon1=235; lon2=295; p.xy=[lon1 lon2 lat1 lat2];%USA
-p.ys=min(find(v.lat(:)>=lat1)); p.ye=max(find(v.lat(:)<=lat2));
-p.xs=min(find(v.lon(:)>=lon1)); p.xe=max(find(v.lon(:)<=lon2));
-a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=id.*a; 
-id=(id==1); aa=p.aa(id); aa=aa/mean(aa); p.id=id; 
-
-v=z.v0; nb=20; no=14; num=1; mskopt=0;
-pct_th=v.pct;
-spct8 =sprintf( '%4.2fth',pct_th(ipct8));   spct9 =sprintf( '%4.2fth',pct_th(ipct9));
-spct10=sprintf( '%4.2fth',pct_th(ipct10));  spct11=sprintf( '%4.2fth',pct_th(ipct11));
-p.S0=strcat(p.S0,'~',spct8);p.S3=strcat(p.S3,'~',spct9);p.S6=strcat(p.S6,'~',spct10);p.S9=strcat(p.S9,'~',spct11);
-p.s0=strcat(p.s0,'~',spct8);p.s3=strcat(p.s3,'~',spct9);p.s6=strcat(p.s6,'~',spct10);p.s9=strcat(p.s9,'~',spct11);
-
-%tasday 90th percentile ipct=8;
-v=z.vo.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct8,:,:)); A0=a; S0=squeeze(std(a,1,1));
-v=z.v0.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct8,:,:)); a0=a; s0=squeeze(std(a,1,1)); 
-v=z.w1.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct8,:,:)); a1=a; s1=squeeze(std(a,1,1));
-v=z.w2.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct8,:,:)); a2=a; s2=squeeze(std(a,1,1));
-d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
-p.V0=d.a1_avg; p.dV0=d.avg.a1_avg;
-p.v0=d.a2_avg; p.dv0=d.avg.a2_avg; p.isig0=d.idx; p.isig0_av=d.avg.idx;
-d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
-dT=p.dT1; p.v1=d.diff/dT; p.dv1=d.avg.diff/dT; p.isig1=d.idx; p.isig1_av=d.avg.idx;
-d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
-dT=p.dT2; p.v2=d.diff/dT; p.dv2=d.avg.diff/dT; p.isig2=d.idx; p.isig2_av=d.avg.idx;
-d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig2m1=d.idx; p.isig2m1_av=d.avg.idx; pp=p;
-
-%tasday 95th percentile ipct9=9;
-v=z.vo.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct9,:,:)); A0=a; S0=squeeze(std(a,1,1));
-v=z.v0.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct9,:,:)); a0=a; s0=squeeze(std(a,1,1)); 
-v=z.w1.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct9,:,:)); a1=a; s1=squeeze(std(a,1,1));
-v=z.w2.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct9,:,:)); a2=a; s2=squeeze(std(a,1,1));
-d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
-p.V3=d.a1_avg; p.dV3=d.avg.a1_avg;
-p.v3=d.a2_avg; p.dv3=d.avg.a2_avg; p.isig3=d.idx; p.isig3_av=d.avg.idx;
-d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
-dT=p.dT1; p.v4=d.diff/dT; p.dv4=d.avg.diff/dT; p.isig4=d.idx; p.isig4_av=d.avg.idx;
-d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
-dT=p.dT2; p.v5=d.diff/dT; p.dv5=d.avg.diff/dT; p.isig5=d.idx; p.isig5_av=d.avg.idx;
-d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig5m4=d.idx; p.isig5m4_av=d.avg.idx; pp=p;
-
-%tasday 99th percentile ipct10=10;
-v=z.vo.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct10,:,:)); A0=a; S0=squeeze(std(a,1,1));
-v=z.v0.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct10,:,:)); a0=a; s0=squeeze(std(a,1,1)); 
-v=z.w1.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct10,:,:)); a1=a; s1=squeeze(std(a,1,1));
-v=z.w2.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct10,:,:)); a2=a; s2=squeeze(std(a,1,1));
-d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
-p.V6=d.a1_avg; p.dV6=d.avg.a1_avg;
-p.v6=d.a2_avg; p.dv6=d.avg.a2_avg; p.isig6=d.idx; p.isig6_av=d.avg.idx;
-d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
-dT=p.dT1; p.v7=d.diff/dT; p.dv7=d.avg.diff/dT; p.isig7=d.idx; p.isig7_av=d.avg.idx;
-d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
-dT=p.dT2; p.v8=d.diff/dT; p.dv8=d.avg.diff/dT; p.isig8=d.idx; p.isig8_av=d.avg.idx;
-d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig8m7=d.idx; p.isig8m7_av=d.avg.idx; pp=p;
-
-%tasday 99.9th percentile ipct11=11;
-v=z.vo.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct11,:,:)); A0=a; S0=squeeze(std(a,1,1));
-v=z.v0.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct11,:,:)); a0=a; s0=squeeze(std(a,1,1)); 
-v=z.w1.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct11,:,:)); a1=a; s1=squeeze(std(a,1,1));
-v=z.w2.tasmaxday; a=squeeze(v.yr_pct(m,:,ipct11,:,:)); a2=a; s2=squeeze(std(a,1,1));
-d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
-p.V9=d.a1_avg; p.dV9=d.avg.a1_avg;
-p.v9=d.a2_avg; p.dv9=d.avg.a2_avg; p.isig9=d.idx; p.isig9_av=d.avg.idx;
-d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
-dT=p.dT1; p.v10=d.diff/dT; p.dv10=d.avg.diff/dT; p.isig10=d.idx; p.isig10_av=d.avg.idx;
-d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
-dT=p.dT2; p.v11=d.diff/dT; p.dv11=d.avg.diff/dT; p.isig11=d.idx; p.isig11_av=d.avg.idx;
-d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig11m10=d.idx; p.isig11m10_av=d.avg.idx;pp=p;
-
-p.fmt='eps'; plot_pattern_effect_Fig_extremes_20panel_Transposed(p); %plot_pattern_effect_Fig_extremes(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -1766,7 +1768,94 @@ p.fmt='eps'; p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transpo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%FigRS3 surface precipitation evaporation PME and soil moisture%%
+%FigRS01: SST warming patterns%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v=z.v0;  v.dis='OBS CLIMO SST'; v.T=mean(v.sfc.tref.ann_stat.mmen.all);  z.v0 =v;    a=v.T;
+v=z.w1;  v.dis='SPM';           v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.22; z.w1 =v;
+v=z.w2;  v.dis='OP';            v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.24; z.w2 =v;
+v=z.w1A; v.dis='SPM-EPbest';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1A=v;
+v=z.w1B; v.dis='SPM-EPbest2';   v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1B=v;
+v=z.w1C; v.dis='SPM-EPworst2';  v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1C=v;
+v=z.w1D; v.dis='SPM-EPworst';   v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1D=v;
+v=z.w1a; v.dis='SPM-Pobs10';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1a=v;
+v=z.w1b; v.dis='SPM-Pobs20';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1b=v;
+v=z.w1c; v.dis='SPM-Pobs30';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1c=v;
+v=z.w1d; v.dis='SPM-Tobs30';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1d=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v=z.v0; lm=v.s.lm; im=v.sfc.ice.tavg0; 
+lm_th=0.1; im_th=0.1; id_lm=(lm>lm_th); id_im=(im>im_th); id = id_lm | id_im; id=~id; %id(:,:)=1;
+aa=v.s.aa; aa=aa(id); aa=aa/mean(aa);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
+v=z.v0;  a=v.sfc.tsurf.sea; a0=squeeze(a(isea,:,:)); i=1;
+v=z.w1;  a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w2;  a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1A; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1B; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1C; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1D; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1a; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1b; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1c; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1d; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
+     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
+v=z.v0.s;
+p.lon=v.lon; p.lat=v.lat; p.lm=v.lm; p.aa=v.aa; p.xy=[0 360 -90 90]; p.id=id; 
+p.xsize=1200; p.ysize=750; 
+pms=[ 0, 0, p.xsize, p.ysize]*1.2; fsize=10; 
+handle=figure('Position',pms,'visible','on'); 
+row=3; col=4; cmap=bluewhitered_miz(256); co='k';
+p.unit='\rm{KK^{-1}}'; cmin=-2; cmax=2; p.vname='SST_patterns'; 
+i=1; a0=p.v(:,:,i)/p.dv(i); mean(a0(id).*aa)
+for i = 3:10
+  a=p.v(:,:,i)/p.dv(i); p.dv_norm(i)=mean(a(id).*aa);
+  a=a-a0;
+  subplot(row, col, i+2); colormap(cmap); a(~id)=NaN;
+  pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
+  contour(p.lon,p.lat,p.lm,1,co);
+  set(gca,'FontSize',fsize); axis([p.xy]);
+  s=strcat(p.let(i+1),[p.s{i} ' minus ' 'SPM']);
+  title(s,'FontSize',fsize);
+end
+i=1; a=p.v(:,:,i)/p.dv(i); a1=a; p.dv_norm(i)=mean(a(id).*aa); %mean(a(id).*aa)
+subplot(row, col, i); colormap(cmap); a(~id)=NaN; 
+pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
+contour(p.lon,p.lat,p.lm,1,co);
+set(gca,'FontSize',fsize); axis([p.xy]);
+s=['(a) SPEAR-Pattern M (' p.s{i}, ')'];
+title(s,'FontSize',fsize);
+i=2; a=p.v(:,:,i)/p.dv(i); a2=a; p.dv_norm(i)=mean(a(id).*aa); %mean(a(id).*aa)
+subplot(row, col, i); colormap(cmap); a(~id)=NaN;
+pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
+contour(p.lon,p.lat,p.lm,1,co);
+set(gca,'FontSize',fsize); axis([p.xy]);
+s=['(b) Observed-Pattern (' p.s{i}, ')'];
+title(s,'FontSize',fsize);
+i=3; a=a2-a1; mean(a(id).*aa)
+subplot(row, col, i); colormap(cmap); a(~id)=NaN;
+pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
+contour(p.lon,p.lat,p.lm,1,co);
+set(gca,'FontSize',fsize); axis([p.xy]);
+title(['(c) ' p.s{2} ' minus ' 'SPM'],'FontSize',fsize);
+%sgtitle('SST warming patterns','FontSize',fsize+2);
+
+cb = colorbar('FontSize',fsize,'Location','southoutside');
+set(cb, 'Position', [.165 .04 .7 .02]); caxis([cmin, cmax+0.001]); 
+colormap(cmap); 
+cb.Label.String = p.unit; pos=get(cb,'Position')
+cb.Label.Position = [pos(1)-0.14 pos(2)+1.9]; 
+cb.Label.Rotation = 0;
+visfig='off'; figpath='./fig_land/'; mod_name='FigRS01'; p.fmt='eps';
+printnew(visfig,figpath,mod_name,p.vname,p.fmt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%FigRS05 surface precipitation evaporation PME and soil moisture%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1775,7 +1864,7 @@ p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
 A0='ERA5; '; a0='Control; '; a1='SPEAR-pattern M; '; a2='Observed-pattern; '; a3='Uniform';
 nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=3; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
 p.vname='atm_pcp_evap_pme_mrsos'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-p.vname='FigRS3'; 
+p.vname='FigRS05'; 
 del=' $\Delta$'; s0='PREC'; s1='EVAP'; s2='PME'; s3='MRSOS'; p.flipcmap=0; p.do_bias=0;
 p.S0=strcat(A0,'~(',p.sea,')~',s0);
 p.s0=strcat(a0,'~(',p.sea,')~',s0);
@@ -1830,14 +1919,6 @@ dT=p.dT1; p.z1=d.diff/dT; p.dz1=d.avg.diff/dT; p.isig1=d.idx; p.isig1_av=d.avg.i
 d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
 dT=p.dT2; p.z2=d.diff/dT; p.dz2=d.avg.diff/dT; p.isig2=d.idx; p.isig2_av=d.avg.idx;
 d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig2m1=d.idx; p.isig2m1_av=d.avg.idx; pp=p;
-%% v=z.V0.sfc.pcp_ec.sea;  a=v; A0=squeeze(a(isea,:,:))*86400; 
-%% v=z.v0.sfc.pcp.sea;  a=v; a0=squeeze(a(isea,:,:)); 
-%% v=z.w1.sfc.pcp.sea;  a=v; a1=squeeze(a(isea,:,:)); 
-%% v=z.w2.sfc.pcp.sea;  a=v; a2=squeeze(a(isea,:,:)); 
-%% a=A0;            p.Z0=a; p.dZ0=mean(a(id).*aa);
-%% a=a0;            p.z0=a; p.dz0=mean(a(id).*aa); p.z0_bin=[0:50:150];
-%% a=(a1-a0)/p.dT1; p.z1=a; p.dz1=mean(a(id).*aa); p.isig1=id; 
-%% a=(a2-a0)/p.dT2; p.z2=a; p.dz2=mean(a(id).*aa); p.isig2=id;
 
 %colume 2: evaporation
 b=86400; 
@@ -1853,16 +1934,8 @@ dT=p.dT1; p.z4=d.diff/dT; p.dz4=d.avg.diff/dT; p.isig4=d.idx; p.isig4_av=d.avg.i
 d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
 dT=p.dT2; p.z5=d.diff/dT; p.dz5=d.avg.diff/dT; p.isig5=d.idx; p.isig5_av=d.avg.idx;
 d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig5m4=d.idx; p.isig5m4_av=d.avg.idx;pp=p;
-%% v=z.V0.sfc.evap.sea/LV0*b;  a=v; A0=squeeze(a(isea,:,:)); 
-%% v=z.v0.sfc.evap.sea/LV0*b;  a=v; a0=squeeze(a(isea,:,:)); 
-%% v=z.w1.sfc.evap.sea/LV0*b;  a=v; a1=squeeze(a(isea,:,:)); 
-%% v=z.w2.sfc.evap.sea/LV0*b;  a=v; a2=squeeze(a(isea,:,:)); 
-%% a=A0;            p.Z3 =a; p.dZ3 =mean(a(id).*aa); 
-%% a=a0;            p.z3 =a; p.dz3 =mean(a(id).*aa); p.z3_bin=[0:50:150];
-%% a=(a1-a0)/p.dT1; p.z4 =a; p.dz4 =mean(a(id).*aa); 
-%% a=(a2-a0)/p.dT2; p.z5 =a; p.dz5 =mean(a(id).*aa);
 
-%column 3: P minus E
+%column 3: PME (P minus E)
 b=86400;
 v=z.V0.sfc; a=(v.pcp_ec.all-v.evap.all/LV0)*b; a=get4season_all(a); a=squeeze(a(:,isea,:,:)); A0=a; S0=squeeze(std(a,1,1));
 v=z.v0.sfc; a= v.pcp.all-v.evap.all/LV0*b;     a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a0=a; s0=squeeze(std(a,1,1));
@@ -1876,20 +1949,13 @@ dT=p.dT1; p.z7=d.diff/dT; p.dz7=d.avg.diff/dT; p.isig7=d.idx; p.isig7_av=d.avg.i
 d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
 dT=p.dT2; p.z8=d.diff/dT; p.dz8=d.avg.diff/dT; p.isig8=d.idx; p.isig8_av=d.avg.idx;
 d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig8m7=d.idx; p.isig8m7_av=d.avg.idx;pp=p;
-%% v=z.V0.sfc.pcp_ec.sea*86400-z.V0.sfc.evap.sea/LV0*86400; a=v; A0=squeeze(a(isea,:,:)); 
-%% v=z.v0.sfc.pcp.sea-z.v0.sfc.evap.sea/LV0*86400;  a=v; a0=squeeze(a(isea,:,:)); 
-%% v=z.w1.sfc.pcp.sea-z.w1.sfc.evap.sea/LV0*86400;  a=v; a1=squeeze(a(isea,:,:)); 
-%% v=z.w2.sfc.pcp.sea-z.w2.sfc.evap.sea/LV0*86400;  a=v; a2=squeeze(a(isea,:,:)); 
-%% a=A0;            p.Z6=a; p.dZ6=mean(a(id).*aa); 
-%% a=a0;            p.z6=a; p.dz6=mean(a(id).*aa); p.z6_bin=[0:10:150];
-%% a=(a1-a0)/p.dT1; p.z7=a; p.dz7=mean(a(id).*aa); 
-%% a=(a2-a0)/p.dT2; p.z8=a; p.dz8=mean(a(id).*aa);
 
 %column 4: upper level soil moisture; convert ERA5 unit from m3/m3 to kg/m2 to compare with model
 a=z.V0.sfc.mrsos.all*0.10*1000; a=get4season_all(a); a=squeeze(a(:,isea,:,:)); A0=a; S0=squeeze(std(a,1,1));
 a=z.v0.sfc.mrsos.all;           a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a0=a; s0=squeeze(std(a,1,1));
 a=z.w1.sfc.mrsos.all;           a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a1=a; s1=squeeze(std(a,1,1));
 a=z.w2.sfc.mrsos.all;           a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a2=a; s2=squeeze(std(a,1,1));
+
 d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
 p.Z9=d.a1_avg; p.dZ9=d.avg.a1_avg;
 p.z9=d.a2_avg; p.dz9=d.avg.a2_avg; p.isig9=d.idx; p.isig9_av=d.avg.idx; p.z9_bin=[980:5:1020];
@@ -1898,104 +1964,125 @@ dT=p.dT1; p.z10=d.diff/dT; p.dz10=d.avg.diff/dT; p.isig10=d.idx; p.isig10_av=d.a
 d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
 dT=p.dT2; p.z11=d.diff/dT; p.dz11=d.avg.diff/dT; p.isig11=d.idx; p.isig11_av=d.avg.idx;
 d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig11m10=d.idx; p.isig11m10_av=d.avg.idx; pp=p;
-%% v=z.V0.sfc.mrsos.sea; a=v; A0=squeeze(a(isea,:,:))*0.10*1000; %convert unit from m3/m3 to kg/m2
-%% v=z.v0.sfc.mrsos.sea; a=v; a0=squeeze(a(isea,:,:));           %kg/m2
-%% v=z.w1.sfc.mrsos.sea; a=v; a1=squeeze(a(isea,:,:)); 
-%% v=z.w2.sfc.mrsos.sea; a=v; a2=squeeze(a(isea,:,:)); 
-%% a=A0;            p.Z9 =a; p.dZ9 =mean(a(id).*aa); 
-%% a=a0;            p.z9 =a; p.dz9 =mean(a(id).*aa); p.z9_bin=[980:5:1020];
-%% a=(a1-a0)/p.dT1; p.z10=a; p.dz10=mean(a(id).*aa); p.isig10=id;
-%% a=(a2-a0)/p.dT2; p.z11=a; p.dz11=mean(a(id).*aa); p.isig11=id;
 
 p.cfact=2; p.phi_bin=[0:50:300]; p.phi_co='r'; a=id; a(:,:)=0; p.isig_null=a;
 p.fmt='eps'; p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed_scalar(p)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%FigRSx SST warming patterns%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%FigRS05b surface precipitation evaporation PME and check PME and IVTDIV
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-v=z.v0;  v.dis='OBS CLIMO SST'; v.T=mean(v.sfc.tref.ann_stat.mmen.all);  z.v0 =v;    a=v.T;
-v=z.w1;  v.dis='SPM';           v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.22; z.w1 =v;
-v=z.w2;  v.dis='OP';            v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.24; z.w2 =v;
-v=z.w1A; v.dis='SPM-EPbest';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1A=v;
-v=z.w1B; v.dis='SPM-EPbest2';   v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1B=v;
-v=z.w1C; v.dis='SPM-EPworst2';  v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1C=v;
-v=z.w1D; v.dis='SPM-EPworst';   v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1D=v;
-v=z.w1a; v.dis='SPM-Pobs10';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1a=v;
-v=z.w1b; v.dis='SPM-Pobs20';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1b=v;
-v=z.w1c; v.dis='SPM-Pobs30';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1c=v;
-v=z.w1d; v.dis='SPM-Tobs30';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1d=v;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-v=z.v0; lm=v.s.lm; im=v.sfc.ice.tavg0; 
-lm_th=0.1; im_th=0.1; id_lm=(lm>lm_th); id_im=(im>im_th); id = id_lm | id_im; id=~id; %id(:,:)=1;
-aa=v.s.aa; aa=aa(id); aa=aa/mean(aa);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
-v=z.v0;  a=v.sfc.tsurf.sea; a0=squeeze(a(isea,:,:)); i=1;
-v=z.w1;  a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w2;  a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w1A; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w1B; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w1C; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w1D; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w1a; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w1b; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w1c; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
-v=z.w1d; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-v=z.v0.s;
-p.lon=v.lon; p.lat=v.lat; p.lm=v.lm; p.aa=v.aa; p.xy=[0 360 -90 90]; p.id=id; 
-p.xsize=1200; p.ysize=900; 
-pms=[ 0, 0, p.xsize, p.ysize]*1.2; fsize=10; 
-handle=figure('Position',pms,'visible','on'); 
-row=3; col=4; cmap=bluewhitered_miz(256); co='k';
-p.unit='\rm{KK^{-1}}'; cmin=-2; cmax=2; p.vname='SST_patterns'; 
-i=1; a0=p.v(:,:,i)/p.dv(i); mean(a0(id).*aa)
-for i = 3:10
-  a=p.v(:,:,i)/p.dv(i); p.dv_norm(i)=mean(a(id).*aa);
-  a=a-a0;
-  subplot(row, col, i+2); colormap(cmap); a(~id)=NaN;
-  pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
-  contour(p.lon,p.lat,p.lm,1,co);
-  set(gca,'FontSize',fsize); axis([p.xy]);
-  s=strcat(p.let(i+1),[p.s{i} ' minus ' 'SPM']);
-  title(s,'FontSize',fsize);
-end
-i=1; a=p.v(:,:,i)/p.dv(i); a1=a; p.dv_norm(i)=mean(a(id).*aa); %mean(a(id).*aa)
-subplot(row, col, i); colormap(cmap); a(~id)=NaN; 
-pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
-contour(p.lon,p.lat,p.lm,1,co);
-set(gca,'FontSize',fsize); axis([p.xy]);
-s=['(a) SPEAR-Pattern M (' p.s{i}, ')'];
-title(s,'FontSize',fsize);
-i=2; a=p.v(:,:,i)/p.dv(i); a2=a; p.dv_norm(i)=mean(a(id).*aa); %mean(a(id).*aa)
-subplot(row, col, i); colormap(cmap); a(~id)=NaN;
-pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
-contour(p.lon,p.lat,p.lm,1,co);
-set(gca,'FontSize',fsize); axis([p.xy]);
-s=['(b) Observed-Pattern (' p.s{i}, ')'];
-title(s,'FontSize',fsize);
-i=3; a=a2-a1; mean(a(id).*aa)
-subplot(row, col, i); colormap(cmap); a(~id)=NaN;
-pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
-contour(p.lon,p.lat,p.lm,1,co);
-set(gca,'FontSize',fsize); axis([p.xy]);
-title(['(c) ' p.s{2} ' minus ' 'SPM'],'FontSize',fsize);
-%sgtitle('SST warming patterns','FontSize',fsize+2);
+A0='ERA5; '; a0='Control; '; a1='SPEAR-pattern M; '; a2='Observed-pattern; '; a3='Uniform';
+nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=3; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
+p.vname='atm_pcp_evap_pme_mrsos'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
+p.vname='FigRS05b';
+del=' $\Delta$'; s0='PREC'; s1='EVAP'; s2='PME'; s3='IVTCOV'; p.flipcmap=0; p.do_bias=0;
+p.S0=strcat(A0,'~(',p.sea,')~',s0);
+p.s0=strcat(a0,'~(',p.sea,')~',s0);
+p.s1 =strcat(a1,'~',del,s0);
+p.s2 =strcat(a2,'~',del,s0); 
+%p.s0=strcat(a0,'~(',nsea{isea},');',s0);
+%p.s1=strcat(a1,'~(',nsea{isea},');',del,s0);
+%p.s2=strcat(a2,'~(',nsea{isea},');',del,s0);
+p.S3=strcat(A0,'~(',p.sea,')~',s1); p.s3=strcat(a0,'~(',p.sea,')~',s1); p.s4 =strcat(a1,del,s1); p.s5 =strcat(a2,del,s1); 
+p.S6=strcat(A0,'~(',p.sea,')~',s2); p.s6=strcat(a0,'~(',p.sea,')~',s2); p.s7 =strcat(a1,del,s2); p.s8 =strcat(a2,del,s2); 
+p.S9=strcat(A0,'~(',p.sea,')~',s3); p.s9=strcat(a0,'~(',p.sea,')~',s3); p.s10=strcat(a1,del,s3); p.s11=strcat(a2,del,s3); 
+p.unit0 ='$\rm{mm day^{-1}}$';          p.unit0_bar ='mm day^{-1}';
+p.unit1 ='$\rm{mm day^{-1} K^{-1}}$';   p.unit1_bar ='mm day^{-1} K^{-1}';
+p.unit3 ='$\rm{mm day^{-1}}$';          p.unit3_bar ='mm day^{-1}';
+p.unit4 ='$\rm{mm day^{-1} K^{-1}}$';   p.unit4_bar ='mm day^{-1} K^{-1}';
+p.unit6 ='$\rm{mm day^{-1}}$';          p.unit6_bar ='mm day^{-1}';
+p.unit7 ='$\rm{mm day^{-1} K^{-1}}$';   p.unit7_bar ='mm day^{-1} K^{-1}';
+p.unit9 ='$\rm{kg m^{-2}}$';            p.unit9_bar ='kg m^{-2}';
+p.unit10='$\rm{kg m^{-2} K^{-1}}$';     p.unit10_bar='kg m^{-2} K^{-1}';
 
-cb = colorbar('FontSize',fsize,'Location','southoutside');
-set(cb, 'Position', [.165 .04 .7 .02]); caxis([cmin, cmax+0.001]); 
-colormap(cmap); 
-cb.Label.String = p.unit; pos=get(cb,'Position')
-cb.Label.Position = [pos(1)-0.14 pos(2)+1.9]; 
-cb.Label.Rotation = 0;
-visfig='off'; figpath='./fig_land/'; mod_name='FigRSx'; p.fmt='eps';
-printnew(visfig,figpath,mod_name,p.vname,p.fmt);
+p.cmin0=    0.0; p.cmax0=15;  p.cmin1 =-2;  p.cmax1 =2;
+p.cmin3=    0.0; p.cmax3=10;  p.cmin4 =-2;  p.cmax4 =2;
+p.cmin6=   -15.; p.cmax6=15;  p.cmin7 =-2;  p.cmax7 =2;
+p.cmin9=   -15.; p.cmax9=15;  p.cmin10=-2;  p.cmax10=2;
+p.do_add=0; p.show='off'; p.z1_co='c'; p.co='k'; p.xy=[280 360 0 90];
+s=z.v0.s; p.lon0=s.lon; p.lat0=s.lat; p.lm0=s.lm; aa=s.aa;
+a0=z.v0.sfc.tref.tavg0;
+a =z.w1.sfc.tref.tavg0-a0;  p.dT1=mean(mean(a.*aa)); p.tas1=a;
+a =z.w2.sfc.tref.tavg0-a0;  p.dT2=mean(mean(a.*aa)); p.tas2=a;
+imk=z.v0.sfc.ice.tavg0;  aa0=aa; 
+
+v=z.v0.s; p.lm=v.lm; aa0=v.aa; p.lon=v.lon; p.lat=v.lat; LV0=2.5E6;
+id=p.lm; id(id<0.5)=0; id(id>=0.5)=1; p.id_lm=(id==1);
+lat1= 15; lat2=85; lon1=190; lon2=344; p.xy=[280 360  0 90];
+lat1=-90; lat2=90; lon1=0;   lon2=360; p.xy=[0   360 -90 90];
+p.xy=[lon1 lon2 lat1 lat2];
+p.ys=min(find(s.lat(:)>=lat1)); p.ye=max(find(s.lat(:)<=lat2));
+p.xs=min(find(s.lon(:)>=lon1)); p.xe=max(find(s.lon(:)<=lon2));
+a=id; a(:,:)=0; a(p.ys:p.ye,p.xs:p.xe)=1; id=a; %id=id.*a; 
+id=(id==1); aa=aa0(id); aa=aa/mean(aa); p.aa=aa0; p.id=id; %figure; pcolor(id); shading flat; colorbar;
+nb=100; no=42; num=1; mskopt=0; sopt=2; slev=95; b=86400;
+%colume 1: precipitation
+a=z.V0.sfc.pcp_ec.all; a=get4season_all(a)*b; a=squeeze(a(:,isea,:,:)); A0=a; S0=squeeze(std(a,1,1));
+a=z.v0.sfc.pcp.all;    a=get4season_all(a);   a=squeeze(a(:,isea,:,:)); a0=a; s0=squeeze(std(a,1,1));
+a=z.w1.sfc.pcp.all;    a=get4season_all(a);   a=squeeze(a(:,isea,:,:)); a1=a; s1=squeeze(std(a,1,1));
+a=z.w2.sfc.pcp.all;    a=get4season_all(a);   a=squeeze(a(:,isea,:,:)); a2=a; s2=squeeze(std(a,1,1));
+d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
+p.Z0=d.a1_avg; p.dZ0=d.avg.a1_avg;
+p.z0=d.a2_avg; p.dz0=d.avg.a2_avg; p.isig0=d.idx; p.isig0_av=d.avg.idx; p.z0_bin=[0:50:150];
+d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT1; p.z1=d.diff/dT; p.dz1=d.avg.diff/dT; p.isig1=d.idx; p.isig1_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT2; p.z2=d.diff/dT; p.dz2=d.avg.diff/dT; p.isig2=d.idx; p.isig2_av=d.avg.idx;
+d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig2m1=d.idx; p.isig2m1_av=d.avg.idx; pp=p;
+
+%colume 2: evaporation
+b=86400; 
+a=z.V0.sfc.evap.all/LV0*b; a=get4season_all(a); a=squeeze(a(:,isea,:,:)); A0=a; S0=squeeze(std(a,1,1));
+a=z.v0.sfc.evap.all/LV0*b; a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a0=a; s0=squeeze(std(a,1,1));
+a=z.w1.sfc.evap.all/LV0*b; a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a1=a; s1=squeeze(std(a,1,1));
+a=z.w2.sfc.evap.all/LV0*b; a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a2=a; s2=squeeze(std(a,1,1));
+d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
+p.Z3=d.a1_avg; p.dZ3=d.avg.a1_avg;
+p.z3=d.a2_avg; p.dz3=d.avg.a2_avg; p.isig3=d.idx; p.isig3_av=d.avg.idx; p.z3_bin=[0:50:150];
+d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT1; p.z4=d.diff/dT; p.dz4=d.avg.diff/dT; p.isig4=d.idx; p.isig4_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT2; p.z5=d.diff/dT; p.dz5=d.avg.diff/dT; p.isig5=d.idx; p.isig5_av=d.avg.idx;
+d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig5m4=d.idx; p.isig5m4_av=d.avg.idx;pp=p;
+
+%column 3: PME (P minus E)
+b=86400;
+v=z.V0.sfc; a=(v.pcp_ec.all-v.evap.all/LV0)*b; a=get4season_all(a); a=squeeze(a(:,isea,:,:)); A0=a; S0=squeeze(std(a,1,1));
+v=z.v0.sfc; a= v.pcp.all-v.evap.all/LV0*b;     a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a0=a; s0=squeeze(std(a,1,1));
+v=z.w1.sfc; a= v.pcp.all-v.evap.all/LV0*b;     a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a1=a; s1=squeeze(std(a,1,1));
+v=z.w2.sfc; a= v.pcp.all-v.evap.all/LV0*b;     a=get4season_all(a); a=squeeze(a(:,isea,:,:)); a2=a; s2=squeeze(std(a,1,1));
+d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
+p.Z6=d.a1_avg; p.dZ6=d.avg.a1_avg;
+p.z6=d.a2_avg; p.dz6=d.avg.a2_avg; p.isig6=d.idx; p.isig6_av=d.avg.idx; p.z6_bin=[0:10:150];
+d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT1; p.z7=d.diff/dT; p.dz7=d.avg.diff/dT; p.isig7=d.idx; p.isig7_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT2; p.z8=d.diff/dT; p.dz8=d.avg.diff/dT; p.isig8=d.idx; p.isig8_av=d.avg.idx;
+d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig8m7=d.idx; p.isig8m7_av=d.avg.idx;pp=p;
+
+%column 4: upper level soil moisture; convert ERA5 unit from m3/m3 to kg/m2 to compare with model
+b=86400;
+a=z.V0.atm.ivtdiv.all; a=-get4season_all(a)*b; a=squeeze(a(:,isea,:,:)); A0=a; S0=squeeze(std(a,1,1));
+a=z.v0.atm.ivtdiv.all; a=-get4season_all(a)*b; a=squeeze(a(:,isea,:,:)); a0=a; s0=squeeze(std(a,1,1));
+a=z.w1.atm.ivtdiv.all; a=-get4season_all(a)*b; a=squeeze(a(:,isea,:,:)); a1=a; s1=squeeze(std(a,1,1));
+a=z.w2.atm.ivtdiv.all; a=-get4season_all(a)*b; a=squeeze(a(:,isea,:,:)); a2=a; s2=squeeze(std(a,1,1));
+d=compute_diff_sigtest(A0,S0,no,a0,s0,nb,num,p.id,p.aa,mskopt,sopt,slev);
+p.Z9=d.a1_avg; p.dZ9=d.avg.a1_avg;
+p.z9=d.a2_avg; p.dz9=d.avg.a2_avg; p.isig9=d.idx; p.isig9_av=d.avg.idx; p.z9_bin=[980:5:1020];
+d=compute_diff_sigtest(a0,s0,nb,a1,s1,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT1; p.z10=d.diff/dT; p.dz10=d.avg.diff/dT; p.isig10=d.idx; p.isig10_av=d.avg.idx;
+d=compute_diff_sigtest(a0,s0,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev);
+dT=p.dT2; p.z11=d.diff/dT; p.dz11=d.avg.diff/dT; p.isig11=d.idx; p.isig11_av=d.avg.idx;
+d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig11m10=d.idx; p.isig11m10_av=d.avg.idx; pp=p;
+
+p.cfact=2; p.phi_bin=[0:50:300]; p.phi_co='r'; a=id; a(:,:)=0; p.isig_null=a;
+p.fmt='eps'; p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed_scalar(p)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

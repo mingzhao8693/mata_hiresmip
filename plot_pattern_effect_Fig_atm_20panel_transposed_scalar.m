@@ -152,7 +152,12 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
  	end
         %for k=1:length(us.lon); plot(us.lon{k},us.lat{k},us.co,'LineWidth',lw); end;
 
-        s = sprintf('(%5.3f%s)', b, unit_val);
+	p.do_domain_mean = false;
+	if p.do_domain_mean
+          s = sprintf('%s(%5.3f%s)', sx,b, unit_val);
+	else
+	  s = sprintf('%s', sx);
+	end
         
         % Stippling (Significance) - Only for SPEAR and Observed rows
 	mk='.'; ms=1; mc=0.1*[1 1 1]; ds=100; isig(~p.id)=0;
@@ -163,7 +168,7 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
          end
 %	s = sprintf('%s (%5.3f%s)', sx, b, unit_val); disp(s);
 %	s = sprintf('%s', sx);
-        s = sprintf('%s %s)', sx, s);
+%       s = sprintf('%s %s)', sx, s);
         title(s, 'FontSize', fsize, 'Interpreter', 'latex');
         
         % Colorbar Logic: Place bar for Row 1 and Row 4 of each column
