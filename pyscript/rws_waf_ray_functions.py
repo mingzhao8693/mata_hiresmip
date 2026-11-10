@@ -313,7 +313,9 @@ def calculate_rws(u, v):
     return xr.Dataset({
         "rws": rws,
         "rws_stretch": rws_stretch,
-        "rws_advect": rws_advect
+        "rws_advect": rws_advect,
+        "uchi": uchi.assign_attrs(long_name="Divergent zonal wind", units="m s^-1"),
+        "vchi": vchi.assign_attrs(long_name="Divergent meridional wind", units="m s^-1")
     })
 
 def geostrophic_wind_from_height(z):

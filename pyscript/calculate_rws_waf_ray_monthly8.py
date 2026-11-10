@@ -14,6 +14,7 @@ from rws_waf_ray_functions import (
     monthly_climatology,
     check_finite_uv,
     calculate_rws,
+    geostrophic_wind_from_height,
     tn01_waf_2d,
     find_variable,
     calculate_ray_tracing
@@ -29,7 +30,7 @@ if len(sys.argv) != 6:
         "Usage:"
     )
     print(
-        "python calculate_rws_waf_ray_monthly7.py "
+        "python calculate_rws_waf_ray_monthly8.py "
         "EXP_DIR CTL_DIR OUT_DIR START_YEAR END_YEAR"
     )
     sys.exit(1)
@@ -399,20 +400,22 @@ for month in range(1, 13):
         f"  Calculating WAF for month {month:02d}..."
     )
 
-    u_exp_bg = ue_clim.sel(
+    # Full monthly climatological geopotential height
+    ze_bg = ze_clim.sel(
         month=month
     )
 
-    v_exp_bg = ve_clim.sel(
+    zc_bg = zc_clim.sel(
         month=month
     )
 
-    u_ctl_bg = uc_clim.sel(
-        month=month
+    # Calculate monthly geostrophic background winds (same as ERA5)
+    uge_bg, vge_bg = geostrophic_wind_from_height(
+        ze_bg
     )
 
-    v_ctl_bg = vc_clim.sel(
-        month=month
+    ugc_bg, vgc_bg = geostrophic_wind_from_height(
+        zc_bg
     )
 
     zp_exp = ze_prime_clim.sel(
@@ -431,16 +434,16 @@ for month in range(1, 13):
 
     waf_x_exp, waf_y_exp = (
         tn01_waf_2d(
-            u_exp_bg,
-            v_exp_bg,
+            uge_bg,
+            vge_bg,
             zp_exp
         )
     )
 
     waf_x_ctl, waf_y_ctl = (
         tn01_waf_2d(
-            u_ctl_bg,
-            v_ctl_bg,
+            ugc_bg,
+            vgc_bg,
             zp_ctl
         )
     )
@@ -457,8 +460,8 @@ for month in range(1, 13):
 
     waf_x_response, waf_y_response = (
         tn01_waf_2d(
-            u_ctl_bg,
-            v_ctl_bg,
+            ugc_bg,
+            vgc_bg,
             zp_response
         )
     )
@@ -543,6 +546,15 @@ waf_y_response_clim = xr.concat(
     waf_y_response_clim,
     dim="month"
 )
+
+# Assign integer month coordinates (matching ERA5)
+for da in [
+    waf_x_exp_clim, waf_y_exp_clim,
+    waf_x_ctl_clim, waf_y_ctl_clim,
+    waf_x_diff_clim, waf_y_diff_clim,
+    waf_x_response_clim, waf_y_response_clim
+]:
+    da["month"] = np.arange(1, 13)
 
 
 # ============================================================
@@ -821,38 +833,53 @@ z_response_jja_prime = zonal_anomaly(
     z_response_jja
 )
 
-waf_x_exp_jja, waf_y_exp_jja = (
-    tn01_waf_2d(
-        u_exp_jja,
-        v_exp_jja,
-        z_exp_jja_prime
-    )
+# Calculate JJA WAF as mean of June-July-August monthly WAF (same as ERA5)
+waf_x_exp_jja = (
+    waf_x_exp_clim
+    .sel(month=[6, 7, 8])
+    .mean(dim="month", skipna=True)
 )
 
-waf_x_ctl_jja, waf_y_ctl_jja = (
-    tn01_waf_2d(
-        u_ctl_jja,
-        v_ctl_jja,
-        z_ctl_jja_prime
-    )
+waf_y_exp_jja = (
+    waf_y_exp_clim
+    .sel(month=[6, 7, 8])
+    .mean(dim="month", skipna=True)
+)
+
+waf_x_ctl_jja = (
+    waf_x_ctl_clim
+    .sel(month=[6, 7, 8])
+    .mean(dim="month", skipna=True)
+)
+
+waf_y_ctl_jja = (
+    waf_y_ctl_clim
+    .sel(month=[6, 7, 8])
+    .mean(dim="month", skipna=True)
 )
 
 waf_x_diff_jja = (
-    waf_x_exp_jja
-    - waf_x_ctl_jja
+    waf_x_diff_clim
+    .sel(month=[6, 7, 8])
+    .mean(dim="month", skipna=True)
 )
 
 waf_y_diff_jja = (
-    waf_y_exp_jja
-    - waf_y_ctl_jja
+    waf_y_diff_clim
+    .sel(month=[6, 7, 8])
+    .mean(dim="month", skipna=True)
 )
 
-waf_x_response_jja, waf_y_response_jja = (
-    tn01_waf_2d(
-        u_ctl_jja,
-        v_ctl_jja,
-        z_response_jja_prime
-    )
+waf_x_response_jja = (
+    waf_x_response_clim
+    .sel(month=[6, 7, 8])
+    .mean(dim="month", skipna=True)
+)
+
+waf_y_response_jja = (
+    waf_y_response_clim
+    .sel(month=[6, 7, 8])
+    .mean(dim="month", skipna=True)
 )
 
 
@@ -860,13 +887,18 @@ waf_x_response_jja, waf_y_response_jja = (
 # NEW: BAROTROPIC STATIONARY RAY TRACING
 # ============================================================
 
+if os.path.abspath(EXP_DIR) == os.path.abspath(CTL_DIR):
+    print("  EXP_DIR equals CTL_DIR: using CTL climatological RWS as ray source.")
+    rws_source_for_rays = rws_ctl_jja["rws"]
+else:
+    rws_source_for_rays = rws_diff_jja["rws"]
+
 ray_tracing = calculate_ray_tracing(
     u_ctl_jja,
     v_ctl_jja,
-    rws_diff_jja["rws"],
+    rws_source_for_rays,
     background_name="CTL"
 )
-
 
 # ============================================================
 # CREATE OUTPUT DIRECTORY
