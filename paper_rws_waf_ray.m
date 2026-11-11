@@ -18,56 +18,66 @@ fn=strcat(tpath,expn,'/rws.nc'); v.sp.rws=read_rws_mod(tpath,expn,fn);
 fn=strcat(tpath,expn,'/waf.nc'); v.sp.waf=read_waf_mod(tpath,expn,fn);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%FigRSxxx RWS and WAF analysis figure
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.xsize=1200; p.ysize=600; x=v.lon; y=v.lat; lm=v.lm; n=5; scale=1; cmin=-200; cmax=200; i=1;
 pms=[ 0, 0, p.xsize, p.ysize]*1.5; fsize=10; row=4; col=2; p.xy=[100 310 10 70]; p.xy=[120 300 15 65]
-handle=figure('Position',pms,'visible','on'); del=' $\Delta$'; s1='RWS (JJA)'; s2='Z200'''; s3='WAF (JJA)';
+handle=figure('Position',pms,'visible','on');
+del=' $\Delta$'; s0='RWS'; s1='Vd (JJA)'; s2='Z200'''; s3='WAF (JJA)';
+a='ERA5;~';             p.s1=strcat(a,s0," and ",s1);         p.s2=strcat(a,s2," and ",s3);
+a='Control;~';          p.s3=strcat(a,s0," and ",s1);         p.s4=strcat(a,s2," and ",s3);
+a='SPEAR-pattern;~';    p.s5=strcat(a,del,s0," and ",del,s1); p.s6=strcat(a,del,s2," and ",del,s3);
+a='Observed-pattern;~'; p.s7=strcat(a,del,s0," and ",del,s1); p.s8=strcat(a,del,s2," and ",del,s3);
 
 subplot(row,col,i); a=v.era5.rws; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA; i=i+1;
 pcolor(x,y,rws); shading flat; colorbar; caxis([-4E-10 4E-10]); colormap(jet); hold on;
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale,vchi(1:n:end,1:n:end)*scale,'k');
 contour(x,y,lm,1,'k'); colormap(jet); axis(p.xy);
-title(strcat('ERA5;~',s1),'FontSize',fsize,'Interpreter','latex');
+title(p.s1,'FontSize',fsize,'Interpreter','latex');
 subplot(row,col,i); a=v.era5.waf; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA; i=i+1;
 pcolor(x,y,zp); shading flat; caxis([cmin cmax]); colorbar; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale,wafy(1:n:end,1:n:end)*scale,'k');
 contour(x,y,lm,1,'k'); colormap(jet); axis(p.xy);
-title(strcat('ERA5;~',s2," and ",s3),'FontSize',fsize,'Interpreter','latex');
+title(p.s2,'FontSize',fsize,'Interpreter','latex');
 
 subplot(row,col,i); a=v.op.rws.ctl; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA; i=i+1;
 pcolor(x,y,rws); shading flat; colorbar; caxis([-4E-10 4E-10]); colormap(jet); hold on;
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale,vchi(1:n:end,1:n:end)*scale,'k');
 contour(x,y,lm,1,'k'); colormap(jet); axis(p.xy);
-title(strcat('Control;~',s1),'FontSize',fsize,'Interpreter','latex');
+title(p.s3,'FontSize',fsize,'Interpreter','latex');
 subplot(row,col,i); a=v.op.waf.ctl; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA;
 pcolor(x,y,zp); shading flat; caxis([cmin cmax]); colorbar; hold on; i=i+1;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale,wafy(1:n:end,1:n:end)*scale,'k');
 contour(x,y,lm,1,'k'); colormap(jet); axis(p.xy);
-title(strcat('Control;~',s2," and ",s3),'FontSize',fsize,'Interpreter','latex');
+title(p.s4,'FontSize',fsize,'Interpreter','latex');
 
 subplot(row,col,i); a=v.sp.rws.dif; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA; i=i+1;
 pcolor(x,y,rws); shading flat; colorbar; caxis([-4E-10 4E-10]*0.2); colormap(jet); hold on;
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale,vchi(1:n:end,1:n:end)*scale,'k');
 contour(x,y,lm,1,'k'); colormap(jet); axis(p.xy);
-title(strcat('SPEAR-pattern;', del, s1),'FontSize',fsize,'Interpreter','latex');
+title(p.s5,'FontSize',fsize,'Interpreter','latex');
 subplot(row,col,i); a=v.sp.waf.res; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA; i=i+1;
 pcolor(x,y,zp); shading flat; caxis([cmin cmax]*0.1); colorbar; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale,wafy(1:n:end,1:n:end)*scale,'k');
 contour(x,y,lm,1,'k'); colormap(jet); axis(p.xy);
-title(strcat('SPEAR-pattern;',del,s2," and ",del,s3),'FontSize',fsize,'Interpreter','latex');
+title(p.s6,'FontSize',fsize,'Interpreter','latex');
 
 subplot(row,col,i); a=v.op.rws.dif; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA; i=i+1;
 pcolor(x,y,rws); shading flat; colorbar; caxis([-4E-10 4E-10]*0.2); colormap(jet); hold on;
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale,vchi(1:n:end,1:n:end)*scale,'k');
 contour(x,y,lm,1,'k'); colormap(jet); axis(p.xy);
-title(strcat('Observed-pattern;',del,s1),'FontSize',fsize,'Interpreter','latex');
+title(p.s7,'FontSize',fsize,'Interpreter','latex');
 subplot(row,col,i); a=v.op.waf.res; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA; i=i+1;
 pcolor(x,y,zp); shading flat; caxis([cmin cmax]*0.1); colorbar; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale,wafy(1:n:end,1:n:end)*scale,'k');
 contour(x,y,lm,1,'k'); colormap(jet); axis(p.xy);
-title(strcat('Observed-pattern;',del,s2," and ",del,s3),'FontSize',fsize,'Interpreter','latex');
+title(p.s8,'FontSize',fsize,'Interpreter','latex');
 
-visfig='off'; figpath='~/'; mod_name='sst_patterns'; vname='rws_waf_jja'; p.fmt='png';
+visfig='off'; figpath='~/'; mod_name='sst_patterns'; vname='rws_waf_jja'; p.fmt='eps';
 printnew(visfig,figpath,mod_name,vname,p.fmt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p.xsize=1200; p.ysize=750; x=v.lon; y=v.lat; lm=v.lm; n=5; scale=1; cmin=-200; cmax=200;
