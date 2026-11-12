@@ -92,11 +92,13 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
         % Colorbar Logic: Place bar for Row 1 and Row 4 of each column
         if r == 1
             cb = colorbar('FontSize', fsize, 'Location', 'northoutside');
-            set(cb, 'Position', [0.13 + (c-1)*0.21, 0.95, 0.15, 0.01]); % Adjust positions
+            set(cb, 'Position',[0.132 + (c-1)*0.207, 0.95, 0.15, 0.01]); % Adjust positions
+%            set(cb, 'Position', [0.13 + (c-1)*0.21, 0.95, 0.15, 0.01]); % Adjust positions
             set(get(cb,'title'),'string',unit_str);
         elseif r == 4
             cb = colorbar('FontSize', fsize, 'Location', 'southoutside');
-            set(cb, 'Position', [0.13 + (c-1)*0.21, 0.05, 0.15, 0.01]);
+            set(cb, 'Position',[0.132 + (c-1)*0.207, 0.05, 0.15, 0.01]);
+%            set(cb, 'Position', [0.13 + (c-1)*0.21, 0.05, 0.15, 0.01]);
             set(get(cb,'title'),'string',unit_str);
         end
     end

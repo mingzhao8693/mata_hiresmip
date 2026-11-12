@@ -92,7 +92,7 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
         title(s, 'FontSize', fsize, 'Interpreter', 'latex');
         
         cb = colorbar('FontSize', fsize, 'Location', 'southoutside');
-        set(cb, 'Position', [0.13 + (c-1)*0.21, 0.05, 0.15, 0.01]);
+        set(cb, 'Position', [0.132 + (c-1)*0.207, 0.05, 0.15, 0.01]);
         set(get(cb,'title'),'string',unit_str);
 
     end
