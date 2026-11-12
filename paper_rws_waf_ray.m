@@ -34,8 +34,8 @@ fn=strcat(tpath,expn,'/',plev,'/waf.nc'); v.sp.waf=read_waf_mod(tpath,expn,fn);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-p.xsize=1200; p.ysize=600; isea=3; 
-pms=[ 0, 0, p.xsize, p.ysize]*1.5; fsize=10; row=4; col=2;
+p.xsize=1200; p.ysize=600; isea=3; pbin=[5 10]; dpbin1=[1 2]; dpbin2=[-1 -0.5]; co=[0 0 0]; co1=[0.5 0.5 0.5];
+pms=[ 0, 0, p.xsize, p.ysize]*1.5; fsize=10; row=4; col=2; 
 p.xy=[100 310  10 70]; p.xy=[120 300  15 65]; p.xy=[100 300 -10 65];
 p.xy=[100 360 -10 90]; p.xy=[100 360 -10 65];
 handle=figure('Position',pms,'visible','on');
@@ -44,8 +44,8 @@ a='ERA5;~';             p.s(1)=strcat(a,s0," and ",s1);         p.s(2)=strcat(a,
 a='Control;~';          p.s(3)=strcat(a,s0," and ",s1);         p.s(4)=strcat(a,s2," and ",s3);
 a='SPEAR-pattern M;~';  p.s(5)=strcat(a,del,s0," and ",del,s1); p.s(6)=strcat(a,del,s2," and ",del,s3);
 a='Observed-pattern;~'; p.s(7)=strcat(a,del,s0," and ",del,s1); p.s(8)=strcat(a,del,s2," and ",del,s3);
-x0=122.5; y0=53; ref0=10; dref0=1; vunit0='m/s';     color=[0.2 0.2 0.2]; %reference vector for uchi
-x1=122.5; y1=53; ref1=10; dref1=1; vunit1='m^2/s^2'; color=[0.2 0.2 0.2]; %reference vector for waf
+x0=102.5; y0=53; ref0=10; dref0=1; vunit0='m/s';     color=[0.2 0.2 0.2]; %reference vector for uchi
+x1=102.5; y1=53; ref1=10; dref1=1; vunit1='m^2/s^2'; color=[0.2 0.2 0.2]; %reference vector for waf
 x=v.lon; y=v.lat; lm=v.lm; n=5; scale=1; scale_a=10; color_a=[0.90 0.85 0.00]; cmin=-200; cmax=200; i=1;
 %ERA5
 subplot(row,col,i); a=v.era5.rws; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA;
@@ -53,15 +53,15 @@ pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=vunit0; cb.Title.Fon
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale,vchi(1:n:end,1:n:end)*scale,0,'Color',color);
 text(x0-1,y0+6,strcat(num2str(ref0),vunit0),'FontSize',fsize,'Color',color,'BackgroundColor','w')
 quiver(x0,y0,ref0*scale,0,0,'Color',color,'LineWidth',3,'MaxHeadSize',2); hold on;
-a=squeeze(z.V0.sfc.pcp.sea(isea,:,:)); contour(x,y,a,[5 10],'-k');
-contour(x,y,lm,1,'k'); axis(p.xy); nn=256; cmap=bluewhitered_miz(nn); colormap(cmap);
+a=squeeze(z.V0.sfc.pcp.sea(isea,:,:)); contour(x,y,a,pbin,'Color',co,'LineStyle','-');
+contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy); nn=256; cmap=bluewhitered_miz(nn); colormap(cmap);
 s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
 subplot(row,col,i); a=v.era5.waf; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA; 
 pcolor(x,y,zp); shading flat; caxis([cmin cmax]); cb=colorbar; cb.Label.String=vunit1; cb.Title.FontSize = fsize; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale,wafy(1:n:end,1:n:end)*scale,0,'Color',color);
 text(x1-1,y1+6,strcat(num2str(ref1),vunit1),'FontSize',fsize,'Color',color,'BackgroundColor','w')
 quiver(x1,y1,ref1*scale,0,0,'Color',color,'LineWidth',3,'MaxHeadSize',2); hold on;
-contour(x,y,lm,1,'k'); axis(p.xy);
+contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
 s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
 %Control
 subplot(row,col,i); a=v.op.rws.ctl; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA;
@@ -69,15 +69,15 @@ pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=vunit0; cb.Title.Fon
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale,vchi(1:n:end,1:n:end)*scale,0,'Color',color);
 text(x0-1,y0+6,strcat(num2str(ref0),vunit0),'FontSize',fsize,'Color',color,'BackgroundColor','w')
 quiver(x0,y0,ref0*scale,0,0,'Color',color,'LineWidth',3,'MaxHeadSize',2); hold on;
-a=squeeze(z.v0.sfc.pcp.sea(isea,:,:)); contour(x,y,a,[5 10],'-k');
-contour(x,y,lm,1,'k'); axis(p.xy);
+a=squeeze(z.v0.sfc.pcp.sea(isea,:,:)); contour(x,y,a,pbin,'Color',co,'LineStyle','-');
+contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
 s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
 subplot(row,col,i); a=v.op.waf.ctl; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA;
 pcolor(x,y,zp); shading flat; caxis([cmin cmax]); cb=colorbar; cb.Label.String=vunit1; cb.Title.FontSize = fsize; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale,wafy(1:n:end,1:n:end)*scale,0,'Color',color);
 text(x1-1,y1+6,strcat(num2str(ref1),vunit1),'FontSize',fsize,'Color',color,'BackgroundColor','w')
 quiver(x1,y1,ref1*scale,0,0,'Color',color,'LineWidth',3,'MaxHeadSize',2); hold on;
-contour(x,y,lm,1,'k'); axis(p.xy);
+contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
 s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
 %SPEAR-pattern
 subplot(row,col,i); a=v.sp.rws.dif; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA;
@@ -85,15 +85,16 @@ pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=vunit0; cb.Title.Fon
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale_a,vchi(1:n:end,1:n:end)*scale_a,0,'Color',color_a);
 text(x0-1,y0+6,strcat(num2str(dref0),vunit0),'FontSize',fsize,'Color',color_a,'BackgroundColor','w')
 quiver(x0,y0,dref0*scale_a,0,0,'Color',color_a,'LineWidth',3,'MaxHeadSize',2); hold on;
-a=squeeze(z.w1.sfc.pcp.sea(isea,:,:)-z.v0.sfc.pcp.sea(isea,:,:)); contour(x,y,a,[1 2],'-k');contour(x,y,a,[-1 -0.5],'--k');
-contour(x,y,lm,1,'k'); axis(p.xy);
+a=squeeze(z.w1.sfc.pcp.sea(isea,:,:)-z.v0.sfc.pcp.sea(isea,:,:));
+contour(x,y,a,dpbin1,'Color',co,'LineStyle','-'); contour(x,y,a,dpbin2,'Color',co,'LineStyle','--');
+contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
 s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
 subplot(row,col,i); a=v.sp.waf.res; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA;
 pcolor(x,y,zp); shading flat; caxis([cmin cmax]*0.1); cb=colorbar; cb.Label.String=vunit1; cb.Title.FontSize = fsize; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale_a,wafy(1:n:end,1:n:end)*scale_a,0,'Color',color_a);
 text(x1-1,y1+6,strcat(num2str(dref1),vunit1),'FontSize',fsize,'Color',color_a,'BackgroundColor','w')
 quiver(x1,y1,dref1*scale_a,0,0,'Color',color_a,'LineWidth',3,'MaxHeadSize',2); hold on;
-contour(x,y,lm,1,'k'); axis(p.xy);
+contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
 s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
 %Observed-pattern
 subplot(row,col,i); a=v.op.rws.dif; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA;
@@ -101,15 +102,16 @@ pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=vunit0; cb.Title.Fon
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale_a,vchi(1:n:end,1:n:end)*scale_a,0,'Color',color_a);
 text(x0-1,y0+6,strcat(num2str(dref0),vunit0),'FontSize',fsize,'Color',color_a,'BackgroundColor','w')
 quiver(x0,y0,dref0*scale_a,0,0,'Color',color_a,'LineWidth',3,'MaxHeadSize',2); hold on;
-a=squeeze(z.w2.sfc.pcp.sea(isea,:,:)-z.v0.sfc.pcp.sea(isea,:,:)); contour(x,y,a,[1 2],'-k');contour(x,y,a,[-1 -0.5],'--k');
-contour(x,y,lm,1,'k'); axis(p.xy);
+a=squeeze(z.w2.sfc.pcp.sea(isea,:,:)-z.v0.sfc.pcp.sea(isea,:,:)); 
+contour(x,y,a,dpbin1,'Color',co,'LineStyle','-'); contour(x,y,a,dpbin2,'Color',co,'LineStyle','--');
+contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
 s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
 subplot(row,col,i); a=v.op.waf.res; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA;
 pcolor(x,y,zp); shading flat; caxis([cmin cmax]*0.1); cb=colorbar; cb.Label.String=vunit1; cb.Title.FontSize = fsize; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale_a,wafy(1:n:end,1:n:end)*scale_a,0,'Color',color_a);
 text(x1-1,y1+6,strcat(num2str(dref1),vunit1),'FontSize',fsize,'Color',color_a,'BackgroundColor','w')
 quiver(x1,y1,dref1*scale_a,0,0,'Color',color_a,'LineWidth',3,'MaxHeadSize',2); hold on;
-contour(x,y,lm,1,'k'); axis(p.xy);
+contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
 s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex');
 
 visfig='off'; figpath='~/'; mod_name='FigS06'; vname='rws_waf_jja'; p.fmt='eps';
