@@ -71,7 +71,7 @@ for r = 1:5 % Rows: Present, SPEAR, Observed, Diff
             %  contour(lon,lat,phi',-p.phi_bin,p.phi_co,'Linestyle','--','showtext','off');
 	  elseif r==2; %control: p.z3, p.u3, p.v3
 %	    a=p.u3; b=p.du3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3];
-	    a=p.z3; b=p.dz3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3]; isig=p.isig3; isig_av=p.isig3_av;
+	    a=p.z3; b=p.dz3; sx=let(idx)+p.s3; cax=[p.cmin3 p.cmax3]; %isig=p.isig3; isig_av=p.isig3_av;
 	    add.z=p.z3; add.u=p.u3; add.v=p.v3; add.zbin=p.z3_bin; add.ubin=p.u3_bin;
 	    if (p.do_bias); a=p.z3-p.Z3; b=p.dz2-p.dZ3; add.u=p.u3-p.U3; add.v=p.v3-p.V3; cax=[p.cmin4 p.cmax4]; end;
 %	    if (p.do_bias); a=p.u3-p.U3; b=p.du3-p.dU3; add.u=p.u3-p.U3; add.v=p.v3-p.V3; cax=[p.cmin4 p.cmax4]; end;

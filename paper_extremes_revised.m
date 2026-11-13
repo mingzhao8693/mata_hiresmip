@@ -1798,6 +1798,7 @@ e='c192L33_am4p0_2010climo_trend_1979_2020_spear_worst_wegradient';  n=strcat(ph
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fn='/work/miz/mat_hiresmip/sst_patterns_atm_z_new.mat'; save(fn,'z','-v7.3');
+fn='/work/miz/mat_hiresmip/sst_patterns_atm_z.mat'; load(fn);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% e='c192L33_am4p0_2010climo_trend_1979_2020_spear_pacific_10ns_obs';  n=strcat(ph,e,'/',e,f);load(n);z.w2a=v;
@@ -1844,7 +1845,7 @@ p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
 A0='ERA5; '; a0='Control; '; a1='SPEAR-pattern M; '; a2='Observed-pattern; '; a3='Uniform';
 nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=3; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
 p.vname='atm_500_200_850_ivt'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea}; p.u200_bin=[15 20];
-p.vname='FigR4'; sopt=1; slev=90; %sopt=2; slev=95; %sopt=1:z-test; 2:Welch's two-sample t-test; slev=95; 95% confidence
+p.vname='FigR4'; sopt=1; slev=90; sopt=2; slev=95; %sopt=1:z-test; 2:Welch's two-sample t-test; slev=95; 95% confidence
 del=' $\Delta$'; s0='Z500'''; s1='Z200'''; s2='Z850'''; s3='IWTCON'; p.flipcmap=0; p.do_bias=0;
 p.S0=strcat(A0,'~(',p.sea,')~',s0);
 p.s0=strcat(a0,'~(',p.sea,')~',s0);
@@ -2071,17 +2072,17 @@ p.fmt='eps'; p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transpo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-v=z.v0;  v.dis='OBS CLIMO SST'; v.T=mean(v.sfc.tref.ann_stat.mmen.all);  z.v0 =v;    a=v.T;
-v=z.w1;  v.dis='SPM';           v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.22; z.w1 =v;
-v=z.w2;  v.dis='OP';            v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.24; z.w2 =v;
-v=z.w1A; v.dis='SPM-EPbest';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1A=v;
-v=z.w1B; v.dis='SPM-EPbest2';   v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1B=v;
-v=z.w1C; v.dis='SPM-EPworst2';  v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1C=v;
-v=z.w1D; v.dis='SPM-EPworst';   v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1D=v;
-v=z.w1a; v.dis='SPM-Pobs10';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1a=v;
-v=z.w1b; v.dis='SPM-Pobs20';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1b=v;
-v=z.w1c; v.dis='SPM-Pobs30';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1c=v;
-v=z.w1d; v.dis='SPM-Tobs30';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1d=v;
+v=z.v0;  v.dis='OBS CLIMO SST';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  z.v0 =v;    a=v.T;
+v=z.w1;  v.dis='SPM';              v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.22; z.w1 =v;
+v=z.w2;  v.dis='Observed-pattern'; v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.24; z.w2 =v;
+v=z.w1A; v.dis='SP-EPbest';        v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1A=v;
+v=z.w1B; v.dis='SP-EPbest2';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1B=v;
+v=z.w1C; v.dis='SP-EPworst2';      v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1C=v;
+v=z.w1D; v.dis='SP-EPworst';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1D=v;
+v=z.w1a; v.dis='SPM-Pobs10';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1a=v;
+v=z.w1b; v.dis='SPM-Pobs20';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1b=v;
+v=z.w1c; v.dis='SPM-Pobs30';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1c=v;
+v=z.w1d; v.dis='SPM-Tobs30';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1d=v;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 v=z.v0; lm=v.s.lm; im=v.sfc.ice.tavg0; 
 lm_th=0.1; im_th=0.1; id_lm=(lm>lm_th); id_im=(im>im_th); id = id_lm | id_im; id=~id; %id(:,:)=1;
@@ -2381,9 +2382,10 @@ d=compute_diff_sigtest(a1,s1,nb,a2,s2,nb,num,p.id,p.aa,mskopt,sopt,slev); p.isig
 
 p.cfact=2; p.phi_bin=[0:50:300]; p.phi_co='r'; a=id; a(:,:)=0; p.isig_null=a;
 p.fmt='eps'; p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transposed_scalar(p)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%RWS and WAF analysis and plot FigRS06
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2406,92 +2408,92 @@ fn=strcat(tpath,expn,'/',plev,'/rws.nc'); v.sp.rws=read_rws_mod(tpath,expn,fn);
 fn=strcat(tpath,expn,'/',plev,'/waf.nc'); v.sp.waf=read_waf_mod(tpath,expn,fn);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%FigRSxxx RWS and WAF analysis figure
+%FigRS06 RWS and WAF analysis figure
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
      "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
-p.xsize=1200; p.ysize=600; isea=3; pbin=[5 10]; dpbin1=[1 2]; dpbin2=[-1 -0.5]; co=[0 0 0]; co1=[0.5 0.5 0.5];
-pms=[ 0, 0, p.xsize, p.ysize]*1.5; fsize=10; row=4; col=2; 
+p.xsize=1200; p.ysize=900; isea=3; pbin=[5 10]; dpbin1=[1 2]; dpbin2=[-1 -0.5]; co=[0 0 0]; co1=[0.5 0.5 0.5];
+pms=[ 0, 0, p.xsize, p.ysize]*1.5; fsize=12; row=4; col=2; rws_unit='s^{-2}'; z_unit='GPM';
 p.xy=[100 310  10 70]; p.xy=[120 300  15 65]; p.xy=[100 300 -10 65];
 p.xy=[100 360 -10 90]; p.xy=[100 360 -10 65];
 handle=figure('Position',pms,'visible','on');
 del=' $\Delta$'; s0='RWS'; s1='Vd (JJA)'; s2='Z200'''; s3='WAF (JJA)';
 a='ERA5;~';             p.s(1)=strcat(a,s0," and ",s1);         p.s(2)=strcat(a,s2," and ",s3);
 a='Control;~';          p.s(3)=strcat(a,s0," and ",s1);         p.s(4)=strcat(a,s2," and ",s3);
-a='SPEAR-pattern M;~';  p.s(5)=strcat(a,del,s0," and ",del,s1); p.s(6)=strcat(a,del,s2," and ",del,s3);
-a='Observed-pattern;~'; p.s(7)=strcat(a,del,s0," and ",del,s1); p.s(8)=strcat(a,del,s2," and ",del,s3);
-x0=102.5; y0=53; ref0=10; dref0=1; vunit0='m/s';     color=[0.2 0.2 0.2]; %reference vector for uchi
-x1=102.5; y1=53; ref1=10; dref1=1; vunit1='m^2/s^2'; color=[0.2 0.2 0.2]; %reference vector for waf
+a='SPEAR-pattern M;~';  p.s(5)=strcat(a,del,s0," and ",del,s1); p.s(6)=strcat(a,del,s2," and Response ",s3);
+a='Observed-pattern;~'; p.s(7)=strcat(a,del,s0," and ",del,s1); p.s(8)=strcat(a,del,s2," and Response ",s3);
+x0=103; y0=53.2; ref0=10; dref0=1; vunit0='m/s';     color=[0.2 0.2 0.2]; %reference vector for uchi
+x1=103; y1=53.2; ref1=10; dref1=1; vunit1='m^2/s^2'; color=[0.2 0.2 0.2]; %reference vector for waf
 x=v.lon; y=v.lat; lm=v.lm; n=5; scale=1; scale_a=10; color_a=[0.90 0.85 0.00]; cmin=-200; cmax=200; i=1;
 %ERA5
 subplot(row,col,i); a=v.era5.rws; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA;
-pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=vunit0; cb.Title.FontSize = fsize; caxis([-4E-10 4E-10]); hold on;
+pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=rws_unit; cb.Title.FontSize = fsize; caxis([-4E-10 4E-10]); hold on;
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale,vchi(1:n:end,1:n:end)*scale,0,'Color',color);
 text(x0-1,y0+6,strcat(num2str(ref0),vunit0),'FontSize',fsize,'Color',color,'BackgroundColor','w')
 quiver(x0,y0,ref0*scale,0,0,'Color',color,'LineWidth',3,'MaxHeadSize',2); hold on;
 a=squeeze(z.V0.sfc.pcp.sea(isea,:,:)); contour(x,y,a,pbin,'Color',co,'LineStyle','-');
 contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy); nn=256; cmap=bluewhitered_miz(nn); colormap(cmap);
-s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
+s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1; set(gca,'FontSize',fsize); 
 subplot(row,col,i); a=v.era5.waf; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA; 
-pcolor(x,y,zp); shading flat; caxis([cmin cmax]); cb=colorbar; cb.Label.String=vunit1; cb.Title.FontSize = fsize; hold on;
+pcolor(x,y,zp); shading flat; caxis([cmin cmax]); cb=colorbar; cb.Label.String=z_unit; cb.Title.FontSize = fsize; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale,wafy(1:n:end,1:n:end)*scale,0,'Color',color);
 text(x1-1,y1+6,strcat(num2str(ref1),vunit1),'FontSize',fsize,'Color',color,'BackgroundColor','w')
 quiver(x1,y1,ref1*scale,0,0,'Color',color,'LineWidth',3,'MaxHeadSize',2); hold on;
 contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
-s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
+s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1; set(gca,'FontSize',fsize); 
 %Control
 subplot(row,col,i); a=v.op.rws.ctl; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA;
-pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=vunit0; cb.Title.FontSize = fsize; caxis([-4E-10 4E-10]); hold on;
+pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=rws_unit; cb.Title.FontSize = fsize; caxis([-4E-10 4E-10]); hold on;
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale,vchi(1:n:end,1:n:end)*scale,0,'Color',color);
 text(x0-1,y0+6,strcat(num2str(ref0),vunit0),'FontSize',fsize,'Color',color,'BackgroundColor','w')
 quiver(x0,y0,ref0*scale,0,0,'Color',color,'LineWidth',3,'MaxHeadSize',2); hold on;
 a=squeeze(z.v0.sfc.pcp.sea(isea,:,:)); contour(x,y,a,pbin,'Color',co,'LineStyle','-');
 contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
-s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
+s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1; set(gca,'FontSize',fsize); 
 subplot(row,col,i); a=v.op.waf.ctl; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA;
-pcolor(x,y,zp); shading flat; caxis([cmin cmax]); cb=colorbar; cb.Label.String=vunit1; cb.Title.FontSize = fsize; hold on;
+pcolor(x,y,zp); shading flat; caxis([cmin cmax]); cb=colorbar; cb.Label.String=z_unit; cb.Title.FontSize = fsize; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale,wafy(1:n:end,1:n:end)*scale,0,'Color',color);
 text(x1-1,y1+6,strcat(num2str(ref1),vunit1),'FontSize',fsize,'Color',color,'BackgroundColor','w')
 quiver(x1,y1,ref1*scale,0,0,'Color',color,'LineWidth',3,'MaxHeadSize',2); hold on;
 contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
-s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
+s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1; set(gca,'FontSize',fsize); 
 %SPEAR-pattern
 subplot(row,col,i); a=v.sp.rws.dif; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA;
-pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=vunit0; cb.Title.FontSize = fsize; caxis([-4E-10 4E-10]*0.2); hold on;
+pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=rws_unit; cb.Title.FontSize = fsize; caxis([-4E-10 4E-10]*0.2); hold on;
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale_a,vchi(1:n:end,1:n:end)*scale_a,0,'Color',color_a);
 text(x0-1,y0+6,strcat(num2str(dref0),vunit0),'FontSize',fsize,'Color',color_a,'BackgroundColor','w')
 quiver(x0,y0,dref0*scale_a,0,0,'Color',color_a,'LineWidth',3,'MaxHeadSize',2); hold on;
 a=squeeze(z.w1.sfc.pcp.sea(isea,:,:)-z.v0.sfc.pcp.sea(isea,:,:));
 contour(x,y,a,dpbin1,'Color',co,'LineStyle','-'); contour(x,y,a,dpbin2,'Color',co,'LineStyle','--');
 contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
-s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
+s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1; set(gca,'FontSize',fsize); 
 subplot(row,col,i); a=v.sp.waf.res; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA;
-pcolor(x,y,zp); shading flat; caxis([cmin cmax]*0.1); cb=colorbar; cb.Label.String=vunit1; cb.Title.FontSize = fsize; hold on;
+pcolor(x,y,zp); shading flat; caxis([cmin cmax]*0.1); cb=colorbar; cb.Label.String=z_unit; cb.Title.FontSize = fsize; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale_a,wafy(1:n:end,1:n:end)*scale_a,0,'Color',color_a);
 text(x1-1,y1+6,strcat(num2str(dref1),vunit1),'FontSize',fsize,'Color',color_a,'BackgroundColor','w')
 quiver(x1,y1,dref1*scale_a,0,0,'Color',color_a,'LineWidth',3,'MaxHeadSize',2); hold on;
 contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
-s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
+s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1; set(gca,'FontSize',fsize); 
 %Observed-pattern
 subplot(row,col,i); a=v.op.rws.dif; rws=a.rws_JJA; uchi=a.uchi_JJA; vchi=a.vchi_JJA;
-pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=vunit0; cb.Title.FontSize = fsize; caxis([-4E-10 4E-10]*0.2); hold on;
+pcolor(x,y,rws); shading flat; cb=colorbar; cb.Label.String=rws_unit; cb.Title.FontSize = fsize; caxis([-4E-10 4E-10]*0.2); hold on;
 quiver(x(1:n:end),y(1:n:end),uchi(1:n:end,1:n:end)*scale_a,vchi(1:n:end,1:n:end)*scale_a,0,'Color',color_a);
 text(x0-1,y0+6,strcat(num2str(dref0),vunit0),'FontSize',fsize,'Color',color_a,'BackgroundColor','w')
 quiver(x0,y0,dref0*scale_a,0,0,'Color',color_a,'LineWidth',3,'MaxHeadSize',2); hold on;
 a=squeeze(z.w2.sfc.pcp.sea(isea,:,:)-z.v0.sfc.pcp.sea(isea,:,:)); 
 contour(x,y,a,dpbin1,'Color',co,'LineStyle','-'); contour(x,y,a,dpbin2,'Color',co,'LineStyle','--');
 contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
-s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1;
+s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); i=i+1; set(gca,'FontSize',fsize); 
 subplot(row,col,i); a=v.op.waf.res; wafx=a.waf_x_JJA; wafy=a.waf_y_JJA; zp=a.zprime_JJA;
-pcolor(x,y,zp); shading flat; caxis([cmin cmax]*0.1); cb=colorbar; cb.Label.String=vunit1; cb.Title.FontSize = fsize; hold on;
+pcolor(x,y,zp); shading flat; caxis([cmin cmax]*0.1); cb=colorbar; cb.Label.String=z_unit; cb.Title.FontSize = fsize; hold on;
 quiver(x(1:n:end),y(1:n:end),wafx(1:n:end,1:n:end)*scale_a,wafy(1:n:end,1:n:end)*scale_a,0,'Color',color_a);
 text(x1-1,y1+6,strcat(num2str(dref1),vunit1),'FontSize',fsize,'Color',color_a,'BackgroundColor','w')
 quiver(x1,y1,dref1*scale_a,0,0,'Color',color_a,'LineWidth',3,'MaxHeadSize',2); hold on;
 contour(x,y,lm,[0.5 0.5],'Color',co1,'LineWidth',1); axis(p.xy);
-s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex');
+s=let(i)+p.s(i); title(s,'FontSize',fsize,'Interpreter','latex'); set(gca,'FontSize',fsize); 
 
-visfig='off'; figpath='~/'; mod_name='FigS06'; vname='rws_waf_jja'; p.fmt='eps';
+visfig='off'; figpath='./fig_land/'; mod_name='FigS06'; vname='rws_waf_jja'; p.fmt='eps';
 printnew(visfig,figpath,mod_name,vname,p.fmt);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3541,7 +3543,7 @@ pcolor(x,y,a); shading flat; colorbar; caxis([-100 100]); hold on;
 contour(x,y,lm,1,co); axis(xy);
 for k=1:length(us.lon); plot(us.lon{k},us.lat{k},us.co,'LineWidth',lw); end;
 s=sprintf('%s (%s, %s)',sx,pctt, nsea{isea}); %s=sprintf('%s',sx); 
-title(s,'FontSize',fsize,'Interpreter','latex');
+title(s,'FontSize',fsize,'Interpreter','latex'); set(gca,'FontSize',fsize); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 expn='pattern_effect_extremes'; visfig='off'; figpath='./fig_land/'; %figpath='./fig_spearhi8/'; 
