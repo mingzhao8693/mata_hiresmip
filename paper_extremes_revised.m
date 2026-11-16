@@ -2074,7 +2074,7 @@ p.fmt='eps'; p.xy=[100 360 -10 90];  plot_pattern_effect_Fig_atm_20panel_transpo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 v=z.v0;  v.dis='OBS CLIMO SST';    v.T=mean(v.sfc.tref.ann_stat.mmen.all);  z.v0 =v;    a=v.T;
 v=z.w1;  v.dis='SPM';              v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.22; z.w1 =v;
-v=z.w2;  v.dis='Observed-pattern'; v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.24; z.w2 =v;
+v=z.w2;  v.dis='OP';               v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; v.dT=1.24; z.w2 =v;
 v=z.w1A; v.dis='SP-EPbest';        v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1A=v;
 v=z.w1B; v.dis='SP-EPbest2';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1B=v;
 v=z.w1C; v.dis='SP-EPworst2';      v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1C=v;
@@ -2083,6 +2083,75 @@ v=z.w1a; v.dis='SPM-Pobs10';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT
 v=z.w1b; v.dis='SPM-Pobs20';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1b=v;
 v=z.w1c; v.dis='SPM-Pobs30';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1c=v;
 v=z.w1d; v.dis='SPM-Tobs30';       v.T=mean(v.sfc.tref.ann_stat.mmen.all);  v.dT=v.T-a; z.w1d=v;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v=z.v0; lm=v.s.lm; im=v.sfc.ice.tavg0; 
+lm_th=0.1; im_th=0.1; id_lm=(lm>lm_th); id_im=(im>im_th); id = id_lm | id_im; id=~id; %id(:,:)=1;
+aa=v.s.aa; aa=aa(id); aa=aa/mean(aa);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=1; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
+v=z.v0;  a=v.sfc.tsurf.sea; a0=squeeze(a(isea,:,:)); i=1;
+v=z.w1;  a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w2;  a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1a; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1b; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1c; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+v=z.w1d; a=v.sfc.tsurf.sea; a =squeeze(a(isea,:,:)); a=(a-a0); p.dv(i)=mean(a(id).*aa); p.v(:,:,i)=a; p.s{i}=v.dis; i=i+1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
+     "(k) ","(l) ","(m) ","(n) ","(o) ","(p) ","(q) ","(r) ","(s) ","(t) "];
+v=z.v0.s;
+p.lon=v.lon; p.lat=v.lat; p.lm=v.lm; p.aa=v.aa; p.xy=[0 360 -90 90]; p.id=id; 
+p.xsize=600; p.ysize=750; 
+pms=[ 0, 0, p.xsize, p.ysize]*1.2; fsize=10; 
+handle=figure('Position',pms,'visible','on'); 
+row=4; col=2; cmap=bluewhitered_miz(256); co='k';
+p.unit='\rm{K}'; cmin=-2; cmax=2; p.vname='SST_patterns'; 
+i=1; a0=p.v(:,:,i)/p.dv(i); mean(a0(id).*aa)
+for i = 3:6
+  a=p.v(:,:,i)/p.dv(i); p.dv_norm(i)=mean(a(id).*aa);
+  a=a-a0;
+  subplot(row, col, i+1); colormap(cmap); a(~id)=NaN;
+  pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
+  contour(p.lon,p.lat,p.lm,1,co);
+  set(gca,'FontSize',fsize); axis([p.xy]);
+  s=strcat(p.let(i+1),[p.s{i} ' minus ' 'SPM']);
+  title(s,'FontSize',fsize);
+end
+i=1; a=p.v(:,:,i)/p.dv(i); a1=a; p.dv_norm(i)=mean(a(id).*aa); %mean(a(id).*aa)
+subplot(row, col, i); colormap(cmap); a(~id)=NaN; 
+pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
+contour(p.lon,p.lat,p.lm,1,co);
+set(gca,'FontSize',fsize); axis([p.xy]);
+s=['(a) SPEAR-Pattern M (' p.s{i}, ')'];
+title(s,'FontSize',fsize);
+i=2; a=p.v(:,:,i)/p.dv(i); a2=a; p.dv_norm(i)=mean(a(id).*aa); %mean(a(id).*aa)
+subplot(row, col, i); colormap(cmap); a(~id)=NaN;
+pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
+contour(p.lon,p.lat,p.lm,1,co);
+set(gca,'FontSize',fsize); axis([p.xy]);
+s=['(b) Observed-Pattern (' p.s{i}, ')'];
+title(s,'FontSize',fsize);
+i=3; a=a2-a1; mean(a(id).*aa)
+subplot(row, col, i); colormap(cmap); a(~id)=NaN;
+pcolor(p.lon,p.lat,a); hold on; shading flat; caxis([cmin, cmax]);
+contour(p.lon,p.lat,p.lm,1,co);
+set(gca,'FontSize',fsize); axis([p.xy]);
+title(['(c) ' p.s{2} ' minus ' 'SPM'],'FontSize',fsize);
+%sgtitle('SST warming patterns','FontSize',fsize+2);
+
+cb = colorbar('FontSize',fsize,'Location','southoutside');
+set(cb, 'Position', [.165 .04 .7 .02]); caxis([cmin, cmax+0.001]); 
+colormap(cmap); 
+cb.Label.String = p.unit; pos=get(cb,'Position')
+cb.Label.Position = [pos(1)-0.14 pos(2)+1.9]; 
+cb.Label.Rotation = 0;
+visfig='off'; figpath='./fig_land/'; mod_name='FigRS01'; p.fmt='eps';
+printnew(visfig,figpath,mod_name,p.vname,p.fmt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 v=z.v0; lm=v.s.lm; im=v.sfc.ice.tavg0; 
 lm_th=0.1; im_th=0.1; id_lm=(lm>lm_th); id_im=(im>im_th); id = id_lm | id_im; id=~id; %id(:,:)=1;
@@ -2152,6 +2221,8 @@ cb.Label.Position = [pos(1)-0.14 pos(2)+1.9];
 cb.Label.Rotation = 0;
 visfig='off'; figpath='./fig_land/'; mod_name='FigRS01'; p.fmt='eps';
 printnew(visfig,figpath,mod_name,p.vname,p.fmt);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2279,7 +2350,7 @@ p.let=["(a) ","(b) ","(c) ","(d) ","(e) ","(f) ","(g) ","(h) ","(i) ","(j) "...
 A0='ERA5; '; a0='Control; '; a1='SPEAR-pattern M; '; a2='Observed-pattern; '; a3='Uniform';
 nsea={'ANN','MAM','JJA','SON','DJF','NDJFM','MJJAS'}; isea=3; %1-7=ANN,MAM,JJA,SON,DJF,NDJFM,MJJA
 p.vname='atm_pcp_evap_pme_mrsos'; p.vname=strcat('Fig_',p.vname,'_',nsea{isea}); p.sea=nsea{isea};
-p.vname='FigRS05b';
+p.vname='IWTCON';
 del=' $\Delta$'; s0='PREC'; s1='EVAP'; s2='PME'; s3='IWTCON'; p.flipcmap=0; p.do_bias=0;
 p.S0=strcat(A0,'~(',p.sea,')~',s0);
 p.s0=strcat(a0,'~(',p.sea,')~',s0);
@@ -2297,8 +2368,8 @@ p.unit3 ='$\rm{mm day^{-1}}$';          p.unit3_bar ='mm day^{-1}';
 p.unit4 ='$\rm{mm day^{-1} K^{-1}}$';   p.unit4_bar ='mm day^{-1} K^{-1}';
 p.unit6 ='$\rm{mm day^{-1}}$';          p.unit6_bar ='mm day^{-1}';
 p.unit7 ='$\rm{mm day^{-1} K^{-1}}$';   p.unit7_bar ='mm day^{-1} K^{-1}';
-p.unit9 ='$\rm{kg m^{-2}}$';            p.unit9_bar ='kg m^{-2}';
-p.unit10='$\rm{kg m^{-2} K^{-1}}$';     p.unit10_bar='kg m^{-2} K^{-1}';
+p.unit9 ='$\rm{mm day^{-1}}$';          p.unit9_bar ='mm day^{-1}';
+p.unit10='$\rm{mm day^{-1} K^{-1}}$';   p.unit10_bar='mm day^{-1} K^{-1}';
 
 p.cmin0=    0.0; p.cmax0=15;  p.cmin1 =-2;  p.cmax1 =2;
 p.cmin3=    0.0; p.cmax3=10;  p.cmin4 =-2;  p.cmax4 =2;
