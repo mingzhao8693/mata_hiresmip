@@ -26,7 +26,7 @@ v.tpath=tpath; v.expn=expn; v.yr1=yr1; v.yr2=yr2; v.nyr=yr2-yr1+1; v.tyr=[yr1:yr
 
 yea=[365]; ddd=cumsum(yea); d.beg_yea=[0 ddd(1:end-1)]+1; d.end_yea=ddd;
 
-v.do_yea=1; v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
+v.do_yea=1; v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea; bsize=1;
 
 m=0; pct=[0.01 0.1 99.9]; nbin=[]; %read annual data all together; m=1-12 read monthly data one at a time
 
@@ -37,7 +37,7 @@ varn='tp'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a*1000; end; %unit:mm/day
-thresh=[]; v.prday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.prday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 surface pressure%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,7 +45,7 @@ varn='sp'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
 for k=1:length(var); var(k).a=var(k).a*0.01; end; %unit:hPa
-thresh=[]; v.psday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.psday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %daily surface air temperature
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -53,55 +53,55 @@ varn='t2m'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);  %unit:K
 for k=1:length(var); var(k).a=var(k).a-273.15; end; %change unit to C
-thresh=[]; v.tasday=extremes_ana(var,pct,thresh,nbin,do_trend,1);
+thresh=[]; v.tasday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
 %compute ERA5 saturation vapor pressure (hPa) at TAS (K)
 for k=1:length(var); var(k).a=es_t_array(var(k).a+273.15); end;
-thresh=[]; v.vpsday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.vpsday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 dewpoint temperature at 2m
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='d2m'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
-thresh=[]; v.tdpday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.tdpday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %compute ERA5 2m vapor pressure (hPa), which is the saturation vapor
 %pressure at dewpoint because the dew point temperature (k) is the
 %temperature to which air must cooled at constant pressure and
 %water-vapor content for it to become saturated
 for k=1:length(var); var(k).a=es_t_array(var(k).a); end;
-thresh=[]; v.vpday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.vpday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %compute ERA5 2 m vapor pressure deficit vpd = vps -vp
 for k=1:length(var); var(k).a=v.vpsday.var(k).a-v.vpday.var(k).a; end;
 for k=1:length(var); id=var(k).a<=0; var(k).a(id)=0;  end;
-thresh=[]; v.vpdday=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.vpdday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %compute ERA5 2 m relative humidity = vp / vps *100
 for k=1:length(var); var(k).a=v.vpday.var(k).a./v.vpsday.var(k).a*100; end; 
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
 for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; 
-thresh=[]; v.rhday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.rhday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %compute ERA5 specific humididy at 2m (kg/kg)
 for k=1:length(var);
   e=v.vpday.var(k).a; ps=v.psday.var(k).a;
   var(k).a = 0.622.*e./(ps - 0.378.*e)
 end; 
-thresh=[]; v.qvday=extremes_ana(var,pct,thresh,nbin,do_trend,opt); clear e ps;
+thresh=[]; v.qvday=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize); clear e ps;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 U at 10m (m/s)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='u10'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:m/s
-thresh=[]; v.uasday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.uasday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 V at 10m (m/s)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='v10'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:m/s
-thresh=[]; v.vasday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.vasday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %compute wind speed at 10m%%%%%
 for k=1:length(var); var(k).a=sqrt(v.uasday.var(k).a.^2+v.vasday.var(k).a.^2); end;
-thresh=[]; v.wsdday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.wsdday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +113,7 @@ varn='t2mmax'; ff='day';exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); 
 for k=1:length(var); var(k).a=var(k).a-273.15; end; 
-thresh=[30 35 40]; v.tasmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[30 35 40]; v.tasmaxday=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -134,13 +134,13 @@ for k=1:length(v.prday.var)
   var1(k).a=a;
 end
 n=length(var1);
-for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,1);
-for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,1);
-for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,1);
-for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday.isi =extremes_ana(var,pct,thresh,nbin,do_trend,1);
-for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,nbin,do_trend,1);
-for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,1);
-for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,1);
+for k=1:n; var(k).a=var1(k).a.FFMC; end; v.fwiday.ffmc=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
+for k=1:n; var(k).a=var1(k).a.DMC;  end; v.fwiday.dmc =extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
+for k=1:n; var(k).a=var1(k).a.DC;   end; v.fwiday.dc  =extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
+for k=1:n; var(k).a=var1(k).a.ISI;  end; v.fwiday.isi =extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
+for k=1:n; var(k).a=var1(k).a.BUI;  end; v.fwiday.bui =extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
+for k=1:n; var(k).a=var1(k).a.FWI;  end; v.fwiday.fwi =extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
+for k=1:n; var(k).a=var1(k).a.DSR;  end; v.fwiday.dsr =extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %save initial condition for FFMC, DMC and DC for fwiday calculation%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

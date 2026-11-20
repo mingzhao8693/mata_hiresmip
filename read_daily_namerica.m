@@ -61,7 +61,7 @@ else
   v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
 end
 %m=0; %read annual data all together; m=1-12 read monthly data one at a time
-nbin=[]; bsize=5;
+nbin=[]; bsize=1;
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %start with some land and river variables;
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

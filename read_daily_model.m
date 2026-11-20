@@ -175,7 +175,7 @@ fnmat=strcat(tpath,expn,'/',expn,fext,'_daily_climo_mod_climo.mat'); disp(fnmat)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %compute model daily climo bias
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-opath='/archive/Ming.Zhao/awg/2023.04/'; expo ='c192_obs'; fext ='_1979_2020';
+opath='/archive/Ming.Zhao/awg/2023.04/'; expo ='c192_obs'; %fext ='_1979_2020';
 fnmat=strcat(opath,expo,'/',expo,fext,'_daily_climo_obs_climo.mat'); disp(fnmat); o=load(fnmat); o=o.v;
 
 fday=30; v=compute_daily_model_bias(v,o,fday);

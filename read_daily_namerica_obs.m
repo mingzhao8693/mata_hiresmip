@@ -63,7 +63,7 @@ end
 vx=v; %temporarily store v for some use later on;
 
 %m=0; %m=0: read annual data all together; m=1-12: read monthly data one at a time
-nbin=[]; dirname='/daily_era5_remapcon/'; bsize=3; bsize1=1;
+nbin=[]; dirname='/daily_era5_remapcon/'; bsize=1; bsize1=1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %surface precip from MSWEP: original res: 0.1x0.1, 1979-2020; remapped conservatively to c192_grid(0.625x0.5)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -269,7 +269,7 @@ end
 if (diag==0)
   varlist={'tp','tasmaxday','twbday','vpdday'}; v=clearvar(v,opt,varlist);
   epath = tpath; fext =strcat('_',num2str(yr1),'_',num2str(yr2));
-  fnmat=strcat(epath,expn,'/',expn,fext,'_','opt',num2str(opt),'_diag',num2str(diag),'_read_daily_namerica_obs_new.mat')
+  fnmat=strcat(epath,expn,'/',expn,fext,'_','opt',num2str(opt),'_diag',num2str(diag),'_read_daily_namerica_obs_new_bsize_1.mat')
   save(fnmat,'v','-v7.3'); %save(fnmat,'v');
 end
 

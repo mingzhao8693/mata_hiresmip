@@ -1,10 +1,21 @@
-function [v]=read_daily_obs(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend)
+function [v]=read_daily_obs(tpath,expn,yr1,yr2,pct,opt,latlon,do_trend,reso)
 [CPD,CPV,CL,RV,RD,LV0,G,ROWL,CPVMCL,EPS,EPSI,GINV,RDOCP,T0,HLF]=thermconst;
 %tpath='/archive/Ming.Zhao/awg/2023.04/'; expn ='c192_obs'; opt=0;
 %yr1=1979; yr2=1979; do_trend=0; %yr1=1950; yr2=2020; 
 %pct=[0.1 1 5 10 25 50 75 90 95 99 99.9];
 %latlon=[0 360 -90 90]; %latlon=[180 340 10 90]; latlon=[190 304 16 75];
 
+tpath1='./'; expn1='';
+if exist('reso','var')
+  if strcmp(reso,'c48')
+    fn='atmos.static_c48.nc';  s=readts_grid_2d(tpath1,expn1,fn,latlon); s.fn=fn;
+  elseif strcmp(reso,'c96')
+    fn='atmos.static_c96.nc';  s=readts_grid_2d(tpath1,expn1,fn,latlon); s.fn=fn;
+  elseif strcmp(reso,'c192')
+    fn='atmos.static_c192.nc'; s=readts_grid_2d(tpath1,expn1,fn,latlon); s.fn=fn;
+  end
+end
+					
 atmos_data_dir='atmos_data';
 if strcmp(atmos_data_dir,'atmos_data_240_480')
   fn=strcat(tpath,expn,'/atmos_static_240_480.nc'); 
@@ -38,7 +49,7 @@ else
   v.d_beg=d.beg_yea; v.d_end=d.end_yea; v.yea=yea;
 end
 m=0; %read annual data all together; m=1-12 read monthly data one at a time
-nbin=[]; v.do_trend=do_trend;
+nbin=[]; v.do_trend=do_trend; bsize=1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 surface skin temperature
@@ -47,83 +58,91 @@ nbin=[]; v.do_trend=do_trend;
 varn='skt'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
-thresh=[]; v.era5.ts=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+var=interp_var(var,s);
+thresh=[]; v.era5.ts=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 2m maximum temperature
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='t2mmax'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
-thresh=[]; v.era5.tasmax=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+var=interp_var(var,s);
+thresh=[]; v.era5.tasmax=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 surface pressure%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='sp'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
+var=interp_var(var,s);
 for k=1:length(var); var(k).a=var(k).a*0.01; end; %unit:hPa
-thresh=[]; v.era5.ps=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.era5.ps=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 temperature at 2m
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='t2m'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
-thresh=[]; v.era5.tas=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+var=interp_var(var,s);
+thresh=[]; v.era5.tas=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %compute ERA5 saturation vapor pressure (hPa) at TAS (K)
 for k=1:length(var); var(k).a=es_t_array(var(k).a); end;
-thresh=[]; v.era5.vps=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.era5.vps=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 dewpoint temperature at 2m
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='d2m'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
-thresh=[]; v.era5.tdp=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+var=interp_var(var,s);
+thresh=[]; v.era5.tdp=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %compute ERA5 2m vapor pressure (hPa), which is the saturation vapor
 %pressure at dewpoint because the dew point temperature (k) is the
 %temperature to which air must cooled at constant pressure and
 %water-vapor content for it to become saturated
 for k=1:length(var); var(k).a=es_t_array(var(k).a); end;
-thresh=[]; v.era5.vp=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.era5.vp=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %compute ERA5 2 m vapor pressure deficit vpd = vps -vp
 for k=1:length(var); var(k).a=v.era5.vps.var(k).a-v.era5.vp.var(k).a; end;
 for k=1:length(var); id=var(k).a<=0; var(k).a(id)=0;  end;
-thresh=[]; v.era5.vpd=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.era5.vpd=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %compute ERA5 2 m relative humidity = vp / vps *100
 for k=1:length(var); var(k).a=v.era5.vp.var(k).a./v.era5.vps.var(k).a*100; end; 
 for k=1:length(var); id=var(k).a>=100; var(k).a(id)=100; end;
 for k=1:length(var); id=var(k).a<=0;   var(k).a(id)=0;   end; 
-thresh=[]; v.era5.rh=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.era5.rh=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %compute ERA5 specific humididy at 2m (kg/kg)
 for k=1:length(var);
   e=v.era5.vp.var(k).a; ps=v.era5.ps.var(k).a;
   var(k).a = 0.622.*e./(ps - 0.378.*e)
 end; 
-thresh=[]; v.era5.qv=extremes_ana(var,pct,thresh,nbin,do_trend,opt); clear e ps;
+thresh=[]; v.era5.qv=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize); clear e ps;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 U at 10m (m/s)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='u10'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:m/s
-thresh=[]; v.era5.uas=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+var=interp_var(var,s);
+thresh=[]; v.era5.uas=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 V at 10m (m/s)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 varn='v10'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:m/s
-thresh=[]; v.era5.vas=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+var=interp_var(var,s);
+thresh=[]; v.era5.vas=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %compute wind speed at 10m%%%%%
 for k=1:length(var); var(k).a=sqrt(v.era5.uas.var(k).a.^2+v.era5.vas.var(k).a.^2); end;
-thresh=[]; v.era5.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+thresh=[]; v.era5.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 U at 10m (m/s)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %varn='u_ref'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5/');
 %exf1='ERA5.'; exf2='0101-'; exf3='1231.';
 %var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
+%var=interp_var(var,s);
 %thresh=[]; v.era5.uas=extremes_ana(var,pct,thresh,1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 V at 10m (m/s)
@@ -131,10 +150,11 @@ thresh=[]; v.era5.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
 %varn='v_ref'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5/');
 %exf1='ERA5.'; exf2='0101-'; exf3='1231.';
 %var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:K
+%var=interp_var(var,s);
 %thresh=[]; v.era5.vas=extremes_ana(var,pct,thresh,1)
 %compute wind speed %%%%%%%%%%%
 %for k=1:length(var); var(k).a=sqrt(v.era5.uas.var(k).a.^2+v.era5.vas.var(k).a.^2); end;
-%thresh=[]; v.era5.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
+%thresh=[]; v.era5.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ERA5 surface precipitation%%%%
@@ -143,8 +163,9 @@ thresh=[]; v.era5.wsd=extremes_ana(var,pct,thresh,nbin,do_trend,opt)
 varn='tp'; ff='day'; exd=strcat('/',atmos_data_dir,'/daily_era5_remapcon/');
 exf1='ERA5_daily.'; exf2='0101-'; exf3='1231.';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff);
+var=interp_var(var,s);
 for k=1:length(var); var(k).a=var(k).a*1000; end; %unit:mm/day
-thresh=[]; v.era5.pr=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+thresh=[]; v.era5.pr=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %other precipitation data %%%%%
@@ -162,8 +183,9 @@ end;
 v.tyr=[v.yr1:v.yr2]';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:mm/day
+var=interp_var(var,s);
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.mswep.pr=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+v.mswep.pr=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %GPCP precip original res: 1x1, remapped conservatively to c192_grid(0.625x0.5)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -176,9 +198,10 @@ else
 end;
 v.tyr=[v.yr1:v.yr2]';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:mm/day
+var=interp_var(var,s);
 for k=1:length(var); b=var(k).a; var(k).a(b<0 | isnan(b))=0; end; %set missing value to 0
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.gpcp.pr13=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+v.gpcp.pr13=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %GPCPDAY3.2 precip: original res: 0.5x0.5, remapped conservatively to c192_grid(0.625x0.5)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -192,9 +215,10 @@ end;
 v.tyr=[v.yr1:v.yr2]';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:mm/day
+var=interp_var(var,s);
 for k=1:length(var); b=var(k).a; var(k).a(b<0 | isnan(b))=0; end; %set missing value to 0
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.gpcp.pr32=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+v.gpcp.pr32=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %GPM-IMERG precip: original res:0.1x0.1, remapped conservatively to c192_grid(0.625x0.5) 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -207,9 +231,10 @@ else
 end;
 v.tyr=[v.yr1:v.yr2]';
 var=readallyear_reg(v,exd,varn,exf1,exf2,exf3,ff); %unit:mm/day
+var=interp_var(var,s);
 for k=1:length(var); b=var(k).a; var(k).a(b<0 | isnan(b))=0; end; %set missing value to 0
 thresh=[0.2 1 5 10 50 100 200 400 500];
-v.gpm.pr=extremes_ana(var,pct,thresh,nbin,do_trend,1)
+v.gpm.pr=extremes_ana(var,pct,thresh,nbin,do_trend,1,bsize)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %save all obs datat to .mat file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
